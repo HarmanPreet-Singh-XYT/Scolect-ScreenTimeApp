@@ -58,7 +58,7 @@ dependencies:
   window_focus:
     git:
       url: https://github.com/HarmanPreet-Singh-XYT/Window_focus
-      ref: master
+      ref: exp
   url_launcher: ^6.3.2
   flutter_colorpicker: ^1.0.3
   audioplayers: ^6.5.1

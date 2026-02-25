@@ -9,8 +9,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appWindowTitle =>
-      'Scolect - Lacak Waktu Layar & Penggunaan Aplikasi';
+  String get appWindowTitle => 'Scolect - Lacak Waktu Layar & Penggunaan Aplikasi';
 
   @override
   String get appName => 'Scolect';
@@ -108,183 +107,151 @@ class AppLocalizationsId extends AppLocalizations {
   String get faqGeneralQ1 => 'Bagaimana aplikasi ini melacak waktu layar?';
 
   @override
-  String get faqGeneralA1 =>
-      'Aplikasi memantau penggunaan perangkat Anda secara real-time, melacak waktu yang dihabiskan pada berbagai aplikasi. Ini memberikan wawasan komprehensif tentang kebiasaan digital Anda, termasuk total waktu layar, waktu produktif, dan penggunaan aplikasi spesifik.';
+  String get faqGeneralA1 => 'Aplikasi memantau penggunaan perangkat Anda secara real-time, melacak waktu yang dihabiskan pada berbagai aplikasi. Ini memberikan wawasan komprehensif tentang kebiasaan digital Anda, termasuk total waktu layar, waktu produktif, dan penggunaan aplikasi spesifik.';
 
   @override
   String get faqGeneralQ2 => 'Apa yang membuat aplikasi \'Produktif\'?';
 
   @override
-  String get faqGeneralA2 =>
-      'Anda dapat menandai aplikasi sebagai produktif secara manual di bagian \'Aplikasi\'. Aplikasi produktif berkontribusi pada Skor Produktif Anda, yang menghitung persentase waktu layar yang dihabiskan untuk aplikasi terkait pekerjaan atau bermanfaat.';
+  String get faqGeneralA2 => 'Anda dapat menandai aplikasi sebagai produktif secara manual di bagian \'Aplikasi\'. Aplikasi produktif berkontribusi pada Skor Produktif Anda, yang menghitung persentase waktu layar yang dihabiskan untuk aplikasi terkait pekerjaan atau bermanfaat.';
 
   @override
   String get faqGeneralQ3 => 'Seberapa akurat pelacakan waktu layar?';
 
   @override
-  String get faqGeneralA3 =>
-      'Aplikasi menggunakan pelacakan tingkat sistem untuk memberikan pengukuran yang tepat dari penggunaan perangkat Anda. Ini menangkap waktu foreground untuk setiap aplikasi dengan dampak baterai minimal.';
+  String get faqGeneralA3 => 'Aplikasi menggunakan pelacakan tingkat sistem untuk memberikan pengukuran yang tepat dari penggunaan perangkat Anda. Ini menangkap waktu foreground untuk setiap aplikasi dengan dampak baterai minimal.';
 
   @override
-  String get faqGeneralQ4 =>
-      'Bisakah saya menyesuaikan kategorisasi aplikasi saya?';
+  String get faqGeneralQ4 => 'Bisakah saya menyesuaikan kategorisasi aplikasi saya?';
 
   @override
-  String get faqGeneralA4 =>
-      'Tentu saja! Anda dapat membuat kategori khusus, menetapkan aplikasi ke kategori tertentu, dan dengan mudah memodifikasi penetapan ini di bagian \'Aplikasi\'. Ini membantu menciptakan analitik penggunaan yang lebih bermakna.';
+  String get faqGeneralA4 => 'Tentu saja! Anda dapat membuat kategori khusus, menetapkan aplikasi ke kategori tertentu, dan dengan mudah memodifikasi penetapan ini di bagian \'Aplikasi\'. Ini membantu menciptakan analitik penggunaan yang lebih bermakna.';
 
   @override
-  String get faqGeneralQ5 =>
-      'Wawasan apa yang bisa saya dapatkan dari aplikasi ini?';
+  String get faqGeneralQ5 => 'Wawasan apa yang bisa saya dapatkan dari aplikasi ini?';
 
   @override
-  String get faqGeneralA5 =>
-      'Aplikasi menawarkan wawasan komprehensif termasuk Skor Produktif, pola penggunaan berdasarkan waktu, penggunaan aplikasi terperinci, pelacakan sesi fokus, dan analitik visual seperti grafik dan diagram lingkaran untuk membantu Anda memahami dan meningkatkan kebiasaan digital Anda.';
+  String get faqGeneralA5 => 'Aplikasi menawarkan wawasan komprehensif termasuk Skor Produktif, pola penggunaan berdasarkan waktu, penggunaan aplikasi terperinci, pelacakan sesi fokus, dan analitik visual seperti grafik dan diagram lingkaran untuk membantu Anda memahami dan meningkatkan kebiasaan digital Anda.';
 
   @override
-  String get faqAppsQ1 =>
-      'Bagaimana cara menyembunyikan aplikasi tertentu dari pelacakan?';
+  String get faqAppsQ1 => 'Bagaimana cara menyembunyikan aplikasi tertentu dari pelacakan?';
 
   @override
-  String get faqAppsA1 =>
-      'Di bagian \'Aplikasi\', Anda dapat mengaktifkan/menonaktifkan visibilitas aplikasi.';
+  String get faqAppsA1 => 'Di bagian \'Aplikasi\', Anda dapat mengaktifkan/menonaktifkan visibilitas aplikasi.';
 
   @override
   String get faqAppsQ2 => 'Bisakah saya mencari dan memfilter aplikasi saya?';
 
   @override
-  String get faqAppsA2 =>
-      'Ya, bagian Aplikasi mencakup fungsi pencarian dan opsi filter. Anda dapat memfilter aplikasi berdasarkan kategori, status produktivitas, status pelacakan, dan visibilitas.';
+  String get faqAppsA2 => 'Ya, bagian Aplikasi mencakup fungsi pencarian dan opsi filter. Anda dapat memfilter aplikasi berdasarkan kategori, status produktivitas, status pelacakan, dan visibilitas.';
 
   @override
   String get faqAppsQ3 => 'Opsi pengeditan apa yang tersedia untuk aplikasi?';
 
   @override
-  String get faqAppsA3 =>
-      'Untuk setiap aplikasi, Anda dapat mengedit: penetapan kategori, status produktivitas, pelacakan penggunaan, visibilitas dalam laporan, dan menetapkan batasan waktu harian individual.';
+  String get faqAppsA3 => 'Untuk setiap aplikasi, Anda dapat mengedit: penetapan kategori, status produktivitas, pelacakan penggunaan, visibilitas dalam laporan, dan menetapkan batasan waktu harian individual.';
 
   @override
   String get faqAppsQ4 => 'Bagaimana kategori aplikasi ditentukan?';
 
   @override
-  String get faqAppsA4 =>
-      'Kategori awal disarankan oleh sistem, tetapi Anda memiliki kontrol penuh untuk membuat, memodifikasi, dan menetapkan kategori khusus berdasarkan alur kerja dan preferensi Anda.';
+  String get faqAppsA4 => 'Kategori awal disarankan oleh sistem, tetapi Anda memiliki kontrol penuh untuk membuat, memodifikasi, dan menetapkan kategori khusus berdasarkan alur kerja dan preferensi Anda.';
 
   @override
   String get faqReportsQ1 => 'Jenis laporan apa yang tersedia?';
 
   @override
-  String get faqReportsA1 =>
-      'Laporan mencakup: Total waktu layar, Waktu produktif, Aplikasi paling sering digunakan, Sesi fokus, Grafik waktu layar harian, Diagram lingkaran pembagian kategori, Penggunaan aplikasi terperinci, Tren penggunaan mingguan, dan Analisis pola penggunaan berdasarkan waktu.';
+  String get faqReportsA1 => 'Laporan mencakup: Total waktu layar, Waktu produktif, Aplikasi paling sering digunakan, Sesi fokus, Grafik waktu layar harian, Diagram lingkaran pembagian kategori, Penggunaan aplikasi terperinci, Tren penggunaan mingguan, dan Analisis pola penggunaan berdasarkan waktu.';
 
   @override
   String get faqReportsQ2 => 'Seberapa detail laporan penggunaan aplikasi?';
 
   @override
-  String get faqReportsA2 =>
-      'Laporan penggunaan aplikasi terperinci menunjukkan: Nama aplikasi, Kategori, Total waktu yang dihabiskan, Status produktivitas, dan menawarkan bagian \'Tindakan\' dengan wawasan lebih dalam seperti ringkasan penggunaan, batasan harian, tren penggunaan, dan metrik produktivitas.';
+  String get faqReportsA2 => 'Laporan penggunaan aplikasi terperinci menunjukkan: Nama aplikasi, Kategori, Total waktu yang dihabiskan, Status produktivitas, dan menawarkan bagian \'Tindakan\' dengan wawasan lebih dalam seperti ringkasan penggunaan, batasan harian, tren penggunaan, dan metrik produktivitas.';
 
   @override
-  String get faqReportsQ3 =>
-      'Bisakah saya menganalisis tren penggunaan saya dari waktu ke waktu?';
+  String get faqReportsQ3 => 'Bisakah saya menganalisis tren penggunaan saya dari waktu ke waktu?';
 
   @override
-  String get faqReportsA3 =>
-      'Ya! Aplikasi menyediakan perbandingan minggu-ke-minggu, menampilkan grafik penggunaan selama beberapa minggu terakhir, penggunaan harian rata-rata, sesi terpanjang, dan total mingguan untuk membantu Anda melacak kebiasaan digital Anda.';
+  String get faqReportsA3 => 'Ya! Aplikasi menyediakan perbandingan minggu-ke-minggu, menampilkan grafik penggunaan selama beberapa minggu terakhir, penggunaan harian rata-rata, sesi terpanjang, dan total mingguan untuk membantu Anda melacak kebiasaan digital Anda.';
 
   @override
   String get faqReportsQ4 => 'Apa itu analisis \'Pola Penggunaan\'?';
 
   @override
-  String get faqReportsA4 =>
-      'Pola Penggunaan memecah waktu layar Anda menjadi segmen pagi, siang, sore, dan malam. Ini membantu Anda memahami kapan Anda paling aktif di perangkat dan mengidentifikasi area potensial untuk perbaikan.';
+  String get faqReportsA4 => 'Pola Penggunaan memecah waktu layar Anda menjadi segmen pagi, siang, sore, dan malam. Ini membantu Anda memahami kapan Anda paling aktif di perangkat dan mengidentifikasi area potensial untuk perbaikan.';
 
   @override
   String get faqAlertsQ1 => 'Seberapa detail batasan waktu layar?';
 
   @override
-  String get faqAlertsA1 =>
-      'Anda dapat menetapkan batasan waktu layar harian keseluruhan dan batasan aplikasi individual. Batasan dapat dikonfigurasi dalam jam dan menit, dengan opsi untuk mengatur ulang atau menyesuaikan sesuai kebutuhan.';
+  String get faqAlertsA1 => 'Anda dapat menetapkan batasan waktu layar harian keseluruhan dan batasan aplikasi individual. Batasan dapat dikonfigurasi dalam jam dan menit, dengan opsi untuk mengatur ulang atau menyesuaikan sesuai kebutuhan.';
 
   @override
   String get faqAlertsQ2 => 'Opsi notifikasi apa yang tersedia?';
 
   @override
-  String get faqAlertsA2 =>
-      'Aplikasi menawarkan beberapa jenis notifikasi: Peringatan sistem saat Anda melebihi waktu layar, Peringatan sering pada interval yang dapat disesuaikan (1, 5, 15, 30, atau 60 menit), dan tombol untuk mode fokus, waktu layar, dan notifikasi khusus aplikasi.';
+  String get faqAlertsA2 => 'Aplikasi menawarkan beberapa jenis notifikasi: Peringatan sistem saat Anda melebihi waktu layar, Peringatan sering pada interval yang dapat disesuaikan (1, 5, 15, 30, atau 60 menit), dan tombol untuk mode fokus, waktu layar, dan notifikasi khusus aplikasi.';
 
   @override
   String get faqAlertsQ3 => 'Bisakah saya menyesuaikan peringatan batasan?';
 
   @override
-  String get faqAlertsA3 =>
-      'Ya, Anda dapat menyesuaikan frekuensi peringatan, mengaktifkan/menonaktifkan jenis peringatan tertentu, dan menetapkan batasan berbeda untuk waktu layar keseluruhan dan aplikasi individual.';
+  String get faqAlertsA3 => 'Ya, Anda dapat menyesuaikan frekuensi peringatan, mengaktifkan/menonaktifkan jenis peringatan tertentu, dan menetapkan batasan berbeda untuk waktu layar keseluruhan dan aplikasi individual.';
 
   @override
   String get faqFocusQ1 => 'Jenis Mode Fokus apa yang tersedia?';
 
   @override
-  String get faqFocusA1 =>
-      'Mode yang tersedia termasuk Deep Work (sesi fokus lebih lama), Quick Tasks (pekerjaan singkat), dan Mode Membaca. Setiap mode membantu Anda menyusun waktu kerja dan istirahat secara efektif.';
+  String get faqFocusA1 => 'Mode yang tersedia termasuk Deep Work (sesi fokus lebih lama), Quick Tasks (pekerjaan singkat), dan Mode Membaca. Setiap mode membantu Anda menyusun waktu kerja dan istirahat secara efektif.';
 
   @override
   String get faqFocusQ2 => 'Seberapa fleksibel Timer Pomodoro?';
 
   @override
-  String get faqFocusA2 =>
-      'Timer sangat dapat disesuaikan. Anda dapat menyesuaikan durasi kerja, lama istirahat pendek, dan durasi istirahat panjang. Opsi tambahan termasuk mulai otomatis untuk sesi berikutnya dan pengaturan notifikasi.';
+  String get faqFocusA2 => 'Timer sangat dapat disesuaikan. Anda dapat menyesuaikan durasi kerja, lama istirahat pendek, dan durasi istirahat panjang. Opsi tambahan termasuk mulai otomatis untuk sesi berikutnya dan pengaturan notifikasi.';
 
   @override
   String get faqFocusQ3 => 'Apa yang ditampilkan riwayat Mode Fokus?';
 
   @override
-  String get faqFocusA3 =>
-      'Riwayat Mode Fokus melacak sesi fokus harian, menampilkan jumlah sesi per hari, grafik tren, durasi sesi rata-rata, total waktu fokus, dan diagram lingkaran distribusi waktu yang memecah sesi kerja, istirahat pendek, dan istirahat panjang.';
+  String get faqFocusA3 => 'Riwayat Mode Fokus melacak sesi fokus harian, menampilkan jumlah sesi per hari, grafik tren, durasi sesi rata-rata, total waktu fokus, dan diagram lingkaran distribusi waktu yang memecah sesi kerja, istirahat pendek, dan istirahat panjang.';
 
   @override
   String get faqFocusQ4 => 'Bisakah saya melacak kemajuan sesi fokus saya?';
 
   @override
-  String get faqFocusA4 =>
-      'Aplikasi menampilkan UI timer melingkar dengan tombol putar/jeda, muat ulang, dan pengaturan. Anda dapat dengan mudah melacak dan mengelola sesi fokus Anda dengan kontrol intuitif.';
+  String get faqFocusA4 => 'Aplikasi menampilkan UI timer melingkar dengan tombol putar/jeda, muat ulang, dan pengaturan. Anda dapat dengan mudah melacak dan mengelola sesi fokus Anda dengan kontrol intuitif.';
 
   @override
   String get faqSettingsQ1 => 'Opsi kustomisasi apa yang tersedia?';
 
   @override
-  String get faqSettingsA1 =>
-      'Kustomisasi mencakup pemilihan tema (Sistem, Terang, Gelap), pengaturan bahasa, perilaku startup, kontrol notifikasi komprehensif, dan opsi manajemen data seperti menghapus data atau mengatur ulang pengaturan.';
+  String get faqSettingsA1 => 'Kustomisasi mencakup pemilihan tema (Sistem, Terang, Gelap), pengaturan bahasa, perilaku startup, kontrol notifikasi komprehensif, dan opsi manajemen data seperti menghapus data atau mengatur ulang pengaturan.';
 
   @override
-  String get faqSettingsQ2 =>
-      'Bagaimana cara memberikan umpan balik atau melaporkan masalah?';
+  String get faqSettingsQ2 => 'Bagaimana cara memberikan umpan balik atau melaporkan masalah?';
 
   @override
-  String get faqSettingsA2 =>
-      'Di bagian bawah bagian Pengaturan, Anda akan menemukan tombol untuk Laporkan Bug, Kirim Umpan Balik, atau Hubungi Dukungan. Ini akan mengarahkan Anda ke saluran dukungan yang sesuai.';
+  String get faqSettingsA2 => 'Di bagian bawah bagian Pengaturan, Anda akan menemukan tombol untuk Laporkan Bug, Kirim Umpan Balik, atau Hubungi Dukungan. Ini akan mengarahkan Anda ke saluran dukungan yang sesuai.';
 
   @override
-  String get faqSettingsQ3 =>
-      'Apa yang terjadi ketika saya menghapus data saya?';
+  String get faqSettingsQ3 => 'Apa yang terjadi ketika saya menghapus data saya?';
 
   @override
-  String get faqSettingsA3 =>
-      'Menghapus data akan mengatur ulang semua statistik penggunaan Anda, riwayat sesi fokus, dan pengaturan khusus. Ini berguna untuk memulai dari awal atau pemecahan masalah.';
+  String get faqSettingsA3 => 'Menghapus data akan mengatur ulang semua statistik penggunaan Anda, riwayat sesi fokus, dan pengaturan khusus. Ini berguna untuk memulai dari awal atau pemecahan masalah.';
 
   @override
   String get faqTroubleQ1 => 'Data tidak muncul, kesalahan hive tidak terbuka';
 
   @override
-  String get faqTroubleA1 =>
-      'Masalah ini diketahui, perbaikan sementara adalah menghapus data melalui pengaturan dan jika tidak berhasil maka pergi ke Dokumen dan hapus file berikut jika ada - harman_screentime_app_usage_box.hive dan harman_screentime_app_usage.lock, Anda juga disarankan untuk memperbarui aplikasi ke versi terbaru.';
+  String get faqTroubleA1 => 'Masalah ini diketahui, perbaikan sementara adalah menghapus data melalui pengaturan dan jika tidak berhasil maka pergi ke Dokumen dan hapus file berikut jika ada - harman_screentime_app_usage_box.hive dan harman_screentime_app_usage.lock, Anda juga disarankan untuk memperbarui aplikasi ke versi terbaru.';
 
   @override
-  String get faqTroubleQ2 =>
-      'Aplikasi terbuka setiap startup, apa yang harus dilakukan?';
+  String get faqTroubleQ2 => 'Aplikasi terbuka setiap startup, apa yang harus dilakukan?';
 
   @override
-  String get faqTroubleA2 =>
-      'Ini adalah masalah yang diketahui yang terjadi pada Windows 10, perbaikan sementara adalah mengaktifkan Luncurkan sebagai Diminimalkan di pengaturan sehingga diluncurkan sebagai Diminimalkan.';
+  String get faqTroubleA2 => 'Ini adalah masalah yang diketahui yang terjadi pada Windows 10, perbaikan sementara adalah mengaktifkan Luncurkan sebagai Diminimalkan di pengaturan sehingga diluncurkan sebagai Diminimalkan.';
 
   @override
   String get usageAnalytics => 'Analitik Penggunaan';
@@ -311,8 +278,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get tryAgain => 'Coba Lagi';
 
   @override
-  String get failedToInitialize =>
-      'Gagal menginisialisasi analitik. Silakan mulai ulang aplikasi.';
+  String get failedToInitialize => 'Gagal menginisialisasi analitik. Silakan mulai ulang aplikasi.';
 
   @override
   String unexpectedError(String error) {
@@ -355,8 +321,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get invalidDateRange => 'Rentang Tanggal Tidak Valid';
 
   @override
-  String get startDateBeforeEndDate =>
-      'Tanggal mulai harus sebelum atau sama dengan tanggal akhir.';
+  String get startDateBeforeEndDate => 'Tanggal mulai harus sebelum atau sama dengan tanggal akhir.';
 
   @override
   String get totalScreenTime => 'Total Waktu Layar';
@@ -441,8 +406,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get nonProductive => 'Non-Produktif';
 
   @override
-  String get noApplicationsMatch =>
-      'Tidak ada aplikasi yang cocok dengan kriteria pencarian Anda';
+  String get noApplicationsMatch => 'Tidak ada aplikasi yang cocok dengan kriteria pencarian Anda';
 
   @override
   String get viewDetails => 'Lihat detail';
@@ -527,8 +491,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get trendingUpward =>
-      'Penggunaan Anda cenderung meningkat dibandingkan periode sebelumnya.';
+  String get trendingUpward => 'Penggunaan Anda cenderung meningkat dibandingkan periode sebelumnya.';
 
   @override
   String significantDecrease(String percentage) {
@@ -536,20 +499,16 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get trendingDownward =>
-      'Penggunaan Anda cenderung menurun dibandingkan periode sebelumnya.';
+  String get trendingDownward => 'Penggunaan Anda cenderung menurun dibandingkan periode sebelumnya.';
 
   @override
-  String get consistentUsage =>
-      'Penggunaan Anda telah konsisten dibandingkan periode sebelumnya.';
+  String get consistentUsage => 'Penggunaan Anda telah konsisten dibandingkan periode sebelumnya.';
 
   @override
-  String get markedAsProductive =>
-      'Ini ditandai sebagai aplikasi produktif dalam pengaturan Anda.';
+  String get markedAsProductive => 'Ini ditandai sebagai aplikasi produktif dalam pengaturan Anda.';
 
   @override
-  String get markedAsNonProductive =>
-      'Ini ditandai sebagai aplikasi non-produktif dalam pengaturan Anda.';
+  String get markedAsNonProductive => 'Ini ditandai sebagai aplikasi non-produktif dalam pengaturan Anda.';
 
   @override
   String mostActiveTime(String time) {
@@ -557,12 +516,10 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get noLimitSet =>
-      'Tidak ada batasan penggunaan yang ditetapkan untuk aplikasi ini.';
+  String get noLimitSet => 'Tidak ada batasan penggunaan yang ditetapkan untuk aplikasi ini.';
 
   @override
-  String get limitReached =>
-      'Anda telah mencapai batasan harian untuk aplikasi ini.';
+  String get limitReached => 'Anda telah mencapai batasan harian untuk aplikasi ini.';
 
   @override
   String aboutToReachLimit(String remainingTime) {
@@ -697,8 +654,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get resetSettingsTitle => 'Atur Ulang Pengaturan?';
 
   @override
-  String get resetSettingsContent =>
-      'Jika Anda mengatur ulang pengaturan, Anda tidak akan dapat memulihkannya. Apakah Anda ingin mengatur ulang?';
+  String get resetSettingsContent => 'Jika Anda mengatur ulang pengaturan, Anda tidak akan dapat memulihkannya. Apakah Anda ingin mengatur ulang?';
 
   @override
   String get resetAll => 'Atur Ulang Semua';
@@ -902,8 +858,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get noActivityDataAvailable => 'Belum ada data aktivitas tersedia';
 
   @override
-  String get startUsingApplications =>
-      'Mulai gunakan aplikasi Anda untuk melacak waktu layar dan produktivitas.';
+  String get startUsingApplications => 'Mulai gunakan aplikasi Anda untuk melacak waktu layar dan produktivitas.';
 
   @override
   String get refreshData => 'Segarkan Data';
@@ -912,8 +867,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get topApplications => 'Aplikasi Teratas';
 
   @override
-  String get noAppUsageDataAvailable =>
-      'Belum ada data penggunaan aplikasi tersedia';
+  String get noAppUsageDataAvailable => 'Belum ada data penggunaan aplikasi tersedia';
 
   @override
   String get noApplicationDataAvailable => 'Tidak ada data aplikasi tersedia';
@@ -922,8 +876,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get noCategoryDataAvailable => 'Tidak ada data kategori tersedia';
 
   @override
-  String get noApplicationLimitsSet =>
-      'Tidak ada batasan aplikasi yang ditetapkan';
+  String get noApplicationLimitsSet => 'Tidak ada batasan aplikasi yang ditetapkan';
 
   @override
   String get screenLabel => 'Layar';
@@ -980,8 +933,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get launchMinimizedTitle => 'Luncurkan sebagai Diminimalkan';
 
   @override
-  String get launchMinimizedDescription =>
-      'Mulai aplikasi di System Tray (Direkomendasikan untuk Windows 10)';
+  String get launchMinimizedDescription => 'Mulai aplikasi di System Tray (Direkomendasikan untuk Windows 10)';
 
   @override
   String get notificationsTitle => 'Notifikasi';
@@ -993,36 +945,31 @@ class AppLocalizationsId extends AppLocalizations {
   String get focusModeNotificationsTitle => 'Mode Fokus';
 
   @override
-  String get focusModeNotificationsDescription =>
-      'Semua Notifikasi untuk mode fokus';
+  String get focusModeNotificationsDescription => 'Semua Notifikasi untuk mode fokus';
 
   @override
   String get screenTimeNotificationsTitle => 'Waktu Layar';
 
   @override
-  String get screenTimeNotificationsDescription =>
-      'Semua Notifikasi untuk pembatasan waktu layar';
+  String get screenTimeNotificationsDescription => 'Semua Notifikasi untuk pembatasan waktu layar';
 
   @override
   String get appScreenTimeNotificationsTitle => 'Waktu Layar Aplikasi';
 
   @override
-  String get appScreenTimeNotificationsDescription =>
-      'Semua Notifikasi untuk pembatasan waktu layar aplikasi';
+  String get appScreenTimeNotificationsDescription => 'Semua Notifikasi untuk pembatasan waktu layar aplikasi';
 
   @override
   String get frequentAlertsTitle => 'Interval Peringatan Sering';
 
   @override
-  String get frequentAlertsDescription =>
-      'Atur interval untuk notifikasi sering (menit)';
+  String get frequentAlertsDescription => 'Atur interval untuk notifikasi sering (menit)';
 
   @override
   String get clearDataTitle => 'Hapus Data';
 
   @override
-  String get clearDataDescription =>
-      'Hapus semua riwayat dan data terkait lainnya';
+  String get clearDataDescription => 'Hapus semua riwayat dan data terkait lainnya';
 
   @override
   String get resetSettingsTitle2 => 'Atur Ulang Pengaturan';
@@ -1052,8 +999,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get clearDataDialogTitle => 'Hapus Data?';
 
   @override
-  String get clearDataDialogContent =>
-      'Ini akan menghapus semua riwayat dan data terkait. Anda tidak akan dapat memulihkannya. Apakah Anda ingin melanjutkan?';
+  String get clearDataDialogContent => 'Ini akan menghapus semua riwayat dan data terkait. Anda tidak akan dapat memulihkannya. Apakah Anda ingin melanjutkan?';
 
   @override
   String get clearDataButtonLabel => 'Hapus Data';
@@ -1062,8 +1008,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get resetSettingsDialogTitle => 'Atur Ulang Pengaturan?';
 
   @override
-  String get resetSettingsDialogContent =>
-      'Ini akan mengatur ulang semua pengaturan ke nilai default. Apakah Anda ingin melanjutkan?';
+  String get resetSettingsDialogContent => 'Ini akan mengatur ulang semua pengaturan ke nilai default. Apakah Anda ingin melanjutkan?';
 
   @override
   String get resetButtonLabel => 'Atur Ulang';
@@ -1461,8 +1406,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportComplete => 'Ekspor Selesai';
 
   @override
-  String get shareBackupQuestion =>
-      'Apakah Anda ingin membagikan file cadangan?';
+  String get shareBackupQuestion => 'Apakah Anda ingin membagikan file cadangan?';
 
   @override
   String get importStarting => 'Memulai impor...';
@@ -1501,8 +1445,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get warningTitle => '⚠️ Peringatan';
 
   @override
-  String get replaceWarningMessage =>
-      'Ini akan mengganti SEMUA data Anda yang ada. Apakah Anda yakin ingin melanjutkan?';
+  String get replaceWarningMessage => 'Ini akan mengganti SEMUA data Anda yang ada. Apakah Anda yakin ingin melanjutkan?';
 
   @override
   String get replaceAllButton => 'Ganti Semua';
@@ -1532,28 +1475,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get skippedLabel => 'Dilewati';
 
   @override
-  String get faqSettingsQ4 =>
-      'Bagaimana cara memulihkan atau mengekspor data saya?';
+  String get faqSettingsQ4 => 'Bagaimana cara memulihkan atau mengekspor data saya?';
 
   @override
-  String get faqSettingsA4 =>
-      'Anda dapat pergi ke pengaturan, dan di sana Anda akan menemukan bagian Cadangan & Pemulihan. Anda dapat mengekspor atau mengimpor data dari sini, perhatikan bahwa file data yang diekspor disimpan di Dokumen pada Folder Scolect-Backups dan hanya file ini yang dapat digunakan untuk memulihkan data, bukan file lain.';
+  String get faqSettingsA4 => 'Anda dapat pergi ke pengaturan, dan di sana Anda akan menemukan bagian Cadangan & Pemulihan. Anda dapat mengekspor atau mengimpor data dari sini, perhatikan bahwa file data yang diekspor disimpan di Dokumen pada Folder Scolect-Backups dan hanya file ini yang dapat digunakan untuk memulihkan data, bukan file lain.';
 
   @override
-  String get faqGeneralQ6 =>
-      'Bagaimana cara mengubah bahasa dan bahasa apa yang tersedia, juga bagaimana jika saya menemukan terjemahan yang salah?';
+  String get faqGeneralQ6 => 'Bagaimana cara mengubah bahasa dan bahasa apa yang tersedia, juga bagaimana jika saya menemukan terjemahan yang salah?';
 
   @override
-  String get faqGeneralA6 =>
-      'Bahasa dapat diubah melalui bagian Pengaturan Umum, semua bahasa yang tersedia tercantum di sana, Anda dapat meminta terjemahan dengan mengklik Kontak dan mengirim permintaan Anda dengan bahasa yang diberikan. Ketahuilah bahwa terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
+  String get faqGeneralA6 => 'Bahasa dapat diubah melalui bagian Pengaturan Umum, semua bahasa yang tersedia tercantum di sana, Anda dapat meminta terjemahan dengan mengklik Kontak dan mengirim permintaan Anda dengan bahasa yang diberikan. Ketahuilah bahwa terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
 
   @override
-  String get faqGeneralQ7 =>
-      'Bagaimana jika saya menemukan terjemahan yang salah?';
+  String get faqGeneralQ7 => 'Bagaimana jika saya menemukan terjemahan yang salah?';
 
   @override
-  String get faqGeneralA7 =>
-      'Terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
+  String get faqGeneralA7 => 'Terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
 
   @override
   String get activityTrackingSection => 'Pelacakan Aktivitas';
@@ -1573,15 +1510,13 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get advancedWarning =>
-      'Fitur lanjutan dapat meningkatkan penggunaan sumber daya. Aktifkan hanya jika diperlukan.';
+  String get advancedWarning => 'Fitur lanjutan dapat meningkatkan penggunaan sumber daya. Aktifkan hanya jika diperlukan.';
 
   @override
   String get monitorAudioTitle => 'Pantau Audio Sistem';
 
   @override
-  String get monitorAudioDescription =>
-      'Deteksi aktivitas dari pemutaran audio';
+  String get monitorAudioDescription => 'Deteksi aktivitas dari pemutaran audio';
 
   @override
   String get audioSensitivityTitle => 'Sensitivitas Audio';
@@ -1601,15 +1536,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get monitorHIDTitle => 'Pantau Perangkat HID';
 
   @override
-  String get monitorHIDDescription =>
-      'Deteksi roda kemudi, tablet, perangkat khusus';
+  String get monitorHIDDescription => 'Deteksi roda kemudi, tablet, perangkat khusus';
 
   @override
   String get setIdleTimeoutTitle => 'Atur Batas Waktu Idle';
 
   @override
-  String get idleTimeoutDialogDescription =>
-      'Pilih berapa lama menunggu sebelum menganggap Anda idle:';
+  String get idleTimeoutDialogDescription => 'Pilih berapa lama menunggu sebelum menganggap Anda idle:';
 
   @override
   String get seconds30 => '30 detik';
@@ -1704,8 +1637,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get voiceGenderTitle => 'Jenis Kelamin Suara';
 
   @override
-  String get voiceGenderDescription =>
-      'Pilih jenis kelamin suara untuk notifikasi timer';
+  String get voiceGenderDescription => 'Pilih jenis kelamin suara untuk notifikasi timer';
 
   @override
   String get voiceGenderMale => 'Pria';
@@ -1714,8 +1646,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get voiceGenderFemale => 'Wanita';
 
   @override
-  String get alertsLimitsSubtitle =>
-      'Kelola batas waktu layar dan notifikasi Anda';
+  String get alertsLimitsSubtitle => 'Kelola batas waktu layar dan notifikasi Anda';
 
   @override
   String get applicationsSubtitle => 'Kelola aplikasi yang dilacak';
@@ -1780,8 +1711,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get greetingMorning => 'Selamat pagi! Ini ringkasan aktivitas Anda.';
 
   @override
-  String get greetingAfternoon =>
-      'Selamat siang! Ini ringkasan aktivitas Anda.';
+  String get greetingAfternoon => 'Selamat siang! Ini ringkasan aktivitas Anda.';
 
   @override
   String get greetingEvening => 'Selamat malam! Ini ringkasan aktivitas Anda.';
@@ -1891,19 +1821,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get notification_permission_denied => 'Izin Notifikasi Ditolak';
 
   @override
-  String get notification_permission_denied_message =>
-      'ScreenTime memerlukan izin notifikasi untuk mengirimkan peringatan dan pengingat.\n\nApakah Anda ingin membuka Pengaturan Sistem untuk mengaktifkan notifikasi?';
+  String get notification_permission_denied_message => 'ScreenTime memerlukan izin notifikasi untuk mengirimkan peringatan dan pengingat.\n\nApakah Anda ingin membuka Pengaturan Sistem untuk mengaktifkan notifikasi?';
 
   @override
-  String get notification_permission_denied_hint =>
-      'Buka Pengaturan Sistem untuk mengaktifkan notifikasi ScreenTime.';
+  String get notification_permission_denied_hint => 'Buka Pengaturan Sistem untuk mengaktifkan notifikasi ScreenTime.';
 
   @override
   String get notification_permission_required => 'Izin Notifikasi Diperlukan';
 
   @override
-  String get notification_permission_required_message =>
-      'ScreenTime memerlukan izin untuk mengirimkan notifikasi kepada Anda.';
+  String get notification_permission_required_message => 'ScreenTime memerlukan izin untuk mengirimkan notifikasi kepada Anda.';
 
   @override
   String get open_settings => 'Buka Pengaturan';
@@ -1927,8 +1854,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get off => 'Nonaktif';
 
   @override
-  String get enable_notification_permission_hint =>
-      'Aktifkan izin notifikasi untuk menerima peringatan';
+  String get enable_notification_permission_hint => 'Aktifkan izin notifikasi untuk menerima peringatan';
 
   @override
   String minutes_format(int minutes) {
@@ -2004,22 +1930,19 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled =>
-      'Notifikasi sistem dinonaktifkan. Aktifkan di Pengaturan Sistem untuk peringatan fokus.';
+  String get systemNotificationsDisabled => 'Notifikasi sistem dinonaktifkan. Aktifkan di Pengaturan Sistem untuk peringatan fokus.';
 
   @override
   String get openSystemSettings => 'Buka Pengaturan Sistem';
 
   @override
-  String get appNotificationsDisabled =>
-      'Notifikasi dinonaktifkan di pengaturan aplikasi. Aktifkan untuk menerima peringatan fokus.';
+  String get appNotificationsDisabled => 'Notifikasi dinonaktifkan di pengaturan aplikasi. Aktifkan untuk menerima peringatan fokus.';
 
   @override
   String get goToSettings => 'Buka Pengaturan';
 
   @override
-  String get focusModeNotificationsDisabled =>
-      'Notifikasi mode fokus dinonaktifkan. Aktifkan untuk menerima peringatan sesi.';
+  String get focusModeNotificationsDisabled => 'Notifikasi mode fokus dinonaktifkan. Aktifkan untuk menerima peringatan sesi.';
 
   @override
   String get notificationsDisabled => 'Notifikasi Dinonaktifkan';
@@ -2031,12 +1954,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get systemSettingsRequired => 'Pengaturan Sistem Diperlukan';
 
   @override
-  String get notificationsDisabledSystemLevel =>
-      'Notifikasi dinonaktifkan di tingkat sistem. Untuk mengaktifkan:';
+  String get notificationsDisabledSystemLevel => 'Notifikasi dinonaktifkan di tingkat sistem. Untuk mengaktifkan:';
 
   @override
-  String get step1OpenSystemSettings =>
-      '1. Buka Pengaturan Sistem (Preferensi Sistem)';
+  String get step1OpenSystemSettings => '1. Buka Pengaturan Sistem (Preferensi Sistem)';
 
   @override
   String get step2GoToNotifications => '2. Buka Notifikasi';
@@ -2048,8 +1969,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get step4EnableNotifications => '4. Aktifkan \"Izinkan notifikasi\"';
 
   @override
-  String get returnToAppMessage =>
-      'Kemudian kembali ke aplikasi ini dan notifikasi akan berfungsi.';
+  String get returnToAppMessage => 'Kemudian kembali ke aplikasi ini dan notifikasi akan berfungsi.';
 
   @override
   String get gotIt => 'Mengerti';
@@ -2218,8 +2138,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get primaryColors => 'Warna Utama';
 
   @override
-  String get primaryColorsDesc =>
-      'Warna aksen utama yang digunakan di seluruh aplikasi';
+  String get primaryColorsDesc => 'Warna aksen utama yang digunakan di seluruh aplikasi';
 
   @override
   String get primaryAccent => 'Aksen Utama';
@@ -2261,12 +2180,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get backgroundColors => 'Warna Latar Belakang';
 
   @override
-  String get backgroundColorsLightDesc =>
-      'Permukaan latar belakang utama untuk mode terang';
+  String get backgroundColorsLightDesc => 'Permukaan latar belakang utama untuk mode terang';
 
   @override
-  String get backgroundColorsDarkDesc =>
-      'Permukaan latar belakang utama untuk mode gelap';
+  String get backgroundColorsDarkDesc => 'Permukaan latar belakang utama untuk mode gelap';
 
   @override
   String get background => 'Latar Belakang';
@@ -2328,8 +2245,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get sampleCardTitle => 'Judul Kartu Contoh';
 
   @override
-  String get sampleSecondaryText =>
-      'Ini adalah teks sekunder yang muncul di bawah.';
+  String get sampleSecondaryText => 'Ini adalah teks sekunder yang muncul di bawah.';
 
   @override
   String get primary => 'Utama';
@@ -2344,16 +2260,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get launchAtStartupTitle => 'Jalankan saat startup';
 
   @override
-  String get launchAtStartupDescription =>
-      'Mulai Scolect secara otomatis saat Anda masuk ke komputer Anda';
+  String get launchAtStartupDescription => 'Mulai Scolect secara otomatis saat Anda masuk ke komputer Anda';
 
   @override
-  String get inputMonitoringPermissionTitle =>
-      'Pemantauan keyboard tidak tersedia';
+  String get inputMonitoringPermissionTitle => 'Pemantauan keyboard tidak tersedia';
 
   @override
-  String get inputMonitoringPermissionDescription =>
-      'Aktifkan izin pemantauan input untuk melacak aktivitas keyboard. Saat ini hanya input mouse yang dipantau.';
+  String get inputMonitoringPermissionDescription => 'Aktifkan izin pemantauan input untuk melacak aktivitas keyboard. Saat ini hanya input mouse yang dipantau.';
 
   @override
   String get openSettings => 'Buka Pengaturan';
@@ -2362,8 +2275,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get permissionGrantedTitle => 'Izin diberikan';
 
   @override
-  String get permissionGrantedDescription =>
-      'Aplikasi perlu dimulai ulang agar pemantauan input berlaku.';
+  String get permissionGrantedDescription => 'Aplikasi perlu dimulai ulang agar pemantauan input berlaku.';
 
   @override
   String get continueButton => 'Lanjutkan';
@@ -2372,12 +2284,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get restartRequiredTitle => 'Perlu dimulai ulang';
 
   @override
-  String get restartRequiredDescription =>
-      'Untuk mengaktifkan pemantauan keyboard, aplikasi perlu dimulai ulang. Ini diwajibkan oleh macOS.';
+  String get restartRequiredDescription => 'Untuk mengaktifkan pemantauan keyboard, aplikasi perlu dimulai ulang. Ini diwajibkan oleh macOS.';
 
   @override
-  String get restartNote =>
-      'Aplikasi akan terbuka kembali secara otomatis setelah dimulai ulang.';
+  String get restartNote => 'Aplikasi akan terbuka kembali secara otomatis setelah dimulai ulang.';
 
   @override
   String get restartNow => 'Mulai ulang sekarang';
@@ -2389,8 +2299,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get restartFailedTitle => 'Gagal memulai ulang';
 
   @override
-  String get restartFailedMessage =>
-      'Aplikasi tidak dapat dimulai ulang secara otomatis. Silakan keluar (Cmd+Q) dan buka kembali secara manual.';
+  String get restartFailedMessage => 'Aplikasi tidak dapat dimulai ulang secara otomatis. Silakan keluar (Cmd+Q) dan buka kembali secara manual.';
 
   @override
   String get exportAnalyticsReport => 'Ekspor Laporan Analitik';
@@ -2402,30 +2311,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get beautifulExcelReport => 'Laporan Excel yang Indah';
 
   @override
-  String get beautifulExcelReportDescription =>
-      'Spreadsheet yang indah dan berwarna dengan grafik, emoji, dan wawasan ✨';
+  String get beautifulExcelReportDescription => 'Spreadsheet yang indah dan berwarna dengan grafik, emoji, dan wawasan ✨';
 
   @override
   String get excelReportIncludes => 'Laporan Excel meliputi:';
 
   @override
-  String get summarySheetDescription =>
-      '📊 Lembar Ringkasan - Metrik utama dengan tren';
+  String get summarySheetDescription => '📊 Lembar Ringkasan - Metrik utama dengan tren';
 
   @override
-  String get dailyBreakdownDescription =>
-      '📅 Rincian Harian - Pola penggunaan visual';
+  String get dailyBreakdownDescription => '📅 Rincian Harian - Pola penggunaan visual';
 
   @override
-  String get appsSheetDescription =>
-      '📱 Lembar Aplikasi - Peringkat aplikasi terperinci';
+  String get appsSheetDescription => '📱 Lembar Aplikasi - Peringkat aplikasi terperinci';
 
   @override
   String get insightsDescription => '💡 Wawasan - Rekomendasi cerdas';
 
   @override
-  String get beautifulExcelExportSuccess =>
-      'Laporan Excel yang indah berhasil diekspor! 🎉';
+  String get beautifulExcelExportSuccess => 'Laporan Excel yang indah berhasil diekspor! 🎉';
 
   @override
   String failedToExportReport(String error) {
@@ -2615,8 +2519,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions =>
-      'Tidak Ada Sesi Fokus: Pertimbangkan menggunakan mode fokus untuk meningkatkan produktivitas Anda';
+  String get insightNoFocusSessions => 'Tidak Ada Sesi Fokus: Pertimbangkan menggunakan mode fokus untuk meningkatkan produktivitas Anda';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2640,8 +2543,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(
-      String appName, String percentage, String duration) {
+  String insightMostUsedApp(String appName, String percentage, String duration) {
     return 'Aplikasi Paling Sering Digunakan: $appName menyumbang $percentage% dari waktu Anda ($duration)';
   }
 
@@ -2654,44 +2556,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get insightNoInsights => 'Tidak ada wawasan signifikan tersedia';
 
   @override
-  String get recScheduleFocusSessions =>
-      'Coba jadwalkan lebih banyak sesi fokus sepanjang hari untuk meningkatkan produktivitas';
+  String get recScheduleFocusSessions => 'Coba jadwalkan lebih banyak sesi fokus sepanjang hari untuk meningkatkan produktivitas';
 
   @override
-  String get recSetAppLimits =>
-      'Pertimbangkan untuk menetapkan batas pada aplikasi hiburan';
+  String get recSetAppLimits => 'Pertimbangkan untuk menetapkan batas pada aplikasi hiburan';
 
   @override
-  String get recAimForFocusSessions =>
-      'Targetkan setidaknya 1-2 sesi fokus per hari untuk membangun kebiasaan konsisten';
+  String get recAimForFocusSessions => 'Targetkan setidaknya 1-2 sesi fokus per hari untuk membangun kebiasaan konsisten';
 
   @override
-  String get recTakeBreaks =>
-      'Waktu layar harian Anda cukup tinggi. Coba ambil istirahat teratur menggunakan aturan 20-20-20';
+  String get recTakeBreaks => 'Waktu layar harian Anda cukup tinggi. Coba ambil istirahat teratur menggunakan aturan 20-20-20';
 
   @override
-  String get recSetDailyGoals =>
-      'Pertimbangkan untuk menetapkan target waktu layar harian untuk mengurangi penggunaan secara bertahap';
+  String get recSetDailyGoals => 'Pertimbangkan untuk menetapkan target waktu layar harian untuk mengurangi penggunaan secara bertahap';
 
   @override
-  String get recBalanceEntertainment =>
-      'Aplikasi hiburan menyumbang sebagian besar waktu Anda. Pertimbangkan untuk menyeimbangkan dengan aktivitas lebih produktif';
+  String get recBalanceEntertainment => 'Aplikasi hiburan menyumbang sebagian besar waktu Anda. Pertimbangkan untuk menyeimbangkan dengan aktivitas lebih produktif';
 
   @override
-  String get recReviewUsagePatterns =>
-      'Waktu layar Anda meningkat secara signifikan. Tinjau pola penggunaan Anda dan tetapkan batasan';
+  String get recReviewUsagePatterns => 'Waktu layar Anda meningkat secara signifikan. Tinjau pola penggunaan Anda dan tetapkan batasan';
 
   @override
-  String get recScheduleFocusedWork =>
-      'Waktu produktif Anda menurun. Coba jadwalkan blok kerja fokus di kalender Anda';
+  String get recScheduleFocusedWork => 'Waktu produktif Anda menurun. Coba jadwalkan blok kerja fokus di kalender Anda';
 
   @override
-  String get recKeepUpGreatWork =>
-      'Terus pertahankan! Kebiasaan waktu layar Anda terlihat sehat';
+  String get recKeepUpGreatWork => 'Terus pertahankan! Kebiasaan waktu layar Anda terlihat sehat';
 
   @override
-  String get recContinueFocusSessions =>
-      'Terus gunakan sesi fokus untuk mempertahankan produktivitas';
+  String get recContinueFocusSessions => 'Terus gunakan sesi fokus untuk mempertahankan produktivitas';
 
   @override
   String get sheetSummary => 'Ringkasan';
@@ -2790,8 +2682,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get saveAsFile => 'Simpan sebagai File';
 
   @override
-  String get saveThemeAsJSONFile =>
-      'Simpan tema sebagai file JSON ke perangkat Anda';
+  String get saveThemeAsJSONFile => 'Simpan tema sebagai file JSON ke perangkat Anda';
 
   @override
   String get copyToClipboard => 'Salin ke Papan Klip';
@@ -2803,8 +2694,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get share => 'Bagikan';
 
   @override
-  String get shareThemeViaSystemSheet =>
-      'Bagikan tema menggunakan lembar berbagi sistem';
+  String get shareThemeViaSystemSheet => 'Bagikan tema menggunakan lembar berbagi sistem';
 
   @override
   String get chooseImportMethod => 'Pilih cara mengimpor tema:';
@@ -2813,8 +2703,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get loadFromFile => 'Muat dari File';
 
   @override
-  String get selectJSONFileFromDevice =>
-      'Pilih file JSON tema dari perangkat Anda';
+  String get selectJSONFileFromDevice => 'Pilih file JSON tema dari perangkat Anda';
 
   @override
   String get pasteFromClipboard => 'Tempel dari Papan Klip';
@@ -2849,15 +2738,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get noThemeDataFound => 'Tidak ada data tema ditemukan';
 
   @override
-  String get invalidThemeFormat =>
-      'Format tema tidak valid. Silakan periksa data JSON.';
+  String get invalidThemeFormat => 'Format tema tidak valid. Silakan periksa data JSON.';
 
   @override
   String get trackingModeTitle => 'Mode Pelacakan';
 
   @override
-  String get trackingModeDescription =>
-      'Pilih cara penggunaan aplikasi dilacak';
+  String get trackingModeDescription => 'Pilih cara penggunaan aplikasi dilacak';
 
   @override
   String get trackingModePolling => 'Standar (Sumber Daya Rendah)';
@@ -2866,16 +2753,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get trackingModePrecise => 'Presisi (Akurasi Tinggi)';
 
   @override
-  String get trackingModePollingHint =>
-      'Memeriksa setiap menit - penggunaan sumber daya lebih rendah';
+  String get trackingModePollingHint => 'Memeriksa setiap menit - penggunaan sumber daya lebih rendah';
 
   @override
-  String get trackingModePreciseHint =>
-      'Pelacakan real-time - akurasi lebih tinggi, lebih banyak sumber daya';
+  String get trackingModePreciseHint => 'Pelacakan real-time - akurasi lebih tinggi, lebih banyak sumber daya';
 
   @override
-  String get trackingModeChangeError =>
-      'Gagal mengubah mode pelacakan. Silakan coba lagi.';
+  String get trackingModeChangeError => 'Gagal mengubah mode pelacakan. Silakan coba lagi.';
 
   @override
   String get errorTitle => 'Kesalahan';
@@ -2884,8 +2768,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get monitorKeyboardTitle => 'Pantau Keyboard';
 
   @override
-  String get monitorKeyboardDescription =>
-      'Lacak aktivitas keyboard untuk mendeteksi kehadiran pengguna';
+  String get monitorKeyboardDescription => 'Lacak aktivitas keyboard untuk mendeteksi kehadiran pengguna';
 
   @override
   String get changelogWhatsNew => 'Yang Baru';
@@ -2896,15 +2779,13 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get changelogNoContent =>
-      'Tidak ada catatan perubahan untuk versi ini.';
+  String get changelogNoContent => 'Tidak ada catatan perubahan untuk versi ini.';
 
   @override
   String get changelogUnableToLoad => 'Tidak Dapat Memuat Catatan Perubahan';
 
   @override
-  String get changelogErrorDescription =>
-      'Tidak dapat mengambil catatan perubahan untuk versi ini. Silakan periksa koneksi internet Anda atau kunjungi halaman rilis GitHub.';
+  String get changelogErrorDescription => 'Tidak dapat mengambil catatan perubahan untuk versi ini. Silakan periksa koneksi internet Anda atau kunjungi halaman rilis GitHub.';
 
   @override
   String get allTracking => 'Semua Aplikasi';
@@ -3005,8 +2886,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get productiveAppMotivation => 'Aplikasi produktif — pertahankan';
 
   @override
-  String get nonProductiveAppSuggestion =>
-      'Tidak produktif — pertimbangkan untuk mengurangi';
+  String get nonProductiveAppSuggestion => 'Tidak produktif — pertimbangkan untuk mengurangi';
 
   @override
   String get legendUsage => 'Penggunaan';

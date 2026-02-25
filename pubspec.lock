@@ -1056,8 +1056,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: "8d4bff1dab29f1b9c2b2ebb651de88f26e1d12dc"
+      ref: exp
+      resolved-ref: "3bd5bdfef82028b427f08504595caac8ec3eae78"
       url: "https://github.com/HarmanPreet-Singh-XYT/Window_focus"
     source: git
     version: "1.2.1"

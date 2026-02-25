@@ -107,177 +107,151 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faqGeneralQ1 => 'How does this app track screen time?';
 
   @override
-  String get faqGeneralA1 =>
-      'The app monitors your device\'s usage in real-time, tracking the time spent on different applications. It provides comprehensive insights into your digital habits, including total screen time, productive time, and application-specific usage.';
+  String get faqGeneralA1 => 'The app monitors your device\'s usage in real-time, tracking the time spent on different applications. It provides comprehensive insights into your digital habits, including total screen time, productive time, and application-specific usage.';
 
   @override
   String get faqGeneralQ2 => 'What makes an app \'Productive\'?';
 
   @override
-  String get faqGeneralA2 =>
-      'You can manually mark apps as productive in the \'Applications\' section. Productive apps contribute to your Productive Score, which calculates the percentage of screen time spent on work-related or beneficial applications.';
+  String get faqGeneralA2 => 'You can manually mark apps as productive in the \'Applications\' section. Productive apps contribute to your Productive Score, which calculates the percentage of screen time spent on work-related or beneficial applications.';
 
   @override
   String get faqGeneralQ3 => 'How accurate is the screen time tracking?';
 
   @override
-  String get faqGeneralA3 =>
-      'The app uses system-level tracking to provide precise measurement of your device usage. It captures foreground time for each application with minimal battery impact.';
+  String get faqGeneralA3 => 'The app uses system-level tracking to provide precise measurement of your device usage. It captures foreground time for each application with minimal battery impact.';
 
   @override
   String get faqGeneralQ4 => 'Can I customize my app categorization?';
 
   @override
-  String get faqGeneralA4 =>
-      'Absolutely! You can create custom categories, assign apps to specific categories, and easily modify these assignments in the \'Applications\' section. This helps in creating more meaningful usage analytics.';
+  String get faqGeneralA4 => 'Absolutely! You can create custom categories, assign apps to specific categories, and easily modify these assignments in the \'Applications\' section. This helps in creating more meaningful usage analytics.';
 
   @override
   String get faqGeneralQ5 => 'What insights can I gain from this app?';
 
   @override
-  String get faqGeneralA5 =>
-      'The app offers comprehensive insights including Productive Score, usage patterns by time of day, detailed application usage, focus session tracking, and visual analytics like graphs and pie charts to help you understand and improve your digital habits.';
+  String get faqGeneralA5 => 'The app offers comprehensive insights including Productive Score, usage patterns by time of day, detailed application usage, focus session tracking, and visual analytics like graphs and pie charts to help you understand and improve your digital habits.';
 
   @override
   String get faqAppsQ1 => 'How do I hide specific apps from tracking?';
 
   @override
-  String get faqAppsA1 =>
-      'In the \'Applications\' section, you can toggle the visibility of apps.';
+  String get faqAppsA1 => 'In the \'Applications\' section, you can toggle the visibility of apps.';
 
   @override
   String get faqAppsQ2 => 'Can I search and filter my applications?';
 
   @override
-  String get faqAppsA2 =>
-      'Yes, the Applications section includes a search functionality and filtering options. You can filter apps by category, productivity status, tracking status, and visibility.';
+  String get faqAppsA2 => 'Yes, the Applications section includes a search functionality and filtering options. You can filter apps by category, productivity status, tracking status, and visibility.';
 
   @override
-  String get faqAppsQ3 =>
-      'What editing options are available for applications?';
+  String get faqAppsQ3 => 'What editing options are available for applications?';
 
   @override
-  String get faqAppsA3 =>
-      'For each application, you can edit: category assignment, productivity status, tracking usage, visibility in reports, and set individual daily time limits.';
+  String get faqAppsA3 => 'For each application, you can edit: category assignment, productivity status, tracking usage, visibility in reports, and set individual daily time limits.';
 
   @override
   String get faqAppsQ4 => 'How are application categories determined?';
 
   @override
-  String get faqAppsA4 =>
-      'Initial categories are system-suggested, but you have full control to create, modify, and assign custom categories based on your workflow and preferences.';
+  String get faqAppsA4 => 'Initial categories are system-suggested, but you have full control to create, modify, and assign custom categories based on your workflow and preferences.';
 
   @override
   String get faqReportsQ1 => 'What types of reports are available?';
 
   @override
-  String get faqReportsA1 =>
-      'Reports include: Total screen time, Productive time, Most used apps, Focus sessions, Daily screen time graph, Category breakdown pie chart, Detailed application usage, Weekly usage trends, and Usage pattern analysis by time of day.';
+  String get faqReportsA1 => 'Reports include: Total screen time, Productive time, Most used apps, Focus sessions, Daily screen time graph, Category breakdown pie chart, Detailed application usage, Weekly usage trends, and Usage pattern analysis by time of day.';
 
   @override
   String get faqReportsQ2 => 'How detailed are the application usage reports?';
 
   @override
-  String get faqReportsA2 =>
-      'Detailed application usage reports show: App name, Category, Total time spent, Productivity status, and offer an \'Actions\' section with deeper insights like usage summary, daily limits, usage trends, and productivity metrics.';
+  String get faqReportsA2 => 'Detailed application usage reports show: App name, Category, Total time spent, Productivity status, and offer an \'Actions\' section with deeper insights like usage summary, daily limits, usage trends, and productivity metrics.';
 
   @override
   String get faqReportsQ3 => 'Can I analyze my usage trends over time?';
 
   @override
-  String get faqReportsA3 =>
-      'Yes! The app provides week-over-week comparisons, showing graphs of usage over past weeks, average daily usage, longest sessions, and weekly totals to help you track your digital habits.';
+  String get faqReportsA3 => 'Yes! The app provides week-over-week comparisons, showing graphs of usage over past weeks, average daily usage, longest sessions, and weekly totals to help you track your digital habits.';
 
   @override
   String get faqReportsQ4 => 'What is the \'Usage Pattern\' analysis?';
 
   @override
-  String get faqReportsA4 =>
-      'Usage Pattern breaks down your screen time into morning, afternoon, evening, and night segments. This helps you understand when you\'re most active on your device and identify potential areas for improvement.';
+  String get faqReportsA4 => 'Usage Pattern breaks down your screen time into morning, afternoon, evening, and night segments. This helps you understand when you\'re most active on your device and identify potential areas for improvement.';
 
   @override
   String get faqAlertsQ1 => 'How granular are the screen time limits?';
 
   @override
-  String get faqAlertsA1 =>
-      'You can set overall daily screen time limits and individual app limits. Limits can be configured in hours and minutes, with options to reset or adjust as needed.';
+  String get faqAlertsA1 => 'You can set overall daily screen time limits and individual app limits. Limits can be configured in hours and minutes, with options to reset or adjust as needed.';
 
   @override
   String get faqAlertsQ2 => 'What notification options are available?';
 
   @override
-  String get faqAlertsA2 =>
-      'The app offers multiple notification types: System alerts when you exceed screen time, Frequent alerts at customizable intervals (1, 5, 15, 30, or 60 minutes), and toggles for focus mode, screen time, and application-specific notifications.';
+  String get faqAlertsA2 => 'The app offers multiple notification types: System alerts when you exceed screen time, Frequent alerts at customizable intervals (1, 5, 15, 30, or 60 minutes), and toggles for focus mode, screen time, and application-specific notifications.';
 
   @override
   String get faqAlertsQ3 => 'Can I customize limit alerts?';
 
   @override
-  String get faqAlertsA3 =>
-      'Yes, you can customize alert frequency, enable/disable specific types of alerts, and set different limits for overall screen time and individual applications.';
+  String get faqAlertsA3 => 'Yes, you can customize alert frequency, enable/disable specific types of alerts, and set different limits for overall screen time and individual applications.';
 
   @override
   String get faqFocusQ1 => 'What types of Focus Modes are available?';
 
   @override
-  String get faqFocusA1 =>
-      'Available modes include Deep Work (longer focused sessions), Quick Tasks (short bursts of work), and Reading Mode. Each mode helps you structure your work and break times effectively.';
+  String get faqFocusA1 => 'Available modes include Deep Work (longer focused sessions), Quick Tasks (short bursts of work), and Reading Mode. Each mode helps you structure your work and break times effectively.';
 
   @override
   String get faqFocusQ2 => 'How flexible is the Pomodoro Timer?';
 
   @override
-  String get faqFocusA2 =>
-      'The timer is highly customizable. You can adjust work duration, short break length, and long break duration. Additional options include auto-start for next sessions and notification settings.';
+  String get faqFocusA2 => 'The timer is highly customizable. You can adjust work duration, short break length, and long break duration. Additional options include auto-start for next sessions and notification settings.';
 
   @override
   String get faqFocusQ3 => 'What does the Focus Mode history show?';
 
   @override
-  String get faqFocusA3 =>
-      'Focus Mode history tracks daily focus sessions, showing the number of sessions per day, trends graph, average session duration, total focus time, and a time distribution pie chart breaking down work sessions, short breaks, and long breaks.';
+  String get faqFocusA3 => 'Focus Mode history tracks daily focus sessions, showing the number of sessions per day, trends graph, average session duration, total focus time, and a time distribution pie chart breaking down work sessions, short breaks, and long breaks.';
 
   @override
   String get faqFocusQ4 => 'Can I track my focus session progress?';
 
   @override
-  String get faqFocusA4 =>
-      'The app features a circular timer UI with play/pause, reload, and settings buttons. You can easily track and manage your focus sessions with intuitive controls.';
+  String get faqFocusA4 => 'The app features a circular timer UI with play/pause, reload, and settings buttons. You can easily track and manage your focus sessions with intuitive controls.';
 
   @override
   String get faqSettingsQ1 => 'What customization options are available?';
 
   @override
-  String get faqSettingsA1 =>
-      'Customization includes theme selection (System, Light, Dark), language settings, startup behavior, comprehensive notification controls, and data management options like clearing data or resetting settings.';
+  String get faqSettingsA1 => 'Customization includes theme selection (System, Light, Dark), language settings, startup behavior, comprehensive notification controls, and data management options like clearing data or resetting settings.';
 
   @override
   String get faqSettingsQ2 => 'How do I provide feedback or report issues?';
 
   @override
-  String get faqSettingsA2 =>
-      'At the bottom of the Settings section, you\'ll find buttons to Report a Bug, Submit Feedback, or Contact Support. These will redirect you to the appropriate support channels.';
+  String get faqSettingsA2 => 'At the bottom of the Settings section, you\'ll find buttons to Report a Bug, Submit Feedback, or Contact Support. These will redirect you to the appropriate support channels.';
 
   @override
   String get faqSettingsQ3 => 'What happens when I clear my data?';
 
   @override
-  String get faqSettingsA3 =>
-      'Clearing data will reset all your usage statistics, focus session history, and custom settings. This is useful for starting fresh or troubleshooting.';
+  String get faqSettingsA3 => 'Clearing data will reset all your usage statistics, focus session history, and custom settings. This is useful for starting fresh or troubleshooting.';
 
   @override
   String get faqTroubleQ1 => 'Data is not showing, hive is not opening error';
 
   @override
-  String get faqTroubleA1 =>
-      'The issue is known, the temporary fix is to clear data through settings and if it doesn\'t work then go to Documents and delete the following files if they exist - harman_screentime_app_usage_box.hive and harman_screentime_app_usage.lock, you are also suggested to update the app to the latest version.';
+  String get faqTroubleA1 => 'The issue is known, the temporary fix is to clear data through settings and if it doesn\'t work then go to Documents and delete the following files if they exist - harman_screentime_app_usage_box.hive and harman_screentime_app_usage.lock, you are also suggested to update the app to the latest version.';
 
   @override
   String get faqTroubleQ2 => 'App opens on every startup, what to do?';
 
   @override
-  String get faqTroubleA2 =>
-      'This is a known issue that occurs on Windows 10, the temporary fix is to enable Launch as Minimized in settings so it launches as Minimized.';
+  String get faqTroubleA2 => 'This is a known issue that occurs on Windows 10, the temporary fix is to enable Launch as Minimized in settings so it launches as Minimized.';
 
   @override
   String get usageAnalytics => 'Usage Analytics';
@@ -304,8 +278,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAgain => 'Try Again';
 
   @override
-  String get failedToInitialize =>
-      'Failed to initialize analytics. Please restart the application.';
+  String get failedToInitialize => 'Failed to initialize analytics. Please restart the application.';
 
   @override
   String unexpectedError(String error) {
@@ -348,8 +321,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidDateRange => 'Invalid Date Range';
 
   @override
-  String get startDateBeforeEndDate =>
-      'Start date must be before or equal to end date.';
+  String get startDateBeforeEndDate => 'Start date must be before or equal to end date.';
 
   @override
   String get totalScreenTime => 'Total Screen Time';
@@ -434,8 +406,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nonProductive => 'Non-Productive';
 
   @override
-  String get noApplicationsMatch =>
-      'No applications match your search criteria';
+  String get noApplicationsMatch => 'No applications match your search criteria';
 
   @override
   String get viewDetails => 'View details';
@@ -520,8 +491,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get trendingUpward =>
-      'Your usage is trending upward compared to the previous period.';
+  String get trendingUpward => 'Your usage is trending upward compared to the previous period.';
 
   @override
   String significantDecrease(String percentage) {
@@ -529,20 +499,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get trendingDownward =>
-      'Your usage is trending downward compared to the previous period.';
+  String get trendingDownward => 'Your usage is trending downward compared to the previous period.';
 
   @override
-  String get consistentUsage =>
-      'Your usage has been consistent compared to the previous period.';
+  String get consistentUsage => 'Your usage has been consistent compared to the previous period.';
 
   @override
-  String get markedAsProductive =>
-      'This is marked as a productive app in your settings.';
+  String get markedAsProductive => 'This is marked as a productive app in your settings.';
 
   @override
-  String get markedAsNonProductive =>
-      'This is marked as a non-productive app in your settings.';
+  String get markedAsNonProductive => 'This is marked as a non-productive app in your settings.';
 
   @override
   String mostActiveTime(String time) {
@@ -553,8 +519,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noLimitSet => 'No usage limit has been set for this application.';
 
   @override
-  String get limitReached =>
-      'You\'ve reached your daily limit for this application.';
+  String get limitReached => 'You\'ve reached your daily limit for this application.';
 
   @override
   String aboutToReachLimit(String remainingTime) {
@@ -689,8 +654,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetSettingsTitle => 'Reset Settings?';
 
   @override
-  String get resetSettingsContent =>
-      'If you reset settings, you won\'t be able to recover it. Do you want to reset it?';
+  String get resetSettingsContent => 'If you reset settings, you won\'t be able to recover it. Do you want to reset it?';
 
   @override
   String get resetAll => 'Reset All';
@@ -894,8 +858,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noActivityDataAvailable => 'No activity data available yet';
 
   @override
-  String get startUsingApplications =>
-      'Start using your applications to track screen time and productivity.';
+  String get startUsingApplications => 'Start using your applications to track screen time and productivity.';
 
   @override
   String get refreshData => 'Refresh Data';
@@ -904,8 +867,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get topApplications => 'Top Applications';
 
   @override
-  String get noAppUsageDataAvailable =>
-      'No application usage data available yet';
+  String get noAppUsageDataAvailable => 'No application usage data available yet';
 
   @override
   String get noApplicationDataAvailable => 'No application data available';
@@ -971,50 +933,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get launchMinimizedTitle => 'Launch as Minimized';
 
   @override
-  String get launchMinimizedDescription =>
-      'Start the application in System Tray (Recommended for Windows 10)';
+  String get launchMinimizedDescription => 'Start the application in System Tray (Recommended for Windows 10)';
 
   @override
   String get notificationsTitle => 'Notifications';
 
   @override
-  String get notificationsAllDescription =>
-      'All notifications of the application';
+  String get notificationsAllDescription => 'All notifications of the application';
 
   @override
   String get focusModeNotificationsTitle => 'Focus Mode';
 
   @override
-  String get focusModeNotificationsDescription =>
-      'All Notifications for focus mode';
+  String get focusModeNotificationsDescription => 'All Notifications for focus mode';
 
   @override
   String get screenTimeNotificationsTitle => 'Screen Time';
 
   @override
-  String get screenTimeNotificationsDescription =>
-      'All Notifications for screen time restriction';
+  String get screenTimeNotificationsDescription => 'All Notifications for screen time restriction';
 
   @override
   String get appScreenTimeNotificationsTitle => 'Application Screen Time';
 
   @override
-  String get appScreenTimeNotificationsDescription =>
-      'All Notifications for application screen time restriction';
+  String get appScreenTimeNotificationsDescription => 'All Notifications for application screen time restriction';
 
   @override
   String get frequentAlertsTitle => 'Frequent Alerts Interval';
 
   @override
-  String get frequentAlertsDescription =>
-      'Set interval for frequent notifications (minutes)';
+  String get frequentAlertsDescription => 'Set interval for frequent notifications (minutes)';
 
   @override
   String get clearDataTitle => 'Clear Data';
 
   @override
-  String get clearDataDescription =>
-      'Clear all the history and other related data';
+  String get clearDataDescription => 'Clear all the history and other related data';
 
   @override
   String get resetSettingsTitle2 => 'Reset Settings';
@@ -1044,8 +999,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get clearDataDialogTitle => 'Clear Data?';
 
   @override
-  String get clearDataDialogContent =>
-      'This will clear all history and related data. You won\'t be able to recover it. Do you want to proceed?';
+  String get clearDataDialogContent => 'This will clear all history and related data. You won\'t be able to recover it. Do you want to proceed?';
 
   @override
   String get clearDataButtonLabel => 'Clear Data';
@@ -1054,8 +1008,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resetSettingsDialogTitle => 'Reset Settings?';
 
   @override
-  String get resetSettingsDialogContent =>
-      'This will reset all settings to their default values. Do you want to proceed?';
+  String get resetSettingsDialogContent => 'This will reset all settings to their default values. Do you want to proceed?';
 
   @override
   String get resetButtonLabel => 'Reset';
@@ -1492,8 +1445,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get warningTitle => '⚠️ Warning';
 
   @override
-  String get replaceWarningMessage =>
-      'This will replace ALL your existing data. Are you sure you want to continue?';
+  String get replaceWarningMessage => 'This will replace ALL your existing data. Are you sure you want to continue?';
 
   @override
   String get replaceAllButton => 'Replace All';
@@ -1526,23 +1478,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faqSettingsQ4 => 'How can i restore or export my data?';
 
   @override
-  String get faqSettingsA4 =>
-      'You can go to settings, and there you\'ll find Backup & Restore section. You can export or import data from here, note that Exported data file is stored in Documents at Scolect-Backups Folder and only this file can be used to restore data, no other file.';
+  String get faqSettingsA4 => 'You can go to settings, and there you\'ll find Backup & Restore section. You can export or import data from here, note that Exported data file is stored in Documents at Scolect-Backups Folder and only this file can be used to restore data, no other file.';
 
   @override
-  String get faqGeneralQ6 =>
-      'How can I change language and which languages are available, also what if I found that translation is wrong?';
+  String get faqGeneralQ6 => 'How can I change language and which languages are available, also what if I found that translation is wrong?';
 
   @override
-  String get faqGeneralA6 =>
-      'Language can be changed through Settings General section, all the available languages are listed there, you can request translation by clicking on Contact and sending your request with given language. Just know that translation can be wrong as It is generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!';
+  String get faqGeneralA6 => 'Language can be changed through Settings General section, all the available languages are listed there, you can request translation by clicking on Contact and sending your request with given language. Just know that translation can be wrong as It is generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!';
 
   @override
   String get faqGeneralQ7 => 'What if I found that translation is wrong?';
 
   @override
-  String get faqGeneralA7 =>
-      'Translation can be wrong as It is Generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!';
+  String get faqGeneralA7 => 'Translation can be wrong as It is Generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!';
 
   @override
   String get activityTrackingSection => 'Activity Tracking';
@@ -1562,8 +1510,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get advancedWarning =>
-      'Advanced features may increase resource usage. Enable only if needed.';
+  String get advancedWarning => 'Advanced features may increase resource usage. Enable only if needed.';
 
   @override
   String get monitorAudioTitle => 'Monitor System Audio';
@@ -1595,8 +1542,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get setIdleTimeoutTitle => 'Set Idle Timeout';
 
   @override
-  String get idleTimeoutDialogDescription =>
-      'Choose how long to wait before considering you idle:';
+  String get idleTimeoutDialogDescription => 'Choose how long to wait before considering you idle:';
 
   @override
   String get seconds30 => '30 seconds';
@@ -1691,8 +1637,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceGenderTitle => 'Voice Gender';
 
   @override
-  String get voiceGenderDescription =>
-      'Choose the voice gender for timer notifications';
+  String get voiceGenderDescription => 'Choose the voice gender for timer notifications';
 
   @override
   String get voiceGenderMale => 'Male';
@@ -1701,8 +1646,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get voiceGenderFemale => 'Female';
 
   @override
-  String get alertsLimitsSubtitle =>
-      'Manage your screen time limits and notifications';
+  String get alertsLimitsSubtitle => 'Manage your screen time limits and notifications';
 
   @override
   String get applicationsSubtitle => 'Manage your tracked applications';
@@ -1769,8 +1713,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get greetingMorning => 'Good morning! Here\'s your activity summary.';
 
   @override
-  String get greetingAfternoon =>
-      'Good afternoon! Here\'s your activity summary.';
+  String get greetingAfternoon => 'Good afternoon! Here\'s your activity summary.';
 
   @override
   String get greetingEvening => 'Good evening! Here\'s your activity summary.';
@@ -1888,20 +1831,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notification_permission_denied => 'Notification Permission Denied';
 
   @override
-  String get notification_permission_denied_message =>
-      'ScreenTime needs notification permission to send you alerts and reminders.\n\nWould you like to open System Settings to enable notifications?';
+  String get notification_permission_denied_message => 'ScreenTime needs notification permission to send you alerts and reminders.\n\nWould you like to open System Settings to enable notifications?';
 
   @override
-  String get notification_permission_denied_hint =>
-      'Open System Settings to enable notifications for ScreenTime.';
+  String get notification_permission_denied_hint => 'Open System Settings to enable notifications for ScreenTime.';
 
   @override
-  String get notification_permission_required =>
-      'Notification Permission Required';
+  String get notification_permission_required => 'Notification Permission Required';
 
   @override
-  String get notification_permission_required_message =>
-      'ScreenTime needs permission to send you notifications.';
+  String get notification_permission_required_message => 'ScreenTime needs permission to send you notifications.';
 
   @override
   String get open_settings => 'Open Settings';
@@ -1925,8 +1864,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get off => 'Off';
 
   @override
-  String get enable_notification_permission_hint =>
-      'Enable notification permission to receive alerts';
+  String get enable_notification_permission_hint => 'Enable notification permission to receive alerts';
 
   @override
   String minutes_format(int minutes) {
@@ -2023,22 +1961,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled =>
-      'System notifications are disabled. Enable them in System Settings for focus alerts.';
+  String get systemNotificationsDisabled => 'System notifications are disabled. Enable them in System Settings for focus alerts.';
 
   @override
   String get openSystemSettings => 'Open System Settings';
 
   @override
-  String get appNotificationsDisabled =>
-      'Notifications are disabled in app settings. Enable them to receive focus alerts.';
+  String get appNotificationsDisabled => 'Notifications are disabled in app settings. Enable them to receive focus alerts.';
 
   @override
   String get goToSettings => 'Go to Settings';
 
   @override
-  String get focusModeNotificationsDisabled =>
-      'Focus mode notifications are disabled. Enable them to receive session alerts.';
+  String get focusModeNotificationsDisabled => 'Focus mode notifications are disabled. Enable them to receive session alerts.';
 
   @override
   String get notificationsDisabled => 'Notifications Disabled';
@@ -2050,12 +1985,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get systemSettingsRequired => 'System Settings Required';
 
   @override
-  String get notificationsDisabledSystemLevel =>
-      'Notifications are disabled at the system level. To enable:';
+  String get notificationsDisabledSystemLevel => 'Notifications are disabled at the system level. To enable:';
 
   @override
-  String get step1OpenSystemSettings =>
-      '1. Open System Settings (System Preferences)';
+  String get step1OpenSystemSettings => '1. Open System Settings (System Preferences)';
 
   @override
   String get step2GoToNotifications => '2. Go to Notifications';
@@ -2067,8 +2000,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get step4EnableNotifications => '4. Enable \"Allow notifications\"';
 
   @override
-  String get returnToAppMessage =>
-      'Then return to this app and notifications will work.';
+  String get returnToAppMessage => 'Then return to this app and notifications will work.';
 
   @override
   String get gotIt => 'Got it';
@@ -2286,12 +2218,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backgroundColors => 'Background Colors';
 
   @override
-  String get backgroundColorsLightDesc =>
-      'Main background surfaces for light mode';
+  String get backgroundColorsLightDesc => 'Main background surfaces for light mode';
 
   @override
-  String get backgroundColorsDarkDesc =>
-      'Main background surfaces for dark mode';
+  String get backgroundColorsDarkDesc => 'Main background surfaces for dark mode';
 
   @override
   String get background => 'Background';
@@ -2353,8 +2283,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sampleCardTitle => 'Sample Card Title';
 
   @override
-  String get sampleSecondaryText =>
-      'This is secondary text that appears below.';
+  String get sampleSecondaryText => 'This is secondary text that appears below.';
 
   @override
   String get primary => 'Primary';
@@ -2369,16 +2298,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get launchAtStartupTitle => 'Launch at startup';
 
   @override
-  String get launchAtStartupDescription =>
-      'Automatically start Scolect when you log in to your computer';
+  String get launchAtStartupDescription => 'Automatically start Scolect when you log in to your computer';
 
   @override
-  String get inputMonitoringPermissionTitle =>
-      'Keyboard Monitoring Unavailable';
+  String get inputMonitoringPermissionTitle => 'Keyboard Monitoring Unavailable';
 
   @override
-  String get inputMonitoringPermissionDescription =>
-      'Enable Input Monitoring permission to track keyboard activity. Currently only mouse input is monitored.';
+  String get inputMonitoringPermissionDescription => 'Enable Input Monitoring permission to track keyboard activity. Currently only mouse input is monitored.';
 
   @override
   String get openSettings => 'Open Settings';
@@ -2387,8 +2313,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get permissionGrantedTitle => 'Permission Granted';
 
   @override
-  String get permissionGrantedDescription =>
-      'The app needs to restart for Input Monitoring to take effect.';
+  String get permissionGrantedDescription => 'The app needs to restart for Input Monitoring to take effect.';
 
   @override
   String get continueButton => 'Continue';
@@ -2397,12 +2322,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restartRequiredTitle => 'Restart Required';
 
   @override
-  String get restartRequiredDescription =>
-      'To enable keyboard monitoring, the app needs to restart. This is required by macOS.';
+  String get restartRequiredDescription => 'To enable keyboard monitoring, the app needs to restart. This is required by macOS.';
 
   @override
-  String get restartNote =>
-      'The app will automatically relaunch after restarting.';
+  String get restartNote => 'The app will automatically relaunch after restarting.';
 
   @override
   String get restartNow => 'Restart Now';
@@ -2414,8 +2337,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restartFailedTitle => 'Restart Failed';
 
   @override
-  String get restartFailedMessage =>
-      'Could not restart the app automatically. Please quit (Cmd+Q) and relaunch manually.';
+  String get restartFailedMessage => 'Could not restart the app automatically. Please quit (Cmd+Q) and relaunch manually.';
 
   @override
   String get exportAnalyticsReport => 'Export Analytics Report';
@@ -2427,19 +2349,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get beautifulExcelReport => 'Beautiful Excel Report';
 
   @override
-  String get beautifulExcelReportDescription =>
-      'Gorgeous, colorful spreadsheet with charts, emojis, and insights ✨';
+  String get beautifulExcelReportDescription => 'Gorgeous, colorful spreadsheet with charts, emojis, and insights ✨';
 
   @override
   String get excelReportIncludes => 'The Excel report includes:';
 
   @override
-  String get summarySheetDescription =>
-      '📊 Summary Sheet - Key metrics with trends';
+  String get summarySheetDescription => '📊 Summary Sheet - Key metrics with trends';
 
   @override
-  String get dailyBreakdownDescription =>
-      '📅 Daily Breakdown - Visual usage patterns';
+  String get dailyBreakdownDescription => '📅 Daily Breakdown - Visual usage patterns';
 
   @override
   String get appsSheetDescription => '📱 Apps Sheet - Detailed app rankings';
@@ -2448,8 +2367,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightsDescription => '💡 Insights - Smart recommendations';
 
   @override
-  String get beautifulExcelExportSuccess =>
-      'Beautiful Excel report exported successfully! 🎉';
+  String get beautifulExcelExportSuccess => 'Beautiful Excel report exported successfully! 🎉';
 
   @override
   String failedToExportReport(String error) {
@@ -2639,8 +2557,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions =>
-      'No Focus Sessions: Consider using focus mode to boost your productivity';
+  String get insightNoFocusSessions => 'No Focus Sessions: Consider using focus mode to boost your productivity';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2664,8 +2581,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(
-      String appName, String percentage, String duration) {
+  String insightMostUsedApp(String appName, String percentage, String duration) {
     return 'Most Used App: $appName accounts for $percentage% of your time ($duration)';
   }
 
@@ -2678,44 +2594,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get insightNoInsights => 'No significant insights available';
 
   @override
-  String get recScheduleFocusSessions =>
-      'Try scheduling more focus sessions throughout your day to boost productivity';
+  String get recScheduleFocusSessions => 'Try scheduling more focus sessions throughout your day to boost productivity';
 
   @override
-  String get recSetAppLimits =>
-      'Consider setting app limits on leisure applications';
+  String get recSetAppLimits => 'Consider setting app limits on leisure applications';
 
   @override
-  String get recAimForFocusSessions =>
-      'Aim for at least 1-2 focus sessions per day to build a consistent habit';
+  String get recAimForFocusSessions => 'Aim for at least 1-2 focus sessions per day to build a consistent habit';
 
   @override
-  String get recTakeBreaks =>
-      'Your daily screen time is quite high. Try taking regular breaks using the 20-20-20 rule';
+  String get recTakeBreaks => 'Your daily screen time is quite high. Try taking regular breaks using the 20-20-20 rule';
 
   @override
-  String get recSetDailyGoals =>
-      'Consider setting daily screen time goals to gradually reduce usage';
+  String get recSetDailyGoals => 'Consider setting daily screen time goals to gradually reduce usage';
 
   @override
-  String get recBalanceEntertainment =>
-      'Entertainment apps account for a large portion of your time. Consider balancing with more productive activities';
+  String get recBalanceEntertainment => 'Entertainment apps account for a large portion of your time. Consider balancing with more productive activities';
 
   @override
-  String get recReviewUsagePatterns =>
-      'Your screen time has increased significantly. Review your usage patterns and set boundaries';
+  String get recReviewUsagePatterns => 'Your screen time has increased significantly. Review your usage patterns and set boundaries';
 
   @override
-  String get recScheduleFocusedWork =>
-      'Your productive time has decreased. Try scheduling focused work blocks in your calendar';
+  String get recScheduleFocusedWork => 'Your productive time has decreased. Try scheduling focused work blocks in your calendar';
 
   @override
-  String get recKeepUpGreatWork =>
-      'Keep up the great work! Your screen time habits look healthy';
+  String get recKeepUpGreatWork => 'Keep up the great work! Your screen time habits look healthy';
 
   @override
-  String get recContinueFocusSessions =>
-      'Continue using focus sessions to maintain productivity';
+  String get recContinueFocusSessions => 'Continue using focus sessions to maintain productivity';
 
   @override
   String get sheetSummary => 'Summary';
@@ -2847,8 +2753,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loadFromFile => 'Load from File';
 
   @override
-  String get selectJSONFileFromDevice =>
-      'Select a JSON theme file from your device';
+  String get selectJSONFileFromDevice => 'Select a JSON theme file from your device';
 
   @override
   String get pasteFromClipboard => 'Paste from Clipboard';
@@ -2883,8 +2788,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noThemeDataFound => 'No theme data found';
 
   @override
-  String get invalidThemeFormat =>
-      'Invalid theme format. Please check the JSON data.';
+  String get invalidThemeFormat => 'Invalid theme format. Please check the JSON data.';
 
   @override
   String get trackingModeTitle => 'Tracking Mode';
@@ -2899,16 +2803,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get trackingModePrecise => 'Precise (High Accuracy)';
 
   @override
-  String get trackingModePollingHint =>
-      'Checks every minute - lower resource usage';
+  String get trackingModePollingHint => 'Checks every minute - lower resource usage';
 
   @override
-  String get trackingModePreciseHint =>
-      'Real-time tracking - higher accuracy, more resources';
+  String get trackingModePreciseHint => 'Real-time tracking - higher accuracy, more resources';
 
   @override
-  String get trackingModeChangeError =>
-      'Failed to change tracking mode. Please try again.';
+  String get trackingModeChangeError => 'Failed to change tracking mode. Please try again.';
 
   @override
   String get errorTitle => 'Error';
@@ -2917,8 +2818,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monitorKeyboardTitle => 'Monitor Keyboard';
 
   @override
-  String get monitorKeyboardDescription =>
-      'Track keyboard activity to detect user presence';
+  String get monitorKeyboardDescription => 'Track keyboard activity to detect user presence';
 
   @override
   String get changelogWhatsNew => 'What\'s New';
@@ -2935,8 +2835,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get changelogUnableToLoad => 'Unable to Load Changelog';
 
   @override
-  String get changelogErrorDescription =>
-      'Could not retrieve the changelog for this version. Please check your internet connection or visit the GitHub releases page.';
+  String get changelogErrorDescription => 'Could not retrieve the changelog for this version. Please check your internet connection or visit the GitHub releases page.';
 
   @override
   String get allTracking => 'All Apps';
