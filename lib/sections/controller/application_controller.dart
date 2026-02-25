@@ -514,7 +514,7 @@ class BackgroundAppTracker {
 
     if (newApp == "Productive ScreenTime") return;
     if (newApp == "screentime") newApp = _selfAppName;
-    if (newApp == "loginwindow") return;
+    if (newApp == "loginwindow" || newApp == "LockApp" || newApp == "UnlockingApp") return;
 
     if (newApp != _currentApp) {
       _saveCurrentAppTime();

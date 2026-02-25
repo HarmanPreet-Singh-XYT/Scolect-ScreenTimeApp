@@ -107,13 +107,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqGeneralQ1 => '这个应用如何追踪屏幕时间？';
 
   @override
-  String get faqGeneralA1 => '该应用实时监控您设备的使用情况，追踪在不同应用上花费的时间。它提供关于您数字习惯的全面分析，包括总屏幕时间、高效时间和特定应用的使用情况。';
+  String get faqGeneralA1 =>
+      '该应用实时监控您设备的使用情况，追踪在不同应用上花费的时间。它提供关于您数字习惯的全面分析，包括总屏幕时间、高效时间和特定应用的使用情况。';
 
   @override
   String get faqGeneralQ2 => '什么使应用被认为是\"高效\"的？';
 
   @override
-  String get faqGeneralA2 => '您可以在\"应用程序\"部分手动将应用标记为高效。高效应用会计入您的高效分数，该分数计算花在工作相关或有益应用上的屏幕时间百分比。';
+  String get faqGeneralA2 =>
+      '您可以在\"应用程序\"部分手动将应用标记为高效。高效应用会计入您的高效分数，该分数计算花在工作相关或有益应用上的屏幕时间百分比。';
 
   @override
   String get faqGeneralQ3 => '屏幕时间追踪有多准确？';
@@ -125,13 +127,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqGeneralQ4 => '我可以自定义应用分类吗？';
 
   @override
-  String get faqGeneralA4 => '当然可以！您可以创建自定义类别，将应用分配到特定类别，并在\"应用程序\"部分轻松修改这些分配。这有助于创建更有意义的使用分析。';
+  String get faqGeneralA4 =>
+      '当然可以！您可以创建自定义类别，将应用分配到特定类别，并在\"应用程序\"部分轻松修改这些分配。这有助于创建更有意义的使用分析。';
 
   @override
   String get faqGeneralQ5 => '我可以从这个应用获得什么洞察？';
 
   @override
-  String get faqGeneralA5 => '该应用提供全面的洞察，包括高效分数、按时间段的使用模式、详细的应用使用情况、专注会话追踪，以及图表和饼图等可视化分析，帮助您了解和改善您的数字习惯。';
+  String get faqGeneralA5 =>
+      '该应用提供全面的洞察，包括高效分数、按时间段的使用模式、详细的应用使用情况、专注会话追踪，以及图表和饼图等可视化分析，帮助您了解和改善您的数字习惯。';
 
   @override
   String get faqAppsQ1 => '如何隐藏特定应用的追踪？';
@@ -161,25 +165,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqReportsQ1 => '有哪些类型的报告？';
 
   @override
-  String get faqReportsA1 => '报告包括：总屏幕时间、高效时间、最常用应用、专注会话、每日屏幕时间图表、类别分布饼图、详细应用使用情况、每周使用趋势，以及按时间段的使用模式分析。';
+  String get faqReportsA1 =>
+      '报告包括：总屏幕时间、高效时间、最常用应用、专注会话、每日屏幕时间图表、类别分布饼图、详细应用使用情况、每周使用趋势，以及按时间段的使用模式分析。';
 
   @override
   String get faqReportsQ2 => '应用使用报告有多详细？';
 
   @override
-  String get faqReportsA2 => '详细的应用使用报告显示：应用名称、类别、总使用时间、高效状态，并提供\"操作\"部分，包含更深入的洞察，如使用摘要、每日限制、使用趋势和高效指标。';
+  String get faqReportsA2 =>
+      '详细的应用使用报告显示：应用名称、类别、总使用时间、高效状态，并提供\"操作\"部分，包含更深入的洞察，如使用摘要、每日限制、使用趋势和高效指标。';
 
   @override
   String get faqReportsQ3 => '我可以分析我的长期使用趋势吗？';
 
   @override
-  String get faqReportsA3 => '可以！该应用提供周对周比较，显示过去几周的使用图表、平均每日使用量、最长会话和每周总量，帮助您追踪您的数字习惯。';
+  String get faqReportsA3 =>
+      '可以！该应用提供周对周比较，显示过去几周的使用图表、平均每日使用量、最长会话和每周总量，帮助您追踪您的数字习惯。';
 
   @override
   String get faqReportsQ4 => '什么是\"使用模式\"分析？';
 
   @override
-  String get faqReportsA4 => '使用模式将您的屏幕时间分为早晨、下午、傍晚和夜间几个时段。这有助于您了解何时在设备上最活跃，并识别潜在的改进领域。';
+  String get faqReportsA4 =>
+      '使用模式将您的屏幕时间分为早晨、下午、傍晚和夜间几个时段。这有助于您了解何时在设备上最活跃，并识别潜在的改进领域。';
 
   @override
   String get faqAlertsQ1 => '屏幕时间限制有多精细？';
@@ -191,7 +199,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqAlertsQ2 => '有哪些通知选项？';
 
   @override
-  String get faqAlertsA2 => '该应用提供多种通知类型：超出屏幕时间时的系统提醒、可自定义间隔（1、5、15、30或60分钟）的频繁提醒，以及专注模式、屏幕时间和特定应用通知的开关。';
+  String get faqAlertsA2 =>
+      '该应用提供多种通知类型：超出屏幕时间时的系统提醒、可自定义间隔（1、5、15、30或60分钟）的频繁提醒，以及专注模式、屏幕时间和特定应用通知的开关。';
 
   @override
   String get faqAlertsQ3 => '我可以自定义限制提醒吗？';
@@ -203,31 +212,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqFocusQ1 => '有哪些类型的专注模式？';
 
   @override
-  String get faqFocusA1 => '可用模式包括深度工作（较长的专注会话）、快速任务（短时间工作）和阅读模式。每种模式都有助于您有效地安排工作和休息时间。';
+  String get faqFocusA1 =>
+      '可用模式包括深度工作（较长的专注会话）、快速任务（短时间工作）和阅读模式。每种模式都有助于您有效地安排工作和休息时间。';
 
   @override
   String get faqFocusQ2 => '番茄钟有多灵活？';
 
   @override
-  String get faqFocusA2 => '计时器高度可定制。您可以调整工作时长、短休息时长和长休息时长。其他选项包括自动开始下一个会话和通知设置。';
+  String get faqFocusA2 =>
+      '计时器高度可定制。您可以调整工作时长、短休息时长和长休息时长。其他选项包括自动开始下一个会话和通知设置。';
 
   @override
   String get faqFocusQ3 => '专注模式历史记录显示什么？';
 
   @override
-  String get faqFocusA3 => '专注模式历史记录追踪每日专注会话，显示每天的会话数量、趋势图表、平均会话时长、总专注时间，以及分解工作会话、短休息和长休息的时间分布饼图。';
+  String get faqFocusA3 =>
+      '专注模式历史记录追踪每日专注会话，显示每天的会话数量、趋势图表、平均会话时长、总专注时间，以及分解工作会话、短休息和长休息的时间分布饼图。';
 
   @override
   String get faqFocusQ4 => '我可以追踪专注会话的进度吗？';
 
   @override
-  String get faqFocusA4 => '该应用具有圆形计时器界面，带有播放/暂停、重置和设置按钮。您可以通过直观的控件轻松追踪和管理您的专注会话。';
+  String get faqFocusA4 =>
+      '该应用具有圆形计时器界面，带有播放/暂停、重置和设置按钮。您可以通过直观的控件轻松追踪和管理您的专注会话。';
 
   @override
   String get faqSettingsQ1 => '有哪些自定义选项？';
 
   @override
-  String get faqSettingsA1 => '自定义选项包括主题选择（系统、浅色、深色）、语言设置、启动行为、全面的通知控制，以及清除数据或重置设置等数据管理选项。';
+  String get faqSettingsA1 =>
+      '自定义选项包括主题选择（系统、浅色、深色）、语言设置、启动行为、全面的通知控制，以及清除数据或重置设置等数据管理选项。';
 
   @override
   String get faqSettingsQ2 => '如何提供反馈或报告问题？';
@@ -245,13 +259,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqTroubleQ1 => '数据不显示，hive无法打开错误';
 
   @override
-  String get faqTroubleA1 => '这是一个已知问题，临时解决方案是通过设置清除数据，如果不起作用，请转到\"文档\"并删除以下文件（如果存在）- harman_screentime_app_usage_box.hive 和 harman_screentime_app_usage.lock，同时建议您将应用更新到最新版本。';
+  String get faqTroubleA1 =>
+      '这是一个已知问题，临时解决方案是通过设置清除数据，如果不起作用，请转到\"文档\"并删除以下文件（如果存在）- harman_screentime_app_usage_box.hive 和 harman_screentime_app_usage.lock，同时建议您将应用更新到最新版本。';
 
   @override
   String get faqTroubleQ2 => '应用在每次启动时都会打开，该怎么办？';
 
   @override
-  String get faqTroubleA2 => '这是Windows 10上的一个已知问题，临时解决方案是在设置中启用\"启动时最小化\"，这样它将以最小化方式启动。';
+  String get faqTroubleA2 =>
+      '这是Windows 10上的一个已知问题，临时解决方案是在设置中启用\"启动时最小化\"，这样它将以最小化方式启动。';
 
   @override
   String get usageAnalytics => '使用分析';
@@ -1478,19 +1494,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqSettingsQ4 => '我如何恢复或导出我的数据？';
 
   @override
-  String get faqSettingsA4 => '您可以进入设置，在那里您会找到备份与恢复部分。您可以在这里导出或导入数据。请注意，导出的数据文件存储在文档的 Scolect-Backups 文件夹中，只有这个文件可以用于恢复数据，其他文件不可以。';
+  String get faqSettingsA4 =>
+      '您可以进入设置，在那里您会找到备份与恢复部分。您可以在这里导出或导入数据。请注意，导出的数据文件存储在文档的 Scolect-Backups 文件夹中，只有这个文件可以用于恢复数据，其他文件不可以。';
 
   @override
   String get faqGeneralQ6 => '我如何更改语言？有哪些可用的语言？如果我发现翻译有误怎么办？';
 
   @override
-  String get faqGeneralA6 => '语言可以在设置的通用部分进行更改，所有可用的语言都列在那里。您可以点击联系并发送您的请求和所需语言来请求翻译。请注意，翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
+  String get faqGeneralA6 =>
+      '语言可以在设置的通用部分进行更改，所有可用的语言都列在那里。您可以点击联系并发送您的请求和所需语言来请求翻译。请注意，翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
 
   @override
   String get faqGeneralQ7 => '如果我发现翻译有误怎么办？';
 
   @override
-  String get faqGeneralA7 => '翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
+  String get faqGeneralA7 =>
+      '翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
 
   @override
   String get activityTrackingSection => '活动追踪';
@@ -1821,7 +1840,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notification_permission_denied => '通知权限被拒绝';
 
   @override
-  String get notification_permission_denied_message => 'ScreenTime 需要通知权限来向您发送提醒和警报。\n\n您想打开系统设置以启用通知吗？';
+  String get notification_permission_denied_message =>
+      'ScreenTime 需要通知权限来向您发送提醒和警报。\n\n您想打开系统设置以启用通知吗？';
 
   @override
   String get notification_permission_denied_hint => '打开系统设置以启用 ScreenTime 的通知。';
@@ -1830,7 +1850,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notification_permission_required => '需要通知权限';
 
   @override
-  String get notification_permission_required_message => 'ScreenTime 需要权限才能向您发送通知。';
+  String get notification_permission_required_message =>
+      'ScreenTime 需要权限才能向您发送通知。';
 
   @override
   String get open_settings => '打开设置';
@@ -2266,7 +2287,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get inputMonitoringPermissionTitle => '键盘监控不可用';
 
   @override
-  String get inputMonitoringPermissionDescription => '请启用“输入监控”权限以跟踪键盘活动。目前仅监控鼠标输入。';
+  String get inputMonitoringPermissionDescription =>
+      '请启用“输入监控”权限以跟踪键盘活动。目前仅监控鼠标输入。';
 
   @override
   String get openSettings => '打开设置';
@@ -2543,7 +2565,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(String appName, String percentage, String duration) {
+  String insightMostUsedApp(
+      String appName, String percentage, String duration) {
     return '最常用应用：$appName占用了$percentage%的时间（$duration）';
   }
 
@@ -2785,7 +2808,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get changelogUnableToLoad => '无法加载更新日志';
 
   @override
-  String get changelogErrorDescription => '无法检索此版本的更新日志。请检查您的网络连接或访问 GitHub 发布页面。';
+  String get changelogErrorDescription =>
+      '无法检索此版本的更新日志。请检查您的网络连接或访问 GitHub 发布页面。';
 
   @override
   String get allTracking => '所有应用';

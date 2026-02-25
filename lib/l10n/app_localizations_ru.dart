@@ -9,7 +9,8 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appWindowTitle => 'Scolect - Отслеживание экранного времени и использования приложений';
+  String get appWindowTitle =>
+      'Scolect - Отслеживание экранного времени и использования приложений';
 
   @override
   String get appName => 'Scolect';
@@ -107,151 +108,182 @@ class AppLocalizationsRu extends AppLocalizations {
   String get faqGeneralQ1 => 'Как приложение отслеживает экранное время?';
 
   @override
-  String get faqGeneralA1 => 'Приложение отслеживает использование вашего устройства в реальном времени, фиксируя время, проведённое в различных приложениях. Оно предоставляет полную информацию о ваших цифровых привычках, включая общее экранное время, продуктивное время и использование конкретных приложений.';
+  String get faqGeneralA1 =>
+      'Приложение отслеживает использование вашего устройства в реальном времени, фиксируя время, проведённое в различных приложениях. Оно предоставляет полную информацию о ваших цифровых привычках, включая общее экранное время, продуктивное время и использование конкретных приложений.';
 
   @override
   String get faqGeneralQ2 => 'Что делает приложение \'Продуктивным\'?';
 
   @override
-  String get faqGeneralA2 => 'Вы можете вручную отметить приложения как продуктивные в разделе \'Приложения\'. Продуктивные приложения учитываются в вашем показателе продуктивности, который рассчитывает процент экранного времени, потраченного на рабочие или полезные приложения.';
+  String get faqGeneralA2 =>
+      'Вы можете вручную отметить приложения как продуктивные в разделе \'Приложения\'. Продуктивные приложения учитываются в вашем показателе продуктивности, который рассчитывает процент экранного времени, потраченного на рабочие или полезные приложения.';
 
   @override
   String get faqGeneralQ3 => 'Насколько точно отслеживание экранного времени?';
 
   @override
-  String get faqGeneralA3 => 'Приложение использует отслеживание на системном уровне для точного измерения использования вашего устройства. Оно фиксирует время активного использования каждого приложения с минимальным влиянием на батарею.';
+  String get faqGeneralA3 =>
+      'Приложение использует отслеживание на системном уровне для точного измерения использования вашего устройства. Оно фиксирует время активного использования каждого приложения с минимальным влиянием на батарею.';
 
   @override
   String get faqGeneralQ4 => 'Могу ли я настроить категоризацию приложений?';
 
   @override
-  String get faqGeneralA4 => 'Конечно! Вы можете создавать пользовательские категории, назначать приложения определённым категориям и легко изменять эти назначения в разделе \'Приложения\'. Это помогает создавать более осмысленную аналитику использования.';
+  String get faqGeneralA4 =>
+      'Конечно! Вы можете создавать пользовательские категории, назначать приложения определённым категориям и легко изменять эти назначения в разделе \'Приложения\'. Это помогает создавать более осмысленную аналитику использования.';
 
   @override
-  String get faqGeneralQ5 => 'Какую информацию я могу получить из этого приложения?';
+  String get faqGeneralQ5 =>
+      'Какую информацию я могу получить из этого приложения?';
 
   @override
-  String get faqGeneralA5 => 'Приложение предлагает комплексную аналитику, включая показатель продуктивности, паттерны использования по времени суток, детальное использование приложений, отслеживание сессий фокусировки и визуальную аналитику в виде графиков и диаграмм, чтобы помочь вам понять и улучшить ваши цифровые привычки.';
+  String get faqGeneralA5 =>
+      'Приложение предлагает комплексную аналитику, включая показатель продуктивности, паттерны использования по времени суток, детальное использование приложений, отслеживание сессий фокусировки и визуальную аналитику в виде графиков и диаграмм, чтобы помочь вам понять и улучшить ваши цифровые привычки.';
 
   @override
   String get faqAppsQ1 => 'Как скрыть определённые приложения из отслеживания?';
 
   @override
-  String get faqAppsA1 => 'В разделе \'Приложения\' вы можете переключить видимость приложений.';
+  String get faqAppsA1 =>
+      'В разделе \'Приложения\' вы можете переключить видимость приложений.';
 
   @override
   String get faqAppsQ2 => 'Можно ли искать и фильтровать приложения?';
 
   @override
-  String get faqAppsA2 => 'Да, раздел Приложения включает функцию поиска и параметры фильтрации. Вы можете фильтровать приложения по категории, статусу продуктивности, статусу отслеживания и видимости.';
+  String get faqAppsA2 =>
+      'Да, раздел Приложения включает функцию поиска и параметры фильтрации. Вы можете фильтровать приложения по категории, статусу продуктивности, статусу отслеживания и видимости.';
 
   @override
-  String get faqAppsQ3 => 'Какие параметры редактирования доступны для приложений?';
+  String get faqAppsQ3 =>
+      'Какие параметры редактирования доступны для приложений?';
 
   @override
-  String get faqAppsA3 => 'Для каждого приложения вы можете редактировать: назначение категории, статус продуктивности, отслеживание использования, видимость в отчётах и устанавливать индивидуальные дневные лимиты времени.';
+  String get faqAppsA3 =>
+      'Для каждого приложения вы можете редактировать: назначение категории, статус продуктивности, отслеживание использования, видимость в отчётах и устанавливать индивидуальные дневные лимиты времени.';
 
   @override
   String get faqAppsQ4 => 'Как определяются категории приложений?';
 
   @override
-  String get faqAppsA4 => 'Начальные категории предлагаются системой, но вы имеете полный контроль для создания, изменения и назначения пользовательских категорий в соответствии с вашим рабочим процессом и предпочтениями.';
+  String get faqAppsA4 =>
+      'Начальные категории предлагаются системой, но вы имеете полный контроль для создания, изменения и назначения пользовательских категорий в соответствии с вашим рабочим процессом и предпочтениями.';
 
   @override
   String get faqReportsQ1 => 'Какие типы отчётов доступны?';
 
   @override
-  String get faqReportsA1 => 'Отчёты включают: общее экранное время, продуктивное время, наиболее используемые приложения, сессии фокусировки, график дневного экранного времени, круговую диаграмму распределения по категориям, детальное использование приложений, недельные тренды использования и анализ паттернов использования по времени суток.';
+  String get faqReportsA1 =>
+      'Отчёты включают: общее экранное время, продуктивное время, наиболее используемые приложения, сессии фокусировки, график дневного экранного времени, круговую диаграмму распределения по категориям, детальное использование приложений, недельные тренды использования и анализ паттернов использования по времени суток.';
 
   @override
-  String get faqReportsQ2 => 'Насколько детальны отчёты об использовании приложений?';
+  String get faqReportsQ2 =>
+      'Насколько детальны отчёты об использовании приложений?';
 
   @override
-  String get faqReportsA2 => 'Детальные отчёты об использовании приложений показывают: название приложения, категорию, общее время использования, статус продуктивности и предлагают раздел \'Действия\' с более глубокой аналитикой, такой как сводка использования, дневные лимиты, тренды использования и метрики продуктивности.';
+  String get faqReportsA2 =>
+      'Детальные отчёты об использовании приложений показывают: название приложения, категорию, общее время использования, статус продуктивности и предлагают раздел \'Действия\' с более глубокой аналитикой, такой как сводка использования, дневные лимиты, тренды использования и метрики продуктивности.';
 
   @override
-  String get faqReportsQ3 => 'Можно ли анализировать тренды использования за период?';
+  String get faqReportsQ3 =>
+      'Можно ли анализировать тренды использования за период?';
 
   @override
-  String get faqReportsA3 => 'Да! Приложение предоставляет сравнения по неделям, показывая графики использования за прошлые недели, среднее дневное использование, самые длинные сессии и недельные итоги, чтобы помочь вам отслеживать ваши цифровые привычки.';
+  String get faqReportsA3 =>
+      'Да! Приложение предоставляет сравнения по неделям, показывая графики использования за прошлые недели, среднее дневное использование, самые длинные сессии и недельные итоги, чтобы помочь вам отслеживать ваши цифровые привычки.';
 
   @override
   String get faqReportsQ4 => 'Что такое анализ \'Паттерна использования\'?';
 
   @override
-  String get faqReportsA4 => 'Паттерн использования разбивает ваше экранное время на сегменты: утро, день, вечер и ночь. Это помогает понять, когда вы наиболее активно используете устройство, и определить потенциальные области для улучшения.';
+  String get faqReportsA4 =>
+      'Паттерн использования разбивает ваше экранное время на сегменты: утро, день, вечер и ночь. Это помогает понять, когда вы наиболее активно используете устройство, и определить потенциальные области для улучшения.';
 
   @override
-  String get faqAlertsQ1 => 'Насколько детально можно настроить лимиты экранного времени?';
+  String get faqAlertsQ1 =>
+      'Насколько детально можно настроить лимиты экранного времени?';
 
   @override
-  String get faqAlertsA1 => 'Вы можете установить общие дневные лимиты экранного времени и индивидуальные лимиты для приложений. Лимиты можно настроить в часах и минутах с возможностью сброса или корректировки по мере необходимости.';
+  String get faqAlertsA1 =>
+      'Вы можете установить общие дневные лимиты экранного времени и индивидуальные лимиты для приложений. Лимиты можно настроить в часах и минутах с возможностью сброса или корректировки по мере необходимости.';
 
   @override
   String get faqAlertsQ2 => 'Какие параметры уведомлений доступны?';
 
   @override
-  String get faqAlertsA2 => 'Приложение предлагает несколько типов уведомлений: системные оповещения при превышении экранного времени, частые оповещения с настраиваемыми интервалами (1, 5, 15, 30 или 60 минут) и переключатели для уведомлений режима фокусировки, экранного времени и конкретных приложений.';
+  String get faqAlertsA2 =>
+      'Приложение предлагает несколько типов уведомлений: системные оповещения при превышении экранного времени, частые оповещения с настраиваемыми интервалами (1, 5, 15, 30 или 60 минут) и переключатели для уведомлений режима фокусировки, экранного времени и конкретных приложений.';
 
   @override
   String get faqAlertsQ3 => 'Можно ли настроить оповещения о лимитах?';
 
   @override
-  String get faqAlertsA3 => 'Да, вы можете настроить частоту оповещений, включить/отключить определённые типы оповещений и установить разные лимиты для общего экранного времени и отдельных приложений.';
+  String get faqAlertsA3 =>
+      'Да, вы можете настроить частоту оповещений, включить/отключить определённые типы оповещений и установить разные лимиты для общего экранного времени и отдельных приложений.';
 
   @override
   String get faqFocusQ1 => 'Какие типы режимов фокусировки доступны?';
 
   @override
-  String get faqFocusA1 => 'Доступные режимы включают Глубокую работу (длительные сфокусированные сессии), Быстрые задачи (короткие рабочие интервалы) и Режим чтения. Каждый режим помогает эффективно структурировать ваше рабочее время и перерывы.';
+  String get faqFocusA1 =>
+      'Доступные режимы включают Глубокую работу (длительные сфокусированные сессии), Быстрые задачи (короткие рабочие интервалы) и Режим чтения. Каждый режим помогает эффективно структурировать ваше рабочее время и перерывы.';
 
   @override
   String get faqFocusQ2 => 'Насколько гибок таймер Помодоро?';
 
   @override
-  String get faqFocusA2 => 'Таймер очень настраиваемый. Вы можете регулировать продолжительность работы, длину короткого перерыва и продолжительность длинного перерыва. Дополнительные опции включают автозапуск следующих сессий и настройки уведомлений.';
+  String get faqFocusA2 =>
+      'Таймер очень настраиваемый. Вы можете регулировать продолжительность работы, длину короткого перерыва и продолжительность длинного перерыва. Дополнительные опции включают автозапуск следующих сессий и настройки уведомлений.';
 
   @override
   String get faqFocusQ3 => 'Что показывает история режима фокусировки?';
 
   @override
-  String get faqFocusA3 => 'История режима фокусировки отслеживает дневные сессии фокусировки, показывая количество сессий в день, график трендов, среднюю продолжительность сессии, общее время фокусировки и круговую диаграмму распределения времени между рабочими сессиями, короткими и длинными перерывами.';
+  String get faqFocusA3 =>
+      'История режима фокусировки отслеживает дневные сессии фокусировки, показывая количество сессий в день, график трендов, среднюю продолжительность сессии, общее время фокусировки и круговую диаграмму распределения времени между рабочими сессиями, короткими и длинными перерывами.';
 
   @override
   String get faqFocusQ4 => 'Можно ли отслеживать прогресс сессии фокусировки?';
 
   @override
-  String get faqFocusA4 => 'Приложение имеет круговой интерфейс таймера с кнопками воспроизведения/паузы, перезагрузки и настроек. Вы можете легко отслеживать и управлять сессиями фокусировки с помощью интуитивного управления.';
+  String get faqFocusA4 =>
+      'Приложение имеет круговой интерфейс таймера с кнопками воспроизведения/паузы, перезагрузки и настроек. Вы можете легко отслеживать и управлять сессиями фокусировки с помощью интуитивного управления.';
 
   @override
   String get faqSettingsQ1 => 'Какие параметры настройки доступны?';
 
   @override
-  String get faqSettingsA1 => 'Настройка включает выбор темы (Системная, Светлая, Тёмная), языковые настройки, поведение при запуске, комплексное управление уведомлениями и параметры управления данными, такие как очистка данных или сброс настроек.';
+  String get faqSettingsA1 =>
+      'Настройка включает выбор темы (Системная, Светлая, Тёмная), языковые настройки, поведение при запуске, комплексное управление уведомлениями и параметры управления данными, такие как очистка данных или сброс настроек.';
 
   @override
   String get faqSettingsQ2 => 'Как отправить отзыв или сообщить о проблеме?';
 
   @override
-  String get faqSettingsA2 => 'В нижней части раздела Настройки вы найдёте кнопки для сообщения об ошибке, отправки отзыва или связи с поддержкой. Они перенаправят вас в соответствующие каналы поддержки.';
+  String get faqSettingsA2 =>
+      'В нижней части раздела Настройки вы найдёте кнопки для сообщения об ошибке, отправки отзыва или связи с поддержкой. Они перенаправят вас в соответствующие каналы поддержки.';
 
   @override
   String get faqSettingsQ3 => 'Что происходит при очистке данных?';
 
   @override
-  String get faqSettingsA3 => 'Очистка данных сбросит всю вашу статистику использования, историю сессий фокусировки и пользовательские настройки. Это полезно для начала с чистого листа или устранения неполадок.';
+  String get faqSettingsA3 =>
+      'Очистка данных сбросит всю вашу статистику использования, историю сессий фокусировки и пользовательские настройки. Это полезно для начала с чистого листа или устранения неполадок.';
 
   @override
   String get faqTroubleQ1 => 'Данные не отображаются, ошибка открытия hive';
 
   @override
-  String get faqTroubleA1 => 'Проблема известна, временное решение — очистить данные через настройки, и если это не помогает, перейдите в Документы и удалите следующие файлы, если они существуют — harman_screentime_app_usage_box.hive и harman_screentime_app_usage.lock, также рекомендуется обновить приложение до последней версии.';
+  String get faqTroubleA1 =>
+      'Проблема известна, временное решение — очистить данные через настройки, и если это не помогает, перейдите в Документы и удалите следующие файлы, если они существуют — harman_screentime_app_usage_box.hive и harman_screentime_app_usage.lock, также рекомендуется обновить приложение до последней версии.';
 
   @override
-  String get faqTroubleQ2 => 'Приложение открывается при каждом запуске, что делать?';
+  String get faqTroubleQ2 =>
+      'Приложение открывается при каждом запуске, что делать?';
 
   @override
-  String get faqTroubleA2 => 'Это известная проблема, которая возникает в Windows 10, временное решение — включить Запуск в свёрнутом виде в настройках, чтобы оно запускалось свёрнутым.';
+  String get faqTroubleA2 =>
+      'Это известная проблема, которая возникает в Windows 10, временное решение — включить Запуск в свёрнутом виде в настройках, чтобы оно запускалось свёрнутым.';
 
   @override
   String get usageAnalytics => 'Аналитика использования';
@@ -278,7 +310,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tryAgain => 'Попробовать снова';
 
   @override
-  String get failedToInitialize => 'Не удалось инициализировать аналитику. Пожалуйста, перезапустите приложение.';
+  String get failedToInitialize =>
+      'Не удалось инициализировать аналитику. Пожалуйста, перезапустите приложение.';
 
   @override
   String unexpectedError(String error) {
@@ -321,7 +354,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get invalidDateRange => 'Недопустимый диапазон дат';
 
   @override
-  String get startDateBeforeEndDate => 'Дата начала должна быть раньше или равна дате окончания.';
+  String get startDateBeforeEndDate =>
+      'Дата начала должна быть раньше или равна дате окончания.';
 
   @override
   String get totalScreenTime => 'Общее Время Экрана';
@@ -406,7 +440,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get nonProductive => 'Непродуктивное';
 
   @override
-  String get noApplicationsMatch => 'Нет приложений, соответствующих критериям поиска';
+  String get noApplicationsMatch =>
+      'Нет приложений, соответствующих критериям поиска';
 
   @override
   String get viewDetails => 'Просмотр деталей';
@@ -418,7 +453,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get usageOverPastWeek => 'Использование за прошлую неделю';
 
   @override
-  String get usagePatternByTimeOfDay => 'Паттерн использования по времени суток';
+  String get usagePatternByTimeOfDay =>
+      'Паттерн использования по времени суток';
 
   @override
   String get patternAnalysis => 'Анализ паттернов';
@@ -491,7 +527,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get trendingUpward => 'Ваше использование имеет тенденцию к росту по сравнению с предыдущим периодом.';
+  String get trendingUpward =>
+      'Ваше использование имеет тенденцию к росту по сравнению с предыдущим периодом.';
 
   @override
   String significantDecrease(String percentage) {
@@ -499,16 +536,20 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get trendingDownward => 'Ваше использование имеет тенденцию к снижению по сравнению с предыдущим периодом.';
+  String get trendingDownward =>
+      'Ваше использование имеет тенденцию к снижению по сравнению с предыдущим периодом.';
 
   @override
-  String get consistentUsage => 'Ваше использование было стабильным по сравнению с предыдущим периодом.';
+  String get consistentUsage =>
+      'Ваше использование было стабильным по сравнению с предыдущим периодом.';
 
   @override
-  String get markedAsProductive => 'Это приложение отмечено как продуктивное в ваших настройках.';
+  String get markedAsProductive =>
+      'Это приложение отмечено как продуктивное в ваших настройках.';
 
   @override
-  String get markedAsNonProductive => 'Это приложение отмечено как непродуктивное в ваших настройках.';
+  String get markedAsNonProductive =>
+      'Это приложение отмечено как непродуктивное в ваших настройках.';
 
   @override
   String mostActiveTime(String time) {
@@ -516,10 +557,12 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get noLimitSet => 'Лимит использования для этого приложения не установлен.';
+  String get noLimitSet =>
+      'Лимит использования для этого приложения не установлен.';
 
   @override
-  String get limitReached => 'Вы достигли дневного лимита для этого приложения.';
+  String get limitReached =>
+      'Вы достигли дневного лимита для этого приложения.';
 
   @override
   String aboutToReachLimit(String remainingTime) {
@@ -654,7 +697,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resetSettingsTitle => 'Сбросить настройки?';
 
   @override
-  String get resetSettingsContent => 'Если вы сбросите настройки, вы не сможете их восстановить. Вы хотите сбросить?';
+  String get resetSettingsContent =>
+      'Если вы сбросите настройки, вы не сможете их восстановить. Вы хотите сбросить?';
 
   @override
   String get resetAll => 'Сбросить всё';
@@ -716,7 +760,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get customCategory => 'Пользовательская';
 
   @override
-  String get customCategoryPlaceholder => 'Введите название пользовательской категории';
+  String get customCategoryPlaceholder =>
+      'Введите название пользовательской категории';
 
   @override
   String get uncategorized => 'Без категории';
@@ -832,7 +877,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get autoStartNextSession => 'Автозапуск следующей сессии';
 
   @override
-  String get blockDistractions => 'Блокировать отвлечения во время режима фокусировки';
+  String get blockDistractions =>
+      'Блокировать отвлечения во время режима фокусировки';
 
   @override
   String get enableNotifications => 'Включить уведомления';
@@ -852,13 +898,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get startFocusMode => 'Запустить режим фокусировки';
 
   @override
-  String get loadingProductivityData => 'Загрузка ваших данных продуктивности...';
+  String get loadingProductivityData =>
+      'Загрузка ваших данных продуктивности...';
 
   @override
   String get noActivityDataAvailable => 'Данные об активности пока недоступны';
 
   @override
-  String get startUsingApplications => 'Начните использовать приложения для отслеживания экранного времени и продуктивности.';
+  String get startUsingApplications =>
+      'Начните использовать приложения для отслеживания экранного времени и продуктивности.';
 
   @override
   String get refreshData => 'Обновить данные';
@@ -867,7 +915,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get topApplications => 'Топ приложений';
 
   @override
-  String get noAppUsageDataAvailable => 'Данные об использовании приложений пока недоступны';
+  String get noAppUsageDataAvailable =>
+      'Данные об использовании приложений пока недоступны';
 
   @override
   String get noApplicationDataAvailable => 'Данные о приложениях недоступны';
@@ -933,7 +982,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get launchMinimizedTitle => 'Запускать свёрнутым';
 
   @override
-  String get launchMinimizedDescription => 'Запускать приложение в системном трее (рекомендуется для Windows 10)';
+  String get launchMinimizedDescription =>
+      'Запускать приложение в системном трее (рекомендуется для Windows 10)';
 
   @override
   String get notificationsTitle => 'Уведомления';
@@ -945,25 +995,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String get focusModeNotificationsTitle => 'Режим фокусировки';
 
   @override
-  String get focusModeNotificationsDescription => 'Все уведомления для режима фокусировки';
+  String get focusModeNotificationsDescription =>
+      'Все уведомления для режима фокусировки';
 
   @override
   String get screenTimeNotificationsTitle => 'Экранное время';
 
   @override
-  String get screenTimeNotificationsDescription => 'Все уведомления для ограничения экранного времени';
+  String get screenTimeNotificationsDescription =>
+      'Все уведомления для ограничения экранного времени';
 
   @override
   String get appScreenTimeNotificationsTitle => 'Экранное время приложений';
 
   @override
-  String get appScreenTimeNotificationsDescription => 'Все уведомления для ограничения экранного времени приложений';
+  String get appScreenTimeNotificationsDescription =>
+      'Все уведомления для ограничения экранного времени приложений';
 
   @override
   String get frequentAlertsTitle => 'Интервал частых оповещений';
 
   @override
-  String get frequentAlertsDescription => 'Установить интервал для частых уведомлений (минуты)';
+  String get frequentAlertsDescription =>
+      'Установить интервал для частых уведомлений (минуты)';
 
   @override
   String get clearDataTitle => 'Очистить данные';
@@ -999,7 +1053,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get clearDataDialogTitle => 'Очистить данные?';
 
   @override
-  String get clearDataDialogContent => 'Это очистит всю историю и связанные данные. Вы не сможете их восстановить. Вы хотите продолжить?';
+  String get clearDataDialogContent =>
+      'Это очистит всю историю и связанные данные. Вы не сможете их восстановить. Вы хотите продолжить?';
 
   @override
   String get clearDataButtonLabel => 'Очистить данные';
@@ -1008,7 +1063,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get resetSettingsDialogTitle => 'Сбросить настройки?';
 
   @override
-  String get resetSettingsDialogContent => 'Это сбросит все настройки к значениям по умолчанию. Вы хотите продолжить?';
+  String get resetSettingsDialogContent =>
+      'Это сбросит все настройки к значениям по умолчанию. Вы хотите продолжить?';
 
   @override
   String get resetButtonLabel => 'Сбросить';
@@ -1048,7 +1104,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chart_yAxis_value => 'Значение';
 
   @override
-  String get chart_monthOverMonthChange => 'Изменение по сравнению с прошлым месяцем: ';
+  String get chart_monthOverMonthChange =>
+      'Изменение по сравнению с прошлым месяцем: ';
 
   @override
   String get chart_customRange => 'Пользовательский диапазон';
@@ -1370,7 +1427,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportDataTitle => 'Экспорт данных';
 
   @override
-  String get exportDataDescription => 'Создать резервную копию всех ваших данных';
+  String get exportDataDescription =>
+      'Создать резервную копию всех ваших данных';
 
   @override
   String get importDataTitle => 'Импорт данных';
@@ -1445,7 +1503,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get warningTitle => '⚠️ Предупреждение';
 
   @override
-  String get replaceWarningMessage => 'Это заменит ВСЕ ваши существующие данные. Вы уверены, что хотите продолжить?';
+  String get replaceWarningMessage =>
+      'Это заменит ВСЕ ваши существующие данные. Вы уверены, что хотите продолжить?';
 
   @override
   String get replaceAllButton => 'Заменить всё';
@@ -1475,22 +1534,28 @@ class AppLocalizationsRu extends AppLocalizations {
   String get skippedLabel => 'Пропущено';
 
   @override
-  String get faqSettingsQ4 => 'Как я могу восстановить или экспортировать свои данные?';
+  String get faqSettingsQ4 =>
+      'Как я могу восстановить или экспортировать свои данные?';
 
   @override
-  String get faqSettingsA4 => 'Вы можете перейти в настройки, там вы найдёте раздел Резервное копирование и восстановление. Здесь вы можете экспортировать или импортировать данные. Обратите внимание, что экспортированный файл данных сохраняется в Документах в папке Scolect-Backups, и только этот файл можно использовать для восстановления данных, никакой другой файл.';
+  String get faqSettingsA4 =>
+      'Вы можете перейти в настройки, там вы найдёте раздел Резервное копирование и восстановление. Здесь вы можете экспортировать или импортировать данные. Обратите внимание, что экспортированный файл данных сохраняется в Документах в папке Scolect-Backups, и только этот файл можно использовать для восстановления данных, никакой другой файл.';
 
   @override
-  String get faqGeneralQ6 => 'Как я могу изменить язык и какие языки доступны, а также что делать, если я обнаружил неправильный перевод?';
+  String get faqGeneralQ6 =>
+      'Как я могу изменить язык и какие языки доступны, а также что делать, если я обнаружил неправильный перевод?';
 
   @override
-  String get faqGeneralA6 => 'Язык можно изменить в разделе Настройки - Общие, все доступные языки перечислены там. Вы можете запросить перевод, нажав на Связаться и отправив свой запрос с указанием нужного языка. Имейте в виду, что перевод может быть неточным, так как он генерируется ИИ из английского, и если вы хотите сообщить об этом, вы можете сделать это через сообщение об ошибке, связаться с нами или, если вы разработчик, открыть issue на Github. Вклад в перевод также приветствуется!';
+  String get faqGeneralA6 =>
+      'Язык можно изменить в разделе Настройки - Общие, все доступные языки перечислены там. Вы можете запросить перевод, нажав на Связаться и отправив свой запрос с указанием нужного языка. Имейте в виду, что перевод может быть неточным, так как он генерируется ИИ из английского, и если вы хотите сообщить об этом, вы можете сделать это через сообщение об ошибке, связаться с нами или, если вы разработчик, открыть issue на Github. Вклад в перевод также приветствуется!';
 
   @override
-  String get faqGeneralQ7 => 'Что делать, если я обнаружил неправильный перевод?';
+  String get faqGeneralQ7 =>
+      'Что делать, если я обнаружил неправильный перевод?';
 
   @override
-  String get faqGeneralA7 => 'Перевод может быть неточным, так как он генерируется ИИ из английского, и если вы хотите сообщить об этом, вы можете сделать это через сообщение об ошибке, связаться с нами или, если вы разработчик, открыть issue на Github. Вклад в перевод также приветствуется!';
+  String get faqGeneralA7 =>
+      'Перевод может быть неточным, так как он генерируется ИИ из английского, и если вы хотите сообщить об этом, вы можете сделать это через сообщение об ошибке, связаться с нами или, если вы разработчик, открыть issue на Github. Вклад в перевод также приветствуется!';
 
   @override
   String get activityTrackingSection => 'Отслеживание Активности';
@@ -1499,7 +1564,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get idleDetectionTitle => 'Обнаружение Бездействия';
 
   @override
-  String get idleDetectionDescription => 'Прекратить отслеживание при неактивности';
+  String get idleDetectionDescription =>
+      'Прекратить отслеживание при неактивности';
 
   @override
   String get idleTimeoutTitle => 'Тайм-аут Бездействия';
@@ -1510,13 +1576,15 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get advancedWarning => 'Расширенные функции могут увеличить использование ресурсов. Включайте только при необходимости.';
+  String get advancedWarning =>
+      'Расширенные функции могут увеличить использование ресурсов. Включайте только при необходимости.';
 
   @override
   String get monitorAudioTitle => 'Мониторинг Системного Звука';
 
   @override
-  String get monitorAudioDescription => 'Обнаружение активности по воспроизведению звука';
+  String get monitorAudioDescription =>
+      'Обнаружение активности по воспроизведению звука';
 
   @override
   String get audioSensitivityTitle => 'Чувствительность Звука';
@@ -1530,19 +1598,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get monitorControllersTitle => 'Мониторинг Игровых Контроллеров';
 
   @override
-  String get monitorControllersDescription => 'Обнаружение контроллеров Xbox/XInput';
+  String get monitorControllersDescription =>
+      'Обнаружение контроллеров Xbox/XInput';
 
   @override
   String get monitorHIDTitle => 'Мониторинг HID Устройств';
 
   @override
-  String get monitorHIDDescription => 'Обнаружение рулей, планшетов, пользовательских устройств';
+  String get monitorHIDDescription =>
+      'Обнаружение рулей, планшетов, пользовательских устройств';
 
   @override
   String get setIdleTimeoutTitle => 'Установить Тайм-аут Бездействия';
 
   @override
-  String get idleTimeoutDialogDescription => 'Выберите, сколько ждать перед признанием вас бездействующим:';
+  String get idleTimeoutDialogDescription =>
+      'Выберите, сколько ждать перед признанием вас бездействующим:';
 
   @override
   String get seconds30 => '30 секунд';
@@ -1637,7 +1708,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get voiceGenderTitle => 'Пол голоса';
 
   @override
-  String get voiceGenderDescription => 'Выберите пол голоса для уведомлений таймера';
+  String get voiceGenderDescription =>
+      'Выберите пол голоса для уведомлений таймера';
 
   @override
   String get voiceGenderMale => 'Мужской';
@@ -1646,7 +1718,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get voiceGenderFemale => 'Женский';
 
   @override
-  String get alertsLimitsSubtitle => 'Управляйте лимитами экранного времени и уведомлениями';
+  String get alertsLimitsSubtitle =>
+      'Управляйте лимитами экранного времени и уведомлениями';
 
   @override
   String get applicationsSubtitle => 'Управляйте отслеживаемыми приложениями';
@@ -1706,19 +1779,23 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noResultsFound => 'Результаты не найдены';
 
   @override
-  String get tryDifferentKeywords => 'Попробуйте поискать с другими ключевыми словами';
+  String get tryDifferentKeywords =>
+      'Попробуйте поискать с другими ключевыми словами';
 
   @override
   String get clearSearch => 'Очистить поиск';
 
   @override
-  String get greetingMorning => 'Доброе утро! Вот краткая информация о вашей активности.';
+  String get greetingMorning =>
+      'Доброе утро! Вот краткая информация о вашей активности.';
 
   @override
-  String get greetingAfternoon => 'Добрый день! Вот краткая информация о вашей активности.';
+  String get greetingAfternoon =>
+      'Добрый день! Вот краткая информация о вашей активности.';
 
   @override
-  String get greetingEvening => 'Добрый вечер! Вот краткая информация о вашей активности.';
+  String get greetingEvening =>
+      'Добрый вечер! Вот краткая информация о вашей активности.';
 
   @override
   String get screenTimeProgress => 'Экранное\nВремя';
@@ -1727,7 +1804,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get productiveScoreProgress => 'Показатель\nПродуктивности';
 
   @override
-  String get focusModeSubtitle => 'Оставайтесь сосредоточенными, будьте продуктивны';
+  String get focusModeSubtitle =>
+      'Оставайтесь сосредоточенными, будьте продуктивны';
 
   @override
   String get thisWeek => 'Эта неделя';
@@ -1832,19 +1910,24 @@ class AppLocalizationsRu extends AppLocalizations {
   String get permission_error => 'Ошибка разрешения';
 
   @override
-  String get notification_permission_denied => 'Разрешение на уведомления отклонено';
+  String get notification_permission_denied =>
+      'Разрешение на уведомления отклонено';
 
   @override
-  String get notification_permission_denied_message => 'ScreenTime требуется разрешение на уведомления для отправки предупреждений и напоминаний.\n\nХотите открыть системные настройки, чтобы включить уведомления?';
+  String get notification_permission_denied_message =>
+      'ScreenTime требуется разрешение на уведомления для отправки предупреждений и напоминаний.\n\nХотите открыть системные настройки, чтобы включить уведомления?';
 
   @override
-  String get notification_permission_denied_hint => 'Откройте системные настройки, чтобы включить уведомления для ScreenTime.';
+  String get notification_permission_denied_hint =>
+      'Откройте системные настройки, чтобы включить уведомления для ScreenTime.';
 
   @override
-  String get notification_permission_required => 'Требуется разрешение на уведомления';
+  String get notification_permission_required =>
+      'Требуется разрешение на уведомления';
 
   @override
-  String get notification_permission_required_message => 'ScreenTime требуется разрешение для отправки уведомлений.';
+  String get notification_permission_required_message =>
+      'ScreenTime требуется разрешение для отправки уведомлений.';
 
   @override
   String get open_settings => 'Открыть настройки';
@@ -1868,7 +1951,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get off => 'Выкл';
 
   @override
-  String get enable_notification_permission_hint => 'Включите разрешение на уведомления для получения оповещений';
+  String get enable_notification_permission_hint =>
+      'Включите разрешение на уведомления для получения оповещений';
 
   @override
   String minutes_format(int minutes) {
@@ -1968,19 +2052,22 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled => 'Системные уведомления отключены. Включите их в системных настройках для оповещений о фокусе.';
+  String get systemNotificationsDisabled =>
+      'Системные уведомления отключены. Включите их в системных настройках для оповещений о фокусе.';
 
   @override
   String get openSystemSettings => 'Открыть Системные Настройки';
 
   @override
-  String get appNotificationsDisabled => 'Уведомления отключены в настройках приложения. Включите их для получения оповещений о фокусе.';
+  String get appNotificationsDisabled =>
+      'Уведомления отключены в настройках приложения. Включите их для получения оповещений о фокусе.';
 
   @override
   String get goToSettings => 'Перейти в Настройки';
 
   @override
-  String get focusModeNotificationsDisabled => 'Уведомления режима фокусировки отключены. Включите их для получения оповещений о сеансах.';
+  String get focusModeNotificationsDisabled =>
+      'Уведомления режима фокусировки отключены. Включите их для получения оповещений о сеансах.';
 
   @override
   String get notificationsDisabled => 'Уведомления Отключены';
@@ -1992,10 +2079,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get systemSettingsRequired => 'Требуются Системные Настройки';
 
   @override
-  String get notificationsDisabledSystemLevel => 'Уведомления отключены на системном уровне. Чтобы включить:';
+  String get notificationsDisabledSystemLevel =>
+      'Уведомления отключены на системном уровне. Чтобы включить:';
 
   @override
-  String get step1OpenSystemSettings => '1. Откройте Системные Настройки (Системные Параметры)';
+  String get step1OpenSystemSettings =>
+      '1. Откройте Системные Настройки (Системные Параметры)';
 
   @override
   String get step2GoToNotifications => '2. Перейдите в Уведомления';
@@ -2004,10 +2093,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get step3FindApp => '3. Найдите и выберите Scolect';
 
   @override
-  String get step4EnableNotifications => '4. Включите \"Разрешить уведомления\"';
+  String get step4EnableNotifications =>
+      '4. Включите \"Разрешить уведомления\"';
 
   @override
-  String get returnToAppMessage => 'Затем вернитесь в это приложение, и уведомления будут работать.';
+  String get returnToAppMessage =>
+      'Затем вернитесь в это приложение, и уведомления будут работать.';
 
   @override
   String get gotIt => 'Понятно';
@@ -2184,7 +2275,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get primaryColors => 'Основные цвета';
 
   @override
-  String get primaryColorsDesc => 'Основные акцентные цвета, используемые во всем приложении';
+  String get primaryColorsDesc =>
+      'Основные акцентные цвета, используемые во всем приложении';
 
   @override
   String get primaryAccent => 'Основной акцент';
@@ -2226,10 +2318,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get backgroundColors => 'Цвета фона';
 
   @override
-  String get backgroundColorsLightDesc => 'Основные фоновые поверхности для светлого режима';
+  String get backgroundColorsLightDesc =>
+      'Основные фоновые поверхности для светлого режима';
 
   @override
-  String get backgroundColorsDarkDesc => 'Основные фоновые поверхности для темного режима';
+  String get backgroundColorsDarkDesc =>
+      'Основные фоновые поверхности для темного режима';
 
   @override
   String get background => 'Фон';
@@ -2291,7 +2385,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get sampleCardTitle => 'Название примерной карточки';
 
   @override
-  String get sampleSecondaryText => 'Это вторичный текст, который отображается ниже.';
+  String get sampleSecondaryText =>
+      'Это вторичный текст, который отображается ниже.';
 
   @override
   String get primary => 'Основной';
@@ -2306,13 +2401,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get launchAtStartupTitle => 'Запуск при старте';
 
   @override
-  String get launchAtStartupDescription => 'Автоматически запускать Scolect при входе в систему на вашем компьютере';
+  String get launchAtStartupDescription =>
+      'Автоматически запускать Scolect при входе в систему на вашем компьютере';
 
   @override
-  String get inputMonitoringPermissionTitle => 'Мониторинг клавиатуры недоступен';
+  String get inputMonitoringPermissionTitle =>
+      'Мониторинг клавиатуры недоступен';
 
   @override
-  String get inputMonitoringPermissionDescription => 'Включите разрешение на мониторинг ввода для отслеживания активности клавиатуры. В настоящее время отслеживается только ввод мыши.';
+  String get inputMonitoringPermissionDescription =>
+      'Включите разрешение на мониторинг ввода для отслеживания активности клавиатуры. В настоящее время отслеживается только ввод мыши.';
 
   @override
   String get openSettings => 'Открыть настройки';
@@ -2321,7 +2419,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get permissionGrantedTitle => 'Разрешение предоставлено';
 
   @override
-  String get permissionGrantedDescription => 'Для применения мониторинга ввода необходимо перезапустить приложение.';
+  String get permissionGrantedDescription =>
+      'Для применения мониторинга ввода необходимо перезапустить приложение.';
 
   @override
   String get continueButton => 'Продолжить';
@@ -2330,10 +2429,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get restartRequiredTitle => 'Требуется перезапуск';
 
   @override
-  String get restartRequiredDescription => 'Чтобы включить мониторинг клавиатуры, приложение необходимо перезапустить. Это требование macOS.';
+  String get restartRequiredDescription =>
+      'Чтобы включить мониторинг клавиатуры, приложение необходимо перезапустить. Это требование macOS.';
 
   @override
-  String get restartNote => 'После перезапуска приложение автоматически запустится снова.';
+  String get restartNote =>
+      'После перезапуска приложение автоматически запустится снова.';
 
   @override
   String get restartNow => 'Перезапустить сейчас';
@@ -2345,7 +2446,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get restartFailedTitle => 'Ошибка перезапуска';
 
   @override
-  String get restartFailedMessage => 'Не удалось автоматически перезапустить приложение. Пожалуйста, выйдите (Cmd+Q) и запустите его вручную.';
+  String get restartFailedMessage =>
+      'Не удалось автоматически перезапустить приложение. Пожалуйста, выйдите (Cmd+Q) и запустите его вручную.';
 
   @override
   String get exportAnalyticsReport => 'Экспорт Аналитического Отчёта';
@@ -2357,25 +2459,30 @@ class AppLocalizationsRu extends AppLocalizations {
   String get beautifulExcelReport => 'Красивый Excel Отчёт';
 
   @override
-  String get beautifulExcelReportDescription => 'Великолепная, красочная таблица с диаграммами, эмодзи и аналитикой ✨';
+  String get beautifulExcelReportDescription =>
+      'Великолепная, красочная таблица с диаграммами, эмодзи и аналитикой ✨';
 
   @override
   String get excelReportIncludes => 'Excel отчёт включает:';
 
   @override
-  String get summarySheetDescription => '📊 Лист Сводки - Ключевые показатели с трендами';
+  String get summarySheetDescription =>
+      '📊 Лист Сводки - Ключевые показатели с трендами';
 
   @override
-  String get dailyBreakdownDescription => '📅 Ежедневная Разбивка - Визуальные паттерны использования';
+  String get dailyBreakdownDescription =>
+      '📅 Ежедневная Разбивка - Визуальные паттерны использования';
 
   @override
-  String get appsSheetDescription => '📱 Лист Приложений - Подробные рейтинги приложений';
+  String get appsSheetDescription =>
+      '📱 Лист Приложений - Подробные рейтинги приложений';
 
   @override
   String get insightsDescription => '💡 Инсайты - Умные рекомендации';
 
   @override
-  String get beautifulExcelExportSuccess => 'Красивый Excel отчёт успешно экспортирован! 🎉';
+  String get beautifulExcelExportSuccess =>
+      'Красивый Excel отчёт успешно экспортирован! 🎉';
 
   @override
   String failedToExportReport(String error) {
@@ -2565,7 +2672,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions => 'Нет Сессий Фокусировки: Рассмотрите использование режима фокусировки для повышения продуктивности';
+  String get insightNoFocusSessions =>
+      'Нет Сессий Фокусировки: Рассмотрите использование режима фокусировки для повышения продуктивности';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2589,7 +2697,8 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(String appName, String percentage, String duration) {
+  String insightMostUsedApp(
+      String appName, String percentage, String duration) {
     return 'Самое Используемое Приложение: $appName занимает $percentage% вашего времени ($duration)';
   }
 
@@ -2602,34 +2711,44 @@ class AppLocalizationsRu extends AppLocalizations {
   String get insightNoInsights => 'Значительные инсайты недоступны';
 
   @override
-  String get recScheduleFocusSessions => 'Попробуйте планировать больше сессий фокусировки в течение дня для повышения продуктивности';
+  String get recScheduleFocusSessions =>
+      'Попробуйте планировать больше сессий фокусировки в течение дня для повышения продуктивности';
 
   @override
-  String get recSetAppLimits => 'Рассмотрите установку лимитов на развлекательные приложения';
+  String get recSetAppLimits =>
+      'Рассмотрите установку лимитов на развлекательные приложения';
 
   @override
-  String get recAimForFocusSessions => 'Стремитесь к минимум 1-2 сессиям фокусировки в день для формирования постоянной привычки';
+  String get recAimForFocusSessions =>
+      'Стремитесь к минимум 1-2 сессиям фокусировки в день для формирования постоянной привычки';
 
   @override
-  String get recTakeBreaks => 'Ваше ежедневное экранное время довольно высокое. Попробуйте делать регулярные перерывы по правилу 20-20-20';
+  String get recTakeBreaks =>
+      'Ваше ежедневное экранное время довольно высокое. Попробуйте делать регулярные перерывы по правилу 20-20-20';
 
   @override
-  String get recSetDailyGoals => 'Рассмотрите установку ежедневных целей экранного времени для постепенного снижения использования';
+  String get recSetDailyGoals =>
+      'Рассмотрите установку ежедневных целей экранного времени для постепенного снижения использования';
 
   @override
-  String get recBalanceEntertainment => 'Развлекательные приложения занимают большую часть вашего времени. Рассмотрите баланс с более продуктивными занятиями';
+  String get recBalanceEntertainment =>
+      'Развлекательные приложения занимают большую часть вашего времени. Рассмотрите баланс с более продуктивными занятиями';
 
   @override
-  String get recReviewUsagePatterns => 'Ваше экранное время значительно увеличилось. Пересмотрите паттерны использования и установите границы';
+  String get recReviewUsagePatterns =>
+      'Ваше экранное время значительно увеличилось. Пересмотрите паттерны использования и установите границы';
 
   @override
-  String get recScheduleFocusedWork => 'Ваше продуктивное время уменьшилось. Попробуйте планировать блоки сфокусированной работы в календаре';
+  String get recScheduleFocusedWork =>
+      'Ваше продуктивное время уменьшилось. Попробуйте планировать блоки сфокусированной работы в календаре';
 
   @override
-  String get recKeepUpGreatWork => 'Продолжайте в том же духе! Ваши привычки экранного времени выглядят здоровыми';
+  String get recKeepUpGreatWork =>
+      'Продолжайте в том же духе! Ваши привычки экранного времени выглядят здоровыми';
 
   @override
-  String get recContinueFocusSessions => 'Продолжайте использовать сессии фокусировки для поддержания продуктивности';
+  String get recContinueFocusSessions =>
+      'Продолжайте использовать сессии фокусировки для поддержания продуктивности';
 
   @override
   String get sheetSummary => 'Сводка';
@@ -2742,19 +2861,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get saveAsFile => 'Сохранить как файл';
 
   @override
-  String get saveThemeAsJSONFile => 'Сохранить тему как JSON-файл на устройство';
+  String get saveThemeAsJSONFile =>
+      'Сохранить тему как JSON-файл на устройство';
 
   @override
   String get copyToClipboard => 'Копировать в буфер обмена';
 
   @override
-  String get copyThemeJSONToClipboard => 'Копировать данные темы в буфер обмена';
+  String get copyThemeJSONToClipboard =>
+      'Копировать данные темы в буфер обмена';
 
   @override
   String get share => 'Поделиться';
 
   @override
-  String get shareThemeViaSystemSheet => 'Поделиться темой через системное меню';
+  String get shareThemeViaSystemSheet =>
+      'Поделиться темой через системное меню';
 
   @override
   String get chooseImportMethod => 'Выберите способ импорта темы:';
@@ -2763,13 +2885,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loadFromFile => 'Загрузить из файла';
 
   @override
-  String get selectJSONFileFromDevice => 'Выберите JSON-файл темы с вашего устройства';
+  String get selectJSONFileFromDevice =>
+      'Выберите JSON-файл темы с вашего устройства';
 
   @override
   String get pasteFromClipboard => 'Вставить из буфера обмена';
 
   @override
-  String get importFromClipboardJSON => 'Импортировать тему из JSON-данных буфера обмена';
+  String get importFromClipboardJSON =>
+      'Импортировать тему из JSON-данных буфера обмена';
 
   @override
   String get importFromFile => 'Импортировать тему из файла';
@@ -2798,13 +2922,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noThemeDataFound => 'Данные темы не найдены';
 
   @override
-  String get invalidThemeFormat => 'Неверный формат темы. Пожалуйста, проверьте данные JSON.';
+  String get invalidThemeFormat =>
+      'Неверный формат темы. Пожалуйста, проверьте данные JSON.';
 
   @override
   String get trackingModeTitle => 'Режим отслеживания';
 
   @override
-  String get trackingModeDescription => 'Выберите способ отслеживания использования приложения';
+  String get trackingModeDescription =>
+      'Выберите способ отслеживания использования приложения';
 
   @override
   String get trackingModePolling => 'Стандартный (Низкое потребление)';
@@ -2813,13 +2939,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get trackingModePrecise => 'Точный (Высокая точность)';
 
   @override
-  String get trackingModePollingHint => 'Проверяет каждую минуту - меньше ресурсов';
+  String get trackingModePollingHint =>
+      'Проверяет каждую минуту - меньше ресурсов';
 
   @override
-  String get trackingModePreciseHint => 'Отслеживание в реальном времени - выше точность, больше ресурсов';
+  String get trackingModePreciseHint =>
+      'Отслеживание в реальном времени - выше точность, больше ресурсов';
 
   @override
-  String get trackingModeChangeError => 'Не удалось изменить режим отслеживания. Пожалуйста, попробуйте снова.';
+  String get trackingModeChangeError =>
+      'Не удалось изменить режим отслеживания. Пожалуйста, попробуйте снова.';
 
   @override
   String get errorTitle => 'Ошибка';
@@ -2828,7 +2957,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get monitorKeyboardTitle => 'Отслеживать Клавиатуру';
 
   @override
-  String get monitorKeyboardDescription => 'Отслеживать активность клавиатуры для обнаружения присутствия пользователя';
+  String get monitorKeyboardDescription =>
+      'Отслеживать активность клавиатуры для обнаружения присутствия пользователя';
 
   @override
   String get changelogWhatsNew => 'Что нового';
@@ -2845,7 +2975,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get changelogUnableToLoad => 'Не удалось загрузить список изменений';
 
   @override
-  String get changelogErrorDescription => 'Не удалось получить список изменений для этой версии. Проверьте подключение к интернету или посетите страницу релизов на GitHub.';
+  String get changelogErrorDescription =>
+      'Не удалось получить список изменений для этой версии. Проверьте подключение к интернету или посетите страницу релизов на GitHub.';
 
   @override
   String get allTracking => 'Все приложения';
@@ -2946,7 +3077,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get productiveAppMotivation => 'Продуктивное приложение — так держать';
 
   @override
-  String get nonProductiveAppSuggestion => 'Непродуктивное — рассмотрите сокращение';
+  String get nonProductiveAppSuggestion =>
+      'Непродуктивное — рассмотрите сокращение';
 
   @override
   String get legendUsage => 'Использование';

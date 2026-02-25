@@ -9,7 +9,8 @@ class AppLocalizationsBn extends AppLocalizations {
   AppLocalizationsBn([String locale = 'bn']) : super(locale);
 
   @override
-  String get appWindowTitle => 'টাইমমার্ক - স্ক্রিন টাইম এবং অ্যাপ ব্যবহার ট্র্যাক করুন';
+  String get appWindowTitle =>
+      'টাইমমার্ক - স্ক্রিন টাইম এবং অ্যাপ ব্যবহার ট্র্যাক করুন';
 
   @override
   String get appName => 'টাইমমার্ক';
@@ -107,151 +108,182 @@ class AppLocalizationsBn extends AppLocalizations {
   String get faqGeneralQ1 => 'এই অ্যাপ কীভাবে স্ক্রিন টাইম ট্র্যাক করে?';
 
   @override
-  String get faqGeneralA1 => 'অ্যাপটি আপনার ডিভাইসের ব্যবহার রিয়েল-টাইমে পর্যবেক্ষণ করে, বিভিন্ন অ্যাপ্লিকেশনে ব্যয় করা সময় ট্র্যাক করে। এটি আপনার ডিজিটাল অভ্যাসের ব্যাপক অন্তর্দৃষ্টি প্রদান করে, যার মধ্যে মোট স্ক্রিন টাইম, উৎপাদনশীল সময় এবং অ্যাপ্লিকেশন-নির্দিষ্ট ব্যবহার অন্তর্ভুক্ত।';
+  String get faqGeneralA1 =>
+      'অ্যাপটি আপনার ডিভাইসের ব্যবহার রিয়েল-টাইমে পর্যবেক্ষণ করে, বিভিন্ন অ্যাপ্লিকেশনে ব্যয় করা সময় ট্র্যাক করে। এটি আপনার ডিজিটাল অভ্যাসের ব্যাপক অন্তর্দৃষ্টি প্রদান করে, যার মধ্যে মোট স্ক্রিন টাইম, উৎপাদনশীল সময় এবং অ্যাপ্লিকেশন-নির্দিষ্ট ব্যবহার অন্তর্ভুক্ত।';
 
   @override
   String get faqGeneralQ2 => 'কোন অ্যাপকে \'উৎপাদনশীল\' করে তোলে?';
 
   @override
-  String get faqGeneralA2 => 'আপনি \'অ্যাপ্লিকেশন\' বিভাগে ম্যানুয়ালি অ্যাপগুলিকে উৎপাদনশীল হিসাবে চিহ্নিত করতে পারেন। উৎপাদনশীল অ্যাপগুলি আপনার উৎপাদনশীলতা স্কোরে অবদান রাখে, যা কাজ-সম্পর্কিত বা উপকারী অ্যাপ্লিকেশনে ব্যয় করা স্ক্রিন টাইমের শতাংশ গণনা করে।';
+  String get faqGeneralA2 =>
+      'আপনি \'অ্যাপ্লিকেশন\' বিভাগে ম্যানুয়ালি অ্যাপগুলিকে উৎপাদনশীল হিসাবে চিহ্নিত করতে পারেন। উৎপাদনশীল অ্যাপগুলি আপনার উৎপাদনশীলতা স্কোরে অবদান রাখে, যা কাজ-সম্পর্কিত বা উপকারী অ্যাপ্লিকেশনে ব্যয় করা স্ক্রিন টাইমের শতাংশ গণনা করে।';
 
   @override
   String get faqGeneralQ3 => 'স্ক্রিন টাইম ট্র্যাকিং কতটা সঠিক?';
 
   @override
-  String get faqGeneralA3 => 'অ্যাপটি আপনার ডিভাইস ব্যবহারের সুনির্দিষ্ট পরিমাপ প্রদান করতে সিস্টেম-স্তরের ট্র্যাকিং ব্যবহার করে। এটি ন্যূনতম ব্যাটারি প্রভাবে প্রতিটি অ্যাপ্লিকেশনের ফোরগ্রাউন্ড সময় ক্যাপচার করে।';
+  String get faqGeneralA3 =>
+      'অ্যাপটি আপনার ডিভাইস ব্যবহারের সুনির্দিষ্ট পরিমাপ প্রদান করতে সিস্টেম-স্তরের ট্র্যাকিং ব্যবহার করে। এটি ন্যূনতম ব্যাটারি প্রভাবে প্রতিটি অ্যাপ্লিকেশনের ফোরগ্রাউন্ড সময় ক্যাপচার করে।';
 
   @override
-  String get faqGeneralQ4 => 'আমি কি আমার অ্যাপ শ্রেণীবিভাগ কাস্টমাইজ করতে পারি?';
+  String get faqGeneralQ4 =>
+      'আমি কি আমার অ্যাপ শ্রেণীবিভাগ কাস্টমাইজ করতে পারি?';
 
   @override
-  String get faqGeneralA4 => 'অবশ্যই! আপনি কাস্টম ক্যাটাগরি তৈরি করতে পারেন, নির্দিষ্ট ক্যাটাগরিতে অ্যাপ বরাদ্দ করতে পারেন এবং \'অ্যাপ্লিকেশন\' বিভাগে এই বরাদ্দগুলি সহজেই পরিবর্তন করতে পারেন। এটি আরও অর্থপূর্ণ ব্যবহার বিশ্লেষণ তৈরি করতে সাহায্য করে।';
+  String get faqGeneralA4 =>
+      'অবশ্যই! আপনি কাস্টম ক্যাটাগরি তৈরি করতে পারেন, নির্দিষ্ট ক্যাটাগরিতে অ্যাপ বরাদ্দ করতে পারেন এবং \'অ্যাপ্লিকেশন\' বিভাগে এই বরাদ্দগুলি সহজেই পরিবর্তন করতে পারেন। এটি আরও অর্থপূর্ণ ব্যবহার বিশ্লেষণ তৈরি করতে সাহায্য করে।';
 
   @override
   String get faqGeneralQ5 => 'এই অ্যাপ থেকে আমি কী অন্তর্দৃষ্টি পেতে পারি?';
 
   @override
-  String get faqGeneralA5 => 'অ্যাপটি ব্যাপক অন্তর্দৃষ্টি প্রদান করে যার মধ্যে উৎপাদনশীলতা স্কোর, দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, ফোকাস সেশন ট্র্যাকিং এবং গ্রাফ এবং পাই চার্টের মতো ভিজ্যুয়াল বিশ্লেষণ অন্তর্ভুক্ত যা আপনাকে আপনার ডিজিটাল অভ্যাস বুঝতে এবং উন্নত করতে সাহায্য করে।';
+  String get faqGeneralA5 =>
+      'অ্যাপটি ব্যাপক অন্তর্দৃষ্টি প্রদান করে যার মধ্যে উৎপাদনশীলতা স্কোর, দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, ফোকাস সেশন ট্র্যাকিং এবং গ্রাফ এবং পাই চার্টের মতো ভিজ্যুয়াল বিশ্লেষণ অন্তর্ভুক্ত যা আপনাকে আপনার ডিজিটাল অভ্যাস বুঝতে এবং উন্নত করতে সাহায্য করে।';
 
   @override
-  String get faqAppsQ1 => 'আমি কীভাবে নির্দিষ্ট অ্যাপ ট্র্যাকিং থেকে লুকাতে পারি?';
+  String get faqAppsQ1 =>
+      'আমি কীভাবে নির্দিষ্ট অ্যাপ ট্র্যাকিং থেকে লুকাতে পারি?';
 
   @override
-  String get faqAppsA1 => '\'অ্যাপ্লিকেশন\' বিভাগে, আপনি অ্যাপগুলির দৃশ্যমানতা টগল করতে পারেন।';
+  String get faqAppsA1 =>
+      '\'অ্যাপ্লিকেশন\' বিভাগে, আপনি অ্যাপগুলির দৃশ্যমানতা টগল করতে পারেন।';
 
   @override
-  String get faqAppsQ2 => 'আমি কি আমার অ্যাপ্লিকেশনগুলি অনুসন্ধান এবং ফিল্টার করতে পারি?';
+  String get faqAppsQ2 =>
+      'আমি কি আমার অ্যাপ্লিকেশনগুলি অনুসন্ধান এবং ফিল্টার করতে পারি?';
 
   @override
-  String get faqAppsA2 => 'হ্যাঁ, অ্যাপ্লিকেশন বিভাগে একটি অনুসন্ধান কার্যকারিতা এবং ফিল্টারিং বিকল্প অন্তর্ভুক্ত রয়েছে। আপনি ক্যাটাগরি, উৎপাদনশীলতার স্থিতি, ট্র্যাকিং স্থিতি এবং দৃশ্যমানতা অনুযায়ী অ্যাপ ফিল্টার করতে পারেন।';
+  String get faqAppsA2 =>
+      'হ্যাঁ, অ্যাপ্লিকেশন বিভাগে একটি অনুসন্ধান কার্যকারিতা এবং ফিল্টারিং বিকল্প অন্তর্ভুক্ত রয়েছে। আপনি ক্যাটাগরি, উৎপাদনশীলতার স্থিতি, ট্র্যাকিং স্থিতি এবং দৃশ্যমানতা অনুযায়ী অ্যাপ ফিল্টার করতে পারেন।';
 
   @override
   String get faqAppsQ3 => 'অ্যাপ্লিকেশনের জন্য কোন সম্পাদনা বিকল্প উপলব্ধ?';
 
   @override
-  String get faqAppsA3 => 'প্রতিটি অ্যাপ্লিকেশনের জন্য, আপনি সম্পাদনা করতে পারেন: ক্যাটাগরি বরাদ্দ, উৎপাদনশীলতার স্থিতি, ব্যবহার ট্র্যাকিং, রিপোর্টে দৃশ্যমানতা এবং পৃথক দৈনিক সময়সীমা সেট করুন।';
+  String get faqAppsA3 =>
+      'প্রতিটি অ্যাপ্লিকেশনের জন্য, আপনি সম্পাদনা করতে পারেন: ক্যাটাগরি বরাদ্দ, উৎপাদনশীলতার স্থিতি, ব্যবহার ট্র্যাকিং, রিপোর্টে দৃশ্যমানতা এবং পৃথক দৈনিক সময়সীমা সেট করুন।';
 
   @override
   String get faqAppsQ4 => 'অ্যাপ্লিকেশন ক্যাটাগরি কীভাবে নির্ধারণ করা হয়?';
 
   @override
-  String get faqAppsA4 => 'প্রাথমিক ক্যাটাগরিগুলি সিস্টেম-প্রস্তাবিত, কিন্তু আপনার কর্মপ্রবাহ এবং পছন্দ অনুযায়ী কাস্টম ক্যাটাগরি তৈরি, পরিবর্তন এবং বরাদ্দ করার সম্পূর্ণ নিয়ন্ত্রণ আপনার কাছে রয়েছে।';
+  String get faqAppsA4 =>
+      'প্রাথমিক ক্যাটাগরিগুলি সিস্টেম-প্রস্তাবিত, কিন্তু আপনার কর্মপ্রবাহ এবং পছন্দ অনুযায়ী কাস্টম ক্যাটাগরি তৈরি, পরিবর্তন এবং বরাদ্দ করার সম্পূর্ণ নিয়ন্ত্রণ আপনার কাছে রয়েছে।';
 
   @override
   String get faqReportsQ1 => 'কোন ধরনের রিপোর্ট উপলব্ধ?';
 
   @override
-  String get faqReportsA1 => 'রিপোর্টে অন্তর্ভুক্ত: মোট স্ক্রিন টাইম, উৎপাদনশীল সময়, সবচেয়ে ব্যবহৃত অ্যাপ, ফোকাস সেশন, দৈনিক স্ক্রিন টাইম গ্রাফ, ক্যাটাগরি ব্রেকডাউন পাই চার্ট, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, সাপ্তাহিক ব্যবহারের প্রবণতা এবং দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন বিশ্লেষণ।';
+  String get faqReportsA1 =>
+      'রিপোর্টে অন্তর্ভুক্ত: মোট স্ক্রিন টাইম, উৎপাদনশীল সময়, সবচেয়ে ব্যবহৃত অ্যাপ, ফোকাস সেশন, দৈনিক স্ক্রিন টাইম গ্রাফ, ক্যাটাগরি ব্রেকডাউন পাই চার্ট, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, সাপ্তাহিক ব্যবহারের প্রবণতা এবং দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন বিশ্লেষণ।';
 
   @override
   String get faqReportsQ2 => 'অ্যাপ্লিকেশন ব্যবহারের রিপোর্ট কতটা বিস্তারিত?';
 
   @override
-  String get faqReportsA2 => 'বিস্তারিত অ্যাপ্লিকেশন ব্যবহারের রিপোর্টে দেখানো হয়: অ্যাপের নাম, ক্যাটাগরি, মোট ব্যয় করা সময়, উৎপাদনশীলতার স্থিতি এবং ব্যবহারের সারাংশ, দৈনিক সীমা, ব্যবহারের প্রবণতা এবং উৎপাদনশীলতা মেট্রিক্সের মতো গভীর অন্তর্দৃষ্টি সহ একটি \'অ্যাকশন\' বিভাগ অফার করে।';
+  String get faqReportsA2 =>
+      'বিস্তারিত অ্যাপ্লিকেশন ব্যবহারের রিপোর্টে দেখানো হয়: অ্যাপের নাম, ক্যাটাগরি, মোট ব্যয় করা সময়, উৎপাদনশীলতার স্থিতি এবং ব্যবহারের সারাংশ, দৈনিক সীমা, ব্যবহারের প্রবণতা এবং উৎপাদনশীলতা মেট্রিক্সের মতো গভীর অন্তর্দৃষ্টি সহ একটি \'অ্যাকশন\' বিভাগ অফার করে।';
 
   @override
-  String get faqReportsQ3 => 'আমি কি সময়ের সাথে আমার ব্যবহারের প্রবণতা বিশ্লেষণ করতে পারি?';
+  String get faqReportsQ3 =>
+      'আমি কি সময়ের সাথে আমার ব্যবহারের প্রবণতা বিশ্লেষণ করতে পারি?';
 
   @override
-  String get faqReportsA3 => 'হ্যাঁ! অ্যাপটি সপ্তাহ-থেকে-সপ্তাহ তুলনা প্রদান করে, গত সপ্তাহগুলিতে ব্যবহারের গ্রাফ, গড় দৈনিক ব্যবহার, দীর্ঘতম সেশন এবং সাপ্তাহিক মোট দেখায় যা আপনাকে আপনার ডিজিটাল অভ্যাস ট্র্যাক করতে সাহায্য করে।';
+  String get faqReportsA3 =>
+      'হ্যাঁ! অ্যাপটি সপ্তাহ-থেকে-সপ্তাহ তুলনা প্রদান করে, গত সপ্তাহগুলিতে ব্যবহারের গ্রাফ, গড় দৈনিক ব্যবহার, দীর্ঘতম সেশন এবং সাপ্তাহিক মোট দেখায় যা আপনাকে আপনার ডিজিটাল অভ্যাস ট্র্যাক করতে সাহায্য করে।';
 
   @override
   String get faqReportsQ4 => '\'ব্যবহারের প্যাটার্ন\' বিশ্লেষণ কী?';
 
   @override
-  String get faqReportsA4 => 'ব্যবহারের প্যাটার্ন আপনার স্ক্রিন টাইমকে সকাল, বিকেল, সন্ধ্যা এবং রাতের অংশে ভাগ করে। এটি আপনাকে বুঝতে সাহায্য করে যে আপনি কখন আপনার ডিভাইসে সবচেয়ে বেশি সক্রিয় এবং উন্নতির সম্ভাব্য ক্ষেত্রগুলি চিহ্নিত করতে।';
+  String get faqReportsA4 =>
+      'ব্যবহারের প্যাটার্ন আপনার স্ক্রিন টাইমকে সকাল, বিকেল, সন্ধ্যা এবং রাতের অংশে ভাগ করে। এটি আপনাকে বুঝতে সাহায্য করে যে আপনি কখন আপনার ডিভাইসে সবচেয়ে বেশি সক্রিয় এবং উন্নতির সম্ভাব্য ক্ষেত্রগুলি চিহ্নিত করতে।';
 
   @override
   String get faqAlertsQ1 => 'স্ক্রিন টাইম সীমা কতটা সূক্ষ্ম?';
 
   @override
-  String get faqAlertsA1 => 'আপনি সামগ্রিক দৈনিক স্ক্রিন টাইম সীমা এবং পৃথক অ্যাপ সীমা সেট করতে পারেন। সীমাগুলি ঘন্টা এবং মিনিটে কনফিগার করা যেতে পারে, প্রয়োজনমতো রিসেট বা সামঞ্জস্য করার বিকল্প সহ।';
+  String get faqAlertsA1 =>
+      'আপনি সামগ্রিক দৈনিক স্ক্রিন টাইম সীমা এবং পৃথক অ্যাপ সীমা সেট করতে পারেন। সীমাগুলি ঘন্টা এবং মিনিটে কনফিগার করা যেতে পারে, প্রয়োজনমতো রিসেট বা সামঞ্জস্য করার বিকল্প সহ।';
 
   @override
   String get faqAlertsQ2 => 'কোন বিজ্ঞপ্তি বিকল্প উপলব্ধ?';
 
   @override
-  String get faqAlertsA2 => 'অ্যাপটি একাধিক বিজ্ঞপ্তি প্রকার অফার করে: স্ক্রিন টাইম অতিক্রম করলে সিস্টেম সতর্কতা, কাস্টমাইজযোগ্য বিরতিতে ঘন ঘন সতর্কতা (১, ৫, ১৫, ৩০, বা ৬০ মিনিট) এবং ফোকাস মোড, স্ক্রিন টাইম এবং অ্যাপ্লিকেশন-নির্দিষ্ট বিজ্ঞপ্তির জন্য টগল।';
+  String get faqAlertsA2 =>
+      'অ্যাপটি একাধিক বিজ্ঞপ্তি প্রকার অফার করে: স্ক্রিন টাইম অতিক্রম করলে সিস্টেম সতর্কতা, কাস্টমাইজযোগ্য বিরতিতে ঘন ঘন সতর্কতা (১, ৫, ১৫, ৩০, বা ৬০ মিনিট) এবং ফোকাস মোড, স্ক্রিন টাইম এবং অ্যাপ্লিকেশন-নির্দিষ্ট বিজ্ঞপ্তির জন্য টগল।';
 
   @override
   String get faqAlertsQ3 => 'আমি কি সীমা সতর্কতা কাস্টমাইজ করতে পারি?';
 
   @override
-  String get faqAlertsA3 => 'হ্যাঁ, আপনি সতর্কতার ফ্রিকোয়েন্সি কাস্টমাইজ করতে পারেন, নির্দিষ্ট ধরনের সতর্কতা সক্ষম/অক্ষম করতে পারেন এবং সামগ্রিক স্ক্রিন টাইম এবং পৃথক অ্যাপ্লিকেশনের জন্য বিভিন্ন সীমা সেট করতে পারেন।';
+  String get faqAlertsA3 =>
+      'হ্যাঁ, আপনি সতর্কতার ফ্রিকোয়েন্সি কাস্টমাইজ করতে পারেন, নির্দিষ্ট ধরনের সতর্কতা সক্ষম/অক্ষম করতে পারেন এবং সামগ্রিক স্ক্রিন টাইম এবং পৃথক অ্যাপ্লিকেশনের জন্য বিভিন্ন সীমা সেট করতে পারেন।';
 
   @override
   String get faqFocusQ1 => 'কোন ধরনের ফোকাস মোড উপলব্ধ?';
 
   @override
-  String get faqFocusA1 => 'উপলব্ধ মোডগুলির মধ্যে রয়েছে ডিপ ওয়ার্ক (দীর্ঘ ফোকাসড সেশন), কুইক টাস্ক (কাজের সংক্ষিপ্ত বিস্ফোরণ) এবং রিডিং মোড। প্রতিটি মোড আপনাকে আপনার কাজ এবং বিরতির সময় কার্যকরভাবে গঠন করতে সাহায্য করে।';
+  String get faqFocusA1 =>
+      'উপলব্ধ মোডগুলির মধ্যে রয়েছে ডিপ ওয়ার্ক (দীর্ঘ ফোকাসড সেশন), কুইক টাস্ক (কাজের সংক্ষিপ্ত বিস্ফোরণ) এবং রিডিং মোড। প্রতিটি মোড আপনাকে আপনার কাজ এবং বিরতির সময় কার্যকরভাবে গঠন করতে সাহায্য করে।';
 
   @override
   String get faqFocusQ2 => 'পোমোডোরো টাইমার কতটা নমনীয়?';
 
   @override
-  String get faqFocusA2 => 'টাইমারটি অত্যন্ত কাস্টমাইজযোগ্য। আপনি কাজের সময়কাল, সংক্ষিপ্ত বিরতির দৈর্ঘ্য এবং দীর্ঘ বিরতির সময়কাল সামঞ্জস্য করতে পারেন। অতিরিক্ত বিকল্পগুলির মধ্যে পরবর্তী সেশনের জন্য অটো-স্টার্ট এবং বিজ্ঞপ্তি সেটিংস অন্তর্ভুক্ত।';
+  String get faqFocusA2 =>
+      'টাইমারটি অত্যন্ত কাস্টমাইজযোগ্য। আপনি কাজের সময়কাল, সংক্ষিপ্ত বিরতির দৈর্ঘ্য এবং দীর্ঘ বিরতির সময়কাল সামঞ্জস্য করতে পারেন। অতিরিক্ত বিকল্পগুলির মধ্যে পরবর্তী সেশনের জন্য অটো-স্টার্ট এবং বিজ্ঞপ্তি সেটিংস অন্তর্ভুক্ত।';
 
   @override
   String get faqFocusQ3 => 'ফোকাস মোড ইতিহাস কী দেখায়?';
 
   @override
-  String get faqFocusA3 => 'ফোকাস মোড ইতিহাস দৈনিক ফোকাস সেশন ট্র্যাক করে, প্রতিদিন সেশনের সংখ্যা, প্রবণতা গ্রাফ, গড় সেশনের সময়কাল, মোট ফোকাস সময় এবং কাজের সেশন, সংক্ষিপ্ত বিরতি এবং দীর্ঘ বিরতির ব্রেকডাউন সহ একটি সময় বিতরণ পাই চার্ট দেখায়।';
+  String get faqFocusA3 =>
+      'ফোকাস মোড ইতিহাস দৈনিক ফোকাস সেশন ট্র্যাক করে, প্রতিদিন সেশনের সংখ্যা, প্রবণতা গ্রাফ, গড় সেশনের সময়কাল, মোট ফোকাস সময় এবং কাজের সেশন, সংক্ষিপ্ত বিরতি এবং দীর্ঘ বিরতির ব্রেকডাউন সহ একটি সময় বিতরণ পাই চার্ট দেখায়।';
 
   @override
-  String get faqFocusQ4 => 'আমি কি আমার ফোকাস সেশনের অগ্রগতি ট্র্যাক করতে পারি?';
+  String get faqFocusQ4 =>
+      'আমি কি আমার ফোকাস সেশনের অগ্রগতি ট্র্যাক করতে পারি?';
 
   @override
-  String get faqFocusA4 => 'অ্যাপটিতে প্লে/পজ, রিলোড এবং সেটিংস বোতাম সহ একটি বৃত্তাকার টাইমার UI রয়েছে। আপনি সহজাত নিয়ন্ত্রণগুলির সাথে সহজেই আপনার ফোকাস সেশনগুলি ট্র্যাক এবং পরিচালনা করতে পারেন।';
+  String get faqFocusA4 =>
+      'অ্যাপটিতে প্লে/পজ, রিলোড এবং সেটিংস বোতাম সহ একটি বৃত্তাকার টাইমার UI রয়েছে। আপনি সহজাত নিয়ন্ত্রণগুলির সাথে সহজেই আপনার ফোকাস সেশনগুলি ট্র্যাক এবং পরিচালনা করতে পারেন।';
 
   @override
   String get faqSettingsQ1 => 'কোন কাস্টমাইজেশন বিকল্প উপলব্ধ?';
 
   @override
-  String get faqSettingsA1 => 'কাস্টমাইজেশনে অন্তর্ভুক্ত থিম নির্বাচন (সিস্টেম, লাইট, ডার্ক), ভাষা সেটিংস, স্টার্টআপ আচরণ, ব্যাপক বিজ্ঞপ্তি নিয়ন্ত্রণ এবং ডেটা মুছে ফেলা বা সেটিংস রিসেট করার মতো ডেটা ব্যবস্থাপনা বিকল্প।';
+  String get faqSettingsA1 =>
+      'কাস্টমাইজেশনে অন্তর্ভুক্ত থিম নির্বাচন (সিস্টেম, লাইট, ডার্ক), ভাষা সেটিংস, স্টার্টআপ আচরণ, ব্যাপক বিজ্ঞপ্তি নিয়ন্ত্রণ এবং ডেটা মুছে ফেলা বা সেটিংস রিসেট করার মতো ডেটা ব্যবস্থাপনা বিকল্প।';
 
   @override
-  String get faqSettingsQ2 => 'আমি কীভাবে প্রতিক্রিয়া প্রদান করতে বা সমস্যা রিপোর্ট করতে পারি?';
+  String get faqSettingsQ2 =>
+      'আমি কীভাবে প্রতিক্রিয়া প্রদান করতে বা সমস্যা রিপোর্ট করতে পারি?';
 
   @override
-  String get faqSettingsA2 => 'সেটিংস বিভাগের নীচে, আপনি বাগ রিপোর্ট, প্রতিক্রিয়া জমা দিন বা সাপোর্টে যোগাযোগ করার বোতাম পাবেন। এগুলি আপনাকে উপযুক্ত সাপোর্ট চ্যানেলে পুনঃনির্দেশ করবে।';
+  String get faqSettingsA2 =>
+      'সেটিংস বিভাগের নীচে, আপনি বাগ রিপোর্ট, প্রতিক্রিয়া জমা দিন বা সাপোর্টে যোগাযোগ করার বোতাম পাবেন। এগুলি আপনাকে উপযুক্ত সাপোর্ট চ্যানেলে পুনঃনির্দেশ করবে।';
 
   @override
   String get faqSettingsQ3 => 'আমি যখন আমার ডেটা মুছে ফেলি তখন কী হয়?';
 
   @override
-  String get faqSettingsA3 => 'ডেটা মুছে ফেলা আপনার সমস্ত ব্যবহারের পরিসংখ্যান, ফোকাস সেশন ইতিহাস এবং কাস্টম সেটিংস রিসেট করবে। এটি নতুন করে শুরু করতে বা সমস্যা সমাধানের জন্য দরকারী।';
+  String get faqSettingsA3 =>
+      'ডেটা মুছে ফেলা আপনার সমস্ত ব্যবহারের পরিসংখ্যান, ফোকাস সেশন ইতিহাস এবং কাস্টম সেটিংস রিসেট করবে। এটি নতুন করে শুরু করতে বা সমস্যা সমাধানের জন্য দরকারী।';
 
   @override
   String get faqTroubleQ1 => 'ডেটা দেখা যাচ্ছে না, হাইভ খুলছে না ত্রুটি';
 
   @override
-  String get faqTroubleA1 => 'সমস্যাটি জানা আছে, অস্থায়ী সমাধান হল সেটিংসের মাধ্যমে ডেটা মুছে ফেলা এবং যদি এটি কাজ না করে তবে ডকুমেন্টসে যান এবং নিম্নলিখিত ফাইলগুলি মুছে ফেলুন যদি সেগুলি বিদ্যমান থাকে - harman_screentime_app_usage_box.hive এবং harman_screentime_app_usage.lock, আপনাকে অ্যাপটি সর্বশেষ সংস্করণে আপডেট করার পরামর্শ দেওয়া হচ্ছে।';
+  String get faqTroubleA1 =>
+      'সমস্যাটি জানা আছে, অস্থায়ী সমাধান হল সেটিংসের মাধ্যমে ডেটা মুছে ফেলা এবং যদি এটি কাজ না করে তবে ডকুমেন্টসে যান এবং নিম্নলিখিত ফাইলগুলি মুছে ফেলুন যদি সেগুলি বিদ্যমান থাকে - harman_screentime_app_usage_box.hive এবং harman_screentime_app_usage.lock, আপনাকে অ্যাপটি সর্বশেষ সংস্করণে আপডেট করার পরামর্শ দেওয়া হচ্ছে।';
 
   @override
   String get faqTroubleQ2 => 'অ্যাপ প্রতিটি স্টার্টআপে খোলে, কী করব?';
 
   @override
-  String get faqTroubleA2 => 'এটি একটি জানা সমস্যা যা Windows 10-এ ঘটে, অস্থায়ী সমাধান হল সেটিংসে মিনিমাইজড হিসাবে লঞ্চ সক্ষম করা যাতে এটি মিনিমাইজড হিসাবে চালু হয়।';
+  String get faqTroubleA2 =>
+      'এটি একটি জানা সমস্যা যা Windows 10-এ ঘটে, অস্থায়ী সমাধান হল সেটিংসে মিনিমাইজড হিসাবে লঞ্চ সক্ষম করা যাতে এটি মিনিমাইজড হিসাবে চালু হয়।';
 
   @override
   String get usageAnalytics => 'ব্যবহার বিশ্লেষণ';
@@ -278,7 +310,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get tryAgain => 'আবার চেষ্টা করুন';
 
   @override
-  String get failedToInitialize => 'বিশ্লেষণ শুরু করতে ব্যর্থ। অনুগ্রহ করে অ্যাপ্লিকেশনটি পুনরায় চালু করুন।';
+  String get failedToInitialize =>
+      'বিশ্লেষণ শুরু করতে ব্যর্থ। অনুগ্রহ করে অ্যাপ্লিকেশনটি পুনরায় চালু করুন।';
 
   @override
   String unexpectedError(String error) {
@@ -321,7 +354,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get invalidDateRange => 'অবৈধ তারিখ পরিসীমা';
 
   @override
-  String get startDateBeforeEndDate => 'শুরুর তারিখ শেষ তারিখের আগে বা সমান হতে হবে।';
+  String get startDateBeforeEndDate =>
+      'শুরুর তারিখ শেষ তারিখের আগে বা সমান হতে হবে।';
 
   @override
   String get totalScreenTime => 'মোট স্ক্রিন সময়';
@@ -406,7 +440,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get nonProductive => 'অ-উৎপাদনশীল';
 
   @override
-  String get noApplicationsMatch => 'আপনার অনুসন্ধান মানদণ্ডের সাথে কোন অ্যাপ্লিকেশন মেলেনি';
+  String get noApplicationsMatch =>
+      'আপনার অনুসন্ধান মানদণ্ডের সাথে কোন অ্যাপ্লিকেশন মেলেনি';
 
   @override
   String get viewDetails => 'বিস্তারিত দেখুন';
@@ -418,7 +453,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get usageOverPastWeek => 'গত সপ্তাহের ব্যবহার';
 
   @override
-  String get usagePatternByTimeOfDay => 'দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন';
+  String get usagePatternByTimeOfDay =>
+      'দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন';
 
   @override
   String get patternAnalysis => 'প্যাটার্ন বিশ্লেষণ';
@@ -491,7 +527,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get trendingUpward => 'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার ঊর্ধ্বমুখী।';
+  String get trendingUpward =>
+      'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার ঊর্ধ্বমুখী।';
 
   @override
   String significantDecrease(String percentage) {
@@ -499,16 +536,20 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get trendingDownward => 'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার নিম্নমুখী।';
+  String get trendingDownward =>
+      'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার নিম্নমুখী।';
 
   @override
-  String get consistentUsage => 'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার সামঞ্জস্যপূর্ণ রয়েছে।';
+  String get consistentUsage =>
+      'পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার সামঞ্জস্যপূর্ণ রয়েছে।';
 
   @override
-  String get markedAsProductive => 'এটি আপনার সেটিংসে একটি উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।';
+  String get markedAsProductive =>
+      'এটি আপনার সেটিংসে একটি উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।';
 
   @override
-  String get markedAsNonProductive => 'এটি আপনার সেটিংসে একটি অ-উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।';
+  String get markedAsNonProductive =>
+      'এটি আপনার সেটিংসে একটি অ-উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।';
 
   @override
   String mostActiveTime(String time) {
@@ -516,7 +557,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get noLimitSet => 'এই অ্যাপ্লিকেশনের জন্য কোন ব্যবহার সীমা সেট করা হয়নি।';
+  String get noLimitSet =>
+      'এই অ্যাপ্লিকেশনের জন্য কোন ব্যবহার সীমা সেট করা হয়নি।';
 
   @override
   String get limitReached => 'আপনি এই অ্যাপ্লিকেশনের দৈনিক সীমায় পৌঁছে গেছেন।';
@@ -617,7 +659,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get addLimit => 'সীমা যোগ করুন';
 
   @override
-  String get noApplicationsToDisplay => 'প্রদর্শন করার জন্য কোন অ্যাপ্লিকেশন নেই';
+  String get noApplicationsToDisplay =>
+      'প্রদর্শন করার জন্য কোন অ্যাপ্লিকেশন নেই';
 
   @override
   String get statusActive => 'সক্রিয়';
@@ -654,7 +697,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get resetSettingsTitle => 'সেটিংস রিসেট করবেন?';
 
   @override
-  String get resetSettingsContent => 'আপনি যদি সেটিংস রিসেট করেন, আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এটি রিসেট করতে চান?';
+  String get resetSettingsContent =>
+      'আপনি যদি সেটিংস রিসেট করেন, আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এটি রিসেট করতে চান?';
 
   @override
   String get resetAll => 'সব রিসেট করুন';
@@ -858,7 +902,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noActivityDataAvailable => 'এখনও কোন কার্যকলাপ ডেটা উপলব্ধ নেই';
 
   @override
-  String get startUsingApplications => 'স্ক্রিন টাইম এবং উৎপাদনশীলতা ট্র্যাক করতে আপনার অ্যাপ্লিকেশনগুলি ব্যবহার শুরু করুন।';
+  String get startUsingApplications =>
+      'স্ক্রিন টাইম এবং উৎপাদনশীলতা ট্র্যাক করতে আপনার অ্যাপ্লিকেশনগুলি ব্যবহার শুরু করুন।';
 
   @override
   String get refreshData => 'ডেটা রিফ্রেশ করুন';
@@ -867,7 +912,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get topApplications => 'শীর্ষ অ্যাপ্লিকেশন';
 
   @override
-  String get noAppUsageDataAvailable => 'এখনও কোন অ্যাপ্লিকেশন ব্যবহারের ডেটা উপলব্ধ নেই';
+  String get noAppUsageDataAvailable =>
+      'এখনও কোন অ্যাপ্লিকেশন ব্যবহারের ডেটা উপলব্ধ নেই';
 
   @override
   String get noApplicationDataAvailable => 'কোন অ্যাপ্লিকেশন ডেটা উপলব্ধ নেই';
@@ -933,7 +979,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get launchMinimizedTitle => 'মিনিমাইজড হিসাবে লঞ্চ করুন';
 
   @override
-  String get launchMinimizedDescription => 'সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)';
+  String get launchMinimizedDescription =>
+      'সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)';
 
   @override
   String get notificationsTitle => 'বিজ্ঞপ্তি';
@@ -945,31 +992,36 @@ class AppLocalizationsBn extends AppLocalizations {
   String get focusModeNotificationsTitle => 'ফোকাস মোড';
 
   @override
-  String get focusModeNotificationsDescription => 'ফোকাস মোডের জন্য সমস্ত বিজ্ঞপ্তি';
+  String get focusModeNotificationsDescription =>
+      'ফোকাস মোডের জন্য সমস্ত বিজ্ঞপ্তি';
 
   @override
   String get screenTimeNotificationsTitle => 'স্ক্রিন টাইম';
 
   @override
-  String get screenTimeNotificationsDescription => 'স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি';
+  String get screenTimeNotificationsDescription =>
+      'স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি';
 
   @override
   String get appScreenTimeNotificationsTitle => 'অ্যাপ্লিকেশন স্ক্রিন টাইম';
 
   @override
-  String get appScreenTimeNotificationsDescription => 'অ্যাপ্লিকেশন স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি';
+  String get appScreenTimeNotificationsDescription =>
+      'অ্যাপ্লিকেশন স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি';
 
   @override
   String get frequentAlertsTitle => 'ঘন ঘন সতর্কতার বিরতি';
 
   @override
-  String get frequentAlertsDescription => 'ঘন ঘন বিজ্ঞপ্তির জন্য বিরতি সেট করুন (মিনিট)';
+  String get frequentAlertsDescription =>
+      'ঘন ঘন বিজ্ঞপ্তির জন্য বিরতি সেট করুন (মিনিট)';
 
   @override
   String get clearDataTitle => 'ডেটা মুছে ফেলুন';
 
   @override
-  String get clearDataDescription => 'সমস্ত ইতিহাস এবং অন্যান্য সম্পর্কিত ডেটা মুছে ফেলুন';
+  String get clearDataDescription =>
+      'সমস্ত ইতিহাস এবং অন্যান্য সম্পর্কিত ডেটা মুছে ফেলুন';
 
   @override
   String get resetSettingsTitle2 => 'সেটিংস রিসেট করুন';
@@ -999,7 +1051,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get clearDataDialogTitle => 'ডেটা মুছে ফেলবেন?';
 
   @override
-  String get clearDataDialogContent => 'এটি সমস্ত ইতিহাস এবং সম্পর্কিত ডেটা মুছে ফেলবে। আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?';
+  String get clearDataDialogContent =>
+      'এটি সমস্ত ইতিহাস এবং সম্পর্কিত ডেটা মুছে ফেলবে। আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?';
 
   @override
   String get clearDataButtonLabel => 'ডেটা মুছে ফেলুন';
@@ -1008,7 +1061,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get resetSettingsDialogTitle => 'সেটিংস রিসেট করবেন?';
 
   @override
-  String get resetSettingsDialogContent => 'এটি সমস্ত সেটিংস তাদের ডিফল্ট মানে রিসেট করবে। আপনি কি এগিয়ে যেতে চান?';
+  String get resetSettingsDialogContent =>
+      'এটি সমস্ত সেটিংস তাদের ডিফল্ট মানে রিসেট করবে। আপনি কি এগিয়ে যেতে চান?';
 
   @override
   String get resetButtonLabel => 'রিসেট';
@@ -1370,7 +1424,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get exportDataTitle => 'ডেটা রপ্তানি করুন';
 
   @override
-  String get exportDataDescription => 'আপনার সমস্ত ডেটার একটি ব্যাকআপ তৈরি করুন';
+  String get exportDataDescription =>
+      'আপনার সমস্ত ডেটার একটি ব্যাকআপ তৈরি করুন';
 
   @override
   String get importDataTitle => 'ডেটা আমদানি করুন';
@@ -1445,7 +1500,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get warningTitle => '⚠️ সতর্কতা';
 
   @override
-  String get replaceWarningMessage => 'এটি আপনার সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করবে। আপনি কি নিশ্চিতভাবে এগিয়ে যেতে চান?';
+  String get replaceWarningMessage =>
+      'এটি আপনার সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করবে। আপনি কি নিশ্চিতভাবে এগিয়ে যেতে চান?';
 
   @override
   String get replaceAllButton => 'সব প্রতিস্থাপন করুন';
@@ -1475,22 +1531,27 @@ class AppLocalizationsBn extends AppLocalizations {
   String get skippedLabel => 'এড়িয়ে গেছে';
 
   @override
-  String get faqSettingsQ4 => 'আমি কীভাবে আমার ডেটা পুনরুদ্ধার বা রপ্তানি করতে পারি?';
+  String get faqSettingsQ4 =>
+      'আমি কীভাবে আমার ডেটা পুনরুদ্ধার বা রপ্তানি করতে পারি?';
 
   @override
-  String get faqSettingsA4 => 'আপনি সেটিংসে যেতে পারেন, এবং সেখানে আপনি ব্যাকআপ এবং পুনরুদ্ধার বিভাগ পাবেন। আপনি এখান থেকে ডেটা রপ্তানি বা আমদানি করতে পারেন, মনে রাখবেন যে রপ্তানি করা ডেটা ফাইল Documents-এ Scolect-Backups ফোল্ডারে সংরক্ষিত হয় এবং শুধুমাত্র এই ফাইলটি ডেটা পুনরুদ্ধার করতে ব্যবহার করা যেতে পারে, অন্য কোন ফাইল নয়।';
+  String get faqSettingsA4 =>
+      'আপনি সেটিংসে যেতে পারেন, এবং সেখানে আপনি ব্যাকআপ এবং পুনরুদ্ধার বিভাগ পাবেন। আপনি এখান থেকে ডেটা রপ্তানি বা আমদানি করতে পারেন, মনে রাখবেন যে রপ্তানি করা ডেটা ফাইল Documents-এ Scolect-Backups ফোল্ডারে সংরক্ষিত হয় এবং শুধুমাত্র এই ফাইলটি ডেটা পুনরুদ্ধার করতে ব্যবহার করা যেতে পারে, অন্য কোন ফাইল নয়।';
 
   @override
-  String get faqGeneralQ6 => 'আমি কীভাবে ভাষা পরিবর্তন করতে পারি এবং কোন ভাষাগুলি উপলব্ধ, এছাড়াও অনুবাদ ভুল হলে কী করব?';
+  String get faqGeneralQ6 =>
+      'আমি কীভাবে ভাষা পরিবর্তন করতে পারি এবং কোন ভাষাগুলি উপলব্ধ, এছাড়াও অনুবাদ ভুল হলে কী করব?';
 
   @override
-  String get faqGeneralA6 => 'ভাষা সেটিংস সাধারণ বিভাগের মাধ্যমে পরিবর্তন করা যেতে পারে, সমস্ত উপলব্ধ ভাষা সেখানে তালিকাভুক্ত আছে, আপনি যোগাযোগে ক্লিক করে এবং প্রদত্ত ভাষা সহ আপনার অনুরোধ পাঠিয়ে অনুবাদের অনুরোধ করতে পারেন। শুধু জানবেন যে অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!';
+  String get faqGeneralA6 =>
+      'ভাষা সেটিংস সাধারণ বিভাগের মাধ্যমে পরিবর্তন করা যেতে পারে, সমস্ত উপলব্ধ ভাষা সেখানে তালিকাভুক্ত আছে, আপনি যোগাযোগে ক্লিক করে এবং প্রদত্ত ভাষা সহ আপনার অনুরোধ পাঠিয়ে অনুবাদের অনুরোধ করতে পারেন। শুধু জানবেন যে অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!';
 
   @override
   String get faqGeneralQ7 => 'অনুবাদ ভুল হলে কী করব?';
 
   @override
-  String get faqGeneralA7 => 'অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!';
+  String get faqGeneralA7 =>
+      'অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!';
 
   @override
   String get activityTrackingSection => 'কার্যকলাপ ট্র্যাকিং';
@@ -1510,13 +1571,15 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get advancedWarning => 'উন্নত বৈশিষ্ট্যগুলি সম্পদের ব্যবহার বাড়াতে পারে। শুধুমাত্র প্রয়োজন হলে সক্ষম করুন।';
+  String get advancedWarning =>
+      'উন্নত বৈশিষ্ট্যগুলি সম্পদের ব্যবহার বাড়াতে পারে। শুধুমাত্র প্রয়োজন হলে সক্ষম করুন।';
 
   @override
   String get monitorAudioTitle => 'সিস্টেম অডিও মনিটর করুন';
 
   @override
-  String get monitorAudioDescription => 'অডিও প্লেব্যাক থেকে কার্যকলাপ সনাক্ত করুন';
+  String get monitorAudioDescription =>
+      'অডিও প্লেব্যাক থেকে কার্যকলাপ সনাক্ত করুন';
 
   @override
   String get audioSensitivityTitle => 'অডিও সংবেদনশীলতা';
@@ -1530,19 +1593,22 @@ class AppLocalizationsBn extends AppLocalizations {
   String get monitorControllersTitle => 'গেম কন্ট্রোলার মনিটর করুন';
 
   @override
-  String get monitorControllersDescription => 'Xbox/XInput কন্ট্রোলার সনাক্ত করুন';
+  String get monitorControllersDescription =>
+      'Xbox/XInput কন্ট্রোলার সনাক্ত করুন';
 
   @override
   String get monitorHIDTitle => 'HID ডিভাইস মনিটর করুন';
 
   @override
-  String get monitorHIDDescription => 'হুইল, ট্যাবলেট, কাস্টম ডিভাইস সনাক্ত করুন';
+  String get monitorHIDDescription =>
+      'হুইল, ট্যাবলেট, কাস্টম ডিভাইস সনাক্ত করুন';
 
   @override
   String get setIdleTimeoutTitle => 'নিষ্ক্রিয় সময়সীমা সেট করুন';
 
   @override
-  String get idleTimeoutDialogDescription => 'আপনাকে নিষ্ক্রিয় বিবেচনা করার আগে কতক্ষণ অপেক্ষা করতে হবে তা চয়ন করুন:';
+  String get idleTimeoutDialogDescription =>
+      'আপনাকে নিষ্ক্রিয় বিবেচনা করার আগে কতক্ষণ অপেক্ষা করতে হবে তা চয়ন করুন:';
 
   @override
   String get seconds30 => '30 সেকেন্ড';
@@ -1637,7 +1703,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get voiceGenderTitle => 'ভয়েস লিঙ্গ';
 
   @override
-  String get voiceGenderDescription => 'টাইমার বিজ্ঞপ্তির জন্য ভয়েসের লিঙ্গ নির্বাচন করুন';
+  String get voiceGenderDescription =>
+      'টাইমার বিজ্ঞপ্তির জন্য ভয়েসের লিঙ্গ নির্বাচন করুন';
 
   @override
   String get voiceGenderMale => 'পুরুষ';
@@ -1646,10 +1713,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get voiceGenderFemale => 'মহিলা';
 
   @override
-  String get alertsLimitsSubtitle => 'আপনার স্ক্রিন টাইম সীমা এবং বিজ্ঞপ্তিগুলি পরিচালনা করুন';
+  String get alertsLimitsSubtitle =>
+      'আপনার স্ক্রিন টাইম সীমা এবং বিজ্ঞপ্তিগুলি পরিচালনা করুন';
 
   @override
-  String get applicationsSubtitle => 'আপনার ট্র্যাক করা অ্যাপ্লিকেশনগুলি পরিচালনা করুন';
+  String get applicationsSubtitle =>
+      'আপনার ট্র্যাক করা অ্যাপ্লিকেশনগুলি পরিচালনা করুন';
 
   @override
   String applicationCount(int count) {
@@ -1704,19 +1773,23 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noResultsFound => 'কোনো ফলাফল পাওয়া যায়নি';
 
   @override
-  String get tryDifferentKeywords => 'বিভিন্ন কীওয়ার্ড দিয়ে খোঁজার চেষ্টা করুন';
+  String get tryDifferentKeywords =>
+      'বিভিন্ন কীওয়ার্ড দিয়ে খোঁজার চেষ্টা করুন';
 
   @override
   String get clearSearch => 'অনুসন্ধান সাফ করুন';
 
   @override
-  String get greetingMorning => 'সুপ্রভাত! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
+  String get greetingMorning =>
+      'সুপ্রভাত! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
 
   @override
-  String get greetingAfternoon => 'শুভ বিকাল! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
+  String get greetingAfternoon =>
+      'শুভ বিকাল! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
 
   @override
-  String get greetingEvening => 'শুভ সন্ধ্যা! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
+  String get greetingEvening =>
+      'শুভ সন্ধ্যা! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।';
 
   @override
   String get screenTimeProgress => 'স্ক্রীন\nসময়';
@@ -1824,16 +1897,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get notification_permission_denied => 'বিজ্ঞপ্তি অনুমতি প্রত্যাখ্যাত';
 
   @override
-  String get notification_permission_denied_message => 'ScreenTime আপনাকে সতর্কতা এবং অনুস্মারক পাঠাতে বিজ্ঞপ্তি অনুমতির প্রয়োজন।\n\nআপনি কি বিজ্ঞপ্তি সক্ষম করতে সিস্টেম সেটিংস খুলতে চান?';
+  String get notification_permission_denied_message =>
+      'ScreenTime আপনাকে সতর্কতা এবং অনুস্মারক পাঠাতে বিজ্ঞপ্তি অনুমতির প্রয়োজন।\n\nআপনি কি বিজ্ঞপ্তি সক্ষম করতে সিস্টেম সেটিংস খুলতে চান?';
 
   @override
-  String get notification_permission_denied_hint => 'ScreenTime এর জন্য বিজ্ঞপ্তি সক্ষম করতে সিস্টেম সেটিংস খুলুন।';
+  String get notification_permission_denied_hint =>
+      'ScreenTime এর জন্য বিজ্ঞপ্তি সক্ষম করতে সিস্টেম সেটিংস খুলুন।';
 
   @override
   String get notification_permission_required => 'বিজ্ঞপ্তি অনুমতি প্রয়োজন';
 
   @override
-  String get notification_permission_required_message => 'ScreenTime আপনাকে বিজ্ঞপ্তি পাঠাতে অনুমতির প্রয়োজন।';
+  String get notification_permission_required_message =>
+      'ScreenTime আপনাকে বিজ্ঞপ্তি পাঠাতে অনুমতির প্রয়োজন।';
 
   @override
   String get open_settings => 'সেটিংস খুলুন';
@@ -1857,7 +1933,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get off => 'বন্ধ';
 
   @override
-  String get enable_notification_permission_hint => 'সতর্কতা পেতে বিজ্ঞপ্তি অনুমতি সক্ষম করুন';
+  String get enable_notification_permission_hint =>
+      'সতর্কতা পেতে বিজ্ঞপ্তি অনুমতি সক্ষম করুন';
 
   @override
   String minutes_format(int minutes) {
@@ -1933,19 +2010,22 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled => 'সিস্টেম বিজ্ঞপ্তি নিষ্ক্রিয়। ফোকাস সতর্কতার জন্য সিস্টেম সেটিংসে সেগুলি সক্ষম করুন।';
+  String get systemNotificationsDisabled =>
+      'সিস্টেম বিজ্ঞপ্তি নিষ্ক্রিয়। ফোকাস সতর্কতার জন্য সিস্টেম সেটিংসে সেগুলি সক্ষম করুন।';
 
   @override
   String get openSystemSettings => 'সিস্টেম সেটিংস খুলুন';
 
   @override
-  String get appNotificationsDisabled => 'অ্যাপ সেটিংসে বিজ্ঞপ্তি নিষ্ক্রিয়। ফোকাস সতর্কতা পেতে সেগুলি সক্ষম করুন।';
+  String get appNotificationsDisabled =>
+      'অ্যাপ সেটিংসে বিজ্ঞপ্তি নিষ্ক্রিয়। ফোকাস সতর্কতা পেতে সেগুলি সক্ষম করুন।';
 
   @override
   String get goToSettings => 'সেটিংসে যান';
 
   @override
-  String get focusModeNotificationsDisabled => 'ফোকাস মোড বিজ্ঞপ্তি নিষ্ক্রিয়। সেশন সতর্কতা পেতে সেগুলি সক্ষম করুন।';
+  String get focusModeNotificationsDisabled =>
+      'ফোকাস মোড বিজ্ঞপ্তি নিষ্ক্রিয়। সেশন সতর্কতা পেতে সেগুলি সক্ষম করুন।';
 
   @override
   String get notificationsDisabled => 'বিজ্ঞপ্তি নিষ্ক্রিয়';
@@ -1957,10 +2037,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get systemSettingsRequired => 'সিস্টেম সেটিংস প্রয়োজন';
 
   @override
-  String get notificationsDisabledSystemLevel => 'সিস্টেম স্তরে বিজ্ঞপ্তি নিষ্ক্রিয়। সক্ষম করতে:';
+  String get notificationsDisabledSystemLevel =>
+      'সিস্টেম স্তরে বিজ্ঞপ্তি নিষ্ক্রিয়। সক্ষম করতে:';
 
   @override
-  String get step1OpenSystemSettings => '1. সিস্টেম সেটিংস খুলুন (সিস্টেম পছন্দসমূহ)';
+  String get step1OpenSystemSettings =>
+      '1. সিস্টেম সেটিংস খুলুন (সিস্টেম পছন্দসমূহ)';
 
   @override
   String get step2GoToNotifications => '2. বিজ্ঞপ্তিতে যান';
@@ -1969,10 +2051,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get step3FindApp => '3. Scolect খুঁজুন এবং নির্বাচন করুন';
 
   @override
-  String get step4EnableNotifications => '4. \"বিজ্ঞপ্তির অনুমতি দিন\" সক্ষম করুন';
+  String get step4EnableNotifications =>
+      '4. \"বিজ্ঞপ্তির অনুমতি দিন\" সক্ষম করুন';
 
   @override
-  String get returnToAppMessage => 'তারপর এই অ্যাপে ফিরে আসুন এবং বিজ্ঞপ্তি কাজ করবে।';
+  String get returnToAppMessage =>
+      'তারপর এই অ্যাপে ফিরে আসুন এবং বিজ্ঞপ্তি কাজ করবে।';
 
   @override
   String get gotIt => 'বুঝেছি';
@@ -2263,13 +2347,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get launchAtStartupTitle => 'স্টার্টআপে চালু করুন';
 
   @override
-  String get launchAtStartupDescription => 'আপনার কম্পিউটারে লগ ইন করার সময় স্বয়ংক্রিয়ভাবে Scolect শুরু করুন';
+  String get launchAtStartupDescription =>
+      'আপনার কম্পিউটারে লগ ইন করার সময় স্বয়ংক্রিয়ভাবে Scolect শুরু করুন';
 
   @override
   String get inputMonitoringPermissionTitle => 'কীবোর্ড মনিটরিং উপলব্ধ নয়';
 
   @override
-  String get inputMonitoringPermissionDescription => 'কীবোর্ড কার্যকলাপ ট্র্যাক করতে ইনপুট মনিটরিং অনুমতি সক্রিয় করুন। বর্তমানে শুধুমাত্র মাউস ইনপুট মনিটর করা হচ্ছে।';
+  String get inputMonitoringPermissionDescription =>
+      'কীবোর্ড কার্যকলাপ ট্র্যাক করতে ইনপুট মনিটরিং অনুমতি সক্রিয় করুন। বর্তমানে শুধুমাত্র মাউস ইনপুট মনিটর করা হচ্ছে।';
 
   @override
   String get openSettings => 'সেটিংস খুলুন';
@@ -2278,7 +2364,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get permissionGrantedTitle => 'অনুমতি দেওয়া হয়েছে';
 
   @override
-  String get permissionGrantedDescription => 'ইনপুট মনিটরিং কার্যকর করতে অ্যাপটি পুনরায় চালু করতে হবে।';
+  String get permissionGrantedDescription =>
+      'ইনপুট মনিটরিং কার্যকর করতে অ্যাপটি পুনরায় চালু করতে হবে।';
 
   @override
   String get continueButton => 'চালিয়ে যান';
@@ -2287,10 +2374,12 @@ class AppLocalizationsBn extends AppLocalizations {
   String get restartRequiredTitle => 'পুনরায় চালু প্রয়োজন';
 
   @override
-  String get restartRequiredDescription => 'কীবোর্ড মনিটরিং সক্ষম করতে অ্যাপটি পুনরায় চালু করা প্রয়োজন। এটি macOS দ্বারা প্রয়োজনীয়।';
+  String get restartRequiredDescription =>
+      'কীবোর্ড মনিটরিং সক্ষম করতে অ্যাপটি পুনরায় চালু করা প্রয়োজন। এটি macOS দ্বারা প্রয়োজনীয়।';
 
   @override
-  String get restartNote => 'পুনরায় চালু হওয়ার পর অ্যাপটি স্বয়ংক্রিয়ভাবে আবার খুলবে।';
+  String get restartNote =>
+      'পুনরায় চালু হওয়ার পর অ্যাপটি স্বয়ংক্রিয়ভাবে আবার খুলবে।';
 
   @override
   String get restartNow => 'এখনই পুনরায় চালু করুন';
@@ -2302,7 +2391,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get restartFailedTitle => 'পুনরায় চালু ব্যর্থ';
 
   @override
-  String get restartFailedMessage => 'অ্যাপটি স্বয়ংক্রিয়ভাবে পুনরায় চালু করা যায়নি। অনুগ্রহ করে বের হয়ে (Cmd+Q) ম্যানুয়ালি আবার চালু করুন।';
+  String get restartFailedMessage =>
+      'অ্যাপটি স্বয়ংক্রিয়ভাবে পুনরায় চালু করা যায়নি। অনুগ্রহ করে বের হয়ে (Cmd+Q) ম্যানুয়ালি আবার চালু করুন।';
 
   @override
   String get exportAnalyticsReport => 'বিশ্লেষণ প্রতিবেদন রপ্তানি করুন';
@@ -2314,25 +2404,30 @@ class AppLocalizationsBn extends AppLocalizations {
   String get beautifulExcelReport => 'সুন্দর এক্সেল প্রতিবেদন';
 
   @override
-  String get beautifulExcelReportDescription => 'চার্ট, ইমোজি এবং অন্তর্দৃষ্টি সহ চমৎকার, রঙিন স্প্রেডশীট ✨';
+  String get beautifulExcelReportDescription =>
+      'চার্ট, ইমোজি এবং অন্তর্দৃষ্টি সহ চমৎকার, রঙিন স্প্রেডশীট ✨';
 
   @override
   String get excelReportIncludes => 'এক্সেল প্রতিবেদনে অন্তর্ভুক্ত:';
 
   @override
-  String get summarySheetDescription => '📊 সারাংশ শীট - প্রবণতা সহ মূল মেট্রিক্স';
+  String get summarySheetDescription =>
+      '📊 সারাংশ শীট - প্রবণতা সহ মূল মেট্রিক্স';
 
   @override
-  String get dailyBreakdownDescription => '📅 দৈনিক বিশ্লেষণ - ভিজ্যুয়াল ব্যবহার প্যাটার্ন';
+  String get dailyBreakdownDescription =>
+      '📅 দৈনিক বিশ্লেষণ - ভিজ্যুয়াল ব্যবহার প্যাটার্ন';
 
   @override
-  String get appsSheetDescription => '📱 অ্যাপস শীট - বিস্তারিত অ্যাপ র‍্যাংকিং';
+  String get appsSheetDescription =>
+      '📱 অ্যাপস শীট - বিস্তারিত অ্যাপ র‍্যাংকিং';
 
   @override
   String get insightsDescription => '💡 অন্তর্দৃষ্টি - স্মার্ট সুপারিশ';
 
   @override
-  String get beautifulExcelExportSuccess => 'সুন্দর এক্সেল প্রতিবেদন সফলভাবে রপ্তানি হয়েছে! 🎉';
+  String get beautifulExcelExportSuccess =>
+      'সুন্দর এক্সেল প্রতিবেদন সফলভাবে রপ্তানি হয়েছে! 🎉';
 
   @override
   String failedToExportReport(String error) {
@@ -2522,7 +2617,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions => 'কোনো ফোকাস সেশন নেই: উৎপাদনশীলতা বাড়াতে ফোকাস মোড ব্যবহার করার কথা ভাবুন';
+  String get insightNoFocusSessions =>
+      'কোনো ফোকাস সেশন নেই: উৎপাদনশীলতা বাড়াতে ফোকাস মোড ব্যবহার করার কথা ভাবুন';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2546,7 +2642,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(String appName, String percentage, String duration) {
+  String insightMostUsedApp(
+      String appName, String percentage, String duration) {
     return 'সবচেয়ে বেশি ব্যবহৃত অ্যাপ: $appName আপনার সময়ের $percentage% ($duration)';
   }
 
@@ -2559,34 +2656,44 @@ class AppLocalizationsBn extends AppLocalizations {
   String get insightNoInsights => 'কোনো উল্লেখযোগ্য অন্তর্দৃষ্টি নেই';
 
   @override
-  String get recScheduleFocusSessions => 'উৎপাদনশীলতা বাড়াতে সারাদিনে আরও ফোকাস সেশন সময়সূচী করার চেষ্টা করুন';
+  String get recScheduleFocusSessions =>
+      'উৎপাদনশীলতা বাড়াতে সারাদিনে আরও ফোকাস সেশন সময়সূচী করার চেষ্টা করুন';
 
   @override
-  String get recSetAppLimits => 'বিনোদন অ্যাপ্লিকেশনগুলিতে সীমা নির্ধারণ করার কথা ভাবুন';
+  String get recSetAppLimits =>
+      'বিনোদন অ্যাপ্লিকেশনগুলিতে সীমা নির্ধারণ করার কথা ভাবুন';
 
   @override
-  String get recAimForFocusSessions => 'ধারাবাহিক অভ্যাস গড়ে তুলতে প্রতিদিন অন্তত ১-২টি ফোকাস সেশনের লক্ষ্য রাখুন';
+  String get recAimForFocusSessions =>
+      'ধারাবাহিক অভ্যাস গড়ে তুলতে প্রতিদিন অন্তত ১-২টি ফোকাস সেশনের লক্ষ্য রাখুন';
 
   @override
-  String get recTakeBreaks => 'আপনার দৈনিক স্ক্রিন সময় বেশ বেশি। ২০-২০-২০ নিয়ম ব্যবহার করে নিয়মিত বিরতি নেওয়ার চেষ্টা করুন';
+  String get recTakeBreaks =>
+      'আপনার দৈনিক স্ক্রিন সময় বেশ বেশি। ২০-২০-২০ নিয়ম ব্যবহার করে নিয়মিত বিরতি নেওয়ার চেষ্টা করুন';
 
   @override
-  String get recSetDailyGoals => 'ধীরে ধীরে ব্যবহার কমাতে দৈনিক স্ক্রিন সময় লক্ষ্য নির্ধারণ করার কথা ভাবুন';
+  String get recSetDailyGoals =>
+      'ধীরে ধীরে ব্যবহার কমাতে দৈনিক স্ক্রিন সময় লক্ষ্য নির্ধারণ করার কথা ভাবুন';
 
   @override
-  String get recBalanceEntertainment => 'বিনোদন অ্যাপ আপনার সময়ের বড় অংশ নেয়। আরও উৎপাদনশীল কার্যকলাপের সাথে ভারসাম্য রাখার কথা ভাবুন';
+  String get recBalanceEntertainment =>
+      'বিনোদন অ্যাপ আপনার সময়ের বড় অংশ নেয়। আরও উৎপাদনশীল কার্যকলাপের সাথে ভারসাম্য রাখার কথা ভাবুন';
 
   @override
-  String get recReviewUsagePatterns => 'আপনার স্ক্রিন সময় উল্লেখযোগ্যভাবে বেড়েছে। আপনার ব্যবহার প্যাটার্ন পর্যালোচনা করুন এবং সীমা নির্ধারণ করুন';
+  String get recReviewUsagePatterns =>
+      'আপনার স্ক্রিন সময় উল্লেখযোগ্যভাবে বেড়েছে। আপনার ব্যবহার প্যাটার্ন পর্যালোচনা করুন এবং সীমা নির্ধারণ করুন';
 
   @override
-  String get recScheduleFocusedWork => 'আপনার উৎপাদনশীল সময় কমেছে। আপনার ক্যালেন্ডারে ফোকাসড কাজের ব্লক সময়সূচী করার চেষ্টা করুন';
+  String get recScheduleFocusedWork =>
+      'আপনার উৎপাদনশীল সময় কমেছে। আপনার ক্যালেন্ডারে ফোকাসড কাজের ব্লক সময়সূচী করার চেষ্টা করুন';
 
   @override
-  String get recKeepUpGreatWork => 'দুর্দান্ত কাজ চালিয়ে যান! আপনার স্ক্রিন সময় অভ্যাস স্বাস্থ্যকর দেখাচ্ছে';
+  String get recKeepUpGreatWork =>
+      'দুর্দান্ত কাজ চালিয়ে যান! আপনার স্ক্রিন সময় অভ্যাস স্বাস্থ্যকর দেখাচ্ছে';
 
   @override
-  String get recContinueFocusSessions => 'উৎপাদনশীলতা বজায় রাখতে ফোকাস সেশন ব্যবহার চালিয়ে যান';
+  String get recContinueFocusSessions =>
+      'উৎপাদনশীলতা বজায় রাখতে ফোকাস সেশন ব্যবহার চালিয়ে যান';
 
   @override
   String get sheetSummary => 'সারাংশ';
@@ -2685,7 +2792,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get saveAsFile => 'ফাইল হিসাবে সংরক্ষণ করুন';
 
   @override
-  String get saveThemeAsJSONFile => 'আপনার ডিভাইসে JSON ফাইল হিসাবে থিম সংরক্ষণ করুন';
+  String get saveThemeAsJSONFile =>
+      'আপনার ডিভাইসে JSON ফাইল হিসাবে থিম সংরক্ষণ করুন';
 
   @override
   String get copyToClipboard => 'ক্লিপবোর্ডে কপি করুন';
@@ -2697,7 +2805,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get share => 'শেয়ার করুন';
 
   @override
-  String get shareThemeViaSystemSheet => 'সিস্টেম শেয়ার শীট ব্যবহার করে থিম শেয়ার করুন';
+  String get shareThemeViaSystemSheet =>
+      'সিস্টেম শেয়ার শীট ব্যবহার করে থিম শেয়ার করুন';
 
   @override
   String get chooseImportMethod => 'থিম আমদানি করার পদ্ধতি বেছে নিন:';
@@ -2706,13 +2815,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get loadFromFile => 'ফাইল থেকে লোড করুন';
 
   @override
-  String get selectJSONFileFromDevice => 'আপনার ডিভাইস থেকে একটি JSON থিম ফাইল নির্বাচন করুন';
+  String get selectJSONFileFromDevice =>
+      'আপনার ডিভাইস থেকে একটি JSON থিম ফাইল নির্বাচন করুন';
 
   @override
   String get pasteFromClipboard => 'ক্লিপবোর্ড থেকে পেস্ট করুন';
 
   @override
-  String get importFromClipboardJSON => 'ক্লিপবোর্ড JSON ডেটা থেকে থিম আমদানি করুন';
+  String get importFromClipboardJSON =>
+      'ক্লিপবোর্ড JSON ডেটা থেকে থিম আমদানি করুন';
 
   @override
   String get importFromFile => 'একটি ফাইল থেকে থিম আমদানি করুন';
@@ -2741,13 +2852,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get noThemeDataFound => 'কোনো থিম ডেটা পাওয়া যায়নি';
 
   @override
-  String get invalidThemeFormat => 'অবৈধ থিম ফরম্যাট। অনুগ্রহ করে JSON ডেটা পরীক্ষা করুন।';
+  String get invalidThemeFormat =>
+      'অবৈধ থিম ফরম্যাট। অনুগ্রহ করে JSON ডেটা পরীক্ষা করুন।';
 
   @override
   String get trackingModeTitle => 'ট্র্যাকিং মোড';
 
   @override
-  String get trackingModeDescription => 'অ্যাপ ব্যবহার কীভাবে ট্র্যাক করা হবে তা বেছে নিন';
+  String get trackingModeDescription =>
+      'অ্যাপ ব্যবহার কীভাবে ট্র্যাক করা হবে তা বেছে নিন';
 
   @override
   String get trackingModePolling => 'স্ট্যান্ডার্ড (কম রিসোর্স)';
@@ -2756,13 +2869,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get trackingModePrecise => 'সুনির্দিষ্ট (উচ্চ নির্ভুলতা)';
 
   @override
-  String get trackingModePollingHint => 'প্রতি মিনিটে পরীক্ষা করে - কম রিসোর্স ব্যবহার';
+  String get trackingModePollingHint =>
+      'প্রতি মিনিটে পরীক্ষা করে - কম রিসোর্স ব্যবহার';
 
   @override
-  String get trackingModePreciseHint => 'রিয়েল-টাইম ট্র্যাকিং - উচ্চ নির্ভুলতা, বেশি রিসোর্স';
+  String get trackingModePreciseHint =>
+      'রিয়েল-টাইম ট্র্যাকিং - উচ্চ নির্ভুলতা, বেশি রিসোর্স';
 
   @override
-  String get trackingModeChangeError => 'ট্র্যাকিং মোড পরিবর্তন করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।';
+  String get trackingModeChangeError =>
+      'ট্র্যাকিং মোড পরিবর্তন করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।';
 
   @override
   String get errorTitle => 'ত্রুটি';
@@ -2771,7 +2887,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get monitorKeyboardTitle => 'কীবোর্ড পর্যবেক্ষণ';
 
   @override
-  String get monitorKeyboardDescription => 'ব্যবহারকারীর উপস্থিতি শনাক্ত করতে কীবোর্ডের কার্যকলাপ ট্র্যাক করুন';
+  String get monitorKeyboardDescription =>
+      'ব্যবহারকারীর উপস্থিতি শনাক্ত করতে কীবোর্ডের কার্যকলাপ ট্র্যাক করুন';
 
   @override
   String get changelogWhatsNew => 'নতুন কী আছে';
@@ -2788,7 +2905,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get changelogUnableToLoad => 'চেঞ্জলগ লোড করা যায়নি';
 
   @override
-  String get changelogErrorDescription => 'এই সংস্করণের চেঞ্জলগ পুনরুদ্ধার করা যায়নি। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন অথবা GitHub রিলিজ পেজ দেখুন।';
+  String get changelogErrorDescription =>
+      'এই সংস্করণের চেঞ্জলগ পুনরুদ্ধার করা যায়নি। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন অথবা GitHub রিলিজ পেজ দেখুন।';
 
   @override
   String get allTracking => 'সব অ্যাপ';

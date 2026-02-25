@@ -9,7 +9,8 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appWindowTitle => 'Scolect - Seguimiento de Tiempo de Pantalla y Uso de Aplicaciones';
+  String get appWindowTitle =>
+      'Scolect - Seguimiento de Tiempo de Pantalla y Uso de Aplicaciones';
 
   @override
   String get appName => 'Scolect';
@@ -104,154 +105,194 @@ class AppLocalizationsEs extends AppLocalizations {
   String get faqCategoryTroubleshooting => 'Solución de Problemas';
 
   @override
-  String get faqGeneralQ1 => '¿Cómo rastrea esta aplicación el tiempo de pantalla?';
+  String get faqGeneralQ1 =>
+      '¿Cómo rastrea esta aplicación el tiempo de pantalla?';
 
   @override
-  String get faqGeneralA1 => 'La aplicación monitorea el uso de tu dispositivo en tiempo real, rastreando el tiempo dedicado a diferentes aplicaciones. Proporciona información completa sobre tus hábitos digitales, incluyendo tiempo total de pantalla, tiempo productivo y uso específico por aplicación.';
+  String get faqGeneralA1 =>
+      'La aplicación monitorea el uso de tu dispositivo en tiempo real, rastreando el tiempo dedicado a diferentes aplicaciones. Proporciona información completa sobre tus hábitos digitales, incluyendo tiempo total de pantalla, tiempo productivo y uso específico por aplicación.';
 
   @override
   String get faqGeneralQ2 => '¿Qué hace que una aplicación sea \'Productiva\'?';
 
   @override
-  String get faqGeneralA2 => 'Puedes marcar manualmente las aplicaciones como productivas en la sección \'Aplicaciones\'. Las aplicaciones productivas contribuyen a tu Puntuación de Productividad, que calcula el porcentaje de tiempo de pantalla dedicado a aplicaciones relacionadas con el trabajo o beneficiosas.';
+  String get faqGeneralA2 =>
+      'Puedes marcar manualmente las aplicaciones como productivas en la sección \'Aplicaciones\'. Las aplicaciones productivas contribuyen a tu Puntuación de Productividad, que calcula el porcentaje de tiempo de pantalla dedicado a aplicaciones relacionadas con el trabajo o beneficiosas.';
 
   @override
-  String get faqGeneralQ3 => '¿Qué tan preciso es el seguimiento del tiempo de pantalla?';
+  String get faqGeneralQ3 =>
+      '¿Qué tan preciso es el seguimiento del tiempo de pantalla?';
 
   @override
-  String get faqGeneralA3 => 'La aplicación utiliza seguimiento a nivel del sistema para proporcionar una medición precisa del uso de tu dispositivo. Captura el tiempo en primer plano de cada aplicación con un impacto mínimo en la batería.';
+  String get faqGeneralA3 =>
+      'La aplicación utiliza seguimiento a nivel del sistema para proporcionar una medición precisa del uso de tu dispositivo. Captura el tiempo en primer plano de cada aplicación con un impacto mínimo en la batería.';
 
   @override
-  String get faqGeneralQ4 => '¿Puedo personalizar la categorización de mis aplicaciones?';
+  String get faqGeneralQ4 =>
+      '¿Puedo personalizar la categorización de mis aplicaciones?';
 
   @override
-  String get faqGeneralA4 => '¡Por supuesto! Puedes crear categorías personalizadas, asignar aplicaciones a categorías específicas y modificar fácilmente estas asignaciones en la sección \'Aplicaciones\'. Esto ayuda a crear análisis de uso más significativos.';
+  String get faqGeneralA4 =>
+      '¡Por supuesto! Puedes crear categorías personalizadas, asignar aplicaciones a categorías específicas y modificar fácilmente estas asignaciones en la sección \'Aplicaciones\'. Esto ayuda a crear análisis de uso más significativos.';
 
   @override
-  String get faqGeneralQ5 => '¿Qué información puedo obtener de esta aplicación?';
+  String get faqGeneralQ5 =>
+      '¿Qué información puedo obtener de esta aplicación?';
 
   @override
-  String get faqGeneralA5 => 'La aplicación ofrece información completa que incluye Puntuación de Productividad, patrones de uso por hora del día, uso detallado de aplicaciones, seguimiento de sesiones de enfoque y análisis visuales como gráficos y diagramas circulares para ayudarte a entender y mejorar tus hábitos digitales.';
+  String get faqGeneralA5 =>
+      'La aplicación ofrece información completa que incluye Puntuación de Productividad, patrones de uso por hora del día, uso detallado de aplicaciones, seguimiento de sesiones de enfoque y análisis visuales como gráficos y diagramas circulares para ayudarte a entender y mejorar tus hábitos digitales.';
 
   @override
-  String get faqAppsQ1 => '¿Cómo oculto aplicaciones específicas del seguimiento?';
+  String get faqAppsQ1 =>
+      '¿Cómo oculto aplicaciones específicas del seguimiento?';
 
   @override
-  String get faqAppsA1 => 'En la sección \'Aplicaciones\', puedes alternar la visibilidad de las aplicaciones.';
+  String get faqAppsA1 =>
+      'En la sección \'Aplicaciones\', puedes alternar la visibilidad de las aplicaciones.';
 
   @override
   String get faqAppsQ2 => '¿Puedo buscar y filtrar mis aplicaciones?';
 
   @override
-  String get faqAppsA2 => 'Sí, la sección de Aplicaciones incluye funcionalidad de búsqueda y opciones de filtrado. Puedes filtrar aplicaciones por categoría, estado de productividad, estado de seguimiento y visibilidad.';
+  String get faqAppsA2 =>
+      'Sí, la sección de Aplicaciones incluye funcionalidad de búsqueda y opciones de filtrado. Puedes filtrar aplicaciones por categoría, estado de productividad, estado de seguimiento y visibilidad.';
 
   @override
-  String get faqAppsQ3 => '¿Qué opciones de edición están disponibles para las aplicaciones?';
+  String get faqAppsQ3 =>
+      '¿Qué opciones de edición están disponibles para las aplicaciones?';
 
   @override
-  String get faqAppsA3 => 'Para cada aplicación, puedes editar: asignación de categoría, estado de productividad, seguimiento de uso, visibilidad en informes y establecer límites de tiempo diarios individuales.';
+  String get faqAppsA3 =>
+      'Para cada aplicación, puedes editar: asignación de categoría, estado de productividad, seguimiento de uso, visibilidad en informes y establecer límites de tiempo diarios individuales.';
 
   @override
-  String get faqAppsQ4 => '¿Cómo se determinan las categorías de las aplicaciones?';
+  String get faqAppsQ4 =>
+      '¿Cómo se determinan las categorías de las aplicaciones?';
 
   @override
-  String get faqAppsA4 => 'Las categorías iniciales son sugeridas por el sistema, pero tienes control total para crear, modificar y asignar categorías personalizadas según tu flujo de trabajo y preferencias.';
+  String get faqAppsA4 =>
+      'Las categorías iniciales son sugeridas por el sistema, pero tienes control total para crear, modificar y asignar categorías personalizadas según tu flujo de trabajo y preferencias.';
 
   @override
   String get faqReportsQ1 => '¿Qué tipos de informes están disponibles?';
 
   @override
-  String get faqReportsA1 => 'Los informes incluyen: Tiempo total de pantalla, Tiempo productivo, Aplicaciones más usadas, Sesiones de enfoque, Gráfico de tiempo de pantalla diario, Gráfico circular de desglose por categoría, Uso detallado de aplicaciones, Tendencias de uso semanal y Análisis de patrones de uso por hora del día.';
+  String get faqReportsA1 =>
+      'Los informes incluyen: Tiempo total de pantalla, Tiempo productivo, Aplicaciones más usadas, Sesiones de enfoque, Gráfico de tiempo de pantalla diario, Gráfico circular de desglose por categoría, Uso detallado de aplicaciones, Tendencias de uso semanal y Análisis de patrones de uso por hora del día.';
 
   @override
-  String get faqReportsQ2 => '¿Qué tan detallados son los informes de uso de aplicaciones?';
+  String get faqReportsQ2 =>
+      '¿Qué tan detallados son los informes de uso de aplicaciones?';
 
   @override
-  String get faqReportsA2 => 'Los informes detallados de uso de aplicaciones muestran: Nombre de la aplicación, Categoría, Tiempo total dedicado, Estado de productividad, y ofrecen una sección de \'Acciones\' con información más profunda como resumen de uso, límites diarios, tendencias de uso y métricas de productividad.';
+  String get faqReportsA2 =>
+      'Los informes detallados de uso de aplicaciones muestran: Nombre de la aplicación, Categoría, Tiempo total dedicado, Estado de productividad, y ofrecen una sección de \'Acciones\' con información más profunda como resumen de uso, límites diarios, tendencias de uso y métricas de productividad.';
 
   @override
-  String get faqReportsQ3 => '¿Puedo analizar mis tendencias de uso a lo largo del tiempo?';
+  String get faqReportsQ3 =>
+      '¿Puedo analizar mis tendencias de uso a lo largo del tiempo?';
 
   @override
-  String get faqReportsA3 => '¡Sí! La aplicación proporciona comparaciones semana a semana, mostrando gráficos de uso de semanas anteriores, uso diario promedio, sesiones más largas y totales semanales para ayudarte a rastrear tus hábitos digitales.';
+  String get faqReportsA3 =>
+      '¡Sí! La aplicación proporciona comparaciones semana a semana, mostrando gráficos de uso de semanas anteriores, uso diario promedio, sesiones más largas y totales semanales para ayudarte a rastrear tus hábitos digitales.';
 
   @override
   String get faqReportsQ4 => '¿Qué es el análisis de \'Patrón de Uso\'?';
 
   @override
-  String get faqReportsA4 => 'El Patrón de Uso desglosa tu tiempo de pantalla en segmentos de mañana, tarde, noche y noche. Esto te ayuda a entender cuándo estás más activo en tu dispositivo e identificar áreas potenciales de mejora.';
+  String get faqReportsA4 =>
+      'El Patrón de Uso desglosa tu tiempo de pantalla en segmentos de mañana, tarde, noche y noche. Esto te ayuda a entender cuándo estás más activo en tu dispositivo e identificar áreas potenciales de mejora.';
 
   @override
-  String get faqAlertsQ1 => '¿Qué tan detallados son los límites de tiempo de pantalla?';
+  String get faqAlertsQ1 =>
+      '¿Qué tan detallados son los límites de tiempo de pantalla?';
 
   @override
-  String get faqAlertsA1 => 'Puedes establecer límites generales de tiempo de pantalla diario y límites individuales por aplicación. Los límites se pueden configurar en horas y minutos, con opciones para restablecer o ajustar según sea necesario.';
+  String get faqAlertsA1 =>
+      'Puedes establecer límites generales de tiempo de pantalla diario y límites individuales por aplicación. Los límites se pueden configurar en horas y minutos, con opciones para restablecer o ajustar según sea necesario.';
 
   @override
   String get faqAlertsQ2 => '¿Qué opciones de notificación están disponibles?';
 
   @override
-  String get faqAlertsA2 => 'La aplicación ofrece múltiples tipos de notificaciones: Alertas del sistema cuando excedes el tiempo de pantalla, Alertas frecuentes a intervalos personalizables (1, 5, 15, 30 o 60 minutos), y opciones para modo enfoque, tiempo de pantalla y notificaciones específicas de aplicaciones.';
+  String get faqAlertsA2 =>
+      'La aplicación ofrece múltiples tipos de notificaciones: Alertas del sistema cuando excedes el tiempo de pantalla, Alertas frecuentes a intervalos personalizables (1, 5, 15, 30 o 60 minutos), y opciones para modo enfoque, tiempo de pantalla y notificaciones específicas de aplicaciones.';
 
   @override
   String get faqAlertsQ3 => '¿Puedo personalizar las alertas de límites?';
 
   @override
-  String get faqAlertsA3 => 'Sí, puedes personalizar la frecuencia de alertas, activar/desactivar tipos específicos de alertas y establecer diferentes límites para el tiempo de pantalla general y aplicaciones individuales.';
+  String get faqAlertsA3 =>
+      'Sí, puedes personalizar la frecuencia de alertas, activar/desactivar tipos específicos de alertas y establecer diferentes límites para el tiempo de pantalla general y aplicaciones individuales.';
 
   @override
   String get faqFocusQ1 => '¿Qué tipos de Modos de Enfoque están disponibles?';
 
   @override
-  String get faqFocusA1 => 'Los modos disponibles incluyen Trabajo Profundo (sesiones de enfoque más largas), Tareas Rápidas (ráfagas cortas de trabajo) y Modo Lectura. Cada modo te ayuda a estructurar tu trabajo y tiempos de descanso de manera efectiva.';
+  String get faqFocusA1 =>
+      'Los modos disponibles incluyen Trabajo Profundo (sesiones de enfoque más largas), Tareas Rápidas (ráfagas cortas de trabajo) y Modo Lectura. Cada modo te ayuda a estructurar tu trabajo y tiempos de descanso de manera efectiva.';
 
   @override
   String get faqFocusQ2 => '¿Qué tan flexible es el Temporizador Pomodoro?';
 
   @override
-  String get faqFocusA2 => 'El temporizador es altamente personalizable. Puedes ajustar la duración del trabajo, la duración del descanso corto y la duración del descanso largo. Las opciones adicionales incluyen inicio automático para las siguientes sesiones y configuración de notificaciones.';
+  String get faqFocusA2 =>
+      'El temporizador es altamente personalizable. Puedes ajustar la duración del trabajo, la duración del descanso corto y la duración del descanso largo. Las opciones adicionales incluyen inicio automático para las siguientes sesiones y configuración de notificaciones.';
 
   @override
   String get faqFocusQ3 => '¿Qué muestra el historial del Modo Enfoque?';
 
   @override
-  String get faqFocusA3 => 'El historial del Modo Enfoque rastrea las sesiones de enfoque diarias, mostrando el número de sesiones por día, gráfico de tendencias, duración promedio de sesión, tiempo total de enfoque y un gráfico circular de distribución del tiempo que desglosa sesiones de trabajo, descansos cortos y descansos largos.';
+  String get faqFocusA3 =>
+      'El historial del Modo Enfoque rastrea las sesiones de enfoque diarias, mostrando el número de sesiones por día, gráfico de tendencias, duración promedio de sesión, tiempo total de enfoque y un gráfico circular de distribución del tiempo que desglosa sesiones de trabajo, descansos cortos y descansos largos.';
 
   @override
-  String get faqFocusQ4 => '¿Puedo rastrear el progreso de mis sesiones de enfoque?';
+  String get faqFocusQ4 =>
+      '¿Puedo rastrear el progreso de mis sesiones de enfoque?';
 
   @override
-  String get faqFocusA4 => 'La aplicación cuenta con una interfaz de temporizador circular con botones de reproducir/pausar, reiniciar y configuración. Puedes rastrear y gestionar fácilmente tus sesiones de enfoque con controles intuitivos.';
+  String get faqFocusA4 =>
+      'La aplicación cuenta con una interfaz de temporizador circular con botones de reproducir/pausar, reiniciar y configuración. Puedes rastrear y gestionar fácilmente tus sesiones de enfoque con controles intuitivos.';
 
   @override
-  String get faqSettingsQ1 => '¿Qué opciones de personalización están disponibles?';
+  String get faqSettingsQ1 =>
+      '¿Qué opciones de personalización están disponibles?';
 
   @override
-  String get faqSettingsA1 => 'La personalización incluye selección de tema (Sistema, Claro, Oscuro), configuración de idioma, comportamiento de inicio, controles completos de notificaciones y opciones de gestión de datos como borrar datos o restablecer configuración.';
+  String get faqSettingsA1 =>
+      'La personalización incluye selección de tema (Sistema, Claro, Oscuro), configuración de idioma, comportamiento de inicio, controles completos de notificaciones y opciones de gestión de datos como borrar datos o restablecer configuración.';
 
   @override
-  String get faqSettingsQ2 => '¿Cómo proporciono comentarios o informo problemas?';
+  String get faqSettingsQ2 =>
+      '¿Cómo proporciono comentarios o informo problemas?';
 
   @override
-  String get faqSettingsA2 => 'En la parte inferior de la sección de Configuración, encontrarás botones para Reportar un Error, Enviar Comentarios o Contactar Soporte. Estos te redirigirán a los canales de soporte apropiados.';
+  String get faqSettingsA2 =>
+      'En la parte inferior de la sección de Configuración, encontrarás botones para Reportar un Error, Enviar Comentarios o Contactar Soporte. Estos te redirigirán a los canales de soporte apropiados.';
 
   @override
   String get faqSettingsQ3 => '¿Qué sucede cuando borro mis datos?';
 
   @override
-  String get faqSettingsA3 => 'Borrar datos restablecerá todas tus estadísticas de uso, historial de sesiones de enfoque y configuración personalizada. Esto es útil para empezar de nuevo o solucionar problemas.';
+  String get faqSettingsA3 =>
+      'Borrar datos restablecerá todas tus estadísticas de uso, historial de sesiones de enfoque y configuración personalizada. Esto es útil para empezar de nuevo o solucionar problemas.';
 
   @override
-  String get faqTroubleQ1 => 'Los datos no se muestran, error de que hive no se abre';
+  String get faqTroubleQ1 =>
+      'Los datos no se muestran, error de que hive no se abre';
 
   @override
-  String get faqTroubleA1 => 'El problema es conocido, la solución temporal es borrar los datos a través de configuración y si no funciona, ve a Documentos y elimina los siguientes archivos si existen - harman_screentime_app_usage_box.hive y harman_screentime_app_usage.lock, también se te sugiere actualizar la aplicación a la última versión.';
+  String get faqTroubleA1 =>
+      'El problema es conocido, la solución temporal es borrar los datos a través de configuración y si no funciona, ve a Documentos y elimina los siguientes archivos si existen - harman_screentime_app_usage_box.hive y harman_screentime_app_usage.lock, también se te sugiere actualizar la aplicación a la última versión.';
 
   @override
-  String get faqTroubleQ2 => 'La aplicación se abre en cada inicio, ¿qué hacer?';
+  String get faqTroubleQ2 =>
+      'La aplicación se abre en cada inicio, ¿qué hacer?';
 
   @override
-  String get faqTroubleA2 => 'Este es un problema conocido que ocurre en Windows 10, la solución temporal es habilitar Iniciar como Minimizado en la configuración para que se inicie minimizado.';
+  String get faqTroubleA2 =>
+      'Este es un problema conocido que ocurre en Windows 10, la solución temporal es habilitar Iniciar como Minimizado en la configuración para que se inicie minimizado.';
 
   @override
   String get usageAnalytics => 'Análisis de Uso';
@@ -278,7 +319,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get tryAgain => 'Intentar de Nuevo';
 
   @override
-  String get failedToInitialize => 'Error al inicializar análisis. Por favor reinicie la aplicación.';
+  String get failedToInitialize =>
+      'Error al inicializar análisis. Por favor reinicie la aplicación.';
 
   @override
   String unexpectedError(String error) {
@@ -321,7 +363,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get invalidDateRange => 'Rango de Fechas Inválido';
 
   @override
-  String get startDateBeforeEndDate => 'La fecha de inicio debe ser anterior o igual a la fecha de fin.';
+  String get startDateBeforeEndDate =>
+      'La fecha de inicio debe ser anterior o igual a la fecha de fin.';
 
   @override
   String get totalScreenTime => 'Tiempo de Pantalla Total';
@@ -406,7 +449,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get nonProductive => 'No Productivo';
 
   @override
-  String get noApplicationsMatch => 'Ninguna aplicación coincide con tus criterios de búsqueda';
+  String get noApplicationsMatch =>
+      'Ninguna aplicación coincide con tus criterios de búsqueda';
 
   @override
   String get viewDetails => 'Ver detalles';
@@ -491,7 +535,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get trendingUpward => 'Tu uso está tendiendo al alza en comparación con el período anterior.';
+  String get trendingUpward =>
+      'Tu uso está tendiendo al alza en comparación con el período anterior.';
 
   @override
   String significantDecrease(String percentage) {
@@ -499,16 +544,20 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get trendingDownward => 'Tu uso está tendiendo a la baja en comparación con el período anterior.';
+  String get trendingDownward =>
+      'Tu uso está tendiendo a la baja en comparación con el período anterior.';
 
   @override
-  String get consistentUsage => 'Tu uso ha sido consistente en comparación con el período anterior.';
+  String get consistentUsage =>
+      'Tu uso ha sido consistente en comparación con el período anterior.';
 
   @override
-  String get markedAsProductive => 'Esta está marcada como una aplicación productiva en tu configuración.';
+  String get markedAsProductive =>
+      'Esta está marcada como una aplicación productiva en tu configuración.';
 
   @override
-  String get markedAsNonProductive => 'Esta está marcada como una aplicación no productiva en tu configuración.';
+  String get markedAsNonProductive =>
+      'Esta está marcada como una aplicación no productiva en tu configuración.';
 
   @override
   String mostActiveTime(String time) {
@@ -516,10 +565,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get noLimitSet => 'No se ha establecido límite de uso para esta aplicación.';
+  String get noLimitSet =>
+      'No se ha establecido límite de uso para esta aplicación.';
 
   @override
-  String get limitReached => 'Has alcanzado tu límite diario para esta aplicación.';
+  String get limitReached =>
+      'Has alcanzado tu límite diario para esta aplicación.';
 
   @override
   String aboutToReachLimit(String remainingTime) {
@@ -654,7 +705,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resetSettingsTitle => '¿Restablecer Configuración?';
 
   @override
-  String get resetSettingsContent => 'Si restableces la configuración, no podrás recuperarla. ¿Deseas restablecerla?';
+  String get resetSettingsContent =>
+      'Si restableces la configuración, no podrás recuperarla. ¿Deseas restablecerla?';
 
   @override
   String get resetAll => 'Restablecer Todo';
@@ -716,7 +768,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get customCategory => 'Personalizada';
 
   @override
-  String get customCategoryPlaceholder => 'Ingresa nombre de categoría personalizada';
+  String get customCategoryPlaceholder =>
+      'Ingresa nombre de categoría personalizada';
 
   @override
   String get uncategorized => 'Sin Categoría';
@@ -829,10 +882,12 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get autoStartNextSession => 'Iniciar automáticamente la siguiente sesión';
+  String get autoStartNextSession =>
+      'Iniciar automáticamente la siguiente sesión';
 
   @override
-  String get blockDistractions => 'Bloquear distracciones durante el modo enfoque';
+  String get blockDistractions =>
+      'Bloquear distracciones durante el modo enfoque';
 
   @override
   String get enableNotifications => 'Habilitar notificaciones';
@@ -852,13 +907,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get startFocusMode => 'Iniciar Modo Enfoque';
 
   @override
-  String get loadingProductivityData => 'Cargando tus datos de productividad...';
+  String get loadingProductivityData =>
+      'Cargando tus datos de productividad...';
 
   @override
-  String get noActivityDataAvailable => 'Aún no hay datos de actividad disponibles';
+  String get noActivityDataAvailable =>
+      'Aún no hay datos de actividad disponibles';
 
   @override
-  String get startUsingApplications => 'Comienza a usar tus aplicaciones para rastrear el tiempo de pantalla y la productividad.';
+  String get startUsingApplications =>
+      'Comienza a usar tus aplicaciones para rastrear el tiempo de pantalla y la productividad.';
 
   @override
   String get refreshData => 'Actualizar Datos';
@@ -867,16 +925,20 @@ class AppLocalizationsEs extends AppLocalizations {
   String get topApplications => 'Aplicaciones Principales';
 
   @override
-  String get noAppUsageDataAvailable => 'Aún no hay datos de uso de aplicaciones disponibles';
+  String get noAppUsageDataAvailable =>
+      'Aún no hay datos de uso de aplicaciones disponibles';
 
   @override
-  String get noApplicationDataAvailable => 'No hay datos de aplicaciones disponibles';
+  String get noApplicationDataAvailable =>
+      'No hay datos de aplicaciones disponibles';
 
   @override
-  String get noCategoryDataAvailable => 'No hay datos de categorías disponibles';
+  String get noCategoryDataAvailable =>
+      'No hay datos de categorías disponibles';
 
   @override
-  String get noApplicationLimitsSet => 'No se han establecido límites de aplicaciones';
+  String get noApplicationLimitsSet =>
+      'No se han establecido límites de aplicaciones';
 
   @override
   String get screenLabel => 'Tiempo de';
@@ -933,43 +995,51 @@ class AppLocalizationsEs extends AppLocalizations {
   String get launchMinimizedTitle => 'Iniciar Minimizado';
 
   @override
-  String get launchMinimizedDescription => 'Iniciar la aplicación en la Bandeja del Sistema (Recomendado para Windows 10)';
+  String get launchMinimizedDescription =>
+      'Iniciar la aplicación en la Bandeja del Sistema (Recomendado para Windows 10)';
 
   @override
   String get notificationsTitle => 'Notificaciones';
 
   @override
-  String get notificationsAllDescription => 'Todas las notificaciones de la aplicación';
+  String get notificationsAllDescription =>
+      'Todas las notificaciones de la aplicación';
 
   @override
   String get focusModeNotificationsTitle => 'Modo Enfoque';
 
   @override
-  String get focusModeNotificationsDescription => 'Todas las notificaciones del modo enfoque';
+  String get focusModeNotificationsDescription =>
+      'Todas las notificaciones del modo enfoque';
 
   @override
   String get screenTimeNotificationsTitle => 'Tiempo de Pantalla';
 
   @override
-  String get screenTimeNotificationsDescription => 'Todas las notificaciones de restricción de tiempo de pantalla';
+  String get screenTimeNotificationsDescription =>
+      'Todas las notificaciones de restricción de tiempo de pantalla';
 
   @override
-  String get appScreenTimeNotificationsTitle => 'Tiempo de Pantalla por Aplicación';
+  String get appScreenTimeNotificationsTitle =>
+      'Tiempo de Pantalla por Aplicación';
 
   @override
-  String get appScreenTimeNotificationsDescription => 'Todas las notificaciones de restricción de tiempo de pantalla por aplicación';
+  String get appScreenTimeNotificationsDescription =>
+      'Todas las notificaciones de restricción de tiempo de pantalla por aplicación';
 
   @override
   String get frequentAlertsTitle => 'Intervalo de Alertas Frecuentes';
 
   @override
-  String get frequentAlertsDescription => 'Establecer intervalo para notificaciones frecuentes (minutos)';
+  String get frequentAlertsDescription =>
+      'Establecer intervalo para notificaciones frecuentes (minutos)';
 
   @override
   String get clearDataTitle => 'Borrar Datos';
 
   @override
-  String get clearDataDescription => 'Borrar todo el historial y otros datos relacionados';
+  String get clearDataDescription =>
+      'Borrar todo el historial y otros datos relacionados';
 
   @override
   String get resetSettingsTitle2 => 'Restablecer Configuración';
@@ -999,7 +1069,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get clearDataDialogTitle => '¿Borrar Datos?';
 
   @override
-  String get clearDataDialogContent => 'Esto borrará todo el historial y datos relacionados. No podrás recuperarlos. ¿Deseas continuar?';
+  String get clearDataDialogContent =>
+      'Esto borrará todo el historial y datos relacionados. No podrás recuperarlos. ¿Deseas continuar?';
 
   @override
   String get clearDataButtonLabel => 'Borrar Datos';
@@ -1008,7 +1079,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get resetSettingsDialogTitle => '¿Restablecer Configuración?';
 
   @override
-  String get resetSettingsDialogContent => 'Esto restablecerá toda la configuración a sus valores predeterminados. ¿Deseas continuar?';
+  String get resetSettingsDialogContent =>
+      'Esto restablecerá toda la configuración a sus valores predeterminados. ¿Deseas continuar?';
 
   @override
   String get resetButtonLabel => 'Restablecer';
@@ -1370,13 +1442,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportDataTitle => 'Exportar datos';
 
   @override
-  String get exportDataDescription => 'Crear una copia de seguridad de todos tus datos';
+  String get exportDataDescription =>
+      'Crear una copia de seguridad de todos tus datos';
 
   @override
   String get importDataTitle => 'Importar datos';
 
   @override
-  String get importDataDescription => 'Restaurar desde un archivo de copia de seguridad';
+  String get importDataDescription =>
+      'Restaurar desde un archivo de copia de seguridad';
 
   @override
   String get exportButton => 'Exportar';
@@ -1406,7 +1480,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportComplete => 'Exportación completada';
 
   @override
-  String get shareBackupQuestion => '¿Te gustaría compartir el archivo de copia de seguridad?';
+  String get shareBackupQuestion =>
+      '¿Te gustaría compartir el archivo de copia de seguridad?';
 
   @override
   String get importStarting => 'Iniciando importación...';
@@ -1445,7 +1520,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get warningTitle => '⚠️ Advertencia';
 
   @override
-  String get replaceWarningMessage => 'Esto reemplazará TODOS tus datos existentes. ¿Estás seguro de que deseas continuar?';
+  String get replaceWarningMessage =>
+      'Esto reemplazará TODOS tus datos existentes. ¿Estás seguro de que deseas continuar?';
 
   @override
   String get replaceAllButton => 'Reemplazar todo';
@@ -1478,19 +1554,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get faqSettingsQ4 => '¿Cómo puedo restaurar o exportar mis datos?';
 
   @override
-  String get faqSettingsA4 => 'Puedes ir a configuración, y allí encontrarás la sección de Copia de seguridad y restauración. Puedes exportar o importar datos desde aquí. Ten en cuenta que el archivo de datos exportado se guarda en Documentos en la carpeta Scolect-Backups y solo este archivo puede ser usado para restaurar datos, ningún otro archivo.';
+  String get faqSettingsA4 =>
+      'Puedes ir a configuración, y allí encontrarás la sección de Copia de seguridad y restauración. Puedes exportar o importar datos desde aquí. Ten en cuenta que el archivo de datos exportado se guarda en Documentos en la carpeta Scolect-Backups y solo este archivo puede ser usado para restaurar datos, ningún otro archivo.';
 
   @override
-  String get faqGeneralQ6 => '¿Cómo puedo cambiar el idioma y qué idiomas están disponibles? ¿Y si encuentro que la traducción es incorrecta?';
+  String get faqGeneralQ6 =>
+      '¿Cómo puedo cambiar el idioma y qué idiomas están disponibles? ¿Y si encuentro que la traducción es incorrecta?';
 
   @override
-  String get faqGeneralA6 => 'El idioma se puede cambiar en la sección General de configuración, todos los idiomas disponibles están listados allí. Puedes solicitar una traducción haciendo clic en Contacto y enviando tu solicitud con el idioma deseado. Ten en cuenta que la traducción puede ser incorrecta ya que es generada por IA desde el inglés. Si deseas reportar un error, puedes hacerlo a través de reportar error, contacto, o si eres desarrollador, abrir un problema en Github. ¡Las contribuciones relacionadas con idiomas también son bienvenidas!';
+  String get faqGeneralA6 =>
+      'El idioma se puede cambiar en la sección General de configuración, todos los idiomas disponibles están listados allí. Puedes solicitar una traducción haciendo clic en Contacto y enviando tu solicitud con el idioma deseado. Ten en cuenta que la traducción puede ser incorrecta ya que es generada por IA desde el inglés. Si deseas reportar un error, puedes hacerlo a través de reportar error, contacto, o si eres desarrollador, abrir un problema en Github. ¡Las contribuciones relacionadas con idiomas también son bienvenidas!';
 
   @override
   String get faqGeneralQ7 => '¿Y si encuentro que la traducción es incorrecta?';
 
   @override
-  String get faqGeneralA7 => 'La traducción puede ser incorrecta ya que es generada por IA desde el inglés. Si deseas reportar un error, puedes hacerlo a través de reportar error, contacto, o si eres desarrollador, abrir un problema en Github. ¡Las contribuciones relacionadas con idiomas también son bienvenidas!';
+  String get faqGeneralA7 =>
+      'La traducción puede ser incorrecta ya que es generada por IA desde el inglés. Si deseas reportar un error, puedes hacerlo a través de reportar error, contacto, o si eres desarrollador, abrir un problema en Github. ¡Las contribuciones relacionadas con idiomas también son bienvenidas!';
 
   @override
   String get activityTrackingSection => 'Seguimiento de Actividad';
@@ -1499,7 +1579,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get idleDetectionTitle => 'Detección de Inactividad';
 
   @override
-  String get idleDetectionDescription => 'Dejar de rastrear cuando esté inactivo';
+  String get idleDetectionDescription =>
+      'Dejar de rastrear cuando esté inactivo';
 
   @override
   String get idleTimeoutTitle => 'Tiempo de Inactividad';
@@ -1510,13 +1591,15 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get advancedWarning => 'Las funciones avanzadas pueden aumentar el uso de recursos. Habilitar solo si es necesario.';
+  String get advancedWarning =>
+      'Las funciones avanzadas pueden aumentar el uso de recursos. Habilitar solo si es necesario.';
 
   @override
   String get monitorAudioTitle => 'Monitorear Audio del Sistema';
 
   @override
-  String get monitorAudioDescription => 'Detectar actividad por reproducción de audio';
+  String get monitorAudioDescription =>
+      'Detectar actividad por reproducción de audio';
 
   @override
   String get audioSensitivityTitle => 'Sensibilidad de Audio';
@@ -1530,19 +1613,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monitorControllersTitle => 'Monitorear Controladores de Juego';
 
   @override
-  String get monitorControllersDescription => 'Detectar controladores Xbox/XInput';
+  String get monitorControllersDescription =>
+      'Detectar controladores Xbox/XInput';
 
   @override
   String get monitorHIDTitle => 'Monitorear Dispositivos HID';
 
   @override
-  String get monitorHIDDescription => 'Detectar volantes, tabletas, dispositivos personalizados';
+  String get monitorHIDDescription =>
+      'Detectar volantes, tabletas, dispositivos personalizados';
 
   @override
   String get setIdleTimeoutTitle => 'Establecer Tiempo de Inactividad';
 
   @override
-  String get idleTimeoutDialogDescription => 'Elige cuánto tiempo esperar antes de considerarte inactivo:';
+  String get idleTimeoutDialogDescription =>
+      'Elige cuánto tiempo esperar antes de considerarte inactivo:';
 
   @override
   String get seconds30 => '30 segundos';
@@ -1637,7 +1723,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceGenderTitle => 'Género de voz';
 
   @override
-  String get voiceGenderDescription => 'Elige el género de voz para las notificaciones del temporizador';
+  String get voiceGenderDescription =>
+      'Elige el género de voz para las notificaciones del temporizador';
 
   @override
   String get voiceGenderMale => 'Masculino';
@@ -1646,7 +1733,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get voiceGenderFemale => 'Femenino';
 
   @override
-  String get alertsLimitsSubtitle => 'Gestiona tus límites de tiempo de pantalla y notificaciones';
+  String get alertsLimitsSubtitle =>
+      'Gestiona tus límites de tiempo de pantalla y notificaciones';
 
   @override
   String get applicationsSubtitle => 'Gestiona tus aplicaciones rastreadas';
@@ -1704,19 +1792,23 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noResultsFound => 'No se encontraron resultados';
 
   @override
-  String get tryDifferentKeywords => 'Intenta buscar con diferentes palabras clave';
+  String get tryDifferentKeywords =>
+      'Intenta buscar con diferentes palabras clave';
 
   @override
   String get clearSearch => 'Limpiar Búsqueda';
 
   @override
-  String get greetingMorning => '¡Buenos días! Aquí está tu resumen de actividad.';
+  String get greetingMorning =>
+      '¡Buenos días! Aquí está tu resumen de actividad.';
 
   @override
-  String get greetingAfternoon => '¡Buenas tardes! Aquí está tu resumen de actividad.';
+  String get greetingAfternoon =>
+      '¡Buenas tardes! Aquí está tu resumen de actividad.';
 
   @override
-  String get greetingEvening => '¡Buenas noches! Aquí está tu resumen de actividad.';
+  String get greetingEvening =>
+      '¡Buenas noches! Aquí está tu resumen de actividad.';
 
   @override
   String get screenTimeProgress => 'Tiempo de\nPantalla';
@@ -1828,19 +1920,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get permission_error => 'Error de Permiso';
 
   @override
-  String get notification_permission_denied => 'Permiso de Notificación Denegado';
+  String get notification_permission_denied =>
+      'Permiso de Notificación Denegado';
 
   @override
-  String get notification_permission_denied_message => 'ScreenTime necesita permiso de notificación para enviarle alertas y recordatorios.\n\n¿Desea abrir la Configuración del Sistema para habilitar las notificaciones?';
+  String get notification_permission_denied_message =>
+      'ScreenTime necesita permiso de notificación para enviarle alertas y recordatorios.\n\n¿Desea abrir la Configuración del Sistema para habilitar las notificaciones?';
 
   @override
-  String get notification_permission_denied_hint => 'Abra la Configuración del Sistema para habilitar las notificaciones de ScreenTime.';
+  String get notification_permission_denied_hint =>
+      'Abra la Configuración del Sistema para habilitar las notificaciones de ScreenTime.';
 
   @override
-  String get notification_permission_required => 'Permiso de Notificación Requerido';
+  String get notification_permission_required =>
+      'Permiso de Notificación Requerido';
 
   @override
-  String get notification_permission_required_message => 'ScreenTime necesita permiso para enviarle notificaciones.';
+  String get notification_permission_required_message =>
+      'ScreenTime necesita permiso para enviarle notificaciones.';
 
   @override
   String get open_settings => 'Abrir Configuración';
@@ -1864,7 +1961,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get off => 'Desactivado';
 
   @override
-  String get enable_notification_permission_hint => 'Habilite el permiso de notificación para recibir alertas';
+  String get enable_notification_permission_hint =>
+      'Habilite el permiso de notificación para recibir alertas';
 
   @override
   String minutes_format(int minutes) {
@@ -1961,19 +2059,22 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled => 'Las notificaciones del sistema están deshabilitadas. Habilítalas en Configuración del sistema para las alertas de enfoque.';
+  String get systemNotificationsDisabled =>
+      'Las notificaciones del sistema están deshabilitadas. Habilítalas en Configuración del sistema para las alertas de enfoque.';
 
   @override
   String get openSystemSettings => 'Abrir Configuración del Sistema';
 
   @override
-  String get appNotificationsDisabled => 'Las notificaciones están deshabilitadas en la configuración de la aplicación. Habilítalas para recibir alertas de enfoque.';
+  String get appNotificationsDisabled =>
+      'Las notificaciones están deshabilitadas en la configuración de la aplicación. Habilítalas para recibir alertas de enfoque.';
 
   @override
   String get goToSettings => 'Ir a Configuración';
 
   @override
-  String get focusModeNotificationsDisabled => 'Las notificaciones del modo de enfoque están deshabilitadas. Habilítalas para recibir alertas de sesión.';
+  String get focusModeNotificationsDisabled =>
+      'Las notificaciones del modo de enfoque están deshabilitadas. Habilítalas para recibir alertas de sesión.';
 
   @override
   String get notificationsDisabled => 'Notificaciones Deshabilitadas';
@@ -1985,10 +2086,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get systemSettingsRequired => 'Configuración del Sistema Requerida';
 
   @override
-  String get notificationsDisabledSystemLevel => 'Las notificaciones están deshabilitadas a nivel del sistema. Para habilitar:';
+  String get notificationsDisabledSystemLevel =>
+      'Las notificaciones están deshabilitadas a nivel del sistema. Para habilitar:';
 
   @override
-  String get step1OpenSystemSettings => '1. Abrir Configuración del Sistema (Preferencias del Sistema)';
+  String get step1OpenSystemSettings =>
+      '1. Abrir Configuración del Sistema (Preferencias del Sistema)';
 
   @override
   String get step2GoToNotifications => '2. Ir a Notificaciones';
@@ -1997,10 +2100,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get step3FindApp => '3. Buscar y seleccionar Scolect';
 
   @override
-  String get step4EnableNotifications => '4. Habilitar \"Permitir notificaciones\"';
+  String get step4EnableNotifications =>
+      '4. Habilitar \"Permitir notificaciones\"';
 
   @override
-  String get returnToAppMessage => 'Luego regresa a esta aplicación y las notificaciones funcionarán.';
+  String get returnToAppMessage =>
+      'Luego regresa a esta aplicación y las notificaciones funcionarán.';
 
   @override
   String get gotIt => 'Entendido';
@@ -2042,7 +2147,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get playSoundWithAlerts => 'Reproducir sonido con alertas';
 
   @override
-  String get systemTrayNotifications => 'Notificaciones en la bandeja del sistema';
+  String get systemTrayNotifications =>
+      'Notificaciones en la bandeja del sistema';
 
   @override
   String screenTimeUsed(String current, String limit) {
@@ -2176,7 +2282,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get primaryColors => 'Colores Primarios';
 
   @override
-  String get primaryColorsDesc => 'Colores de acento principales utilizados en toda la aplicación';
+  String get primaryColorsDesc =>
+      'Colores de acento principales utilizados en toda la aplicación';
 
   @override
   String get primaryAccent => 'Acento Primario';
@@ -2194,7 +2301,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get semanticColors => 'Colores Semánticos';
 
   @override
-  String get semanticColorsDesc => 'Colores que transmiten significado y estado';
+  String get semanticColorsDesc =>
+      'Colores que transmiten significado y estado';
 
   @override
   String get successColor => 'Color de Éxito';
@@ -2218,10 +2326,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get backgroundColors => 'Colores de Fondo';
 
   @override
-  String get backgroundColorsLightDesc => 'Superficies de fondo principales para modo claro';
+  String get backgroundColorsLightDesc =>
+      'Superficies de fondo principales para modo claro';
 
   @override
-  String get backgroundColorsDarkDesc => 'Superficies de fondo principales para modo oscuro';
+  String get backgroundColorsDarkDesc =>
+      'Superficies de fondo principales para modo oscuro';
 
   @override
   String get background => 'Fondo';
@@ -2283,7 +2393,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sampleCardTitle => 'Título de Tarjeta de Ejemplo';
 
   @override
-  String get sampleSecondaryText => 'Este es el texto secundario que aparece debajo.';
+  String get sampleSecondaryText =>
+      'Este es el texto secundario que aparece debajo.';
 
   @override
   String get primary => 'Primario';
@@ -2298,13 +2409,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get launchAtStartupTitle => 'Iniciar al arrancar';
 
   @override
-  String get launchAtStartupDescription => 'Iniciar Scolect automáticamente al iniciar sesión en tu computadora';
+  String get launchAtStartupDescription =>
+      'Iniciar Scolect automáticamente al iniciar sesión en tu computadora';
 
   @override
-  String get inputMonitoringPermissionTitle => 'Supervisión del teclado no disponible';
+  String get inputMonitoringPermissionTitle =>
+      'Supervisión del teclado no disponible';
 
   @override
-  String get inputMonitoringPermissionDescription => 'Activa el permiso de supervisión de entrada para registrar la actividad del teclado. Actualmente solo se supervisa el ratón.';
+  String get inputMonitoringPermissionDescription =>
+      'Activa el permiso de supervisión de entrada para registrar la actividad del teclado. Actualmente solo se supervisa el ratón.';
 
   @override
   String get openSettings => 'Abrir ajustes';
@@ -2313,7 +2427,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get permissionGrantedTitle => 'Permiso concedido';
 
   @override
-  String get permissionGrantedDescription => 'La aplicación necesita reiniciarse para que la supervisión de entrada tenga efecto.';
+  String get permissionGrantedDescription =>
+      'La aplicación necesita reiniciarse para que la supervisión de entrada tenga efecto.';
 
   @override
   String get continueButton => 'Continuar';
@@ -2322,10 +2437,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get restartRequiredTitle => 'Reinicio necesario';
 
   @override
-  String get restartRequiredDescription => 'Para activar la supervisión del teclado, la aplicación debe reiniciarse. Esto es obligatorio en macOS.';
+  String get restartRequiredDescription =>
+      'Para activar la supervisión del teclado, la aplicación debe reiniciarse. Esto es obligatorio en macOS.';
 
   @override
-  String get restartNote => 'La aplicación se volverá a abrir automáticamente después del reinicio.';
+  String get restartNote =>
+      'La aplicación se volverá a abrir automáticamente después del reinicio.';
 
   @override
   String get restartNow => 'Reiniciar ahora';
@@ -2337,7 +2454,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get restartFailedTitle => 'Error al reiniciar';
 
   @override
-  String get restartFailedMessage => 'No se pudo reiniciar la aplicación automáticamente. Sal (Cmd+Q) y ábrela de nuevo manualmente.';
+  String get restartFailedMessage =>
+      'No se pudo reiniciar la aplicación automáticamente. Sal (Cmd+Q) y ábrela de nuevo manualmente.';
 
   @override
   String get exportAnalyticsReport => 'Exportar Informe de Análisis';
@@ -2349,25 +2467,31 @@ class AppLocalizationsEs extends AppLocalizations {
   String get beautifulExcelReport => 'Hermoso Informe Excel';
 
   @override
-  String get beautifulExcelReportDescription => 'Hoja de cálculo colorida y hermosa con gráficos, emojis e información ✨';
+  String get beautifulExcelReportDescription =>
+      'Hoja de cálculo colorida y hermosa con gráficos, emojis e información ✨';
 
   @override
   String get excelReportIncludes => 'El informe Excel incluye:';
 
   @override
-  String get summarySheetDescription => '📊 Hoja de Resumen - Métricas clave con tendencias';
+  String get summarySheetDescription =>
+      '📊 Hoja de Resumen - Métricas clave con tendencias';
 
   @override
-  String get dailyBreakdownDescription => '📅 Desglose Diario - Patrones de uso visual';
+  String get dailyBreakdownDescription =>
+      '📅 Desglose Diario - Patrones de uso visual';
 
   @override
-  String get appsSheetDescription => '📱 Hoja de Apps - Rankings detallados de aplicaciones';
+  String get appsSheetDescription =>
+      '📱 Hoja de Apps - Rankings detallados de aplicaciones';
 
   @override
-  String get insightsDescription => '💡 Perspectivas - Recomendaciones inteligentes';
+  String get insightsDescription =>
+      '💡 Perspectivas - Recomendaciones inteligentes';
 
   @override
-  String get beautifulExcelExportSuccess => '¡Hermoso informe Excel exportado con éxito! 🎉';
+  String get beautifulExcelExportSuccess =>
+      '¡Hermoso informe Excel exportado con éxito! 🎉';
 
   @override
   String failedToExportReport(String error) {
@@ -2557,7 +2681,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions => 'Sin Sesiones de Enfoque: Considera usar el modo enfoque para aumentar tu productividad';
+  String get insightNoFocusSessions =>
+      'Sin Sesiones de Enfoque: Considera usar el modo enfoque para aumentar tu productividad';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2581,7 +2706,8 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(String appName, String percentage, String duration) {
+  String insightMostUsedApp(
+      String appName, String percentage, String duration) {
     return 'App Más Usada: $appName representa $percentage% de tu tiempo ($duration)';
   }
 
@@ -2591,37 +2717,48 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get insightNoInsights => 'No hay perspectivas significativas disponibles';
+  String get insightNoInsights =>
+      'No hay perspectivas significativas disponibles';
 
   @override
-  String get recScheduleFocusSessions => 'Intenta programar más sesiones de enfoque durante el día para aumentar la productividad';
+  String get recScheduleFocusSessions =>
+      'Intenta programar más sesiones de enfoque durante el día para aumentar la productividad';
 
   @override
-  String get recSetAppLimits => 'Considera establecer límites en aplicaciones de ocio';
+  String get recSetAppLimits =>
+      'Considera establecer límites en aplicaciones de ocio';
 
   @override
-  String get recAimForFocusSessions => 'Apunta a al menos 1-2 sesiones de enfoque por día para construir un hábito consistente';
+  String get recAimForFocusSessions =>
+      'Apunta a al menos 1-2 sesiones de enfoque por día para construir un hábito consistente';
 
   @override
-  String get recTakeBreaks => 'Tu tiempo de pantalla diario es bastante alto. Intenta tomar descansos regulares usando la regla 20-20-20';
+  String get recTakeBreaks =>
+      'Tu tiempo de pantalla diario es bastante alto. Intenta tomar descansos regulares usando la regla 20-20-20';
 
   @override
-  String get recSetDailyGoals => 'Considera establecer metas diarias de tiempo de pantalla para reducir gradualmente el uso';
+  String get recSetDailyGoals =>
+      'Considera establecer metas diarias de tiempo de pantalla para reducir gradualmente el uso';
 
   @override
-  String get recBalanceEntertainment => 'Las apps de entretenimiento ocupan gran parte de tu tiempo. Considera equilibrar con actividades más productivas';
+  String get recBalanceEntertainment =>
+      'Las apps de entretenimiento ocupan gran parte de tu tiempo. Considera equilibrar con actividades más productivas';
 
   @override
-  String get recReviewUsagePatterns => 'Tu tiempo de pantalla ha aumentado significativamente. Revisa tus patrones de uso y establece límites';
+  String get recReviewUsagePatterns =>
+      'Tu tiempo de pantalla ha aumentado significativamente. Revisa tus patrones de uso y establece límites';
 
   @override
-  String get recScheduleFocusedWork => 'Tu tiempo productivo ha disminuido. Intenta programar bloques de trabajo enfocado en tu calendario';
+  String get recScheduleFocusedWork =>
+      'Tu tiempo productivo ha disminuido. Intenta programar bloques de trabajo enfocado en tu calendario';
 
   @override
-  String get recKeepUpGreatWork => '¡Sigue así! Tus hábitos de tiempo de pantalla se ven saludables';
+  String get recKeepUpGreatWork =>
+      '¡Sigue así! Tus hábitos de tiempo de pantalla se ven saludables';
 
   @override
-  String get recContinueFocusSessions => 'Continúa usando sesiones de enfoque para mantener la productividad';
+  String get recContinueFocusSessions =>
+      'Continúa usando sesiones de enfoque para mantener la productividad';
 
   @override
   String get sheetSummary => 'Resumen';
@@ -2732,19 +2869,22 @@ class AppLocalizationsEs extends AppLocalizations {
   String get saveAsFile => 'Guardar como archivo';
 
   @override
-  String get saveThemeAsJSONFile => 'Guardar el tema como archivo JSON en tu dispositivo';
+  String get saveThemeAsJSONFile =>
+      'Guardar el tema como archivo JSON en tu dispositivo';
 
   @override
   String get copyToClipboard => 'Copiar al portapapeles';
 
   @override
-  String get copyThemeJSONToClipboard => 'Copiar datos del tema al portapapeles';
+  String get copyThemeJSONToClipboard =>
+      'Copiar datos del tema al portapapeles';
 
   @override
   String get share => 'Compartir';
 
   @override
-  String get shareThemeViaSystemSheet => 'Compartir tema usando la hoja de compartir del sistema';
+  String get shareThemeViaSystemSheet =>
+      'Compartir tema usando la hoja de compartir del sistema';
 
   @override
   String get chooseImportMethod => 'Elige cómo importar un tema:';
@@ -2753,13 +2893,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get loadFromFile => 'Cargar desde archivo';
 
   @override
-  String get selectJSONFileFromDevice => 'Selecciona un archivo JSON de tema de tu dispositivo';
+  String get selectJSONFileFromDevice =>
+      'Selecciona un archivo JSON de tema de tu dispositivo';
 
   @override
   String get pasteFromClipboard => 'Pegar desde portapapeles';
 
   @override
-  String get importFromClipboardJSON => 'Importar tema desde datos JSON del portapapeles';
+  String get importFromClipboardJSON =>
+      'Importar tema desde datos JSON del portapapeles';
 
   @override
   String get importFromFile => 'Importar tema desde un archivo';
@@ -2788,13 +2930,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noThemeDataFound => 'No se encontraron datos del tema';
 
   @override
-  String get invalidThemeFormat => 'Formato de tema inválido. Por favor, verifica los datos JSON.';
+  String get invalidThemeFormat =>
+      'Formato de tema inválido. Por favor, verifica los datos JSON.';
 
   @override
   String get trackingModeTitle => 'Modo de seguimiento';
 
   @override
-  String get trackingModeDescription => 'Elige cómo se rastrea el uso de la aplicación';
+  String get trackingModeDescription =>
+      'Elige cómo se rastrea el uso de la aplicación';
 
   @override
   String get trackingModePolling => 'Estándar (Bajo consumo)';
@@ -2803,13 +2947,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get trackingModePrecise => 'Preciso (Alta precisión)';
 
   @override
-  String get trackingModePollingHint => 'Comprueba cada minuto - menor uso de recursos';
+  String get trackingModePollingHint =>
+      'Comprueba cada minuto - menor uso de recursos';
 
   @override
-  String get trackingModePreciseHint => 'Seguimiento en tiempo real - mayor precisión, más recursos';
+  String get trackingModePreciseHint =>
+      'Seguimiento en tiempo real - mayor precisión, más recursos';
 
   @override
-  String get trackingModeChangeError => 'Error al cambiar el modo de seguimiento. Por favor, inténtalo de nuevo.';
+  String get trackingModeChangeError =>
+      'Error al cambiar el modo de seguimiento. Por favor, inténtalo de nuevo.';
 
   @override
   String get errorTitle => 'Error';
@@ -2818,7 +2965,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get monitorKeyboardTitle => 'Monitorear Teclado';
 
   @override
-  String get monitorKeyboardDescription => 'Rastrear la actividad del teclado para detectar la presencia del usuario';
+  String get monitorKeyboardDescription =>
+      'Rastrear la actividad del teclado para detectar la presencia del usuario';
 
   @override
   String get changelogWhatsNew => 'Novedades';
@@ -2829,13 +2977,16 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get changelogNoContent => 'No hay registro de cambios disponible para esta versión.';
+  String get changelogNoContent =>
+      'No hay registro de cambios disponible para esta versión.';
 
   @override
-  String get changelogUnableToLoad => 'No se puede cargar el registro de cambios';
+  String get changelogUnableToLoad =>
+      'No se puede cargar el registro de cambios';
 
   @override
-  String get changelogErrorDescription => 'No se pudo recuperar el registro de cambios de esta versión. Comprueba tu conexión a internet o visita la página de versiones de GitHub.';
+  String get changelogErrorDescription =>
+      'No se pudo recuperar el registro de cambios de esta versión. Comprueba tu conexión a internet o visita la página de versiones de GitHub.';
 
   @override
   String get allTracking => 'Todas las apps';
@@ -2936,7 +3087,8 @@ class AppLocalizationsEs extends AppLocalizations {
   String get productiveAppMotivation => 'App productiva — sigue así';
 
   @override
-  String get nonProductiveAppSuggestion => 'No productiva — considera reducir su uso';
+  String get nonProductiveAppSuggestion =>
+      'No productiva — considera reducir su uso';
 
   @override
   String get legendUsage => 'Uso';

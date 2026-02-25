@@ -107,31 +107,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get faqGeneralQ1 => 'このアプリはどのようにスクリーンタイムを追跡しますか？';
 
   @override
-  String get faqGeneralA1 => 'このアプリは、デバイスの使用状況をリアルタイムで監視し、さまざまなアプリケーションでの使用時間を追跡します。総スクリーンタイム、生産的な時間、アプリケーション固有の使用状況など、デジタル習慣に関する包括的な洞察を提供します。';
+  String get faqGeneralA1 =>
+      'このアプリは、デバイスの使用状況をリアルタイムで監視し、さまざまなアプリケーションでの使用時間を追跡します。総スクリーンタイム、生産的な時間、アプリケーション固有の使用状況など、デジタル習慣に関する包括的な洞察を提供します。';
 
   @override
   String get faqGeneralQ2 => 'アプリが「生産的」とされる基準は何ですか？';
 
   @override
-  String get faqGeneralA2 => '「アプリケーション」セクションでアプリを手動で生産的としてマークできます。生産的なアプリは、仕事関連または有益なアプリケーションに費やしたスクリーンタイムの割合を計算する生産性スコアに貢献します。';
+  String get faqGeneralA2 =>
+      '「アプリケーション」セクションでアプリを手動で生産的としてマークできます。生産的なアプリは、仕事関連または有益なアプリケーションに費やしたスクリーンタイムの割合を計算する生産性スコアに貢献します。';
 
   @override
   String get faqGeneralQ3 => 'スクリーンタイム追跡はどの程度正確ですか？';
 
   @override
-  String get faqGeneralA3 => 'このアプリは、システムレベルの追跡を使用して、デバイス使用量を正確に測定します。各アプリケーションのフォアグラウンド時間をバッテリーへの影響を最小限に抑えながらキャプチャします。';
+  String get faqGeneralA3 =>
+      'このアプリは、システムレベルの追跡を使用して、デバイス使用量を正確に測定します。各アプリケーションのフォアグラウンド時間をバッテリーへの影響を最小限に抑えながらキャプチャします。';
 
   @override
   String get faqGeneralQ4 => 'アプリのカテゴリ分類をカスタマイズできますか？';
 
   @override
-  String get faqGeneralA4 => 'もちろんです！「アプリケーション」セクションで、カスタムカテゴリを作成し、アプリを特定のカテゴリに割り当て、これらの割り当てを簡単に変更できます。これにより、より意味のある使用状況分析を作成できます。';
+  String get faqGeneralA4 =>
+      'もちろんです！「アプリケーション」セクションで、カスタムカテゴリを作成し、アプリを特定のカテゴリに割り当て、これらの割り当てを簡単に変更できます。これにより、より意味のある使用状況分析を作成できます。';
 
   @override
   String get faqGeneralQ5 => 'このアプリからどのような洞察を得られますか？';
 
   @override
-  String get faqGeneralA5 => 'このアプリは、生産性スコア、時間帯別の使用パターン、詳細なアプリケーション使用状況、集中セッション追跡、グラフや円グラフなどの視覚的分析を含む包括的な洞察を提供し、デジタル習慣を理解し改善するのに役立ちます。';
+  String get faqGeneralA5 =>
+      'このアプリは、生産性スコア、時間帯別の使用パターン、詳細なアプリケーション使用状況、集中セッション追跡、グラフや円グラフなどの視覚的分析を含む包括的な洞察を提供し、デジタル習慣を理解し改善するのに役立ちます。';
 
   @override
   String get faqAppsQ1 => '特定のアプリを追跡から非表示にするにはどうすればよいですか？';
@@ -143,115 +148,134 @@ class AppLocalizationsJa extends AppLocalizations {
   String get faqAppsQ2 => 'アプリケーションを検索およびフィルタリングできますか？';
 
   @override
-  String get faqAppsA2 => 'はい、「アプリケーション」セクションには検索機能とフィルタリングオプションがあります。カテゴリ、生産性ステータス、追跡ステータス、表示状態でアプリをフィルタリングできます。';
+  String get faqAppsA2 =>
+      'はい、「アプリケーション」セクションには検索機能とフィルタリングオプションがあります。カテゴリ、生産性ステータス、追跡ステータス、表示状態でアプリをフィルタリングできます。';
 
   @override
   String get faqAppsQ3 => 'アプリケーションにはどのような編集オプションがありますか？';
 
   @override
-  String get faqAppsA3 => '各アプリケーションについて、カテゴリの割り当て、生産性ステータス、使用状況の追跡、レポートでの表示、個別の1日の時間制限を編集できます。';
+  String get faqAppsA3 =>
+      '各アプリケーションについて、カテゴリの割り当て、生産性ステータス、使用状況の追跡、レポートでの表示、個別の1日の時間制限を編集できます。';
 
   @override
   String get faqAppsQ4 => 'アプリケーションのカテゴリはどのように決定されますか？';
 
   @override
-  String get faqAppsA4 => '初期のカテゴリはシステムによって提案されますが、ワークフローと好みに基づいてカスタムカテゴリを作成、変更、割り当てることができます。';
+  String get faqAppsA4 =>
+      '初期のカテゴリはシステムによって提案されますが、ワークフローと好みに基づいてカスタムカテゴリを作成、変更、割り当てることができます。';
 
   @override
   String get faqReportsQ1 => 'どのような種類のレポートが利用できますか？';
 
   @override
-  String get faqReportsA1 => 'レポートには以下が含まれます：総スクリーンタイム、生産的な時間、最も使用されているアプリ、集中セッション、1日のスクリーンタイムグラフ、カテゴリ別円グラフ、詳細なアプリケーション使用状況、週間使用傾向、時間帯別使用パターン分析。';
+  String get faqReportsA1 =>
+      'レポートには以下が含まれます：総スクリーンタイム、生産的な時間、最も使用されているアプリ、集中セッション、1日のスクリーンタイムグラフ、カテゴリ別円グラフ、詳細なアプリケーション使用状況、週間使用傾向、時間帯別使用パターン分析。';
 
   @override
   String get faqReportsQ2 => 'アプリケーション使用レポートはどの程度詳細ですか？';
 
   @override
-  String get faqReportsA2 => '詳細なアプリケーション使用レポートには、アプリ名、カテゴリ、総使用時間、生産性ステータスが表示され、使用状況サマリー、1日の制限、使用傾向、生産性指標などのより深い洞察を持つ「アクション」セクションがあります。';
+  String get faqReportsA2 =>
+      '詳細なアプリケーション使用レポートには、アプリ名、カテゴリ、総使用時間、生産性ステータスが表示され、使用状況サマリー、1日の制限、使用傾向、生産性指標などのより深い洞察を持つ「アクション」セクションがあります。';
 
   @override
   String get faqReportsQ3 => '時間の経過に伴う使用傾向を分析できますか？';
 
   @override
-  String get faqReportsA3 => 'はい！このアプリは週ごとの比較を提供し、過去数週間の使用状況グラフ、1日の平均使用時間、最長セッション、週間合計を表示して、デジタル習慣を追跡するのに役立ちます。';
+  String get faqReportsA3 =>
+      'はい！このアプリは週ごとの比較を提供し、過去数週間の使用状況グラフ、1日の平均使用時間、最長セッション、週間合計を表示して、デジタル習慣を追跡するのに役立ちます。';
 
   @override
   String get faqReportsQ4 => '「使用パターン」分析とは何ですか？';
 
   @override
-  String get faqReportsA4 => '使用パターンは、スクリーンタイムを朝、午後、夕方、夜のセグメントに分割します。これにより、デバイスで最もアクティブな時間帯を理解し、改善すべき領域を特定できます。';
+  String get faqReportsA4 =>
+      '使用パターンは、スクリーンタイムを朝、午後、夕方、夜のセグメントに分割します。これにより、デバイスで最もアクティブな時間帯を理解し、改善すべき領域を特定できます。';
 
   @override
   String get faqAlertsQ1 => 'スクリーンタイム制限はどの程度細かく設定できますか？';
 
   @override
-  String get faqAlertsA1 => '全体的な1日のスクリーンタイム制限と個別のアプリ制限を設定できます。制限は時間と分で設定でき、必要に応じてリセットまたは調整するオプションがあります。';
+  String get faqAlertsA1 =>
+      '全体的な1日のスクリーンタイム制限と個別のアプリ制限を設定できます。制限は時間と分で設定でき、必要に応じてリセットまたは調整するオプションがあります。';
 
   @override
   String get faqAlertsQ2 => 'どのような通知オプションがありますか？';
 
   @override
-  String get faqAlertsA2 => 'このアプリは複数の通知タイプを提供します：スクリーンタイムを超えた場合のシステムアラート、カスタマイズ可能な間隔（1、5、15、30、または60分）での頻繁なアラート、集中モード、スクリーンタイム、およびアプリケーション固有の通知の切り替え。';
+  String get faqAlertsA2 =>
+      'このアプリは複数の通知タイプを提供します：スクリーンタイムを超えた場合のシステムアラート、カスタマイズ可能な間隔（1、5、15、30、または60分）での頻繁なアラート、集中モード、スクリーンタイム、およびアプリケーション固有の通知の切り替え。';
 
   @override
   String get faqAlertsQ3 => '制限アラートをカスタマイズできますか？';
 
   @override
-  String get faqAlertsA3 => 'はい、アラートの頻度をカスタマイズし、特定のタイプのアラートを有効/無効にし、全体的なスクリーンタイムと個別のアプリケーションに異なる制限を設定できます。';
+  String get faqAlertsA3 =>
+      'はい、アラートの頻度をカスタマイズし、特定のタイプのアラートを有効/無効にし、全体的なスクリーンタイムと個別のアプリケーションに異なる制限を設定できます。';
 
   @override
   String get faqFocusQ1 => 'どのような種類の集中モードがありますか？';
 
   @override
-  String get faqFocusA1 => '利用可能なモードには、ディープワーク（長時間の集中セッション）、クイックタスク（短時間の作業）、リーディングモードがあります。各モードは、作業と休憩時間を効果的に構造化するのに役立ちます。';
+  String get faqFocusA1 =>
+      '利用可能なモードには、ディープワーク（長時間の集中セッション）、クイックタスク（短時間の作業）、リーディングモードがあります。各モードは、作業と休憩時間を効果的に構造化するのに役立ちます。';
 
   @override
   String get faqFocusQ2 => 'ポモドーロタイマーはどの程度柔軟ですか？';
 
   @override
-  String get faqFocusA2 => 'タイマーは高度にカスタマイズ可能です。作業時間、短い休憩の長さ、長い休憩の時間を調整できます。追加オプションには、次のセッションの自動開始と通知設定があります。';
+  String get faqFocusA2 =>
+      'タイマーは高度にカスタマイズ可能です。作業時間、短い休憩の長さ、長い休憩の時間を調整できます。追加オプションには、次のセッションの自動開始と通知設定があります。';
 
   @override
   String get faqFocusQ3 => '集中モード履歴には何が表示されますか？';
 
   @override
-  String get faqFocusA3 => '集中モード履歴は、1日の集中セッションを追跡し、1日あたりのセッション数、傾向グラフ、平均セッション時間、合計集中時間、作業セッション、短い休憩、長い休憩を分類した時間分布円グラフを表示します。';
+  String get faqFocusA3 =>
+      '集中モード履歴は、1日の集中セッションを追跡し、1日あたりのセッション数、傾向グラフ、平均セッション時間、合計集中時間、作業セッション、短い休憩、長い休憩を分類した時間分布円グラフを表示します。';
 
   @override
   String get faqFocusQ4 => '集中セッションの進捗を追跡できますか？';
 
   @override
-  String get faqFocusA4 => 'このアプリは、再生/一時停止、リロード、設定ボタンを備えた円形タイマーUIを特徴としています。直感的なコントロールで集中セッションを簡単に追跡および管理できます。';
+  String get faqFocusA4 =>
+      'このアプリは、再生/一時停止、リロード、設定ボタンを備えた円形タイマーUIを特徴としています。直感的なコントロールで集中セッションを簡単に追跡および管理できます。';
 
   @override
   String get faqSettingsQ1 => 'どのようなカスタマイズオプションがありますか？';
 
   @override
-  String get faqSettingsA1 => 'カスタマイズには、テーマ選択（システム、ライト、ダーク）、言語設定、起動動作、包括的な通知コントロール、データのクリアや設定のリセットなどのデータ管理オプションが含まれます。';
+  String get faqSettingsA1 =>
+      'カスタマイズには、テーマ選択（システム、ライト、ダーク）、言語設定、起動動作、包括的な通知コントロール、データのクリアや設定のリセットなどのデータ管理オプションが含まれます。';
 
   @override
   String get faqSettingsQ2 => 'フィードバックを送信したり、問題を報告するにはどうすればよいですか？';
 
   @override
-  String get faqSettingsA2 => '設定セクションの下部に、バグを報告、フィードバックを送信、またはサポートに連絡するためのボタンがあります。これらは適切なサポートチャネルにリダイレクトされます。';
+  String get faqSettingsA2 =>
+      '設定セクションの下部に、バグを報告、フィードバックを送信、またはサポートに連絡するためのボタンがあります。これらは適切なサポートチャネルにリダイレクトされます。';
 
   @override
   String get faqSettingsQ3 => 'データをクリアするとどうなりますか？';
 
   @override
-  String get faqSettingsA3 => 'データをクリアすると、すべての使用統計、集中セッション履歴、カスタム設定がリセットされます。これは、新しく始めたり、トラブルシューティングに役立ちます。';
+  String get faqSettingsA3 =>
+      'データをクリアすると、すべての使用統計、集中セッション履歴、カスタム設定がリセットされます。これは、新しく始めたり、トラブルシューティングに役立ちます。';
 
   @override
   String get faqTroubleQ1 => 'データが表示されない、hiveが開かないエラー';
 
   @override
-  String get faqTroubleA1 => 'この問題は認識されています。一時的な修正方法は、設定からデータをクリアすることです。それでも機能しない場合は、ドキュメントに移動して、存在する場合は次のファイルを削除してください - harman_screentime_app_usage_box.hiveとharman_screentime_app_usage.lock。アプリを最新バージョンに更新することもお勧めします。';
+  String get faqTroubleA1 =>
+      'この問題は認識されています。一時的な修正方法は、設定からデータをクリアすることです。それでも機能しない場合は、ドキュメントに移動して、存在する場合は次のファイルを削除してください - harman_screentime_app_usage_box.hiveとharman_screentime_app_usage.lock。アプリを最新バージョンに更新することもお勧めします。';
 
   @override
   String get faqTroubleQ2 => 'アプリが起動するたびに開く場合、どうすればよいですか？';
 
   @override
-  String get faqTroubleA2 => 'これはWindows 10で発生する既知の問題です。一時的な修正方法は、設定で「最小化で起動」を有効にして、最小化で起動するようにすることです。';
+  String get faqTroubleA2 =>
+      'これはWindows 10で発生する既知の問題です。一時的な修正方法は、設定で「最小化で起動」を有効にして、最小化で起動するようにすることです。';
 
   @override
   String get usageAnalytics => '使用状況分析';
@@ -858,7 +882,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noActivityDataAvailable => 'アクティビティデータはまだありません';
 
   @override
-  String get startUsingApplications => 'スクリーンタイムと生産性を追跡するには、アプリケーションの使用を開始してください。';
+  String get startUsingApplications =>
+      'スクリーンタイムと生産性を追跡するには、アプリケーションの使用を開始してください。';
 
   @override
   String get refreshData => 'データを更新';
@@ -957,7 +982,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get appScreenTimeNotificationsTitle => 'アプリケーションスクリーンタイム';
 
   @override
-  String get appScreenTimeNotificationsDescription => 'アプリケーションスクリーンタイム制限のすべての通知';
+  String get appScreenTimeNotificationsDescription =>
+      'アプリケーションスクリーンタイム制限のすべての通知';
 
   @override
   String get frequentAlertsTitle => '頻繁なアラート間隔';
@@ -999,7 +1025,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get clearDataDialogTitle => 'データをクリアしますか？';
 
   @override
-  String get clearDataDialogContent => 'これにより、すべての履歴と関連データがクリアされます。復元できません。続行しますか？';
+  String get clearDataDialogContent =>
+      'これにより、すべての履歴と関連データがクリアされます。復元できません。続行しますか？';
 
   @override
   String get clearDataButtonLabel => 'データをクリア';
@@ -1008,7 +1035,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get resetSettingsDialogTitle => '設定をリセットしますか？';
 
   @override
-  String get resetSettingsDialogContent => 'これにより、すべての設定がデフォルト値にリセットされます。続行しますか？';
+  String get resetSettingsDialogContent =>
+      'これにより、すべての設定がデフォルト値にリセットされます。続行しますか？';
 
   @override
   String get resetButtonLabel => 'リセット';
@@ -1478,19 +1506,23 @@ class AppLocalizationsJa extends AppLocalizations {
   String get faqSettingsQ4 => 'データを復元またはエクスポートするにはどうすればよいですか？';
 
   @override
-  String get faqSettingsA4 => '設定に移動すると、バックアップ＆復元セクションがあります。ここからデータをエクスポートまたはインポートできます。エクスポートされたデータファイルはドキュメントのScolect-Backupsフォルダに保存され、このファイルのみがデータの復元に使用できます。他のファイルは使用できません。';
+  String get faqSettingsA4 =>
+      '設定に移動すると、バックアップ＆復元セクションがあります。ここからデータをエクスポートまたはインポートできます。エクスポートされたデータファイルはドキュメントのScolect-Backupsフォルダに保存され、このファイルのみがデータの復元に使用できます。他のファイルは使用できません。';
 
   @override
-  String get faqGeneralQ6 => '言語を変更するにはどうすればよいですか？また、どの言語が利用可能ですか？翻訳が間違っている場合はどうすればよいですか？';
+  String get faqGeneralQ6 =>
+      '言語を変更するにはどうすればよいですか？また、どの言語が利用可能ですか？翻訳が間違っている場合はどうすればよいですか？';
 
   @override
-  String get faqGeneralA6 => '言語は設定の一般セクションから変更できます。利用可能なすべての言語がそこにリストされています。お問い合わせをクリックして、指定された言語でリクエストを送信することで、翻訳をリクエストできます。翻訳はAIによって英語から生成されるため、間違っている可能性があることにご注意ください。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！';
+  String get faqGeneralA6 =>
+      '言語は設定の一般セクションから変更できます。利用可能なすべての言語がそこにリストされています。お問い合わせをクリックして、指定された言語でリクエストを送信することで、翻訳をリクエストできます。翻訳はAIによって英語から生成されるため、間違っている可能性があることにご注意ください。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！';
 
   @override
   String get faqGeneralQ7 => '翻訳が間違っている場合はどうすればよいですか？';
 
   @override
-  String get faqGeneralA7 => '翻訳はAIによって英語から生成されるため、間違っている可能性があります。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！';
+  String get faqGeneralA7 =>
+      '翻訳はAIによって英語から生成されるため、間違っている可能性があります。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！';
 
   @override
   String get activityTrackingSection => 'アクティビティ追跡';
@@ -1821,16 +1853,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get notification_permission_denied => '通知の許可が拒否されました';
 
   @override
-  String get notification_permission_denied_message => 'ScreenTimeはアラートとリマインダーを送信するために通知の許可が必要です。\n\n通知を有効にするためにシステム設定を開きますか？';
+  String get notification_permission_denied_message =>
+      'ScreenTimeはアラートとリマインダーを送信するために通知の許可が必要です。\n\n通知を有効にするためにシステム設定を開きますか？';
 
   @override
-  String get notification_permission_denied_hint => 'ScreenTimeの通知を有効にするには、システム設定を開いてください。';
+  String get notification_permission_denied_hint =>
+      'ScreenTimeの通知を有効にするには、システム設定を開いてください。';
 
   @override
   String get notification_permission_required => '通知の許可が必要です';
 
   @override
-  String get notification_permission_required_message => 'ScreenTimeは通知を送信するために許可が必要です。';
+  String get notification_permission_required_message =>
+      'ScreenTimeは通知を送信するために許可が必要です。';
 
   @override
   String get open_settings => '設定を開く';
@@ -1854,7 +1889,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get off => 'オフ';
 
   @override
-  String get enable_notification_permission_hint => 'アラートを受信するには通知の許可を有効にしてください';
+  String get enable_notification_permission_hint =>
+      'アラートを受信するには通知の許可を有効にしてください';
 
   @override
   String minutes_format(int minutes) {
@@ -1930,19 +1966,22 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get systemNotificationsDisabled => 'システム通知が無効になっています。フォーカスアラートのためにシステム設定で有効にしてください。';
+  String get systemNotificationsDisabled =>
+      'システム通知が無効になっています。フォーカスアラートのためにシステム設定で有効にしてください。';
 
   @override
   String get openSystemSettings => 'システム設定を開く';
 
   @override
-  String get appNotificationsDisabled => 'アプリ設定で通知が無効になっています。フォーカスアラートを受け取るには有効にしてください。';
+  String get appNotificationsDisabled =>
+      'アプリ設定で通知が無効になっています。フォーカスアラートを受け取るには有効にしてください。';
 
   @override
   String get goToSettings => '設定に移動';
 
   @override
-  String get focusModeNotificationsDisabled => 'フォーカスモード通知が無効になっています。セッションアラートを受け取るには有効にしてください。';
+  String get focusModeNotificationsDisabled =>
+      'フォーカスモード通知が無効になっています。セッションアラートを受け取るには有効にしてください。';
 
   @override
   String get notificationsDisabled => '通知が無効';
@@ -1954,7 +1993,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get systemSettingsRequired => 'システム設定が必要';
 
   @override
-  String get notificationsDisabledSystemLevel => 'システムレベルで通知が無効になっています。有効にするには:';
+  String get notificationsDisabledSystemLevel =>
+      'システムレベルで通知が無効になっています。有効にするには:';
 
   @override
   String get step1OpenSystemSettings => '1. システム設定（システム環境設定）を開く';
@@ -2266,7 +2306,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get inputMonitoringPermissionTitle => 'キーボード監視は利用できません';
 
   @override
-  String get inputMonitoringPermissionDescription => 'キーボードの操作を追跡するには、入力監視の許可を有効にしてください。現在はマウス入力のみが監視されています。';
+  String get inputMonitoringPermissionDescription =>
+      'キーボードの操作を追跡するには、入力監視の許可を有効にしてください。現在はマウス入力のみが監視されています。';
 
   @override
   String get openSettings => '設定を開く';
@@ -2284,7 +2325,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restartRequiredTitle => '再起動が必要です';
 
   @override
-  String get restartRequiredDescription => 'キーボード監視を有効にするには、アプリを再起動する必要があります。これは macOS の仕様です。';
+  String get restartRequiredDescription =>
+      'キーボード監視を有効にするには、アプリを再起動する必要があります。これは macOS の仕様です。';
 
   @override
   String get restartNote => '再起動後、アプリは自動的に再起動します。';
@@ -2299,7 +2341,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restartFailedTitle => '再起動に失敗しました';
 
   @override
-  String get restartFailedMessage => 'アプリを自動的に再起動できませんでした。終了（Cmd+Q）して手動で再起動してください。';
+  String get restartFailedMessage =>
+      'アプリを自動的に再起動できませんでした。終了（Cmd+Q）して手動で再起動してください。';
 
   @override
   String get exportAnalyticsReport => '分析レポートをエクスポート';
@@ -2311,7 +2354,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get beautifulExcelReport => '美しいExcelレポート';
 
   @override
-  String get beautifulExcelReportDescription => 'チャート、絵文字、インサイト付きの華やかでカラフルなスプレッドシート ✨';
+  String get beautifulExcelReportDescription =>
+      'チャート、絵文字、インサイト付きの華やかでカラフルなスプレッドシート ✨';
 
   @override
   String get excelReportIncludes => 'Excelレポートに含まれるもの：';
@@ -2519,7 +2563,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get insightNoFocusSessions => '集中セッションなし：生産性を向上させるために集中モードの使用を検討してください';
+  String get insightNoFocusSessions =>
+      '集中セッションなし：生産性を向上させるために集中モードの使用を検討してください';
 
   @override
   String insightScreenTimeTrend(String direction, String percentage) {
@@ -2543,7 +2588,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String insightMostUsedApp(String appName, String percentage, String duration) {
+  String insightMostUsedApp(
+      String appName, String percentage, String duration) {
     return '最も使用されたアプリ：$appNameが時間の$percentage%（$duration）を占めています';
   }
 
@@ -2556,28 +2602,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get insightNoInsights => '重要なインサイトはありません';
 
   @override
-  String get recScheduleFocusSessions => '生産性を向上させるために、1日を通してより多くの集中セッションをスケジュールしてみてください';
+  String get recScheduleFocusSessions =>
+      '生産性を向上させるために、1日を通してより多くの集中セッションをスケジュールしてみてください';
 
   @override
   String get recSetAppLimits => '娯楽アプリに制限を設定することを検討してください';
 
   @override
-  String get recAimForFocusSessions => '一貫した習慣を構築するために、1日あたり少なくとも1〜2回の集中セッションを目指してください';
+  String get recAimForFocusSessions =>
+      '一貫した習慣を構築するために、1日あたり少なくとも1〜2回の集中セッションを目指してください';
 
   @override
-  String get recTakeBreaks => '1日のスクリーン時間がかなり長いです。20-20-20ルールを使用して定期的に休憩を取ってみてください';
+  String get recTakeBreaks =>
+      '1日のスクリーン時間がかなり長いです。20-20-20ルールを使用して定期的に休憩を取ってみてください';
 
   @override
   String get recSetDailyGoals => '使用量を徐々に減らすために、1日のスクリーン時間目標を設定することを検討してください';
 
   @override
-  String get recBalanceEntertainment => '娯楽アプリが時間の大部分を占めています。より生産的な活動とのバランスを検討してください';
+  String get recBalanceEntertainment =>
+      '娯楽アプリが時間の大部分を占めています。より生産的な活動とのバランスを検討してください';
 
   @override
-  String get recReviewUsagePatterns => 'スクリーン時間が大幅に増加しました。使用パターンを確認し、境界を設定してください';
+  String get recReviewUsagePatterns =>
+      'スクリーン時間が大幅に増加しました。使用パターンを確認し、境界を設定してください';
 
   @override
-  String get recScheduleFocusedWork => '生産的時間が減少しました。カレンダーに集中作業ブロックをスケジュールしてみてください';
+  String get recScheduleFocusedWork =>
+      '生産的時間が減少しました。カレンダーに集中作業ブロックをスケジュールしてみてください';
 
   @override
   String get recKeepUpGreatWork => 'その調子です！スクリーン時間の習慣は健康的に見えます';
@@ -2785,7 +2837,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get changelogUnableToLoad => '変更履歴を読み込めません';
 
   @override
-  String get changelogErrorDescription => 'このバージョンの変更履歴を取得できませんでした。インターネット接続を確認するか、GitHubのリリースページをご覧ください。';
+  String get changelogErrorDescription =>
+      'このバージョンの変更履歴を取得できませんでした。インターネット接続を確認するか、GitHubのリリースページをご覧ください。';
 
   @override
   String get allTracking => 'すべてのアプリ';
