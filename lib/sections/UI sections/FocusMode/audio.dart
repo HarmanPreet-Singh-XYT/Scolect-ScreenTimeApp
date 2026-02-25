@@ -2,9 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class SoundManager {
-  static final AudioPlayer _audioPlayer = AudioPlayer();
+  // Removed unused static _audioPlayer that was causing native resource leak
 
-  // Sound file mapping (paste your complete soundFiles map here)
   static const Map<String, Map<String, Map<String, String>>> soundFiles = {
     "male": {
       "work_start": {
@@ -124,23 +123,20 @@ class SoundManager {
     },
   };
 
-  /// Detect the best matching language code from the device locale
   static String _detectLanguageCode(
       BuildContext context, String soundType, String voiceGender) {
     final locale = Localizations.localeOf(context);
     final languageCode = locale.languageCode.toLowerCase();
     final countryCode = locale.countryCode?.toLowerCase() ?? '';
 
-    // Get available languages for this sound type and voice gender
     final availableLanguages =
         soundFiles[voiceGender]?[soundType]?.keys.toSet() ?? {};
 
     if (availableLanguages.isEmpty) {
       debugPrint('No sound files available for $voiceGender/$soundType');
-      return 'en'; // Default fallback
+      return 'en';
     }
 
-    // Try full locale with country code (e.g., 'zh-cn', 'pt-br', 'es-es')
     if (countryCode.isNotEmpty) {
       final fullCode = '$languageCode-$countryCode';
       if (availableLanguages.contains(fullCode)) {
@@ -148,13 +144,10 @@ class SoundManager {
       }
     }
 
-    // Try just language code (e.g., 'en', 'zh', 'es')
     if (availableLanguages.contains(languageCode)) {
       return languageCode;
     }
 
-    // Try to find any locale that starts with the language code
-    // e.g., if user has 'es-mx' but we only have 'es-es'
     final partialMatch = availableLanguages.firstWhere(
       (lang) => lang.startsWith(languageCode),
       orElse: () => '',
@@ -164,23 +157,15 @@ class SoundManager {
       return partialMatch;
     }
 
-    // Final fallback to English
     if (availableLanguages.contains('en')) {
       return 'en';
     }
 
-    // If even 'en' doesn't exist, return the first available language
     return availableLanguages.first;
   }
 
-  /// Play a sound based on event type and voice gender
-  /// Language is automatically detected from the device locale
-  ///
-  /// [context]: BuildContext to get the current locale
-  /// [soundType]: 'work_start', 'break_start', 'long_break_start', or 'timer_complete'
-  /// [voiceGender]: 'male' or 'female'
-  // Keep track of playing instances to allow stopping if needed
-  static final List<AudioPlayer> _activePlayers = [];
+  // FIX: Use a Set to avoid duplicate entries and simplify membership checks
+  static final Set<AudioPlayer> _activePlayers = {};
 
   static Future<void> playSound({
     required BuildContext context,
@@ -188,6 +173,10 @@ class SoundManager {
     required String voiceGender,
   }) async {
     try {
+      // FIX: Stop all current sounds before playing a new one to prevent
+      // multiple overlapping native audio handles accumulating
+      await stopAllSounds();
+
       final language = _detectLanguageCode(context, soundType, voiceGender);
       final soundFile = soundFiles[voiceGender]?[soundType]?[language];
 
@@ -200,14 +189,14 @@ class SoundManager {
       debugPrint(
           'Playing sound: sounds/$soundFile (detected language: $language)');
 
-      // Create a new player for each sound
       final player = AudioPlayer();
       _activePlayers.add(player);
 
-      // Clean up when sound completes
+      // FIX: Remove from set before disposing to avoid use-after-free;
+      // copy the reference so the closure doesn't risk a dangling lookup
       player.onPlayerComplete.listen((_) {
-        player.dispose();
         _activePlayers.remove(player);
+        player.dispose();
       });
 
       await player.play(AssetSource('sounds/$soundFile'));
@@ -218,11 +207,19 @@ class SoundManager {
 
   /// Stop all currently playing sounds
   static Future<void> stopAllSounds() async {
-    for (final player in _activePlayers) {
-      await player.stop();
-      await player.dispose();
-    }
+    // FIX: Copy the set before iterating so removals during async ops
+    // don't cause concurrent modification / access violations
+    final players = Set<AudioPlayer>.from(_activePlayers);
     _activePlayers.clear();
+
+    for (final player in players) {
+      try {
+        await player.stop();
+        await player.dispose();
+      } catch (e) {
+        debugPrint('Error stopping player: $e');
+      }
+    }
   }
 
   /// Dispose all audio players (call when app is closing)
