@@ -74,6 +74,7 @@ dependencies:
     git:
       url: https://github.com/HarmanPreet-Singh-XYT/Screenstate
       ref: main
+  auto_updater: ^1.0.0
 
 dev_dependencies:
   flutter_test:

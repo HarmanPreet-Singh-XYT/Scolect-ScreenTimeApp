@@ -3016,4 +3016,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get yesterday => 'کل';
+
+  @override
+  String get changelog => 'Changelog';
 }

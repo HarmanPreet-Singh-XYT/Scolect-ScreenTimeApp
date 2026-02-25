@@ -3102,4 +3102,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get yesterday => 'Вчера';
+
+  @override
+  String get changelog => 'Changelog';
 }

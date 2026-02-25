@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
+  auto_updater_windows
   bitsdojo_window_windows
   desktop_screenstate
   flutter_localization

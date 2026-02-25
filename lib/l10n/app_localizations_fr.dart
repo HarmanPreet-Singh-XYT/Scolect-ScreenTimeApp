@@ -3125,4 +3125,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get yesterday => 'Hier';
+
+  @override
+  String get changelog => 'Changelog';
 }

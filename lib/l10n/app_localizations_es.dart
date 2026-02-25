@@ -3112,4 +3112,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get yesterday => 'Ayer';
+
+  @override
+  String get changelog => 'Changelog';
 }

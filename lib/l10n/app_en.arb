@@ -2176,5 +2176,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "No data",
-"yesterday": "Yesterday"
+"yesterday": "Yesterday",
+"changelog":"Changelog"
 }

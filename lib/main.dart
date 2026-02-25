@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:auto_updater/auto_updater.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -7,6 +8,7 @@ import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/notification_controller.dart';
 import 'package:screentime/utils/mac_launch.dart';
 import 'package:screentime/utils/macos_window.dart';
+import 'package:screentime/utils/update_service.dart';
 import './sections/overview.dart';
 import './sections/applications.dart';
 import './sections/alerts_limits.dart';
@@ -25,11 +27,33 @@ import 'dart:ui' show lerpDouble;
 import 'package:provider/provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
-// IMPORTANT: Import the new dynamic AppDesign
 import 'package:screentime/app_design.dart';
 import 'package:screentime/sections/UI sections/FocusMode/audio.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:window_manager/window_manager.dart';
+
+// ============================================================================
+// ⚙️  BUILD FLAG
+//    true  → direct distribution, Sparkle/WinSparkle active, update banner shown
+//    false → store build, no update logic at all
+// ============================================================================
+const bool autoUpdates = true;
+
+const String _macFeedURL = 'https://api.scolect.com/update/macos';
+const String _winFeedURL = 'https://api.scolect.com/update/windows';
+
+// Tray icon paths
+String _trayIconNormal = Platform.isWindows
+    ? 'assets/icons/tray_icon_windows.ico'
+    : 'assets/icons/tray_icon_mac.png';
+
+// Badge icon shown when an update is available — create these assets:
+//   assets/icons/tray_icon_windows_update.ico  (same icon with a small dot)
+//   assets/icons/tray_icon_mac_update.png      (same icon with a small dot)
+String _trayIconUpdate = Platform.isWindows
+    ? 'assets/icons/tray_icon_windows_update.ico'
+    : 'assets/icons/tray_icon_mac_update.png';
+
 // ============================================================================
 // NAVIGATION STATE
 // ============================================================================
@@ -65,44 +89,31 @@ class NavigationState extends ChangeNotifier {
     _currentScreenRefresh = callback;
   }
 
-  void refreshCurrentScreen() {
-    _currentScreenRefresh?.call();
-  }
+  void refreshCurrentScreen() => _currentScreenRefresh?.call();
 
   void clearParams() {
     _navigationParams = null;
     notifyListeners();
   }
 
-  // ✨ NEW: refreshImmediately parameter
   void startPeriodicRefresh({bool refreshImmediately = true}) {
     if (_isAppVisible) return;
-
     _isAppVisible = true;
     debugPrint('🔄 Starting periodic UI refresh (every 1 minute)');
-
-    // ⚡ Refresh immediately when regaining focus
     if (refreshImmediately) {
       debugPrint('⚡ Immediate refresh on focus');
       refreshCurrentScreen();
     }
-
     _periodicRefreshTimer?.cancel();
-
-    _periodicRefreshTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      if (_isAppVisible) {
-        debugPrint('🔄 Periodic refresh triggered');
-        refreshCurrentScreen();
-      }
+    _periodicRefreshTimer = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (_isAppVisible) refreshCurrentScreen();
     });
   }
 
   void stopPeriodicRefresh() {
     if (!_isAppVisible) return;
-
     _isAppVisible = false;
     debugPrint('⏸️ Stopping periodic UI refresh');
-
     _periodicRefreshTimer?.cancel();
     _periodicRefreshTimer = null;
   }
@@ -114,15 +125,15 @@ class NavigationState extends ChangeNotifier {
   }
 }
 
-// Create a global instance or use Provider
 final navigationState = NavigationState();
+
 // ============================================================================
 // MAIN
 // ============================================================================
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Configure launch at startup package
+
   if (Platform.isMacOS) {
     launchAtStartup.setup(
       appName: "Scolect",
@@ -131,10 +142,8 @@ void main(List<String> args) async {
   }
 
   final bool wasSystemLaunchedWindows = args.contains('--auto-launched');
-  // We'll check macOS later when method channel is ready
   bool wasSystemLaunchedMacOS = false;
 
-  // Check if another instance is already running by trying to connect
   bool existingInstanceFound = false;
   try {
     final socket = await Socket.connect(
@@ -142,28 +151,19 @@ void main(List<String> args) async {
       45999,
       timeout: const Duration(milliseconds: 500),
     );
-
-    // Existing instance found, send SHOW and exit
     socket.write('SHOW');
     await socket.flush();
     await socket.close();
     debugPrint('✅ Sent SHOW to existing instance, exiting');
     existingInstanceFound = true;
   } catch (e) {
-    // No existing instance, we're the primary
     debugPrint('✅ No existing instance found, starting as primary');
-    existingInstanceFound = false;
   }
+  if (existingInstanceFound) exit(0);
 
-  if (existingInstanceFound) {
-    exit(0);
-  }
-
-  // We're the primary instance, start the IPC server
   await SingleInstanceIPC.startServer();
   await SettingsManager().init();
 
-  // Initialize launch at startup based on saved setting
   if (Platform.isMacOS) {
     final bool shouldLaunchAtStartup =
         await SettingsManager().getSetting("launchAtStartup") ?? false;
@@ -207,6 +207,18 @@ void main(List<String> args) async {
   final tracker = BackgroundAppTracker();
   await tracker.initializeTracking(locale: savedLocale);
 
+  if (autoUpdates) {
+    final version = SettingsManager().versionInfo['version'] ?? '0.0.0';
+    unawaited(UpdateService().initialize(version));
+
+    final feedURL = Platform.isMacOS ? _macFeedURL : _winFeedURL;
+    await autoUpdater.setFeedURL(feedURL);
+    await autoUpdater.setScheduledCheckInterval(0);
+    debugPrint('✅ auto_updater initialized: $feedURL');
+  } else {
+    debugPrint('ℹ️  Store build — update logic disabled');
+  }
+
   runApp(MyApp(
     initialTheme: initialTheme,
     savedLocale: savedLocale,
@@ -234,7 +246,6 @@ void main(List<String> args) async {
     } else {
       debugPrint('🔼 Starting visible');
       Platform.isMacOS ? await MacOSWindow.show() : win.show();
-      // ✨ Start with immediate refresh on first show
       navigationState.startPeriodicRefresh(refreshImmediately: true);
     }
   });
@@ -255,7 +266,7 @@ String? _detectSystemLocale() {
 }
 
 // ============================================================================
-// THEME DATA - UPDATED to use CustomThemeData
+// THEME DATA
 // ============================================================================
 
 FluentThemeData buildLightTheme(CustomThemeData themeData) {
@@ -273,45 +284,37 @@ FluentThemeData buildLightTheme(CustomThemeData themeData) {
     inactiveBackgroundColor: themeData.lightBorder,
     typography: Typography.raw(
       caption: TextStyle(
-        fontSize: 12,
-        color: themeData.lightTextSecondary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 12,
+          color: themeData.lightTextSecondary,
+          fontWeight: FontWeight.normal),
       body: TextStyle(
-        fontSize: 14,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 14,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.normal),
       bodyLarge: TextStyle(
-        fontSize: 16,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 16,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.normal),
       bodyStrong: TextStyle(
-        fontSize: 14,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 14,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.w600),
       subtitle: TextStyle(
-        fontSize: 20,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 20,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.w600),
       title: TextStyle(
-        fontSize: 28,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 28,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.w600),
       titleLarge: TextStyle(
-        fontSize: 40,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 40,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.w600),
       display: TextStyle(
-        fontSize: 68,
-        color: themeData.lightTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 68,
+          color: themeData.lightTextPrimary,
+          fontWeight: FontWeight.w600),
     ),
   );
 }
@@ -331,51 +334,43 @@ FluentThemeData buildDarkTheme(CustomThemeData themeData) {
     inactiveBackgroundColor: themeData.darkBorder,
     typography: Typography.raw(
       caption: TextStyle(
-        fontSize: 12,
-        color: themeData.darkTextSecondary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 12,
+          color: themeData.darkTextSecondary,
+          fontWeight: FontWeight.normal),
       body: TextStyle(
-        fontSize: 14,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 14,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.normal),
       bodyLarge: TextStyle(
-        fontSize: 16,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.normal,
-      ),
+          fontSize: 16,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.normal),
       bodyStrong: TextStyle(
-        fontSize: 14,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 14,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.w600),
       subtitle: TextStyle(
-        fontSize: 20,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 20,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.w600),
       title: TextStyle(
-        fontSize: 28,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 28,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.w600),
       titleLarge: TextStyle(
-        fontSize: 40,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 40,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.w600),
       display: TextStyle(
-        fontSize: 68,
-        color: themeData.darkTextPrimary,
-        fontWeight: FontWeight.w600,
-      ),
+          fontSize: 68,
+          color: themeData.darkTextPrimary,
+          fontWeight: FontWeight.w600),
     ),
   );
 }
 
 // ============================================================================
-// MY APP - UPDATED with Provider integration
+// MY APP
 // ============================================================================
 
 class MyApp extends StatefulWidget {
@@ -394,16 +389,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp>
     with TrayListener, WidgetsBindingObserver {
-  bool notificationsEnabled = true;
   final String appVersion = "v${SettingsManager().versionInfo["version"]}";
-  // REMOVED: int selectedIndex = 0;  -- Now using navigationState
   final AppDataStore _dataStore = AppDataStore();
   Locale? _locale;
 
-  // UPDATED: Use navigationState instead
-  void changeIndex(int value) {
-    navigationState.changeIndex(value);
-  }
+  // Tracks whether we've already switched to the update icon
+  // so we don't call setIcon on every notifyListeners
+  bool _trayShowingUpdateIcon = false;
+
+  void changeIndex(int value) => navigationState.changeIndex(value);
 
   void setLocale(Locale locale) async {
     setState(() => _locale = locale);
@@ -419,19 +413,44 @@ class _MyAppState extends State<MyApp>
     _initDataStore();
     _initTray();
     trayManager.addListener(this);
-    if (widget.savedLocale != null) {
-      _locale = Locale(widget.savedLocale!);
+    if (widget.savedLocale != null) _locale = Locale(widget.savedLocale!);
+
+    // Listen to UpdateService and react to status changes
+    if (autoUpdates) {
+      UpdateService().addListener(_onUpdateStatusChanged);
+    }
+  }
+
+  /// Called every time UpdateService notifies — swap tray icon + menu
+  void _onUpdateStatusChanged() {
+    final hasUpdate = UpdateService().hasUpdate;
+
+    if (hasUpdate && !_trayShowingUpdateIcon) {
+      _trayShowingUpdateIcon = true;
+      _setTrayIcon(update: true);
+      _updateTrayMenu(); // rebuilds menu with "Update Available" item
+      debugPrint('🔔 Tray icon switched to update badge');
+    } else if (!hasUpdate && _trayShowingUpdateIcon) {
+      _trayShowingUpdateIcon = false;
+      _setTrayIcon(update: false);
+      _updateTrayMenu();
+      debugPrint('✅ Tray icon restored to normal');
+    }
+  }
+
+  Future<void> _setTrayIcon({required bool update}) async {
+    try {
+      await trayManager.setIcon(update ? _trayIconUpdate : _trayIconNormal);
+    } catch (e) {
+      // If the update icon asset doesn't exist yet, silently fall back
+      debugPrint('⚠️  Could not set tray icon: $e');
     }
   }
 
   Future<void> _initDataStore() async => await _dataStore.init();
 
   Future<void> _initTray() async {
-    await trayManager.setIcon(
-      Platform.isWindows
-          ? 'assets/icons/tray_icon_windows.ico'
-          : 'assets/icons/tray_icon_mac.png',
-    );
+    await trayManager.setIcon(_trayIconNormal);
     await trayManager.setToolTip("Scolect");
     await _updateTrayMenu();
   }
@@ -440,11 +459,26 @@ class _MyAppState extends State<MyApp>
     final context = navigatorKey.currentContext;
     if (context == null) return;
     final l10n = AppLocalizations.of(context)!;
+    final hasUpdate = autoUpdates && UpdateService().hasUpdate;
+    final updateInfo = autoUpdates ? UpdateService().availableUpdate : null;
 
     await trayManager.setContextMenu(
       Menu(items: [
         MenuItem(label: l10n.trayShowWindow, onClick: (_) => _showApp()),
         MenuItem.separator(),
+
+        // Show update item at the top when available so it's hard to miss
+        if (hasUpdate) ...[
+          MenuItem(
+            label: '🆕 Update to ${updateInfo?.tagName ?? 'latest'}',
+            onClick: (_) async {
+              _showApp();
+              await autoUpdater.checkForUpdates();
+            },
+          ),
+          MenuItem.separator(),
+        ],
+
         MenuItem(label: l10n.navReports, onClick: (_) => _openSection(3)),
         MenuItem(label: l10n.navAlertsLimits, onClick: (_) => _openSection(2)),
         MenuItem(label: l10n.navApplications, onClick: (_) => _openSection(1)),
@@ -462,13 +496,10 @@ class _MyAppState extends State<MyApp>
 
   void _showApp() {
     Platform.isMacOS ? MacOSWindow.show() : appWindow.show();
-
-    // ✨ Start refresh with immediate update on focus
     navigationState.startPeriodicRefresh(refreshImmediately: true);
   }
 
   void _exitApp() {
-    // Stop periodic refresh before exiting
     navigationState.stopPeriodicRefresh();
     Platform.isMacOS ? MacOSWindow.exit() : appWindow.close();
   }
@@ -490,36 +521,27 @@ class _MyAppState extends State<MyApp>
     if (context == null) return;
     final l10n = AppLocalizations.of(context)!;
 
-    if (menuItem.label == l10n.trayShowWindow) {
+    if (menuItem.label == l10n.trayShowWindow)
       _showApp();
-    } else if (menuItem.label == l10n.trayExit) {
+    else if (menuItem.label == l10n.trayExit)
       _exitApp();
-    } else if (menuItem.label == l10n.navReports) {
+    else if (menuItem.label == l10n.navReports)
       _openSection(3);
-    } else if (menuItem.label == l10n.navAlertsLimits) {
+    else if (menuItem.label == l10n.navAlertsLimits)
       _openSection(2);
-    } else if (menuItem.label == l10n.navApplications) {
-      _openSection(1);
-    }
+    else if (menuItem.label == l10n.navApplications) _openSection(1);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _dataStore.handleAppLifecycleState(state);
-
     switch (state) {
       case AppLifecycleState.resumed:
-        debugPrint(
-            '🔼 App resumed - starting periodic refresh with immediate update');
-        // ✨ Refresh immediately when app regains focus
         navigationState.startPeriodicRefresh(refreshImmediately: true);
         break;
       case AppLifecycleState.paused:
       case AppLifecycleState.inactive:
       case AppLifecycleState.hidden:
-        debugPrint('🔽 App paused/hidden - stopping periodic refresh');
-        navigationState.stopPeriodicRefresh();
-        break;
       case AppLifecycleState.detached:
         navigationState.stopPeriodicRefresh();
         break;
@@ -528,23 +550,24 @@ class _MyAppState extends State<MyApp>
 
   @override
   void dispose() {
+    if (autoUpdates) UpdateService().removeListener(_onUpdateStatusChanged);
     WidgetsBinding.instance.removeObserver(this);
     BackgroundAppTracker().dispose();
     SingleInstanceIPC.dispose();
     _dataStore.dispose().then((_) => Hive.close());
     trayManager.removeListener(this);
     SoundManager.dispose();
-    navigationState.stopPeriodicRefresh(); // Clean up timer
+    navigationState.stopPeriodicRefresh();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // WRAP WITH BOTH PROVIDERS
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeCustomizationProvider()),
         ChangeNotifierProvider.value(value: navigationState),
+        if (autoUpdates) ChangeNotifierProvider.value(value: UpdateService()),
       ],
       child: _AppWithTheme(
         initialTheme: widget.initialTheme,
@@ -557,13 +580,11 @@ class _MyAppState extends State<MyApp>
 
 void _hideApp() {
   Platform.isMacOS ? MacOSWindow.hide() : appWindow.hide();
-
-  // Stop periodic refresh to preserve resources
   navigationState.stopPeriodicRefresh();
 }
 
 // ============================================================================
-// APP WITH THEME - FIXED with key-based rebuild strategy
+// APP WITH THEME
 // ============================================================================
 
 class _AppWithTheme extends StatelessWidget {
@@ -582,15 +603,13 @@ class _AppWithTheme extends StatelessWidget {
     final themeProvider = context.watch<ThemeCustomizationProvider>();
     final customTheme = themeProvider.currentTheme;
     final themeMode = themeProvider.adaptiveThemeMode;
-
-    // Composite key: rebuilds when either custom theme or mode changes
     final themeKey = '${customTheme.id}_${themeProvider.themeMode}';
 
     return FluentAdaptiveTheme(
       key: ValueKey(themeKey),
       light: buildLightTheme(customTheme),
       dark: buildDarkTheme(customTheme),
-      initial: themeMode, // Use mode from provider
+      initial: themeMode,
       builder: (theme, darkTheme) => FluentApp(
         title: 'Scolect',
         theme: theme,
@@ -600,9 +619,7 @@ class _AppWithTheme extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: locale,
         debugShowCheckedModeBanner: false,
-        home: HomePage(
-          setLocale: setLocale,
-        ),
+        home: HomePage(setLocale: setLocale),
       ),
     );
   }

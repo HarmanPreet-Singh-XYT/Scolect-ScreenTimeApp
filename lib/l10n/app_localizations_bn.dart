@@ -3031,4 +3031,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get yesterday => 'গতকাল';
+
+  @override
+  String get changelog => 'Changelog';
 }
