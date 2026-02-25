@@ -2936,5 +2936,5 @@ class AppLocalizationsZh extends AppLocalizations {
   String get yesterday => '昨天';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => '更新日志';
 }

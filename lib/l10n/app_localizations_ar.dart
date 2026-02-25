@@ -3012,5 +3012,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get yesterday => 'أمس';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'سجل التغييرات';
 }

@@ -3032,5 +3032,5 @@ class AppLocalizationsId extends AppLocalizations {
   String get yesterday => 'Kemarin';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'Catatan perubahan';
 }

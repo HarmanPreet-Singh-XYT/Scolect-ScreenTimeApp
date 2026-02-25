@@ -3095,5 +3095,5 @@ class AppLocalizationsPt extends AppLocalizations {
   String get yesterday => 'Ontem';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'Registro de alterações';
 }

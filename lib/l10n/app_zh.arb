@@ -1969,5 +1969,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "暂无数据",
-"yesterday": "昨天"
+"yesterday": "昨天",
+"changelog": "更新日志"
 }

@@ -37,7 +37,7 @@ import 'package:window_manager/window_manager.dart';
 //    true  → direct distribution, Sparkle/WinSparkle active, update banner shown
 //    false → store build, no update logic at all
 // ============================================================================
-const bool autoUpdates = true;
+const bool autoUpdates = false;
 
 const String _macFeedURL = 'https://api.scolect.com/update/macos';
 const String _winFeedURL = 'https://api.scolect.com/update/windows';

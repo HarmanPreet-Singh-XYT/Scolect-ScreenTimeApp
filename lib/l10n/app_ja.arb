@@ -1967,5 +1967,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "データなし",
-"yesterday": "昨日"
+"yesterday": "昨日",
+"changelog": "変更履歴"
 }

@@ -3104,5 +3104,5 @@ class AppLocalizationsRu extends AppLocalizations {
   String get yesterday => 'Вчера';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'Журнал изменений';
 }

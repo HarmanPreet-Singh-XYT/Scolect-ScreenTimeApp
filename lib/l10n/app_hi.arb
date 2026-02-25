@@ -1968,5 +1968,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "कोई डेटा नहीं",
-"yesterday": "कल"
+"yesterday": "कल",
+"changelog": "परिवर्तन लॉग"
 }

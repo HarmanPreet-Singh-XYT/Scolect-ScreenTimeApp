@@ -1963,5 +1963,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "Sin datos",
-"yesterday": "Ayer"
+"yesterday": "Ayer",
+"changelog": "Registro de cambios"
 }

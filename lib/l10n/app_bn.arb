@@ -1969,6 +1969,7 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "কোনো তথ্য নেই",
-"yesterday": "গতকাল"
+"yesterday": "গতকাল",
+"changelog": "পরিবর্তনের তালিকা"
 
 }

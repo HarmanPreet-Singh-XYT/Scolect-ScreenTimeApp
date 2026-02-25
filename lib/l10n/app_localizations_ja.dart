@@ -2965,5 +2965,5 @@ class AppLocalizationsJa extends AppLocalizations {
   String get yesterday => '昨日';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => '変更履歴';
 }

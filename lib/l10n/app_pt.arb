@@ -1960,5 +1960,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "Sem dados",
-"yesterday": "Ontem"
+"yesterday": "Ontem",
+"changelog": "Registro de alterações"
 }

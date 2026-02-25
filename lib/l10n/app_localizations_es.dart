@@ -3114,5 +3114,5 @@ class AppLocalizationsEs extends AppLocalizations {
   String get yesterday => 'Ayer';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'Registro de cambios';
 }

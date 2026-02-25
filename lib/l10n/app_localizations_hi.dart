@@ -3025,5 +3025,5 @@ class AppLocalizationsHi extends AppLocalizations {
   String get yesterday => 'कल';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'परिवर्तन लॉग';
 }

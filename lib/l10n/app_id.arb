@@ -1960,5 +1960,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "Tidak ada data",
-"yesterday": "Kemarin"
+"yesterday": "Kemarin",
+"changelog": "Catatan perubahan"
 }

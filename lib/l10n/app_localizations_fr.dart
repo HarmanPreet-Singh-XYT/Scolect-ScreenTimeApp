@@ -3127,5 +3127,5 @@ class AppLocalizationsFr extends AppLocalizations {
   String get yesterday => 'Hier';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'Journal des modifications';
 }

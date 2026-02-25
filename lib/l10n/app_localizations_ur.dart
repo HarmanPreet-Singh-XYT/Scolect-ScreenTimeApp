@@ -3018,5 +3018,5 @@ class AppLocalizationsUr extends AppLocalizations {
   String get yesterday => 'کل';
 
   @override
-  String get changelog => 'Changelog';
+  String get changelog => 'تبدیلیوں کا ریکارڈ';
 }

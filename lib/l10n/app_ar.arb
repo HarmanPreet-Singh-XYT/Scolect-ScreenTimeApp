@@ -1967,5 +1967,6 @@
   "placeholders": { "duration": { "type": "String" } }
 },
 "noData": "لا توجد بيانات",
-"yesterday": "أمس"
+"yesterday": "أمس",
+"changelog": "سجل التغييرات"
 }
