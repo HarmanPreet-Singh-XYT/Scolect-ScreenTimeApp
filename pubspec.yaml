@@ -1,7 +1,7 @@
 name: screentime
 description: "Screen Time Tracking and Management Application"
 publish_to: 'none'
-version: 2.0.6
+version: 2.0.7
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -112,7 +112,7 @@ msix_config:
     parameters: --auto-launched
   publisher_display_name: Harmanita
   identity_name: Harmanita.TimeMark-TrackScreenTimeAppUsage
-  msix_version: 2.0.6.0
+  msix_version: 2.0.7.0
   logo_path: C:\Code\Scolect-ScreenTimeApp\assets\icons\logo.png
   publisher: CN=5EB16640-AA72-4826-B8B0-95B5C4F31CF0
   store: true
