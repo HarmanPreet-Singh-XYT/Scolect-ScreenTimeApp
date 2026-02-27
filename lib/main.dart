@@ -42,17 +42,17 @@ const bool autoUpdates = false;
 const String _macFeedURL = 'https://api.scolect.com/update/macos';
 const String _winFeedURL = 'https://api.scolect.com/update/windows';
 
-// Tray icon paths
-String _trayIconNormal = Platform.isWindows
-    ? 'assets/icons/tray_icon_windows.ico'
-    : 'assets/icons/tray_icon_mac.png';
+// Tray icon paths — const so they're compile-time literals
+const String _trayIconNormalWindows = 'assets/icons/tray_icon_windows.ico';
+const String _trayIconNormalMac = 'assets/icons/tray_icon_mac.png';
+const String _trayIconUpdateWindows =
+    'assets/icons/tray_icon_windows_update.ico';
+const String _trayIconUpdateMac = 'assets/icons/tray_icon_mac_update.png';
 
-// Badge icon shown when an update is available — create these assets:
-//   assets/icons/tray_icon_windows_update.ico  (same icon with a small dot)
-//   assets/icons/tray_icon_mac_update.png      (same icon with a small dot)
-String _trayIconUpdate = Platform.isWindows
-    ? 'assets/icons/tray_icon_windows_update.ico'
-    : 'assets/icons/tray_icon_mac_update.png';
+String get _trayIconNormal =>
+    Platform.isWindows ? _trayIconNormalWindows : _trayIconNormalMac;
+String get _trayIconUpdate =>
+    Platform.isWindows ? _trayIconUpdateWindows : _trayIconUpdateMac;
 
 // ============================================================================
 // NAVIGATION STATE
@@ -125,7 +125,8 @@ class NavigationState extends ChangeNotifier {
   }
 }
 
-final navigationState = NavigationState();
+// Single global instance — accessed via Provider in widgets
+final NavigationState navigationState = NavigationState();
 
 // ============================================================================
 // MAIN
@@ -265,6 +266,12 @@ String? _detectSystemLocale() {
   }
 }
 
+// Shared hide helper used by window buttons and tray
+void _hideApp() {
+  Platform.isMacOS ? MacOSWindow.hide() : appWindow.hide();
+  navigationState.stopPeriodicRefresh();
+}
+
 // ============================================================================
 // THEME DATA
 // ============================================================================
@@ -389,12 +396,11 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp>
     with TrayListener, WidgetsBindingObserver {
+  // Cached so SettingsManager is not called on every build
   final String appVersion = "v${SettingsManager().versionInfo["version"]}";
   final AppDataStore _dataStore = AppDataStore();
   Locale? _locale;
 
-  // Tracks whether we've already switched to the update icon
-  // so we don't call setIcon on every notifyListeners
   bool _trayShowingUpdateIcon = false;
 
   void changeIndex(int value) => navigationState.changeIndex(value);
@@ -415,20 +421,18 @@ class _MyAppState extends State<MyApp>
     trayManager.addListener(this);
     if (widget.savedLocale != null) _locale = Locale(widget.savedLocale!);
 
-    // Listen to UpdateService and react to status changes
     if (autoUpdates) {
       UpdateService().addListener(_onUpdateStatusChanged);
     }
   }
 
-  /// Called every time UpdateService notifies — swap tray icon + menu
   void _onUpdateStatusChanged() {
     final hasUpdate = UpdateService().hasUpdate;
 
     if (hasUpdate && !_trayShowingUpdateIcon) {
       _trayShowingUpdateIcon = true;
       _setTrayIcon(update: true);
-      _updateTrayMenu(); // rebuilds menu with "Update Available" item
+      _updateTrayMenu();
       debugPrint('🔔 Tray icon switched to update badge');
     } else if (!hasUpdate && _trayShowingUpdateIcon) {
       _trayShowingUpdateIcon = false;
@@ -442,7 +446,6 @@ class _MyAppState extends State<MyApp>
     try {
       await trayManager.setIcon(update ? _trayIconUpdate : _trayIconNormal);
     } catch (e) {
-      // If the update icon asset doesn't exist yet, silently fall back
       debugPrint('⚠️  Could not set tray icon: $e');
     }
   }
@@ -464,12 +467,11 @@ class _MyAppState extends State<MyApp>
 
     await trayManager.setContextMenu(
       Menu(items: [
-        MenuItem(label: l10n.trayShowWindow, onClick: (_) => _showApp()),
+        MenuItem(key: 'show_window', label: l10n.trayShowWindow),
         MenuItem.separator(),
-
-        // Show update item at the top when available so it's hard to miss
         if (hasUpdate) ...[
           MenuItem(
+            key: 'do_update',
             label: '🆕 Update to ${updateInfo?.tagName ?? 'latest'}',
             onClick: (_) async {
               _showApp();
@@ -478,18 +480,18 @@ class _MyAppState extends State<MyApp>
           ),
           MenuItem.separator(),
         ],
-
-        MenuItem(label: l10n.navReports, onClick: (_) => _openSection(3)),
-        MenuItem(label: l10n.navAlertsLimits, onClick: (_) => _openSection(2)),
-        MenuItem(label: l10n.navApplications, onClick: (_) => _openSection(1)),
+        MenuItem(key: 'nav_reports', label: l10n.navReports),
+        MenuItem(key: 'nav_alerts', label: l10n.navAlertsLimits),
+        MenuItem(key: 'nav_apps', label: l10n.navApplications),
         MenuItem.separator(),
         MenuItem(
+          key: 'version',
           disabled: true,
           label: l10n.trayVersion(appVersion),
           checked: false,
         ),
         MenuItem.separator(),
-        MenuItem(label: l10n.trayExit, onClick: (_) => _exitApp()),
+        MenuItem(key: 'exit', label: l10n.trayExit),
       ]),
     );
   }
@@ -515,21 +517,26 @@ class _MyAppState extends State<MyApp>
   @override
   void onTrayIconRightMouseDown() => trayManager.popUpContextMenu();
 
+  // KEY-based dispatch — robust across locale changes
   @override
   void onTrayMenuItemClick(MenuItem menuItem) {
-    final context = navigatorKey.currentContext;
-    if (context == null) return;
-    final l10n = AppLocalizations.of(context)!;
-
-    if (menuItem.label == l10n.trayShowWindow)
-      _showApp();
-    else if (menuItem.label == l10n.trayExit)
-      _exitApp();
-    else if (menuItem.label == l10n.navReports)
-      _openSection(3);
-    else if (menuItem.label == l10n.navAlertsLimits)
-      _openSection(2);
-    else if (menuItem.label == l10n.navApplications) _openSection(1);
+    switch (menuItem.key) {
+      case 'show_window':
+        _showApp();
+        break;
+      case 'exit':
+        _exitApp();
+        break;
+      case 'nav_reports':
+        _openSection(3);
+        break;
+      case 'nav_alerts':
+        _openSection(2);
+        break;
+      case 'nav_apps':
+        _openSection(1);
+        break;
+    }
   }
 
   @override
@@ -578,11 +585,6 @@ class _MyAppState extends State<MyApp>
   }
 }
 
-void _hideApp() {
-  Platform.isMacOS ? MacOSWindow.hide() : appWindow.hide();
-  navigationState.stopPeriodicRefresh();
-}
-
 // ============================================================================
 // APP WITH THEME
 // ============================================================================
@@ -603,7 +605,8 @@ class _AppWithTheme extends StatelessWidget {
     final themeProvider = context.watch<ThemeCustomizationProvider>();
     final customTheme = themeProvider.currentTheme;
     final themeMode = themeProvider.adaptiveThemeMode;
-    final themeKey = '${customTheme.id}_${themeProvider.themeMode}';
+    // Object.hash gives a stable int rather than a string allocation each build
+    final themeKey = Object.hash(customTheme.id, themeProvider.themeMode);
 
     return FluentAdaptiveTheme(
       key: ValueKey(themeKey),
@@ -624,6 +627,7 @@ class _AppWithTheme extends StatelessWidget {
     );
   }
 }
+
 // ============================================================================
 // HOME PAGE WITH CUSTOM COLLAPSIBLE SIDEBAR
 // ============================================================================
@@ -681,11 +685,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final isDark = FluentTheme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
 
-    // WATCH the navigation state
-    final navState = context.watch<NavigationState>();
+    // context.select prevents HomePage from rebuilding for changes that don't
+    // affect the sidebar or title bar (e.g. navigationParams updates)
+    final selectedIndex =
+        context.select<NavigationState, int>((s) => s.selectedIndex);
 
     final themeProvider = context.watch<ThemeCustomizationProvider>();
     final customTheme = themeProvider.currentTheme;
+
     return Column(
       children: [
         EnhancedTitleBar(
@@ -696,36 +703,39 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         Expanded(
           child: Row(
             children: [
-              AnimatedBuilder(
-                animation: _sidebarAnimation,
-                builder: (context, child) {
-                  final expandProgress = _sidebarAnimation.value;
-                  final width = lerpDouble(
-                    AppDesign.sidebarCollapsedWidth,
-                    AppDesign.sidebarExpandedWidth,
-                    expandProgress,
-                  )!;
+              // Wrap sidebar in RepaintBoundary so animation repaints are
+              // isolated from the content area
+              RepaintBoundary(
+                child: AnimatedBuilder(
+                  animation: _sidebarAnimation,
+                  builder: (context, child) {
+                    final expandProgress = _sidebarAnimation.value;
+                    final width = lerpDouble(
+                      AppDesign.sidebarCollapsedWidth,
+                      AppDesign.sidebarExpandedWidth,
+                      expandProgress,
+                    )!;
 
-                  return SizedBox(
-                    width: width,
-                    child: CustomSidebar(
+                    return SizedBox(
                       width: width,
-                      isExpanded: _isSidebarExpanded,
-                      expandProgress: expandProgress,
-                      selectedIndex: navState.selectedIndex, // FROM PROVIDER
-                      onItemSelected: navState.changeIndex, // FROM PROVIDER
-                      isDark: isDark,
-                      l10n: l10n,
-                      customTheme: customTheme,
-                    ),
-                  );
-                },
+                      child: CustomSidebar(
+                        width: width,
+                        isExpanded: _isSidebarExpanded,
+                        expandProgress: expandProgress,
+                        selectedIndex: selectedIndex,
+                        onItemSelected: navigationState.changeIndex,
+                        isDark: isDark,
+                        l10n: l10n,
+                        customTheme: customTheme,
+                      ),
+                    );
+                  },
+                ),
               ),
               Expanded(
                 child: _ContentArea(
-                  selectedIndex: navState.selectedIndex, // FROM PROVIDER
+                  selectedIndex: selectedIndex,
                   setLocale: widget.setLocale,
-                  isDark: isDark,
                 ),
               ),
             ],
@@ -735,8 +745,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 }
+
 // ============================================================================
-// ANIMATED BUILDER HELPER (Since AnimatedBuilder doesn't exist)
+// ANIMATED BUILDER HELPER
 // ============================================================================
 
 class AnimatedBuilder extends AnimatedWidget {
@@ -751,30 +762,11 @@ class AnimatedBuilder extends AnimatedWidget {
   }) : super(listenable: animation);
 
   @override
-  Widget build(BuildContext context) {
-    return builder(context, child);
-  }
-}
-
-class AnimatedBuilder2 extends AnimatedWidget {
-  final Widget Function(BuildContext context, Widget? child) builder;
-  final Widget? child;
-
-  const AnimatedBuilder2({
-    super.key,
-    required Animation<double> animation,
-    required this.builder,
-    this.child,
-  }) : super(listenable: animation);
-
-  @override
-  Widget build(BuildContext context) {
-    return builder(context, child);
-  }
+  Widget build(BuildContext context) => builder(context, child);
 }
 
 // ============================================================================
-// CUSTOM SIDEBAR - FIXED
+// CUSTOM SIDEBAR
 // ============================================================================
 
 class CustomSidebar extends StatelessWidget {
@@ -799,100 +791,8 @@ class CustomSidebar extends StatelessWidget {
     required this.customTheme,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final navItems = _getNavItems();
-    final isCompact = expandProgress < 0.5;
-
-    return ClipRect(
-      child: Container(
-        width: width,
-        decoration: BoxDecoration(
-          color: isDark
-              ? customTheme.darkSurfaceSecondary
-              : customTheme.lightSurface,
-          border: Border(
-            right: BorderSide(
-              color: isDark ? customTheme.darkBorder : customTheme.lightBorder,
-              width: 1,
-            ),
-          ),
-        ),
-        child: Column(
-          children: [
-            // Header
-            _SidebarHeader(
-              expandProgress: expandProgress,
-              isDark: isDark,
-              l10n: l10n,
-              isCompact: isCompact,
-            ),
-
-            SizedBox(
-                height: isCompact ? AppDesign.spacingXs : AppDesign.spacingSm),
-
-            // Navigation Items
-            Expanded(
-              child: ClipRect(
-                child: ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                    horizontal:
-                        isCompact ? AppDesign.spacingXs : AppDesign.spacingMd,
-                    vertical: AppDesign.spacingSm,
-                  ),
-                  itemCount: navItems.length,
-                  itemBuilder: (context, index) {
-                    final item = navItems[index];
-
-                    // Handle separator
-                    if (item.isSeparator) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          vertical: isCompact
-                              ? AppDesign.spacingSm
-                              : AppDesign.spacingMd,
-                          horizontal: isCompact ? AppDesign.spacingSm : 0,
-                        ),
-                        child: Divider(
-                          style: DividerThemeData(
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? AppDesign.darkBorder
-                                  : AppDesign.lightBorder,
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-
-                    // Handle regular nav item
-                    return _SidebarItem(
-                      icon: item.icon!,
-                      label: item.label!,
-                      isSelected: selectedIndex == item.index,
-                      expandProgress: expandProgress,
-                      isDark: isDark,
-                      isCompact: isCompact,
-                      onTap: () => onItemSelected(item.index!),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            // Footer - Version
-            _SidebarFooter(
-              expandProgress: expandProgress,
-              isDark: isDark,
-              isCompact: isCompact,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<_NavItemData> _getNavItems() {
+  // Static builder so a new List isn't allocated each frame during animation
+  static List<_NavItemData> _buildNavItems(AppLocalizations l10n) {
     return [
       _NavItemData(icon: FluentIcons.home, label: l10n.navOverview, index: 0),
       _NavItemData(
@@ -913,10 +813,95 @@ class CustomSidebar extends StatelessWidget {
       _NavItemData(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 6),
     ];
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final navItems = _buildNavItems(l10n);
+    final isCompact = expandProgress < 0.5;
+
+    return ClipRect(
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          color: isDark
+              ? customTheme.darkSurfaceSecondary
+              : customTheme.lightSurface,
+          border: Border(
+            right: BorderSide(
+              color: isDark ? customTheme.darkBorder : customTheme.lightBorder,
+              width: 1,
+            ),
+          ),
+        ),
+        child: Column(
+          children: [
+            _SidebarHeader(
+              expandProgress: expandProgress,
+              isDark: isDark,
+              l10n: l10n,
+              isCompact: isCompact,
+            ),
+            SizedBox(
+                height: isCompact ? AppDesign.spacingXs : AppDesign.spacingSm),
+            Expanded(
+              child: ClipRect(
+                child: ListView.builder(
+                  padding: EdgeInsets.symmetric(
+                    horizontal:
+                        isCompact ? AppDesign.spacingXs : AppDesign.spacingMd,
+                    vertical: AppDesign.spacingSm,
+                  ),
+                  itemCount: navItems.length,
+                  itemBuilder: (context, index) {
+                    final item = navItems[index];
+
+                    if (item.isSeparator) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: isCompact
+                              ? AppDesign.spacingSm
+                              : AppDesign.spacingMd,
+                          horizontal: isCompact ? AppDesign.spacingSm : 0,
+                        ),
+                        child: Divider(
+                          style: DividerThemeData(
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? AppDesign.darkBorder
+                                  : AppDesign.lightBorder,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return _SidebarItem(
+                      icon: item.icon!,
+                      label: item.label!,
+                      isSelected: selectedIndex == item.index,
+                      expandProgress: expandProgress,
+                      isDark: isDark,
+                      isCompact: isCompact,
+                      onTap: () => onItemSelected(item.index!),
+                    );
+                  },
+                ),
+              ),
+            ),
+            _SidebarFooter(
+              expandProgress: expandProgress,
+              isDark: isDark,
+              isCompact: isCompact,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // ============================================================================
-// NAV ITEM DATA - FIXED with named parameters
+// NAV ITEM DATA
 // ============================================================================
 
 class _NavItemData {
@@ -960,6 +945,7 @@ class _SidebarHeader extends StatelessWidget {
     final design = AppDesign.of(context);
     final padding = isCompact ? AppDesign.spacingSm : AppDesign.spacingLg;
     final margin = isCompact ? AppDesign.spacingXs : AppDesign.spacingMd;
+
     return ClipRect(
       child: Container(
         margin: EdgeInsets.all(margin),
@@ -976,7 +962,6 @@ class _SidebarHeader extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // App Icon - Always visible
             Container(
               padding: const EdgeInsets.all(AppDesign.spacingSm),
               decoration: BoxDecoration(
@@ -996,8 +981,6 @@ class _SidebarHeader extends StatelessWidget {
                 height: 20,
               ),
             ),
-
-            // Title & Subtitle (only when expanded enough)
             if (expandProgress > 0.6) ...[
               const SizedBox(width: AppDesign.spacingMd),
               Flexible(
@@ -1076,7 +1059,7 @@ class _SidebarItemState extends State<_SidebarItem> {
   @override
   Widget build(BuildContext context) {
     final design = AppDesign.of(context);
-    // Colors
+
     Color bgColor = Colors.transparent;
     Color iconColor =
         widget.isDark ? design.darkTextSecondary : design.lightTextSecondary;
@@ -1096,172 +1079,156 @@ class _SidebarItemState extends State<_SidebarItem> {
       textColor = iconColor;
     }
 
-    Widget itemContent;
+    final Widget itemContent = widget.isCompact
+        ? _buildCompact(design, bgColor, iconColor)
+        : _buildExpanded(design, bgColor, iconColor, textColor);
 
-    if (widget.isCompact) {
-      // Compact mode - icon only, centered
-      itemContent = Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(
-          vertical: AppDesign.spacingMd,
+    // Only wrap in Tooltip when compact — avoids an extra widget layer when expanded
+    final Widget tappable = GestureDetector(
+      onTap: widget.onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: itemContent,
+      ),
+    );
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: widget.isCompact
+          ? Tooltip(
+              message: widget.label,
+              style: _tooltipStyle(design),
+              child: tappable,
+            )
+          : tappable,
+    );
+  }
+
+  TooltipThemeData _tooltipStyle(AppDesign design) {
+    return TooltipThemeData(
+      decoration: BoxDecoration(
+        color: widget.isDark ? AppDesign.darkSurface : AppDesign.lightSurface,
+        borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+        border: Border.all(
+          color: widget.isDark ? AppDesign.darkBorder : AppDesign.lightBorder,
         ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(AppDesign.radiusMd),
-          border: widget.isSelected
-              ? Border.all(
-                  color: design.primaryAccent.withValues(alpha: 0.3),
-                  width: 1,
-                )
-              : null,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Selection indicator bar at top
-            if (widget.isSelected)
-              Container(
-                width: 20,
-                height: 3,
-                margin: const EdgeInsets.only(bottom: AppDesign.spacingXs),
-                decoration: BoxDecoration(
-                  color: design.primaryAccent,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            // Icon
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      textStyle: TextStyle(
+        color: widget.isDark ? design.darkTextPrimary : design.lightTextPrimary,
+        fontSize: 12,
+      ),
+    );
+  }
+
+  Widget _buildCompact(AppDesign design, Color bgColor, Color iconColor) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: AppDesign.spacingMd),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+        border: widget.isSelected
+            ? Border.all(
+                color: design.primaryAccent.withValues(alpha: 0.3), width: 1)
+            : null,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.isSelected)
             Container(
-              padding: const EdgeInsets.all(AppDesign.spacingSm),
-              decoration: BoxDecoration(
-                color: widget.isSelected
-                    ? design.primaryAccent.withValues(alpha: 0.1)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppDesign.radiusSm),
-              ),
-              child: Icon(
-                widget.icon,
-                size: 20,
-                color: iconColor,
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      // Expanded mode - icon with label
-      itemContent = Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppDesign.spacingMd,
-          vertical: AppDesign.spacingMd,
-        ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(AppDesign.radiusMd),
-          border: widget.isSelected
-              ? Border.all(
-                  color: design.primaryAccent.withValues(alpha: 0.3),
-                  width: 1,
-                )
-              : null,
-        ),
-        child: Row(
-          children: [
-            // Selection Indicator
-            AnimatedContainer(
-              duration: AppDesign.animFast,
-              width: 3,
-              height: widget.isSelected ? 20 : 0,
-              margin: const EdgeInsets.only(right: AppDesign.spacingSm),
+              width: 20,
+              height: 3,
+              margin: const EdgeInsets.only(bottom: AppDesign.spacingXs),
               decoration: BoxDecoration(
                 color: design.primaryAccent,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-
-            // Icon
-            Container(
-              padding: const EdgeInsets.all(AppDesign.spacingXs),
-              decoration: BoxDecoration(
-                color: widget.isSelected
-                    ? design.primaryAccent.withValues(alpha: 0.1)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(AppDesign.radiusSm),
-              ),
-              child: Icon(
-                widget.icon,
-                size: 18,
-                color: iconColor,
-              ),
+          Container(
+            padding: const EdgeInsets.all(AppDesign.spacingSm),
+            decoration: BoxDecoration(
+              color: widget.isSelected
+                  ? design.primaryAccent.withValues(alpha: 0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppDesign.radiusSm),
             ),
-
-            const SizedBox(width: AppDesign.spacingMd),
-
-            // Label
-            Expanded(
-              child: Opacity(
-                opacity: widget.expandProgress.clamp(0.0, 1.0),
-                child: Text(
-                  widget.label,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight:
-                        widget.isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: textColor,
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
-            ),
-
-            // Selected indicator arrow
-            if (widget.isSelected)
-              Opacity(
-                opacity: widget.expandProgress.clamp(0.0, 1.0),
-                child: Icon(
-                  FluentIcons.chevron_right,
-                  size: 12,
-                  color: design.primaryAccent,
-                ),
-              ),
-          ],
-        ),
-      );
-    }
-
-    return Tooltip(
-      message: widget.isCompact ? widget.label : '',
-      style: TooltipThemeData(
-        decoration: BoxDecoration(
-          color: widget.isDark ? AppDesign.darkSurface : AppDesign.lightSurface,
-          borderRadius: BorderRadius.circular(AppDesign.radiusSm),
-          border: Border.all(
-            color: widget.isDark ? AppDesign.darkBorder : AppDesign.lightBorder,
+            child: Icon(widget.icon, size: 20, color: iconColor),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        textStyle: TextStyle(
-          color:
-              widget.isDark ? design.darkTextPrimary : design.lightTextPrimary,
-          fontSize: 12,
-        ),
+        ],
       ),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovering = true),
-        onExit: (_) => setState(() => _isHovering = false),
-        child: GestureDetector(
-          onTap: widget.onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2),
-            child: itemContent,
+    );
+  }
+
+  Widget _buildExpanded(
+      AppDesign design, Color bgColor, Color iconColor, Color textColor) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppDesign.spacingMd,
+        vertical: AppDesign.spacingMd,
+      ),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+        border: widget.isSelected
+            ? Border.all(
+                color: design.primaryAccent.withValues(alpha: 0.3), width: 1)
+            : null,
+      ),
+      child: Row(
+        children: [
+          AnimatedContainer(
+            duration: AppDesign.animFast,
+            width: 3,
+            height: widget.isSelected ? 20 : 0,
+            margin: const EdgeInsets.only(right: AppDesign.spacingSm),
+            decoration: BoxDecoration(
+              color: design.primaryAccent,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-        ),
+          Container(
+            padding: const EdgeInsets.all(AppDesign.spacingXs),
+            decoration: BoxDecoration(
+              color: widget.isSelected
+                  ? design.primaryAccent.withValues(alpha: 0.1)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(AppDesign.radiusSm),
+            ),
+            child: Icon(widget.icon, size: 18, color: iconColor),
+          ),
+          const SizedBox(width: AppDesign.spacingMd),
+          Expanded(
+            child: Opacity(
+              opacity: widget.expandProgress.clamp(0.0, 1.0),
+              child: Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight:
+                      widget.isSelected ? FontWeight.w600 : FontWeight.w500,
+                  color: textColor,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ),
+          if (widget.isSelected)
+            Opacity(
+              opacity: widget.expandProgress.clamp(0.0, 1.0),
+              child: Icon(FluentIcons.chevron_right,
+                  size: 12, color: design.primaryAccent),
+            ),
+        ],
       ),
     );
   }
@@ -1282,10 +1249,13 @@ class _SidebarFooter extends StatelessWidget {
     required this.isCompact,
   });
 
+  // Cached so SettingsManager isn't called on each repaint
+  static final String _version = "v${SettingsManager().versionInfo["version"]}";
+
   @override
   Widget build(BuildContext context) {
-    final version = "v${SettingsManager().versionInfo["version"]}";
     final design = AppDesign.of(context);
+
     return ClipRect(
       child: Container(
         padding: EdgeInsets.all(
@@ -1314,7 +1284,7 @@ class _SidebarFooter extends StatelessWidget {
                 child: Opacity(
                   opacity: ((expandProgress - 0.6) / 0.4).clamp(0.0, 1.0),
                   child: Text(
-                    version,
+                    _version,
                     style: TextStyle(
                       fontSize: 11,
                       color: isDark
@@ -1340,16 +1310,18 @@ class _SidebarFooter extends StatelessWidget {
 class _ContentArea extends StatelessWidget {
   final int selectedIndex;
   final Function(Locale) setLocale;
-  final bool isDark;
 
   const _ContentArea({
     required this.selectedIndex,
     required this.setLocale,
-    required this.isDark,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Read theme locally — avoids receiving isDark as a prop and causing
+    // parent to pass it down on every brightness change
+    final isDark = FluentTheme.of(context).brightness == Brightness.dark;
+
     return Container(
       color: isDark ? AppDesign.darkBackground : AppDesign.lightBackground,
       child: AnimatedSwitcher(
@@ -1391,6 +1363,7 @@ class _ContentArea extends StatelessWidget {
       case 6:
         return const Help(key: ValueKey('help'));
       default:
+        assert(false, 'Unhandled nav index: $index');
         return const Overview(key: ValueKey('overview'));
     }
   }
@@ -1403,13 +1376,13 @@ class _ContentArea extends StatelessWidget {
 class EnhancedTitleBar extends StatelessWidget {
   final VoidCallback onToggleSidebar;
   final bool isSidebarExpanded;
-  final CustomThemeData customTheme; // ✅ ADD THIS
+  final CustomThemeData customTheme;
 
   const EnhancedTitleBar({
     super.key,
     required this.onToggleSidebar,
     required this.isSidebarExpanded,
-    required this.customTheme, // ✅ ADD THIS
+    required this.customTheme,
   });
 
   @override
@@ -1421,13 +1394,11 @@ class EnhancedTitleBar extends StatelessWidget {
     return WindowTitleBarBox(
       child: Container(
         decoration: BoxDecoration(
-          // ✅ USE customTheme
           color: isDark
               ? customTheme.darkSurfaceSecondary
               : customTheme.lightSurface,
           border: Border(
             bottom: BorderSide(
-              // ✅ USE customTheme
               color: isDark ? customTheme.darkBorder : customTheme.lightBorder,
               width: 1,
             ),
@@ -1435,52 +1406,37 @@ class EnhancedTitleBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // macOS traffic light buttons
             if (isMacOS) const EnhancedMacOSButtons(),
-
-            // Sidebar Toggle Button
             if (!isMacOS) const SizedBox(width: AppDesign.spacingSm),
             _SidebarToggleButton(
               onPressed: onToggleSidebar,
               isExpanded: isSidebarExpanded,
               isDark: isDark,
             ),
-
-            // Draggable area with title
             Expanded(
               child: MoveWindow(
                 child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        l10n.appWindowTitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          // ✅ USE customTheme
-                          color: isDark
-                              ? customTheme.darkTextPrimary
-                              : customTheme.lightTextPrimary,
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    l10n.appWindowTitle,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: isDark
+                          ? customTheme.darkTextPrimary
+                          : customTheme.lightTextPrimary,
+                    ),
                   ),
                 ),
               ),
             ),
-
-            // Window buttons for Windows
-            if (!isMacOS)
-              EnhancedWindowButtons(
-                isDark: isDark,
-              ),
+            if (!isMacOS) EnhancedWindowButtons(isDark: isDark),
           ],
         ),
       ),
     );
   }
 }
+
 // ============================================================================
 // SIDEBAR TOGGLE BUTTON
 // ============================================================================
@@ -1506,6 +1462,7 @@ class _SidebarToggleButtonState extends State<_SidebarToggleButton> {
   @override
   Widget build(BuildContext context) {
     final design = AppDesign.of(context);
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovering = true),
       onExit: (_) => setState(() => _isHovering = false),
@@ -1554,21 +1511,18 @@ class EnhancedWindowButtons extends StatelessWidget {
     return Row(
       children: [
         _WindowButton(
-          icon: FluentIcons.chrome_minimize,
-          onPressed: () => appWindow.minimize(),
-          isDark: isDark,
-        ),
+            icon: FluentIcons.chrome_minimize,
+            onPressed: () => appWindow.minimize(),
+            isDark: isDark),
         _WindowButton(
-          icon: FluentIcons.square_shape,
-          onPressed: () => appWindow.maximizeOrRestore(),
-          isDark: isDark,
-        ),
+            icon: FluentIcons.square_shape,
+            onPressed: () => appWindow.maximizeOrRestore(),
+            isDark: isDark),
         _WindowButton(
-          icon: FluentIcons.chrome_close,
-          onPressed: () => _hideApp(),
-          isDark: isDark,
-          isClose: true,
-        ),
+            icon: FluentIcons.chrome_close,
+            onPressed: _hideApp,
+            isDark: isDark,
+            isClose: true),
       ],
     );
   }
@@ -1598,6 +1552,7 @@ class _WindowButtonState extends State<_WindowButton> {
   @override
   Widget build(BuildContext context) {
     final design = AppDesign.of(context);
+
     Color bgColor = Colors.transparent;
     Color iconColor =
         widget.isDark ? design.darkTextSecondary : design.lightTextSecondary;
@@ -1638,11 +1593,7 @@ class _WindowButtonState extends State<_WindowButton> {
           height: double.infinity,
           color: bgColor,
           child: Center(
-            child: Icon(
-              widget.icon,
-              size: 10,
-              color: iconColor,
-            ),
+            child: Icon(widget.icon, size: 10, color: iconColor),
           ),
         ),
       ),
@@ -1675,25 +1626,22 @@ class _EnhancedMacOSButtonsState extends State<EnhancedMacOSButtons> {
           mainAxisSize: MainAxisSize.min,
           children: [
             _MacOSButton(
-              color: const Color(0xFFFF5F57),
-              icon: FluentIcons.chrome_close,
-              showIcon: _isHoveringGroup,
-              onPressed: () => _hideApp(),
-            ),
+                color: const Color(0xFFFF5F57),
+                icon: FluentIcons.chrome_close,
+                showIcon: _isHoveringGroup,
+                onPressed: _hideApp),
             const SizedBox(width: 8),
             _MacOSButton(
-              color: const Color(0xFFFFBD2E),
-              icon: FluentIcons.chrome_minimize,
-              showIcon: _isHoveringGroup,
-              onPressed: () => MacOSWindow.minimize(),
-            ),
+                color: const Color(0xFFFFBD2E),
+                icon: FluentIcons.chrome_minimize,
+                showIcon: _isHoveringGroup,
+                onPressed: MacOSWindow.minimize),
             const SizedBox(width: 8),
             _MacOSButton(
-              color: const Color(0xFF28CA41),
-              icon: FluentIcons.full_screen,
-              showIcon: _isHoveringGroup,
-              onPressed: () => MacOSWindow.maximize(),
-            ),
+                color: const Color(0xFF28CA41),
+                icon: FluentIcons.full_screen,
+                showIcon: _isHoveringGroup,
+                onPressed: MacOSWindow.maximize),
           ],
         ),
       ),

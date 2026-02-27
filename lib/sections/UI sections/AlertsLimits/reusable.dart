@@ -1,30 +1,37 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-// Reusable Card Widget
+// ════════════════════════ Card ════════════════════════
+
 class Card extends StatelessWidget {
   final Widget child;
-  final EdgeInsets? padding;
+  final EdgeInsets padding;
 
-  const Card({super.key, required this.child, this.padding});
+  const Card({
+    super.key,
+    required this.child,
+    this.padding = _defaultPadding,
+  });
+
+  static const _defaultPadding = EdgeInsets.all(20);
+  static final _radius = BorderRadius.circular(12);
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
     return Container(
-      padding: padding ?? const EdgeInsets.all(20),
+      padding: padding,
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor,
-          width: 1,
-        ),
+        borderRadius: _radius,
+        border: Border.all(color: theme.inactiveBackgroundColor),
       ),
       child: child,
     );
   }
 }
+
+// ════════════════════════ SliderRow ════════════════════════
 
 class SliderRow extends StatelessWidget {
   final String label;
@@ -32,7 +39,7 @@ class SliderRow extends StatelessWidget {
   final double max;
   final int divisions;
   final int step;
-  final Function(double) onChanged;
+  final ValueChanged<double> onChanged;
 
   const SliderRow({
     super.key,
@@ -44,20 +51,27 @@ class SliderRow extends StatelessWidget {
     required this.onChanged,
   });
 
+  static const _labelWidth = 55.0;
+  static const _badgeWidth = 36.0;
+  static const _labelStyle =
+      TextStyle(fontSize: 12, fontWeight: FontWeight.w500);
+  static final _badgeRadius = BorderRadius.circular(6);
+  static const _badgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+
+  int get _displayValue =>
+      step > 1 ? (value.round() ~/ step * step) : value.round();
+
+  double _snap(double v) => step > 1 ? (v ~/ step * step).toDouble() : v;
+
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    final displayValue =
-        step > 1 ? (value.round() ~/ step * step) : value.round();
+    final accentColor = FluentTheme.of(context).accentColor;
 
     return Row(
       children: [
         SizedBox(
-          width: 55,
-          child: Text(
-            label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-          ),
+          width: _labelWidth,
+          child: Text(label, style: _labelStyle),
         ),
         Expanded(
           child: Slider(
@@ -65,24 +79,23 @@ class SliderRow extends StatelessWidget {
             min: 0,
             max: max,
             divisions: divisions,
-            onChanged: (v) =>
-                onChanged(step > 1 ? (v ~/ step * step).toDouble() : v),
+            onChanged: (v) => onChanged(_snap(v)),
           ),
         ),
         Container(
-          width: 36,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          width: _badgeWidth,
+          padding: _badgePadding,
           decoration: BoxDecoration(
-            color: theme.accentColor.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(6),
+            color: accentColor.withValues(alpha: 0.1),
+            borderRadius: _badgeRadius,
           ),
           child: Text(
-            displayValue.toString(),
+            _displayValue.toString(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: theme.accentColor,
+              color: accentColor,
             ),
           ),
         ),
@@ -90,6 +103,8 @@ class SliderRow extends StatelessWidget {
     );
   }
 }
+
+// ════════════════════════ TimeDisplay ════════════════════════
 
 class TimeDisplay extends StatelessWidget {
   final int value;
@@ -120,8 +135,8 @@ class TimeDisplay extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 11,
-            color: color.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
+            color: color.withValues(alpha: 0.7),
           ),
         ),
       ],
@@ -129,12 +144,16 @@ class TimeDisplay extends StatelessWidget {
   }
 }
 
-class SettingTile extends StatefulWidget {
+// ════════════════════════ SettingTile ════════════════════════
+// Uses isolated _HoverBuilder so only the background repaints on hover,
+// not the entire tile content (icon, text, toggle).
+
+class SettingTile extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
   final bool value;
-  final Function(bool) onChanged;
+  final ValueChanged<bool> onChanged;
   final bool showDivider;
 
   const SettingTile({
@@ -147,12 +166,12 @@ class SettingTile extends StatefulWidget {
     this.showDivider = true,
   });
 
-  @override
-  State<SettingTile> createState() => _SettingTileState();
-}
-
-class _SettingTileState extends State<SettingTile> {
-  bool _isHovered = false;
+  static const _tilePadding =
+      EdgeInsets.symmetric(horizontal: 12, vertical: 10);
+  static const _dividerPadding = EdgeInsets.symmetric(horizontal: 12);
+  static final _tileRadius = BorderRadius.circular(8);
+  static const _titleStyle =
+      TextStyle(fontSize: 13, fontWeight: FontWeight.w500);
 
   @override
   Widget build(BuildContext context) {
@@ -161,61 +180,99 @@ class _SettingTileState extends State<SettingTile> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => _isHovered = true),
-          onExit: (_) => setState(() => _isHovered = false),
-          child: AnimatedContainer(
+        _HoverBuilder(
+          builder: (isHovered) => AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: _tilePadding,
             decoration: BoxDecoration(
-              color: _isHovered
+              color: isHovered
                   ? theme.accentColor.withValues(alpha: 0.05)
                   : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: _tileRadius,
             ),
             child: Row(
               children: [
-                Icon(widget.icon,
-                    size: 16, color: theme.accentColor.withValues(alpha: 0.7)),
+                Icon(
+                  icon,
+                  size: 16,
+                  color: theme.accentColor.withValues(alpha: 0.7),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        widget.title,
-                        style: const TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        widget.subtitle,
-                        style: theme.typography.caption?.copyWith(
-                          fontSize: 11,
-                          color: theme.typography.caption?.color
-                              ?.withValues(alpha: 0.6),
-                        ),
-                      ),
+                      Text(title, style: _titleStyle),
+                      _SubtitleText(text: subtitle),
                     ],
                   ),
                 ),
-                ToggleSwitch(
-                  checked: widget.value,
-                  onChanged: widget.onChanged,
-                ),
+                ToggleSwitch(checked: value, onChanged: onChanged),
               ],
             ),
           ),
         ),
-        if (widget.showDivider)
+        if (showDivider)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Container(
-              height: 1,
+            padding: _dividerPadding,
+            child: ColoredBox(
               color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+              child: const SizedBox(height: 1, width: double.infinity),
             ),
           ),
       ],
     );
+  }
+}
+
+// ════════════════════════ Subtitle Text ════════════════════════
+// Extracted to avoid rebuilding when only hover state changes.
+
+class _SubtitleText extends StatelessWidget {
+  final String text;
+
+  const _SubtitleText({required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    final caption = FluentTheme.of(context).typography.caption;
+
+    return Text(
+      text,
+      style: caption?.copyWith(
+        fontSize: 11,
+        color: caption.color?.withValues(alpha: 0.6),
+      ),
+    );
+  }
+}
+
+// ════════════════════════ Hover Builder ════════════════════════
+// Reusable hover isolation — only rebuilds the builder subtree.
+
+class _HoverBuilder extends StatefulWidget {
+  final Widget Function(bool isHovered) builder;
+
+  const _HoverBuilder({required this.builder});
+
+  @override
+  State<_HoverBuilder> createState() => _HoverBuilderState();
+}
+
+class _HoverBuilderState extends State<_HoverBuilder> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => _update(true),
+      onExit: (_) => _update(false),
+      child: widget.builder(_isHovered),
+    );
+  }
+
+  void _update(bool value) {
+    if (_isHovered != value) setState(() => _isHovered = value);
   }
 }

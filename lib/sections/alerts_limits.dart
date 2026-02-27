@@ -8,6 +8,20 @@ import 'UI sections/AlertsLimits/notificationCard.dart';
 import 'UI sections/AlertsLimits/overalllimit.dart';
 import 'UI sections/AlertsLimits/quickStats.dart';
 
+// ──────────────── Settings Keys ────────────────
+
+abstract final class _Keys {
+  static const popup = 'limitsAlerts.popup';
+  static const frequent = 'limitsAlerts.frequent';
+  static const sound = 'limitsAlerts.sound';
+  static const system = 'limitsAlerts.system';
+  static const overallEnabled = 'limitsAlerts.overallLimit.enabled';
+  static const overallHours = 'limitsAlerts.overallLimit.hours';
+  static const overallMinutes = 'limitsAlerts.overallLimit.minutes';
+}
+
+// ──────────────── Main Page ────────────────
+
 class AlertsLimits extends StatefulWidget {
   final ScreenTimeDataController? controller;
   final SettingsManager? settingsManager;
@@ -23,46 +37,35 @@ class AlertsLimits extends StatefulWidget {
 }
 
 class _AlertsLimitsState extends State<AlertsLimits> {
-  late final ScreenTimeDataController controller;
-  late final SettingsManager settingsManager;
-  bool popupAlerts = false;
-  bool frequentAlerts = false;
-  bool soundAlerts = false;
-  bool systemAlerts = false;
+  late final ScreenTimeDataController _controller;
+  late final SettingsManager _settings;
 
-  bool overallLimitEnabled = false;
-  double overallLimitHours = 2.0;
-  double overallLimitMinutes = 0.0;
+  // Notification state
+  bool _popupAlerts = false;
+  bool _frequentAlerts = false;
+  bool _soundAlerts = false;
+  bool _systemAlerts = false;
 
-  List<AppUsageSummary> appSummaries = [];
-  bool isLoading = true;
-  String? errorMessage;
-  Duration totalScreenTime = Duration.zero;
+  // Overall limit state
+  bool _overallLimitEnabled = false;
+  double _overallLimitHours = 2.0;
+  double _overallLimitMinutes = 0.0;
+
+  // Data state
+  List<AppUsageSummary> _appSummaries = [];
+  Duration _totalScreenTime = Duration.zero;
+  bool _isLoading = true;
+  String? _errorMessage;
+
+  // ──────────────── lifecycle ────────────────
 
   @override
   void initState() {
     super.initState();
-    controller = widget.controller ?? ScreenTimeDataController();
-    settingsManager = widget.settingsManager ?? SettingsManager();
+    _controller = widget.controller ?? ScreenTimeDataController();
+    _settings = widget.settingsManager ?? SettingsManager();
+    _loadSettings();
 
-    popupAlerts = settingsManager.getSetting("limitsAlerts.popup");
-    frequentAlerts = settingsManager.getSetting("limitsAlerts.frequent");
-    soundAlerts = settingsManager.getSetting("limitsAlerts.sound");
-    systemAlerts = settingsManager.getSetting("limitsAlerts.system");
-
-    overallLimitEnabled =
-        settingsManager.getSetting("limitsAlerts.overallLimit.enabled") ??
-            false;
-    overallLimitHours = settingsManager
-            .getSetting("limitsAlerts.overallLimit.hours")
-            ?.toDouble() ??
-        2.0;
-    overallLimitMinutes = settingsManager
-            .getSetting("limitsAlerts.overallLimit.minutes")
-            ?.toDouble() ??
-        0.0;
-
-    // Register this screen's refresh callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
     });
@@ -70,153 +73,202 @@ class _AlertsLimitsState extends State<AlertsLimits> {
     _loadData();
   }
 
+  void _loadSettings() {
+    _popupAlerts = _settings.getSetting(_Keys.popup);
+    _frequentAlerts = _settings.getSetting(_Keys.frequent);
+    _soundAlerts = _settings.getSetting(_Keys.sound);
+    _systemAlerts = _settings.getSetting(_Keys.system);
+    _overallLimitEnabled = _settings.getSetting(_Keys.overallEnabled) ?? false;
+    _overallLimitHours =
+        _settings.getSetting(_Keys.overallHours)?.toDouble() ?? 2.0;
+    _overallLimitMinutes =
+        _settings.getSetting(_Keys.overallMinutes)?.toDouble() ?? 0.0;
+  }
+
+  // ──────────────── data loading ────────────────
+
   Future<void> _loadData() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
     try {
+      await _controller.initialize();
+      final allData = await _controller.getAllData();
+
+      if (!mounted) return;
+
+      final summaries = (allData['appSummaries'] as List<dynamic>)
+          .map((json) => AppUsageSummary.fromJson(json as Map<String, dynamic>))
+          .toList();
+
       setState(() {
-        isLoading = true;
-        errorMessage = null;
+        _appSummaries = summaries;
+        _totalScreenTime = Duration(
+          minutes:
+              summaries.fold(0, (sum, app) => sum + app.currentUsage.inMinutes),
+        );
+        _isLoading = false;
       });
-
-      await controller.initialize();
-      final allData = await controller.getAllData();
-
-      if (mounted) {
-        setState(() {
-          appSummaries = (allData['appSummaries'] as List<dynamic>)
-              .map((json) =>
-                  AppUsageSummary.fromJson(json as Map<String, dynamic>))
-              .toList();
-
-          totalScreenTime = Duration(
-              minutes: appSummaries.fold(
-                  0, (sum, app) => sum + app.currentUsage.inMinutes));
-          isLoading = false;
-        });
-      }
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          errorMessage =
-              AppLocalizations.of(context)!.failedToLoadData(e.toString());
-          isLoading = false;
-        });
+      if (!mounted) return;
+      setState(() {
+        _errorMessage =
+            AppLocalizations.of(context)!.failedToLoadData(e.toString());
+        _isLoading = false;
+      });
+    }
+  }
+
+  // ──────────────── notification settings ────────────────
+
+  void _onNotificationChanged(AlertType type, bool value) {
+    setState(() {
+      switch (type) {
+        case AlertType.popup:
+          _popupAlerts = value;
+        case AlertType.frequent:
+          _frequentAlerts = value;
+        case AlertType.sound:
+          _soundAlerts = value;
+        case AlertType.system:
+          _systemAlerts = value;
       }
+    });
+
+    final settingsKey = switch (type) {
+      AlertType.popup => _Keys.popup,
+      AlertType.frequent => _Keys.frequent,
+      AlertType.sound => _Keys.sound,
+      AlertType.system => _Keys.system,
+    };
+    _settings.updateSetting(settingsKey, value);
+  }
+
+  // ──────────────── overall limit ────────────────
+
+  void _onOverallEnabledChanged(bool value) {
+    setState(() => _overallLimitEnabled = value);
+
+    _settings.updateSetting(_Keys.overallEnabled, value);
+
+    if (value) {
+      _syncOverallLimit();
+    } else {
+      _controller.updateOverallLimit(Duration.zero, false);
     }
   }
 
-  void setSetting(String key, dynamic value) {
-    switch (key) {
-      case 'popup':
-        setState(() {
-          popupAlerts = value;
-          settingsManager.updateSetting("limitsAlerts.popup", value);
-        });
-        break;
-      case 'frequent':
-        setState(() {
-          frequentAlerts = value;
-          settingsManager.updateSetting("limitsAlerts.frequent", value);
-        });
-        break;
-      case 'sound':
-        setState(() {
-          soundAlerts = value;
-          settingsManager.updateSetting("limitsAlerts.sound", value);
-        });
-        break;
-      case 'system':
-        setState(() {
-          systemAlerts = value;
-          settingsManager.updateSetting("limitsAlerts.system", value);
-        });
-        break;
-      case 'overallLimitEnabled':
-        setState(() {
-          overallLimitEnabled = value;
-          settingsManager.updateSetting(
-              "limitsAlerts.overallLimit.enabled", value);
-
-          if (value) {
-            final duration = Duration(
-              hours: overallLimitHours.round(),
-              minutes: (overallLimitMinutes.round() ~/ 5 * 5),
-            );
-            controller.updateOverallLimit(duration, true);
-          } else {
-            controller.updateOverallLimit(Duration.zero, false);
-          }
-        });
-        break;
-    }
+  void _onOverallHoursChanged(double value) {
+    setState(() => _overallLimitHours = value);
+    _syncOverallLimit();
   }
 
-  void _updateOverallLimit() {
+  void _onOverallMinutesChanged(double value) {
+    setState(() => _overallLimitMinutes = value);
+    _syncOverallLimit();
+  }
+
+  void _syncOverallLimit() {
+    final roundedMinutes = _overallLimitMinutes.round() ~/ 5 * 5;
     final duration = Duration(
-      hours: overallLimitHours.round(),
-      minutes: (overallLimitMinutes.round() ~/ 5 * 5),
+      hours: _overallLimitHours.round(),
+      minutes: roundedMinutes,
     );
 
-    settingsManager.updateSetting(
-        "limitsAlerts.overallLimit.hours", overallLimitHours.round());
-    settingsManager.updateSetting("limitsAlerts.overallLimit.minutes",
-        overallLimitMinutes.round() ~/ 5 * 5);
-    controller.updateOverallLimit(duration, overallLimitEnabled);
+    _settings.updateSetting(_Keys.overallHours, _overallLimitHours.round());
+    _settings.updateSetting(_Keys.overallMinutes, roundedMinutes);
+    _controller.updateOverallLimit(duration, _overallLimitEnabled);
   }
 
-  void _resetAllLimits() {
-    final l10n = AppLocalizations.of(context)!;
+  // ──────────────── reset ────────────────
 
+  void _resetAllLimits() {
     try {
-      final apps = controller.getAllAppsSummary();
-      for (final app in apps) {
-        controller.updateAppLimit(app.appName, Duration.zero, false);
+      for (final app in _controller.getAllAppsSummary()) {
+        _controller.updateAppLimit(app.appName, Duration.zero, false);
       }
 
       setState(() {
-        overallLimitEnabled = false;
-        overallLimitHours = 2.0;
-        overallLimitMinutes = 0.0;
-        settingsManager.updateSetting(
-            "limitsAlerts.overallLimit.enabled", false);
-        settingsManager.updateSetting("limitsAlerts.overallLimit.hours", 2);
-        settingsManager.updateSetting("limitsAlerts.overallLimit.minutes", 0);
+        _overallLimitEnabled = false;
+        _overallLimitHours = 2.0;
+        _overallLimitMinutes = 0.0;
       });
 
-      controller.updateOverallLimit(Duration.zero, false);
+      _settings.updateSetting(_Keys.overallEnabled, false);
+      _settings.updateSetting(_Keys.overallHours, 2);
+      _settings.updateSetting(_Keys.overallMinutes, 0);
+      _controller.updateOverallLimit(Duration.zero, false);
       _loadData();
     } catch (e) {
-      setState(() {
-        errorMessage = l10n.failedToLoadData(e.toString());
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage =
+              AppLocalizations.of(context)!.failedToLoadData(e.toString());
+        });
+      }
     }
   }
+
+  // ──────────────── build ────────────────
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return ScaffoldPage(
+    if (_isLoading) {
+      return const ScaffoldPage(
         padding: EdgeInsets.zero,
-        content: const Center(child: ProgressRing()),
+        content: Center(child: ProgressRing()),
       );
     }
 
-    if (errorMessage != null) {
+    if (_errorMessage != null) {
       return ScaffoldPage(
         padding: EdgeInsets.zero,
         content: Center(
           child: _ErrorCard(
-            message: errorMessage!,
+            message: _errorMessage!,
             onRetry: _loadData,
           ),
         ),
       );
     }
+
     return ScaffoldPage(
       padding: EdgeInsets.zero,
       content: LayoutBuilder(
         builder: (context, constraints) {
           final isWide = constraints.maxWidth >= 1000;
           final isMedium = constraints.maxWidth >= 700;
+
+          // Build cards once, reuse across layouts
+          final notificationCard = NotificationSettingsCard(
+            settings: NotificationSettings(
+              frequentAlerts: _frequentAlerts,
+              systemAlerts: _systemAlerts,
+              soundAlerts: _soundAlerts,
+              popupAlerts: _popupAlerts,
+            ),
+            onChanged: _onNotificationChanged,
+          );
+
+          final overallCard = OverallLimitCard(
+            enabled: _overallLimitEnabled,
+            hours: _overallLimitHours,
+            minutes: _overallLimitMinutes,
+            totalScreenTime: _totalScreenTime,
+            onEnabledChanged: _onOverallEnabledChanged,
+            onHoursChanged: _onOverallHoursChanged,
+            onMinutesChanged: _onOverallMinutesChanged,
+          );
+
+          final appLimitsCard = ApplicationLimitsCard(
+            appSummaries: _appSummaries,
+            controller: _controller,
+            onDataChanged: _loadData,
+          );
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -232,150 +284,23 @@ class _AlertsLimitsState extends State<AlertsLimits> {
                     onRefresh: _loadData,
                   ),
                   const SizedBox(height: 24),
-
-                  // Quick Stats Row
                   QuickStatsRow(
-                    totalScreenTime: totalScreenTime,
+                    totalScreenTime: _totalScreenTime,
                     appsWithLimits:
-                        appSummaries.where((a) => a.limitStatus).length,
-                    appsNearLimit:
-                        appSummaries.where((a) => a.isAboutToReachLimit).length,
+                        _appSummaries.where((a) => a.limitStatus).length,
+                    appsNearLimit: _appSummaries
+                        .where((a) => a.isAboutToReachLimit)
+                        .length,
                     isMedium: isMedium,
                   ),
                   const SizedBox(height: 24),
-
-                  // Main content
-                  if (isWide)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Left - Application Limits (expanded)
-                        Expanded(
-                          flex: 3,
-                          child: ApplicationLimitsCard(
-                            appSummaries: appSummaries,
-                            controller: controller,
-                            onDataChanged: _loadData,
-                          ),
-                        ),
-                        const SizedBox(width: 20),
-                        // Right - Settings
-                        SizedBox(
-                          width: 320,
-                          child: Column(
-                            children: [
-                              NotificationSettingsCard(
-                                frequentAlerts: frequentAlerts,
-                                systemAlerts: systemAlerts,
-                                soundAlerts: soundAlerts,
-                                popupAlerts: popupAlerts,
-                                onChanged: setSetting,
-                              ),
-                              const SizedBox(height: 16),
-                              OverallLimitCard(
-                                enabled: overallLimitEnabled,
-                                hours: overallLimitHours,
-                                minutes: overallLimitMinutes,
-                                totalScreenTime: totalScreenTime,
-                                onEnabledChanged: (v) =>
-                                    setSetting('overallLimitEnabled', v),
-                                onHoursChanged: (v) {
-                                  setState(() {
-                                    overallLimitHours = v;
-                                    _updateOverallLimit();
-                                  });
-                                },
-                                onMinutesChanged: (v) {
-                                  setState(() {
-                                    overallLimitMinutes = v;
-                                    _updateOverallLimit();
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    Column(
-                      children: [
-                        if (isMedium)
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: NotificationSettingsCard(
-                                  frequentAlerts: frequentAlerts,
-                                  systemAlerts: systemAlerts,
-                                  soundAlerts: soundAlerts,
-                                  popupAlerts: popupAlerts,
-                                  onChanged: setSetting,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: OverallLimitCard(
-                                  enabled: overallLimitEnabled,
-                                  hours: overallLimitHours,
-                                  minutes: overallLimitMinutes,
-                                  totalScreenTime: totalScreenTime,
-                                  onEnabledChanged: (v) =>
-                                      setSetting('overallLimitEnabled', v),
-                                  onHoursChanged: (v) {
-                                    setState(() {
-                                      overallLimitHours = v;
-                                      _updateOverallLimit();
-                                    });
-                                  },
-                                  onMinutesChanged: (v) {
-                                    setState(() {
-                                      overallLimitMinutes = v;
-                                      _updateOverallLimit();
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                          )
-                        else ...[
-                          NotificationSettingsCard(
-                            frequentAlerts: frequentAlerts,
-                            systemAlerts: systemAlerts,
-                            soundAlerts: soundAlerts,
-                            popupAlerts: popupAlerts,
-                            onChanged: setSetting,
-                          ),
-                          const SizedBox(height: 16),
-                          OverallLimitCard(
-                            enabled: overallLimitEnabled,
-                            hours: overallLimitHours,
-                            minutes: overallLimitMinutes,
-                            totalScreenTime: totalScreenTime,
-                            onEnabledChanged: (v) =>
-                                setSetting('overallLimitEnabled', v),
-                            onHoursChanged: (v) {
-                              setState(() {
-                                overallLimitHours = v;
-                                _updateOverallLimit();
-                              });
-                            },
-                            onMinutesChanged: (v) {
-                              setState(() {
-                                overallLimitMinutes = v;
-                                _updateOverallLimit();
-                              });
-                            },
-                          ),
-                        ],
-                        const SizedBox(height: 16),
-                        ApplicationLimitsCard(
-                          appSummaries: appSummaries,
-                          controller: controller,
-                          onDataChanged: _loadData,
-                        ),
-                      ],
-                    ),
+                  _ContentLayout(
+                    isWide: isWide,
+                    isMedium: isMedium,
+                    notificationCard: notificationCard,
+                    overallCard: overallCard,
+                    appLimitsCard: appLimitsCard,
+                  ),
                 ],
               ),
             ),
@@ -386,12 +311,83 @@ class _AlertsLimitsState extends State<AlertsLimits> {
   }
 }
 
-// Error Card Widget
+// ═══════════════════ Content Layout ═══════════════════
+// Single widget handles all 3 responsive breakpoints.
+// Cards are passed in — never duplicated.
+
+class _ContentLayout extends StatelessWidget {
+  final bool isWide;
+  final bool isMedium;
+  final Widget notificationCard;
+  final Widget overallCard;
+  final Widget appLimitsCard;
+
+  const _ContentLayout({
+    required this.isWide,
+    required this.isMedium,
+    required this.notificationCard,
+    required this.overallCard,
+    required this.appLimitsCard,
+  });
+
+  static const _gap16 = SizedBox(height: 16);
+  static const _gap20w = SizedBox(width: 20);
+  static const _gap16w = SizedBox(width: 16);
+
+  @override
+  Widget build(BuildContext context) {
+    if (isWide) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(flex: 3, child: appLimitsCard),
+          _gap20w,
+          SizedBox(
+            width: 320,
+            child: Column(
+              children: [
+                notificationCard,
+                _gap16,
+                overallCard,
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        if (isMedium)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: notificationCard),
+              _gap16w,
+              Expanded(child: overallCard),
+            ],
+          )
+        else ...[
+          notificationCard,
+          _gap16,
+          overallCard,
+        ],
+        _gap16,
+        appLimitsCard,
+      ],
+    );
+  }
+}
+
+// ═══════════════════ Error Card ═══════════════════
+
 class _ErrorCard extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
   const _ErrorCard({required this.message, required this.onRetry});
+
+  static final _radius = BorderRadius.circular(12);
 
   @override
   Widget build(BuildContext context) {
@@ -402,7 +398,7 @@ class _ErrorCard extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 400),
       decoration: BoxDecoration(
         color: Colors.red.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: _radius,
         border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
       ),
       child: Column(
@@ -429,15 +425,15 @@ class _ErrorCard extends StatelessWidget {
   }
 }
 
-// Header Widget
+// ═══════════════════ Header ═══════════════════
+
 class _Header extends StatelessWidget {
   final VoidCallback onReset;
   final VoidCallback onRefresh;
 
-  const _Header({
-    required this.onReset,
-    required this.onRefresh,
-  });
+  const _Header({required this.onReset, required this.onRefresh});
+
+  static final _iconRadius = BorderRadius.circular(8);
 
   @override
   Widget build(BuildContext context) {
@@ -452,9 +448,8 @@ class _Header extends StatelessWidget {
             children: [
               Text(
                 l10n.alertsLimitsTitle,
-                style: theme.typography.title?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+                style: theme.typography.title
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 4),
               Text(
@@ -475,7 +470,7 @@ class _Header extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: theme.accentColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: _iconRadius,
               ),
               child:
                   Icon(FluentIcons.refresh, size: 16, color: theme.accentColor),
@@ -490,6 +485,7 @@ class _Header extends StatelessWidget {
               const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             ),
           ),
+          onPressed: () => _showResetDialog(context),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -498,16 +494,15 @@ class _Header extends StatelessWidget {
               Text(l10n.resetAll),
             ],
           ),
-          onPressed: () => _showResetDialog(context),
         ),
       ],
     );
   }
 
-  void _showResetDialog(BuildContext context) async {
+  void _showResetDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    await showDialog<String>(
+    showDialog<void>(
       context: context,
       builder: (context) => ContentDialog(
         title: Row(
@@ -530,11 +525,11 @@ class _Header extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.red),
             ),
-            child: Text(l10n.resetAll),
             onPressed: () {
               Navigator.pop(context);
               onReset();
             },
+            child: Text(l10n.resetAll),
           ),
         ],
       ),

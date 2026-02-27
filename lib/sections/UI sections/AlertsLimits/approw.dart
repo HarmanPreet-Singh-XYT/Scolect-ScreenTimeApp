@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
-class AppRow extends StatefulWidget {
+class AppRow extends StatelessWidget {
   final AppUsageSummary app;
   final VoidCallback onEdit;
   final bool isLast;
@@ -15,247 +15,367 @@ class AppRow extends StatefulWidget {
   });
 
   @override
-  State<AppRow> createState() => AppRowState();
-}
-
-class AppRowState extends State<AppRow> {
-  bool _isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final statusColor = _getStatusColor();
-    final progress = _calculateProgress();
+    final statusColor = _statusColor;
+    final progress = _progress;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => _isHovered = true),
-          onExit: (_) => setState(() => _isHovered = false),
-          child: AnimatedContainer(
+        _HoverBuilder(
+          builder: (isHovered) => AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             decoration: BoxDecoration(
-              color: _isHovered
+              color: isHovered
                   ? theme.accentColor.withValues(alpha: 0.04)
                   : Colors.transparent,
             ),
             child: Row(
               children: [
-                // App name with icon - flex 3
-                Expanded(
-                  flex: 3,
-                  child: Row(
-                    children: [
-                      // Container(
-                      //   width: 32,
-                      //   height: 32,
-                      //   decoration: BoxDecoration(
-                      //     color: statusColor.withValues(alpha:0.1),
-                      //     borderRadius: BorderRadius.circular(6),
-                      //   ),
-                      //   child: Center(
-                      //     child: Text(
-                      //       widget.app.appName.isNotEmpty
-                      //           ? widget.app.appName[0].toUpperCase()
-                      //           : '?',
-                      //       style: TextStyle(
-                      //         fontWeight: FontWeight.w600,
-                      //         fontSize: 13,
-                      //         color: statusColor,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              widget.app.appName,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 13,
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 6,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                    color: statusColor,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  widget.app.limitStatus
-                                      ? l10n.active
-                                      : l10n.off,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: statusColor,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                _AppNameCell(
+                  appName: app.appName,
+                  isActive: app.limitStatus,
+                  statusColor: statusColor,
                 ),
-
-                // Category - flex 2
-                Expanded(
-                  flex: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      widget.app.category,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.typography.body?.color
-                            ?.withValues(alpha: 0.7),
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
+                _CategoryCell(category: app.category),
+                _DailyLimitCell(
+                  dailyLimit: app.dailyLimit,
+                  isActive: app.limitStatus,
                 ),
-
-                // Daily limit - flex 2
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      _formatDuration(widget.app.dailyLimit, l10n),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color:
-                            widget.app.limitStatus ? null : theme.inactiveColor,
-                      ),
-                    ),
-                  ),
+                _UsageCell(
+                  currentUsage: app.currentUsage,
+                  dailyLimit: app.dailyLimit,
+                  isActive: app.limitStatus,
+                  statusColor: statusColor,
+                  progress: progress,
                 ),
-
-                // Current usage with progress bar - flex 3
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Row(
-                      children: [
-                        Text(
-                          _formatDuration(widget.app.currentUsage, l10n),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: statusColor,
-                          ),
-                        ),
-                        if (widget.app.limitStatus &&
-                            widget.app.dailyLimit != Duration.zero) ...[
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: theme.inactiveBackgroundColor,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                              child: FractionallySizedBox(
-                                alignment: Alignment.centerLeft,
-                                widthFactor: progress.clamp(0.0, 1.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: statusColor,
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '${(progress * 100).toInt()}%',
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: theme.typography.caption?.color
-                                  ?.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Edit button - fixed width
-                SizedBox(
-                  width: 50,
-                  child: Center(
-                    child: IconButton(
-                      icon: Icon(
-                        FluentIcons.edit,
-                        size: 14,
-                        color: _isHovered
-                            ? theme.accentColor
-                            : theme.inactiveColor,
-                      ),
-                      onPressed: widget.onEdit,
-                    ),
-                  ),
+                _EditCell(
+                  isHovered: isHovered,
+                  onEdit: onEdit,
                 ),
               ],
             ),
           ),
         ),
-        if (!widget.isLast)
-          Container(
-            height: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 20),
-            color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
-          ),
+        if (!isLast) _Divider(),
       ],
     );
   }
 
-  double _calculateProgress() {
-    if (!widget.app.limitStatus || widget.app.dailyLimit == Duration.zero) {
-      return 0;
-    }
-    final progress =
-        widget.app.currentUsage.inMinutes / widget.app.dailyLimit.inMinutes;
-    return progress > 1 ? 1 : progress;
+  // ──────────────── cached computed properties ────────────────
+
+  double get _progress {
+    if (!app.limitStatus || app.dailyLimit == Duration.zero) return 0.0;
+    return (app.currentUsage.inMinutes / app.dailyLimit.inMinutes)
+        .clamp(0.0, 1.0);
   }
 
-  Color _getStatusColor() {
-    if (!widget.app.limitStatus) return Colors.grey;
-    if (widget.app.dailyLimit == Duration.zero) return Colors.grey;
-    if (widget.app.currentUsage >= widget.app.dailyLimit) return Colors.red;
-    if (widget.app.isAboutToReachLimit) return Colors.orange;
-    if (widget.app.percentageOfLimitUsed > 0.75) {
-      return const Color(0xFFEAB308);
+  Color get _statusColor {
+    if (!app.limitStatus || app.dailyLimit == Duration.zero) {
+      return Colors.grey;
     }
+    if (app.currentUsage >= app.dailyLimit) return Colors.red;
+    if (app.isAboutToReachLimit) return Colors.orange;
+    if (app.percentageOfLimitUsed > 0.75) return const Color(0xFFEAB308);
     return const Color(0xFF10B981);
   }
 
-  String _formatDuration(Duration duration, AppLocalizations l10n) {
+  static String formatDuration(Duration duration, AppLocalizations l10n) {
     if (duration == Duration.zero) return l10n.durationNone;
     final h = duration.inHours;
     final m = duration.inMinutes % 60;
     if (h > 0 && m > 0) return l10n.durationHoursMinutes(h, m);
     if (h > 0) return '${h}h';
     return l10n.durationMinutesOnly(m);
+  }
+}
+
+// ═══════════════════ Lightweight Hover Builder ═══════════════════
+// Only rebuilds the hovered subtree, not the entire parent.
+
+class _HoverBuilder extends StatefulWidget {
+  final Widget Function(bool isHovered) builder;
+
+  const _HoverBuilder({required this.builder});
+
+  @override
+  State<_HoverBuilder> createState() => _HoverBuilderState();
+}
+
+class _HoverBuilderState extends State<_HoverBuilder> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => _setHovered(true),
+      onExit: (_) => _setHovered(false),
+      child: widget.builder(_isHovered),
+    );
+  }
+
+  void _setHovered(bool value) {
+    if (_isHovered != value) setState(() => _isHovered = value);
+  }
+}
+
+// ═══════════════════ Cell Widgets ═══════════════════
+
+class _AppNameCell extends StatelessWidget {
+  final String appName;
+  final bool isActive;
+  final Color statusColor;
+
+  const _AppNameCell({
+    required this.appName,
+    required this.isActive,
+    required this.statusColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Expanded(
+      flex: 3,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            appName,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 6,
+                height: 6,
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                isActive ? l10n.active : l10n.off,
+                style: TextStyle(
+                  fontSize: 10,
+                  color: statusColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryCell extends StatelessWidget {
+  final String category;
+
+  const _CategoryCell({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Expanded(
+      flex: 3,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Text(
+          category,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 12,
+            color: theme.typography.body?.color?.withValues(alpha: 0.7),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DailyLimitCell extends StatelessWidget {
+  final Duration dailyLimit;
+  final bool isActive;
+
+  const _DailyLimitCell({
+    required this.dailyLimit,
+    required this.isActive,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Expanded(
+      flex: 2,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Text(
+          AppRow.formatDuration(dailyLimit, l10n),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: isActive ? null : theme.inactiveColor,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UsageCell extends StatelessWidget {
+  final Duration currentUsage;
+  final Duration dailyLimit;
+  final bool isActive;
+  final Color statusColor;
+  final double progress;
+
+  const _UsageCell({
+    required this.currentUsage,
+    required this.dailyLimit,
+    required this.isActive,
+    required this.statusColor,
+    required this.progress,
+  });
+
+  bool get _showProgress => isActive && dailyLimit != Duration.zero;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Expanded(
+      flex: 2,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: Row(
+          children: [
+            Text(
+              AppRow.formatDuration(currentUsage, l10n),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: statusColor,
+              ),
+            ),
+            if (_showProgress) ...[
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ProgressBar(
+                  progress: progress,
+                  color: statusColor,
+                  backgroundColor: theme.inactiveBackgroundColor,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '${(progress * 100).toInt()}%',
+                style: TextStyle(
+                  fontSize: 10,
+                  color:
+                      theme.typography.caption?.color?.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EditCell extends StatelessWidget {
+  final bool isHovered;
+  final VoidCallback onEdit;
+
+  const _EditCell({
+    required this.isHovered,
+    required this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return SizedBox(
+      width: 50,
+      child: Center(
+        child: IconButton(
+          icon: Icon(
+            FluentIcons.edit,
+            size: 14,
+            color: isHovered ? theme.accentColor : theme.inactiveColor,
+          ),
+          onPressed: onEdit,
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════ Shared Small Widgets ═══════════════════
+
+class _ProgressBar extends StatelessWidget {
+  final double progress;
+  final Color color;
+  final Color backgroundColor;
+
+  const _ProgressBar({
+    required this.progress,
+    required this.color,
+    required this.backgroundColor,
+  });
+
+  static final _radius = BorderRadius.circular(2);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 4,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: _radius,
+      ),
+      child: FractionallySizedBox(
+        alignment: Alignment.centerLeft,
+        widthFactor: progress,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: _radius,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Container(
+      height: 1,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+    );
   }
 }
