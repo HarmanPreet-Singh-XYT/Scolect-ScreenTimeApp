@@ -7,6 +7,117 @@ import 'UI sections/Overview/statCards.dart';
 import 'UI sections/Overview/main_app.dart';
 import 'UI Sections/overview/changelog.dart';
 
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const _kFadeDuration = Duration(milliseconds: 600);
+const _kHoverDuration = Duration(milliseconds: 200);
+const _kRotateDuration = Duration(milliseconds: 300);
+const _kCompactBreakpoint = 700.0;
+const _kMediumBreakpoint = 1000.0;
+const _kNarrowBreakpoint = 400.0;
+const _kPurple = Color(0xffA855F7);
+const _kGreen = Color(0xff22C55E);
+const _kDefaultTime = '0h 0m';
+const _kDefaultApp = 'None';
+const _kDefaultSessions = '0';
+
+// ─── Data holder (avoids passing 11 params individually) ────────────────────
+
+class _OverviewSnapshot {
+  final String totalScreenTime;
+  final String totalProductiveTime;
+  final String mostUsedApp;
+  final String focusSessions;
+  final List<Map<String, dynamic>> topApplications;
+  final List<Map<String, dynamic>> categoryApplications;
+  final List<Map<String, dynamic>> applicationLimits;
+  final double screenTime;
+  final double productiveScore;
+  final bool hasData;
+
+  const _OverviewSnapshot({
+    required this.totalScreenTime,
+    required this.totalProductiveTime,
+    required this.mostUsedApp,
+    required this.focusSessions,
+    required this.topApplications,
+    required this.categoryApplications,
+    required this.applicationLimits,
+    required this.screenTime,
+    required this.productiveScore,
+    required this.hasData,
+  });
+
+  static const empty = _OverviewSnapshot(
+    totalScreenTime: _kDefaultTime,
+    totalProductiveTime: _kDefaultTime,
+    mostUsedApp: _kDefaultApp,
+    focusSessions: _kDefaultSessions,
+    topApplications: [],
+    categoryApplications: [],
+    applicationLimits: [],
+    screenTime: 0,
+    productiveScore: 0,
+    hasData: false,
+  );
+
+  /// Build snapshot from API data — mapping done once, not in setState
+  factory _OverviewSnapshot.fromOverviewData(OverviewData data) {
+    final topApps = data.topApplications
+        .map((app) => {
+              'name': app.name,
+              'category': app.category,
+              'screenTime': app.formattedScreenTime,
+              'percentageOfTotalTime': app.percentageOfTotalTime,
+              'isVisible': app.isVisible,
+            })
+        .toList(growable: false);
+
+    final categories = data.categoryBreakdown
+        .map((cat) => {
+              'name': cat.name,
+              'totalScreenTime': cat.formattedTotalScreenTime,
+              'percentageOfTotalTime': cat.percentageOfTotalTime,
+            })
+        .toList(growable: false);
+
+    final limits = data.applicationLimits
+        .map((limit) => {
+              'name': limit.name,
+              'category': limit.category,
+              'dailyLimit': limit.formattedDailyLimit,
+              'actualUsage': limit.formattedActualUsage,
+              'percentageOfLimit': limit.percentageOfLimit,
+              'percentageOfTotalTime': limit.percentageOfTotalTime,
+            })
+        .toList(growable: false);
+
+    final sessions = data.focusSessions.toString();
+
+    return _OverviewSnapshot(
+      totalScreenTime: data.formattedTotalScreenTime,
+      totalProductiveTime: data.formattedProductiveTime,
+      mostUsedApp: data.mostUsedApp,
+      focusSessions: sessions,
+      topApplications: topApps,
+      categoryApplications: categories,
+      applicationLimits: limits,
+      screenTime: data.screenTimePercentage / 100,
+      productiveScore: data.productivityScore / 100,
+      hasData: topApps.isNotEmpty ||
+          categories.isNotEmpty ||
+          limits.isNotEmpty ||
+          data.focusSessions > 0,
+    );
+  }
+}
+
+// ─── View states ────────────────────────────────────────────────────────────
+
+enum _ViewState { loading, error, empty, ready }
+
+// ─── Overview ───────────────────────────────────────────────────────────────
+
 class Overview extends StatefulWidget {
   const Overview({super.key});
 
@@ -14,45 +125,31 @@ class Overview extends StatefulWidget {
   State<Overview> createState() => _OverviewState();
 }
 
-class _OverviewState extends State<Overview> with TickerProviderStateMixin {
-  // Data
-  String totalScreenTime = "0h 0m";
-  String totalProductiveTime = "0h 0m";
-  String mostUsedApp = "None";
-  String focusSessions = "0";
-  List<dynamic> topApplications = [];
-  List<dynamic> categoryApplications = [];
-  List<dynamic> applicationLimits = [];
-  double screenTime = 0.0;
-  double productiveScore = 0.0;
+class _OverviewState extends State<Overview>
+    with SingleTickerProviderStateMixin {
+  _OverviewSnapshot _snapshot = _OverviewSnapshot.empty;
+  _ViewState _viewState = _ViewState.loading;
+  String _errorMessage = '';
 
-  // States
-  bool _isLoading = true;
-  bool _hasError = false;
-  String _errorMessage = "";
-  bool _hasData = false;
-
-  // Animation
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _fadeController;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
     _fadeController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: _kFadeDuration,
       vsync: this,
     );
     _fadeAnimation = CurvedAnimation(
       parent: _fadeController,
       curve: Curves.easeOutCubic,
     );
-    // Register this screen's refresh callback
+
+    _loadData();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mn.navigationState.registerRefreshCallback(_loadData);
-    });
-    _loadData();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
       ChangelogModal.showIfNeeded(context);
     });
   }
@@ -64,129 +161,71 @@ class _OverviewState extends State<Overview> with TickerProviderStateMixin {
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
+
+    setState(() => _viewState = _ViewState.loading);
+
     try {
-      setState(() {
-        _isLoading = true;
-        _hasError = false;
-      });
+      final data = await DailyOverviewData().fetchTodayOverview();
+      final snapshot = _OverviewSnapshot.fromOverviewData(data);
 
-      final DailyOverviewData dataProvider = DailyOverviewData();
-      final OverviewData overviewData = await dataProvider.fetchTodayOverview();
+      if (!mounted) return;
 
       setState(() {
-        totalScreenTime = overviewData.formattedTotalScreenTime;
-        totalProductiveTime = overviewData.formattedProductiveTime;
-        mostUsedApp = overviewData.mostUsedApp;
-        focusSessions = overviewData.focusSessions.toString();
-        screenTime = overviewData.screenTimePercentage / 100;
-        productiveScore = overviewData.productivityScore / 100;
-
-        topApplications = overviewData.topApplications
-            .map((app) => {
-                  "name": app.name,
-                  "category": app.category,
-                  "screenTime": app.formattedScreenTime,
-                  "percentageOfTotalTime": app.percentageOfTotalTime,
-                  "isVisible": app.isVisible
-                })
-            .toList();
-
-        categoryApplications = overviewData.categoryBreakdown
-            .map((category) => {
-                  "name": category.name,
-                  "totalScreenTime": category.formattedTotalScreenTime,
-                  "percentageOfTotalTime": category.percentageOfTotalTime
-                })
-            .toList();
-
-        applicationLimits = overviewData.applicationLimits
-            .map((limit) => {
-                  "name": limit.name,
-                  "category": limit.category,
-                  "dailyLimit": limit.formattedDailyLimit,
-                  "actualUsage": limit.formattedActualUsage,
-                  "percentageOfLimit": limit.percentageOfLimit,
-                  "percentageOfTotalTime": limit.percentageOfTotalTime
-                })
-            .toList();
-
-        _isLoading = false;
-        _hasData = topApplications.isNotEmpty ||
-            categoryApplications.isNotEmpty ||
-            applicationLimits.isNotEmpty ||
-            int.parse(focusSessions) > 0;
+        _snapshot = snapshot;
+        _viewState = snapshot.hasData ? _ViewState.ready : _ViewState.empty;
       });
 
       _fadeController.forward(from: 0);
     } catch (e) {
       debugPrint('Error loading overview data: $e');
+      if (!mounted) return;
+
       setState(() {
-        _isLoading = false;
-        _hasError = true;
+        _viewState = _ViewState.error;
         _errorMessage =
             AppLocalizations.of(context)!.errorLoadingData(e.toString());
       });
     }
   }
 
-  Future<void> refreshData() async {
-    await _loadData();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    if (_isLoading) {
-      return ScaffoldPage(
-        padding: EdgeInsets.zero,
-        content: _buildLoadingState(l10n),
-      );
-    }
-
-    if (_hasError) {
-      return ScaffoldPage(
-        padding: EdgeInsets.zero,
-        content: _buildErrorState(l10n),
-      );
-    }
-
-    if (!_hasData) {
-      return ScaffoldPage(
-        padding: EdgeInsets.zero,
-        content: _buildEmptyState(l10n),
-      );
-    }
+    final Widget content = switch (_viewState) {
+      _ViewState.loading => _LoadingState(l10n: l10n),
+      _ViewState.error =>
+        _ErrorState(l10n: l10n, message: _errorMessage, onRetry: _loadData),
+      _ViewState.empty => _EmptyState(l10n: l10n, onRefresh: _loadData),
+      _ViewState.ready => FadeTransition(
+          opacity: _fadeAnimation,
+          child: _ResponsiveOverviewContent(
+            snapshot: _snapshot,
+            refreshData: _loadData,
+          ),
+        ),
+    };
 
     return ScaffoldPage(
       padding: EdgeInsets.zero,
-      content: FadeTransition(
-        opacity: _fadeAnimation,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return _ResponsiveOverviewContent(
-              constraints: constraints,
-              refreshData: refreshData,
-              totalScreenTime: totalScreenTime,
-              totalProductiveTime: totalProductiveTime,
-              mostUsedApp: mostUsedApp,
-              focusSessions: focusSessions,
-              topApplications: topApplications,
-              categoryApplications: categoryApplications,
-              applicationLimits: applicationLimits,
-              screenTime: screenTime,
-              productiveScore: productiveScore,
-            );
-          },
-        ),
-      ),
+      content: content,
     );
   }
+}
 
-  Widget _buildLoadingState(AppLocalizations l10n) {
+// ─── State Widgets (extracted as standalone, const-friendly) ────────────────
+
+class _LoadingState extends StatelessWidget {
+  final AppLocalizations l10n;
+  const _LoadingState({required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           const ProgressRing(strokeWidth: 3),
           const SizedBox(height: 20),
@@ -196,19 +235,33 @@ class _OverviewState extends State<Overview> with TickerProviderStateMixin {
               color: FluentTheme.of(context).inactiveColor,
               fontSize: 14,
             ),
-          )
+          ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildErrorState(AppLocalizations l10n) {
+class _ErrorState extends StatelessWidget {
+  final AppLocalizations l10n;
+  final String message;
+  final VoidCallback onRetry;
+
+  const _ErrorState({
+    required this.l10n,
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 360),
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(16),
@@ -224,44 +277,47 @@ class _OverviewState extends State<Overview> with TickerProviderStateMixin {
             ),
             const SizedBox(height: 20),
             Text(
-              _errorMessage,
+              message,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 20),
-            FilledButton(
-              onPressed: refreshData,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Text(l10n.tryAgain),
-              ),
-            ),
+            _ActionButton(onPressed: onRetry, label: l10n.tryAgain),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildEmptyState(AppLocalizations l10n) {
+class _EmptyState extends StatelessWidget {
+  final AppLocalizations l10n;
+  final VoidCallback onRefresh;
+
+  const _EmptyState({required this.l10n, required this.onRefresh});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
     return Center(
       child: Container(
         constraints: const BoxConstraints(maxWidth: 360),
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color:
-                    FluentTheme.of(context).accentColor.withValues(alpha: 0.1),
+                color: theme.accentColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 FluentIcons.analytics_view,
                 size: 48,
-                color: FluentTheme.of(context).accentColor,
+                color: theme.accentColor,
               ),
             ),
             const SizedBox(height: 24),
@@ -278,13 +334,13 @@ class _OverviewState extends State<Overview> with TickerProviderStateMixin {
               l10n.startUsingApplications,
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: FluentTheme.of(context).inactiveColor,
+                color: theme.inactiveColor,
                 fontSize: 14,
               ),
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: refreshData,
+              onPressed: onRefresh,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -305,159 +361,126 @@ class _OverviewState extends State<Overview> with TickerProviderStateMixin {
   }
 }
 
-// ============================================================================
-// RESPONSIVE CONTENT WRAPPER
-// ============================================================================
+// ─── Shared action button ───────────────────────────────────────────────────
 
-class _ResponsiveOverviewContent extends StatelessWidget {
-  final BoxConstraints constraints;
-  final VoidCallback refreshData;
-  final String totalScreenTime;
-  final String totalProductiveTime;
-  final String mostUsedApp;
-  final String focusSessions;
-  final List<dynamic> topApplications;
-  final List<dynamic> categoryApplications;
-  final List<dynamic> applicationLimits;
-  final double screenTime;
-  final double productiveScore;
-
-  const _ResponsiveOverviewContent({
-    required this.constraints,
-    required this.refreshData,
-    required this.totalScreenTime,
-    required this.totalProductiveTime,
-    required this.mostUsedApp,
-    required this.focusSessions,
-    required this.topApplications,
-    required this.categoryApplications,
-    required this.applicationLimits,
-    required this.screenTime,
-    required this.productiveScore,
-  });
-
-  // Breakpoints
-  static const double compactBreakpoint = 700;
-  static const double mediumBreakpoint = 1000;
-
-  bool get isCompact => constraints.maxWidth < compactBreakpoint;
-  bool get isMedium => constraints.maxWidth < mediumBreakpoint;
-
-  double get horizontalPadding {
-    if (isCompact) return 12;
-    if (isMedium) return 18;
-    return 24;
-  }
-
-  double get verticalSpacing {
-    if (isCompact) return 12;
-    if (isMedium) return 16;
-    return 20;
-  }
+class _ActionButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final String label;
+  const _ActionButton({required this.onPressed, required this.label});
 
   @override
   Widget build(BuildContext context) {
-    if (isCompact) {
-      return _buildCompactLayout(context);
-    }
-    return _buildExpandedLayout(context);
-  }
-
-  // Scrollable layout for narrow screens
-  Widget _buildCompactLayout(BuildContext context) {
-    return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(
-        horizontalPadding,
-        horizontalPadding * 0.67,
-        horizontalPadding,
-        horizontalPadding,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Header(refresh: refreshData),
-          SizedBox(height: verticalSpacing),
-          StatsCards(
-            totalScreenTime: totalScreenTime,
-            totalProductiveTime: totalProductiveTime,
-            mostUsedApp: mostUsedApp,
-            focusSessions: focusSessions,
-          ),
-          SizedBox(height: verticalSpacing),
-          // Main content - stacked vertically
-          _ResponsiveMainContent(
-            topApplications: topApplications,
-            categoryApplications: categoryApplications,
-            isCompact: true,
-          ),
-          SizedBox(height: verticalSpacing),
-          // Bottom section - stacked vertically
-          _ResponsiveBottomSection(
-            screenTime: screenTime,
-            productiveScore: productiveScore,
-            applicationLimits: applicationLimits,
-            isCompact: true,
-            isMedium: false,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Fixed layout for wider screens
-  Widget _buildExpandedLayout(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        horizontalPadding,
-        horizontalPadding * 0.67,
-        horizontalPadding,
-        horizontalPadding,
-      ),
-      child: Column(
-        children: [
-          _Header(refresh: refreshData),
-          SizedBox(height: verticalSpacing),
-          StatsCards(
-            totalScreenTime: totalScreenTime,
-            totalProductiveTime: totalProductiveTime,
-            mostUsedApp: mostUsedApp,
-            focusSessions: focusSessions,
-          ),
-          SizedBox(height: verticalSpacing),
-          // Main content - takes remaining space
-          Expanded(
-            flex: 5,
-            child: _ResponsiveMainContent(
-              topApplications: topApplications,
-              categoryApplications: categoryApplications,
-              isCompact: false,
-            ),
-          ),
-          SizedBox(height: verticalSpacing),
-          // Bottom section
-          Expanded(
-            flex: 3,
-            child: _ResponsiveBottomSection(
-              screenTime: screenTime,
-              productiveScore: productiveScore,
-              applicationLimits: applicationLimits,
-              isCompact: false,
-              isMedium: isMedium,
-            ),
-          ),
-        ],
+    return FilledButton(
+      onPressed: onPressed,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Text(label),
       ),
     );
   }
 }
 
-// ============================================================================
-// HEADER
-// ============================================================================
+// ─── Responsive Content ─────────────────────────────────────────────────────
+
+class _ResponsiveOverviewContent extends StatelessWidget {
+  final _OverviewSnapshot snapshot;
+  final VoidCallback refreshData;
+
+  const _ResponsiveOverviewContent({
+    required this.snapshot,
+    required this.refreshData,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final isCompact = width < _kCompactBreakpoint;
+        final isMedium = width < _kMediumBreakpoint;
+
+        final hPad = isCompact ? 12.0 : (isMedium ? 18.0 : 24.0);
+        final vSpace = isCompact ? 12.0 : (isMedium ? 16.0 : 20.0);
+
+        final edgePadding = EdgeInsets.fromLTRB(
+          hPad,
+          hPad * 0.67,
+          hPad,
+          hPad,
+        );
+
+        final statsCards = StatsCards(
+          totalScreenTime: snapshot.totalScreenTime,
+          totalProductiveTime: snapshot.totalProductiveTime,
+          mostUsedApp: snapshot.mostUsedApp,
+          focusSessions: snapshot.focusSessions,
+        );
+
+        final header = _Header(refresh: refreshData);
+
+        if (isCompact) {
+          return SingleChildScrollView(
+            padding: edgePadding,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                header,
+                SizedBox(height: vSpace),
+                statsCards,
+                SizedBox(height: vSpace),
+                _MainContent(
+                  topApps: snapshot.topApplications,
+                  categories: snapshot.categoryApplications,
+                  isCompact: true,
+                ),
+                SizedBox(height: vSpace),
+                _BottomSection(
+                  snapshot: snapshot,
+                  isCompact: true,
+                  isMedium: false,
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Padding(
+          padding: edgePadding,
+          child: Column(
+            children: [
+              header,
+              SizedBox(height: vSpace),
+              statsCards,
+              SizedBox(height: vSpace),
+              Expanded(
+                flex: 5,
+                child: _MainContent(
+                  topApps: snapshot.topApplications,
+                  categories: snapshot.categoryApplications,
+                  isCompact: false,
+                ),
+              ),
+              SizedBox(height: vSpace),
+              Expanded(
+                flex: 3,
+                child: _BottomSection(
+                  snapshot: snapshot,
+                  isCompact: false,
+                  isMedium: isMedium,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// ─── Header ─────────────────────────────────────────────────────────────────
 
 class _Header extends StatelessWidget {
   final VoidCallback refresh;
-
   const _Header({required this.refresh});
 
   @override
@@ -467,7 +490,7 @@ class _Header extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isNarrow = constraints.maxWidth < 400;
+        final isNarrow = constraints.maxWidth < _kNarrowBreakpoint;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -485,7 +508,7 @@ class _Header extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    _getGreeting(l10n),
+                    _greeting(l10n),
                     style: TextStyle(
                       color: theme.inactiveColor,
                       fontSize: isNarrow ? 11 : 13,
@@ -503,7 +526,7 @@ class _Header extends StatelessWidget {
     );
   }
 
-  String _getGreeting(AppLocalizations l10n) {
+  static String _greeting(AppLocalizations l10n) {
     final hour = DateTime.now().hour;
     if (hour < 12) return l10n.greetingMorning;
     if (hour < 17) return l10n.greetingAfternoon;
@@ -514,7 +537,6 @@ class _Header extends StatelessWidget {
 class _RefreshButton extends StatefulWidget {
   final VoidCallback onPressed;
   final bool compact;
-
   const _RefreshButton({required this.onPressed, this.compact = false});
 
   @override
@@ -527,18 +549,19 @@ class _RefreshButtonState extends State<_RefreshButton> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final compact = widget.compact;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: _kHoverDuration,
         child: Button(
           style: ButtonStyle(
             padding: WidgetStateProperty.all(
               EdgeInsets.symmetric(
-                vertical: widget.compact ? 6 : 8,
-                horizontal: widget.compact ? 10 : 14,
+                vertical: compact ? 6 : 8,
+                horizontal: compact ? 10 : 14,
               ),
             ),
           ),
@@ -548,11 +571,10 @@ class _RefreshButtonState extends State<_RefreshButton> {
             children: [
               AnimatedRotation(
                 turns: _isHovered ? 0.5 : 0,
-                duration: const Duration(milliseconds: 300),
-                child:
-                    Icon(FluentIcons.refresh, size: widget.compact ? 12 : 14),
+                duration: _kRotateDuration,
+                child: Icon(FluentIcons.refresh, size: compact ? 12 : 14),
               ),
-              if (!widget.compact) ...[
+              if (!compact) ...[
                 const SizedBox(width: 8),
                 Text(
                   l10n.refresh,
@@ -570,39 +592,30 @@ class _RefreshButtonState extends State<_RefreshButton> {
   }
 }
 
-// ============================================================================
-// RESPONSIVE MAIN CONTENT
-// ============================================================================
+// ─── Main Content ───────────────────────────────────────────────────────────
 
-class _ResponsiveMainContent extends StatelessWidget {
-  final List<dynamic> topApplications;
-  final List<dynamic> categoryApplications;
+class _MainContent extends StatelessWidget {
+  final List<dynamic> topApps;
+  final List<dynamic> categories;
   final bool isCompact;
 
-  const _ResponsiveMainContent({
-    required this.topApplications,
-    required this.categoryApplications,
+  const _MainContent({
+    required this.topApps,
+    required this.categories,
     required this.isCompact,
   });
 
   @override
   Widget build(BuildContext context) {
+    final topList = TopApplicationsList(data: topApps);
+    final catList = CategoryBreakdownList(data: categories);
+
     if (isCompact) {
       return Column(
         children: [
-          SizedBox(
-            height: 320,
-            child: _ContentCard(
-              child: TopApplicationsList(data: topApplications),
-            ),
-          ),
+          SizedBox(height: 320, child: _ContentCard(child: topList)),
           const SizedBox(height: 12),
-          SizedBox(
-            height: 320,
-            child: _ContentCard(
-              child: CategoryBreakdownList(data: categoryApplications),
-            ),
-          ),
+          SizedBox(height: 320, child: _ContentCard(child: catList)),
         ],
       );
     }
@@ -610,38 +623,29 @@ class _ResponsiveMainContent extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          child: _ContentCard(
-            child: TopApplicationsList(data: topApplications),
-          ),
-        ),
+        Expanded(child: _ContentCard(child: topList)),
         const SizedBox(width: 16),
-        Expanded(
-          child: _ContentCard(
-            child: CategoryBreakdownList(data: categoryApplications),
-          ),
-        ),
+        Expanded(child: _ContentCard(child: catList)),
       ],
     );
   }
 }
 
+// ─── Content Card (shared themed container) ─────────────────────────────────
+
 class _ContentCard extends StatelessWidget {
   final Widget child;
-
   const _ContentCard({required this.child});
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
-
     return Container(
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: theme.resources.cardStrokeColorDefault,
-          width: 1,
         ),
       ),
       child: child,
@@ -649,152 +653,69 @@ class _ContentCard extends StatelessWidget {
   }
 }
 
-// ============================================================================
-// RESPONSIVE BOTTOM SECTION
-// ============================================================================
+// ─── Bottom Section ─────────────────────────────────────────────────────────
 
-class _ResponsiveBottomSection extends StatelessWidget {
-  final double screenTime;
-  final double productiveScore;
-  final List<dynamic> applicationLimits;
+class _BottomSection extends StatelessWidget {
+  final _OverviewSnapshot snapshot;
   final bool isCompact;
   final bool isMedium;
 
-  const _ResponsiveBottomSection({
-    required this.screenTime,
-    required this.productiveScore,
-    required this.applicationLimits,
+  const _BottomSection({
+    required this.snapshot,
     required this.isCompact,
     required this.isMedium,
   });
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
+    final limitsCard = _ContentCard(
+      child: ApplicationLimitsList(data: snapshot.applicationLimits),
+    );
+
+    // Build the actual progress cards with live data
+    final stProgress = ProgressCard(
+      title: 'Screen\nTime',
+      value: snapshot.screenTime,
+      color: _kPurple,
+    );
+    final psProgress = ProgressCard(
+      title: 'Productive\nScore',
+      value: snapshot.productiveScore,
+      color: _kGreen,
+    );
 
     if (isCompact) {
-      return _buildCompactLayout(theme, l10n);
-    }
-
-    if (isMedium) {
-      return _buildMediumLayout(theme, l10n);
-    }
-
-    return _buildExpandedLayout(theme, l10n);
-  }
-
-  // Stacked vertical layout for narrow screens
-  Widget _buildCompactLayout(FluentThemeData theme, AppLocalizations l10n) {
-    return Column(
-      children: [
-        // Progress cards in a row
-        SizedBox(
-          height: 140,
-          child: Row(
-            children: [
-              Expanded(
-                child: ProgressCard(
-                  title: l10n.screenTimeProgress,
-                  value: screenTime,
-                  color: const Color(0xffA855F7),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ProgressCard(
-                  title: l10n.productiveScoreProgress,
-                  value: productiveScore,
-                  color: const Color(0xff22C55E),
-                ),
-              ),
-            ],
+      return Column(
+        children: [
+          SizedBox(
+            height: 140,
+            child: Row(
+              children: [
+                Expanded(child: stProgress),
+                const SizedBox(width: 12),
+                Expanded(child: psProgress),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        // Application limits
-        SizedBox(
-          height: 220,
-          child: _buildApplicationLimitsCard(theme),
-        ),
-      ],
-    );
-  }
+          const SizedBox(height: 12),
+          SizedBox(height: 220, child: limitsCard),
+        ],
+      );
+    }
 
-  // Two-column layout with limits on left, progress stacked on right
-  Widget _buildMediumLayout(FluentThemeData theme, AppLocalizations l10n) {
+    // Medium and expanded share the same structure, different flex
+    final limitsFlex = isMedium ? 4 : 5;
+    const progressFlex = 2;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Application limits - larger portion
-        Expanded(
-          flex: 4,
-          child: _buildApplicationLimitsCard(theme),
-        ),
+        Expanded(flex: limitsFlex, child: limitsCard),
         const SizedBox(width: 16),
-        Expanded(
-          flex: 2,
-          child: ProgressCard(
-            title: 'Screen\nTime',
-            value: screenTime,
-            color: const Color(0xffA855F7),
-          ),
-        ),
+        Expanded(flex: progressFlex, child: stProgress),
         const SizedBox(width: 16),
-        Expanded(
-          flex: 2,
-          child: ProgressCard(
-            title: 'Productive\nScore',
-            value: productiveScore,
-            color: const Color(0xff22C55E),
-          ),
-        ),
+        Expanded(flex: progressFlex, child: psProgress),
       ],
-    );
-  }
-
-  // Full horizontal layout for wide screens
-  Widget _buildExpandedLayout(FluentThemeData theme, AppLocalizations l10n) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          flex: 5,
-          child: _buildApplicationLimitsCard(theme),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 2,
-          child: ProgressCard(
-            title: 'Screen\nTime',
-            value: screenTime,
-            color: const Color(0xffA855F7),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 2,
-          child: ProgressCard(
-            title: 'Productive\nScore',
-            value: productiveScore,
-            color: const Color(0xff22C55E),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildApplicationLimitsCard(FluentThemeData theme) {
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.resources.cardStrokeColorDefault,
-          width: 1,
-        ),
-      ),
-      child: ApplicationLimitsList(data: applicationLimits),
     );
   }
 }

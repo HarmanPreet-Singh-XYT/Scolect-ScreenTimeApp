@@ -6,91 +6,122 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 
-class ChangelogModal {
-  static const String _lastShownVersionKey = 'last_shown_changelog_version';
+// ─── Constants ───────────────────────────────────────────────────────────────
 
-  /// Check if changelog should be shown and display it if needed
+const _kPrefsKey = 'last_shown_changelog_version';
+const _kFetchTimeout = Duration(seconds: 10);
+const _kEntranceDuration = Duration(milliseconds: 400);
+const _kContentDuration = Duration(milliseconds: 600);
+const _kShimmerDuration = Duration(milliseconds: 2000);
+const _kScrollThreshold = 150.0;
+const _kDialogConstraints = BoxConstraints(maxWidth: 620, maxHeight: 720);
+const _kLoadingConstraints = BoxConstraints(maxWidth: 300);
+const _kRepoUrl =
+    'https://api.github.com/repos/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp/releases/tags/';
+
+// Pre-compiled regex — avoids recompilation per call
+final _kBoldRegex = RegExp(r'\*\*(.*?)\*\*');
+
+// ─── Parsed line types ──────────────────────────────────────────────────────
+
+enum _LineType { header, subheader, bullet, text }
+
+class _ParsedLine {
+  final _LineType type;
+  final String text;
+  const _ParsedLine(this.type, this.text);
+}
+
+// ─── Release data — typed instead of Map<String, dynamic> ───────────────────
+
+class _ReleaseData {
+  final String tagName;
+  final String name;
+  final String body;
+  final String? publishedAt;
+
+  const _ReleaseData({
+    required this.tagName,
+    required this.name,
+    required this.body,
+    this.publishedAt,
+  });
+
+  factory _ReleaseData.fromJson(Map<String, dynamic> json) => _ReleaseData(
+        tagName: json['tag_name'] ?? '',
+        name: json['name'] ?? '',
+        body: json['body'] ?? '',
+        publishedAt: json['published_at'],
+      );
+}
+
+// ─── ChangelogModal (public API) ────────────────────────────────────────────
+
+class ChangelogModal {
+  ChangelogModal._(); // prevent instantiation
+
   static Future<void> showIfNeeded(BuildContext context) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final currentVersion =
           SettingsManager().versionInfo['version'] ?? 'unknown';
-      final lastShownVersion = prefs.getString(_lastShownVersionKey);
+      final lastShown = prefs.getString(_kPrefsKey);
 
-      if (lastShownVersion == null || lastShownVersion != currentVersion) {
-        debugPrint(
-            '📱 Changelog: New version detected - $currentVersion (last shown: $lastShownVersion)');
+      if (lastShown == currentVersion) return;
 
-        final releaseData = await _fetchReleaseData(currentVersion);
-
-        if (releaseData != null && context.mounted) {
-          debugPrint(
-              '✅ Changelog: Found for version $currentVersion, displaying');
-          await _showChangelogDialog(context, releaseData);
-          await prefs.setString(_lastShownVersionKey, currentVersion);
-          debugPrint('💾 Changelog: Saved version $currentVersion as shown');
-        } else {
-          debugPrint(
-              '⚠️ Changelog: No release found for version $currentVersion');
-        }
-      } else {
-        debugPrint(
-            '✓ Changelog: Version $currentVersion already shown, skipping');
+      final release = await _fetchRelease(currentVersion);
+      if (release != null && context.mounted) {
+        await _showChangelogDialog(context, release);
+        await prefs.setString(_kPrefsKey, currentVersion);
       }
     } catch (e) {
       debugPrint('❌ Changelog Error: $e');
     }
   }
 
-  /// Manually show changelog (for settings menu)
   static Future<void> showManually(BuildContext context) async {
     try {
       final currentVersion =
           SettingsManager().versionInfo['version'] ?? 'unknown';
 
-      // Show loading indicator while fetching
-      if (context.mounted) {
-        _showLoadingDialog(context);
-      }
+      if (context.mounted) _showLoadingDialog(context);
 
-      final releaseData = await _fetchReleaseData(currentVersion);
+      final release = await _fetchRelease(currentVersion);
 
-      if (context.mounted) {
-        Navigator.of(context).pop(); // Dismiss loading
-      }
+      if (context.mounted) Navigator.of(context).pop();
 
-      if (releaseData != null && context.mounted) {
-        await _showChangelogDialog(context, releaseData);
+      if (release != null && context.mounted) {
+        await _showChangelogDialog(context, release);
       } else if (context.mounted) {
         await _showErrorDialog(context);
       }
     } catch (e) {
       debugPrint('Error showing changelog manually: $e');
       if (context.mounted) {
-        Navigator.of(context).pop(); // Dismiss loading if still showing
+        Navigator.of(context).pop();
         await _showErrorDialog(context);
       }
     }
   }
 
-  static Future<Map<String, dynamic>?> _fetchReleaseData(String version) async {
-    try {
-      final tagName = version.startsWith('v') ? version : 'v$version';
+  static Future<void> resetShownVersion() async {
+    (await SharedPreferences.getInstance()).remove(_kPrefsKey);
+  }
 
-      final response = await http
-          .get(Uri.parse('https://api.github.com/repos/HarmanPreet-Singh-XYT/'
-              'Scolect-ScreenTimeApp/releases/tags/$tagName'))
-          .timeout(const Duration(seconds: 10));
+  static Future<String?> getLastShownVersion() async {
+    return (await SharedPreferences.getInstance()).getString(_kPrefsKey);
+  }
+
+  // ─── Private helpers ────────────────────────────────────────────────────
+
+  static Future<_ReleaseData?> _fetchRelease(String version) async {
+    try {
+      final tag = version.startsWith('v') ? version : 'v$version';
+      final response =
+          await http.get(Uri.parse('$_kRepoUrl$tag')).timeout(_kFetchTimeout);
 
       if (response.statusCode == 200) {
-        final release = json.decode(response.body);
-        return {
-          'tag_name': release['tag_name'],
-          'name': release['name'],
-          'body': release['body'],
-          'published_at': release['published_at'],
-          'html_url': release['html_url'],
-        };
+        return _ReleaseData.fromJson(json.decode(response.body));
       }
       return null;
     } catch (e) {
@@ -99,47 +130,43 @@ class ChangelogModal {
     }
   }
 
-  /// Show a loading dialog while fetching
   static void _showLoadingDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => ContentDialog(
-        constraints: const BoxConstraints(maxWidth: 300),
+      builder: (_) => ContentDialog(
+        constraints: _kLoadingConstraints,
         content: Row(
           children: [
             const ProgressRing(),
             const SizedBox(width: 16),
-            Text(l10n.changelogUnableToLoad), // Reuse or add a "Loading..." key
+            Text(l10n.changelogUnableToLoad),
           ],
         ),
       ),
     );
   }
 
-  /// Show the changelog dialog with animations
   static Future<void> _showChangelogDialog(
     BuildContext context,
-    Map<String, dynamic> releaseData,
-  ) async {
-    await showDialog(
+    _ReleaseData release,
+  ) {
+    return showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => _AnimatedChangelogDialog(releaseData: releaseData),
+      builder: (_) => _ChangelogDialog(release: release),
     );
   }
 
-  /// Show error dialog
-  static Future<void> _showErrorDialog(BuildContext context) async {
+  static Future<void> _showErrorDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    await showDialog(
+    return showDialog(
       context: context,
-      builder: (context) => ContentDialog(
+      builder: (_) => ContentDialog(
         title: Row(
           children: [
-            Icon(
+            const Icon(
               FluentIcons.error_badge,
               color: Colors.warningPrimaryColor,
               size: 20,
@@ -161,122 +188,119 @@ class ChangelogModal {
       ),
     );
   }
-
-  /// Reset the shown version (for testing)
-  static Future<void> resetShownVersion() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_lastShownVersionKey);
-  }
-
-  /// Get the last shown version
-  static Future<String?> getLastShownVersion() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_lastShownVersionKey);
-  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Changelog Dialog (StatefulWidget for animation controllers)
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Changelog Dialog ───────────────────────────────────────────────────────
 
-class _AnimatedChangelogDialog extends StatefulWidget {
-  final Map<String, dynamic> releaseData;
-
-  const _AnimatedChangelogDialog({required this.releaseData});
+class _ChangelogDialog extends StatefulWidget {
+  final _ReleaseData release;
+  const _ChangelogDialog({required this.release});
 
   @override
-  State<_AnimatedChangelogDialog> createState() =>
-      _AnimatedChangelogDialogState();
+  State<_ChangelogDialog> createState() => _ChangelogDialogState();
 }
 
-class _AnimatedChangelogDialogState extends State<_AnimatedChangelogDialog>
+class _ChangelogDialogState extends State<_ChangelogDialog>
     with TickerProviderStateMixin {
-  late final AnimationController _entranceController;
-  late final AnimationController _contentController;
-  late final AnimationController _shimmerController;
+  late final AnimationController _entranceCtrl;
+  late final AnimationController _contentCtrl;
+  late final AnimationController _shimmerCtrl;
 
-  late final Animation<double> _scaleAnimation;
-  late final Animation<double> _fadeAnimation;
-  late final Animation<Offset> _slideAnimation;
-  late final Animation<double> _contentFadeAnimation;
+  late final Animation<double> _scaleTween;
+  late final Animation<double> _fadeTween;
+  late final Animation<Offset> _slideTween;
+  late final Animation<double> _contentFade;
 
-  final ScrollController _scrollController = ScrollController();
-  bool _showScrollTopButton = false;
+  final _scrollCtrl = ScrollController();
+  bool _showScrollTop = false;
+
+  // Parse lines once, not on every build
+  late final List<_ParsedLine> _parsedLines;
 
   @override
   void initState() {
     super.initState();
 
-    // Entrance animation (dialog scale + fade)
-    _entranceController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
+    _parsedLines = _parseBody(widget.release.body);
 
-    _scaleAnimation = Tween<double>(begin: 0.85, end: 1.0).animate(
-      CurvedAnimation(parent: _entranceController, curve: Curves.easeOutBack),
-    );
+    _entranceCtrl =
+        AnimationController(vsync: this, duration: _kEntranceDuration);
+    _contentCtrl =
+        AnimationController(vsync: this, duration: _kContentDuration);
+    _shimmerCtrl =
+        AnimationController(vsync: this, duration: _kShimmerDuration);
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _scaleTween = Tween(begin: 0.85, end: 1.0).animate(
+      CurvedAnimation(parent: _entranceCtrl, curve: Curves.easeOutBack),
+    );
+    _fadeTween = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _entranceController,
+        parent: _entranceCtrl,
         curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
-
-    _slideAnimation =
-        Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero).animate(
-      CurvedAnimation(parent: _entranceController, curve: Curves.easeOutCubic),
+    _slideTween = Tween(begin: const Offset(0, 0.05), end: Offset.zero).animate(
+      CurvedAnimation(parent: _entranceCtrl, curve: Curves.easeOutCubic),
+    );
+    _contentFade = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOut),
     );
 
-    // Content stagger animation
-    _contentController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    );
-
-    _contentFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _contentController,
-        curve: const Interval(0.0, 1.0, curve: Curves.easeOut),
-      ),
-    );
-
-    // Shimmer for header icon
-    _shimmerController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    );
-
-    // Start animation sequence
-    _entranceController.forward().then((_) {
-      _contentController.forward();
-      _shimmerController.repeat();
+    _entranceCtrl.forward().then((_) {
+      _contentCtrl.forward();
+      _shimmerCtrl.repeat();
     });
 
-    // Scroll listener for "scroll to top" button
-    _scrollController.addListener(_onScroll);
+    _scrollCtrl.addListener(_onScroll);
   }
 
   void _onScroll() {
-    final shouldShow = _scrollController.offset > 150;
-    if (shouldShow != _showScrollTopButton) {
-      setState(() => _showScrollTopButton = shouldShow);
-    }
+    final show = _scrollCtrl.offset > _kScrollThreshold;
+    if (show != _showScrollTop) setState(() => _showScrollTop = show);
   }
 
   @override
   void dispose() {
-    _entranceController.dispose();
-    _contentController.dispose();
-    _shimmerController.dispose();
-    _scrollController.dispose();
+    _entranceCtrl.dispose();
+    _contentCtrl.dispose();
+    _shimmerCtrl.dispose();
+    _scrollCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _dismissWithAnimation() async {
-    await _entranceController.reverse();
+  Future<void> _dismiss() async {
+    await _entranceCtrl.reverse();
     if (mounted) Navigator.of(context).pop();
+  }
+
+  // ─── Parse markdown body once ───────────────────────────────────────────
+
+  static List<_ParsedLine> _parseBody(String body) {
+    if (body.isEmpty) return const [];
+
+    final lines = body.split('\n');
+    final result = <_ParsedLine>[];
+    result.length; // hint capacity not needed — list is small
+
+    for (var line in lines) {
+      line = line.trim();
+      if (line.isEmpty) continue;
+
+      if (line.startsWith('##')) {
+        result.add(
+            _ParsedLine(_LineType.subheader, line.replaceAll('#', '').trim()));
+      } else if (line.startsWith('#')) {
+        result.add(
+            _ParsedLine(_LineType.header, line.replaceAll('#', '').trim()));
+      } else if (line.startsWith('-') ||
+          line.startsWith('•') ||
+          line.startsWith('*')) {
+        result.add(_ParsedLine(_LineType.bullet, line.substring(1).trim()));
+      } else {
+        result.add(_ParsedLine(_LineType.text, line));
+      }
+    }
+    return result;
   }
 
   @override
@@ -285,98 +309,59 @@ class _AnimatedChangelogDialogState extends State<_AnimatedChangelogDialog>
     final theme = FluentTheme.of(context);
 
     return AnimatedBuilder(
-      animation: _entranceController,
-      builder: (context, child) {
-        return FadeTransition(
-          opacity: _fadeAnimation,
-          child: SlideTransition(
-            position: _slideAnimation,
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: child,
-            ),
-          ),
-        );
-      },
+      animation: _entranceCtrl,
+      builder: (context, child) => FadeTransition(
+        opacity: _fadeTween,
+        child: SlideTransition(
+          position: _slideTween,
+          child: ScaleTransition(scale: _scaleTween, child: child),
+        ),
+      ),
       child: ContentDialog(
-        constraints: const BoxConstraints(maxWidth: 620, maxHeight: 720),
-        title: _AnimatedHeader(
-          releaseData: widget.releaseData,
-          shimmerController: _shimmerController,
+        constraints: _kDialogConstraints,
+        title: _ShimmerHeader(
+          release: widget.release,
+          shimmerCtrl: _shimmerCtrl,
         ),
         content: Stack(
           children: [
             FadeTransition(
-              opacity: _contentFadeAnimation,
+              opacity: _contentFade,
               child: SingleChildScrollView(
-                controller: _scrollController,
+                controller: _scrollCtrl,
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _AnimatedReleaseDate(
-                      publishedAt: widget.releaseData['published_at'],
-                      contentController: _contentController,
-                    ),
+                    if (widget.release.publishedAt != null)
+                      _ReleaseDateBadge(
+                        publishedAt: widget.release.publishedAt!,
+                        contentCtrl: _contentCtrl,
+                      ),
                     const SizedBox(height: 16),
-                    _AnimatedChangelogContent(
-                      body: widget.releaseData['body'],
-                      contentController: _contentController,
-                    ),
+                    if (_parsedLines.isEmpty)
+                      Text(l10n.changelogNoContent)
+                    else
+                      _StaggeredContent(
+                        lines: _parsedLines,
+                        contentCtrl: _contentCtrl,
+                      ),
                     const SizedBox(height: 8),
                   ],
                 ),
               ),
             ),
-
-            // Scroll-to-top floating button
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: AnimatedScale(
-                scale: _showScrollTopButton ? 1.0 : 0.0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOutBack,
-                child: AnimatedOpacity(
-                  opacity: _showScrollTopButton ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: IconButton(
-                    icon: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: theme.accentColor,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: theme.accentColor.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        FluentIcons.chevron_up,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                    ),
-                    onPressed: () {
-                      _scrollController.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOutCubic,
-                      );
-                    },
-                  ),
-                ),
-              ),
+            _ScrollTopButton(
+              visible: _showScrollTop,
+              scrollCtrl: _scrollCtrl,
+              accentColor: theme.accentColor,
             ),
           ],
         ),
         actions: [
-          _AnimatedButton(
-            contentController: _contentController,
-            onPressed: _dismissWithAnimation,
+          _FadeScaleButton(
+            contentCtrl: _contentCtrl,
+            onPressed: _dismiss,
             label: l10n.continueButton,
           ),
         ],
@@ -385,56 +370,42 @@ class _AnimatedChangelogDialogState extends State<_AnimatedChangelogDialog>
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Header with shimmer effect on icon
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Shimmer Header ─────────────────────────────────────────────────────────
 
-class _AnimatedHeader extends StatelessWidget {
-  final Map<String, dynamic> releaseData;
-  final AnimationController shimmerController;
+class _ShimmerHeader extends StatelessWidget {
+  final _ReleaseData release;
+  final AnimationController shimmerCtrl;
 
-  const _AnimatedHeader({
-    required this.releaseData,
-    required this.shimmerController,
-  });
+  const _ShimmerHeader({required this.release, required this.shimmerCtrl});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
+    final accent = theme.accentColor;
 
     return Row(
       children: [
         AnimatedBuilder(
-          animation: shimmerController,
-          builder: (context, child) {
-            return Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                gradient: SweepGradient(
-                  center: Alignment.center,
-                  startAngle: 0,
-                  endAngle: 2 * pi,
-                  transform: GradientRotation(shimmerController.value * 2 * pi),
-                  colors: [
-                    theme.accentColor.withValues(alpha: 0.08),
-                    theme.accentColor.withValues(alpha: 0.2),
-                    theme.accentColor.withValues(alpha: 0.08),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: theme.accentColor.withValues(alpha: 0.15),
-                  width: 1,
-                ),
+          animation: shimmerCtrl,
+          builder: (_, __) => Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: SweepGradient(
+                transform: GradientRotation(shimmerCtrl.value * 2 * pi),
+                colors: [
+                  accent.withValues(alpha: 0.08),
+                  accent.withValues(alpha: 0.2),
+                  accent.withValues(alpha: 0.08),
+                ],
               ),
-              child: Icon(
-                FluentIcons.rocket,
-                color: theme.accentColor,
-                size: 24,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: accent.withValues(alpha: 0.15),
               ),
-            );
-          },
+            ),
+            child: Icon(FluentIcons.rocket, color: accent, size: 24),
+          ),
         ),
         const SizedBox(width: 14),
         Expanded(
@@ -455,14 +426,14 @@ class _AnimatedHeader extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: theme.accentColor.withValues(alpha: 0.12),
+                      color: accent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      releaseData['tag_name'] ?? '',
+                      release.tagName,
                       style: TextStyle(
                         fontSize: 11,
-                        color: theme.accentColor,
+                        color: accent,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
@@ -471,11 +442,10 @@ class _AnimatedHeader extends StatelessWidget {
                   const SizedBox(width: 8),
                   Flexible(
                     child: Text(
-                      releaseData['name'] ?? '',
+                      release.name,
                       style: TextStyle(
                         fontSize: 13,
                         color: theme.inactiveColor,
-                        fontWeight: FontWeight.normal,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -490,66 +460,51 @@ class _AnimatedHeader extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Release Date with stagger
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Release Date Badge ─────────────────────────────────────────────────────
 
-class _AnimatedReleaseDate extends StatelessWidget {
-  final String? publishedAt;
-  final AnimationController contentController;
+class _ReleaseDateBadge extends StatelessWidget {
+  final String publishedAt;
+  final AnimationController contentCtrl;
 
-  const _AnimatedReleaseDate({
-    required this.publishedAt,
-    required this.contentController,
-  });
+  const _ReleaseDateBadge(
+      {required this.publishedAt, required this.contentCtrl});
 
   @override
   Widget build(BuildContext context) {
-    if (publishedAt == null) return const SizedBox.shrink();
-
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
-    final date = DateTime.parse(publishedAt!);
-    final formattedDate = '${date.day}/${date.month}/${date.year}';
+    final accent = theme.accentColor;
 
-    final slideAnimation = Tween<Offset>(
-      begin: const Offset(-0.1, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: contentController,
+    final date = DateTime.parse(publishedAt);
+    final formatted = '${date.day}/${date.month}/${date.year}';
+
+    final curve = CurvedAnimation(
+      parent: contentCtrl,
       curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-    ));
-
-    final fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: contentController,
-        curve: const Interval(0.0, 0.4, curve: Curves.easeOut),
-      ),
     );
 
     return SlideTransition(
-      position: slideAnimation,
+      position:
+          Tween(begin: const Offset(-0.1, 0), end: Offset.zero).animate(curve),
       child: FadeTransition(
-        opacity: fadeAnimation,
+        opacity: Tween(begin: 0.0, end: 1.0).animate(curve),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: theme.accentColor.withValues(alpha: 0.08),
+            color: accent.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: theme.accentColor.withValues(alpha: 0.1),
-            ),
+            border: Border.all(color: accent.withValues(alpha: 0.1)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(FluentIcons.calendar, size: 14, color: theme.accentColor),
+              Icon(FluentIcons.calendar, size: 14, color: accent),
               const SizedBox(width: 8),
               Text(
-                l10n.changelogReleasedOn(formattedDate),
+                l10n.changelogReleasedOn(formatted),
                 style: TextStyle(
                   fontSize: 12,
-                  color: theme.accentColor,
+                  color: accent,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -561,100 +516,46 @@ class _AnimatedReleaseDate extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Changelog Content with staggered item reveals
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Staggered Content Lines ────────────────────────────────────────────────
 
-class _AnimatedChangelogContent extends StatelessWidget {
-  final String? body;
-  final AnimationController contentController;
+class _StaggeredContent extends StatelessWidget {
+  final List<_ParsedLine> lines;
+  final AnimationController contentCtrl;
 
-  const _AnimatedChangelogContent({
-    required this.body,
-    required this.contentController,
-  });
+  const _StaggeredContent({required this.lines, required this.contentCtrl});
 
   @override
   Widget build(BuildContext context) {
-    if (body == null || body!.isEmpty) {
-      final l10n = AppLocalizations.of(context)!;
-      return Text(l10n.changelogNoContent);
-    }
-
     final theme = FluentTheme.of(context);
-    final lines = body!.split('\n');
-    final List<_ParsedLine> parsed = [];
-
-    for (var line in lines) {
-      line = line.trim();
-      if (line.isEmpty) continue;
-
-      if (line.startsWith('-') ||
-          line.startsWith('•') ||
-          line.startsWith('*')) {
-        parsed.add(_ParsedLine(
-          type: _LineType.bullet,
-          text: line.substring(1).trim(),
-        ));
-      } else if (line.startsWith('##')) {
-        parsed.add(_ParsedLine(
-          type: _LineType.subheader,
-          text: line.replaceAll('#', '').trim(),
-        ));
-      } else if (line.startsWith('#')) {
-        parsed.add(_ParsedLine(
-          type: _LineType.header,
-          text: line.replaceAll('#', '').trim(),
-        ));
-      } else {
-        parsed.add(_ParsedLine(type: _LineType.text, text: line));
-      }
-    }
+    final count = lines.length;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: List.generate(parsed.length, (index) {
-        // Stagger each item within the content animation window
-        final itemCount = parsed.length;
-        final start = (0.15 + (index / itemCount) * 0.7).clamp(0.0, 1.0);
+      children: List.generate(count, (i) {
+        final start = (0.15 + (i / count) * 0.7).clamp(0.0, 1.0);
         final end = (start + 0.3).clamp(0.0, 1.0);
-
-        final fadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(
-            parent: contentController,
-            curve: Interval(start, end, curve: Curves.easeOut),
-          ),
-        );
-
-        final slideAnim = Tween<Offset>(
-          begin: const Offset(0, 0.15),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: contentController,
-            curve: Interval(start, end, curve: Curves.easeOutCubic),
-          ),
-        );
+        final interval = Interval(start, end, curve: Curves.easeOut);
+        final slideInterval = Interval(start, end, curve: Curves.easeOutCubic);
 
         return SlideTransition(
-          position: slideAnim,
+          position: Tween(begin: const Offset(0, 0.15), end: Offset.zero)
+              .animate(
+                  CurvedAnimation(parent: contentCtrl, curve: slideInterval)),
           child: FadeTransition(
-            opacity: fadeAnim,
-            child: _buildLineWidget(context, theme, parsed[index]),
+            opacity: Tween(begin: 0.0, end: 1.0)
+                .animate(CurvedAnimation(parent: contentCtrl, curve: interval)),
+            child: _buildLine(theme, lines[i]),
           ),
         );
       }),
     );
   }
 
-  Widget _buildLineWidget(
-    BuildContext context,
-    FluentThemeData theme,
-    _ParsedLine line,
-  ) {
-    switch (line.type) {
-      case _LineType.header:
-        return Padding(
+  static String _stripBold(String text) => text.replaceAll(_kBoldRegex, r'\$1');
+
+  static Widget _buildLine(FluentThemeData theme, _ParsedLine line) {
+    return switch (line.type) {
+      _LineType.header => Padding(
           padding: const EdgeInsets.only(top: 16, bottom: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -679,10 +580,8 @@ class _AnimatedChangelogContent extends StatelessWidget {
               ),
             ],
           ),
-        );
-
-      case _LineType.subheader:
-        return Padding(
+        ),
+      _LineType.subheader => Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 6),
           child: Text(
             line.text,
@@ -692,10 +591,8 @@ class _AnimatedChangelogContent extends StatelessWidget {
               color: theme.typography.body?.color?.withValues(alpha: 0.85),
             ),
           ),
-        );
-
-      case _LineType.bullet:
-        return Padding(
+        ),
+      _LineType.bullet => Padding(
           padding: const EdgeInsets.only(left: 4, bottom: 6),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -716,101 +613,120 @@ class _AnimatedChangelogContent extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  _stripMarkdownBold(line.text),
+                  _stripBold(line.text),
                   style: const TextStyle(fontSize: 14, height: 1.6),
                 ),
               ),
             ],
           ),
-        );
-
-      case _LineType.text:
-        return Padding(
+        ),
+      _LineType.text => Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
-            _stripMarkdownBold(line.text),
+            _stripBold(line.text),
             style: const TextStyle(fontSize: 14, height: 1.6),
           ),
-        );
-    }
-  }
-
-  /// Strip basic markdown bold (**text**) for plain display
-  String _stripMarkdownBold(String text) {
-    return text.replaceAll(RegExp(r'\*\*(.*?)\*\*'), r'\$1');
+        ),
+    };
   }
 }
 
-enum _LineType { header, subheader, bullet, text }
+// ─── Scroll-to-Top Button ───────────────────────────────────────────────────
 
-class _ParsedLine {
-  final _LineType type;
-  final String text;
+class _ScrollTopButton extends StatelessWidget {
+  final bool visible;
+  final ScrollController scrollCtrl;
+  final Color accentColor;
 
-  const _ParsedLine({required this.type, required this.text});
+  const _ScrollTopButton({
+    required this.visible,
+    required this.scrollCtrl,
+    required this.accentColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 8,
+      right: 8,
+      child: AnimatedScale(
+        scale: visible ? 1.0 : 0.0,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutBack,
+        child: AnimatedOpacity(
+          opacity: visible ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 200),
+          child: IconButton(
+            icon: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: accentColor.withValues(alpha: 0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                FluentIcons.chevron_up,
+                color: Colors.white,
+                size: 14,
+              ),
+            ),
+            onPressed: () => scrollCtrl.animateTo(
+              0,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeOutCubic,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Animated Continue Button with scale-in effect
-// ─────────────────────────────────────────────────────────────────────────────
+// ─── Fade + Scale Button ────────────────────────────────────────────────────
 
-class _AnimatedButton extends StatefulWidget {
-  final AnimationController contentController;
+class _FadeScaleButton extends StatelessWidget {
+  final AnimationController contentCtrl;
   final VoidCallback onPressed;
   final String label;
 
-  const _AnimatedButton({
-    required this.contentController,
+  const _FadeScaleButton({
+    required this.contentCtrl,
     required this.onPressed,
     required this.label,
   });
 
   @override
-  State<_AnimatedButton> createState() => _AnimatedButtonState();
-}
-
-class _AnimatedButtonState extends State<_AnimatedButton>
-    with SingleTickerProviderStateMixin {
-  late final Animation<double> _buttonFade;
-  late final Animation<double> _buttonScale;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _buttonFade = Tween<double>(begin: 0.0, end: 1.0).animate(
+  Widget build(BuildContext context) {
+    final fade = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: widget.contentController,
+        parent: contentCtrl,
         curve: const Interval(0.7, 1.0, curve: Curves.easeOut),
       ),
     );
-
-    _buttonScale = Tween<double>(begin: 0.8, end: 1.0).animate(
+    final scale = Tween(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(
-        parent: widget.contentController,
+        parent: contentCtrl,
         curve: const Interval(0.7, 1.0, curve: Curves.easeOutBack),
       ),
     );
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: widget.contentController,
-      builder: (context, child) {
-        return Opacity(
-          opacity: _buttonFade.value,
-          child: Transform.scale(
-            scale: _buttonScale.value,
-            child: child,
-          ),
-        );
-      },
+      animation: contentCtrl,
+      builder: (_, child) => Opacity(
+        opacity: fade.value,
+        child: Transform.scale(scale: scale.value, child: child),
+      ),
       child: FilledButton(
-        onPressed: widget.onPressed,
+        onPressed: onPressed,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-          child: Text(widget.label),
+          child: Text(label),
         ),
       ),
     );

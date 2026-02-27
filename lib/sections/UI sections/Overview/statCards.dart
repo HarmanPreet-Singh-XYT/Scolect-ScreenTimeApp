@@ -1,9 +1,59 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
-// ============================================================================
-// STATS CARDS
-// ============================================================================
+// ─── Constants ───────────────────────────────────────────────────────────────
+
+const _kHoverDuration = Duration(milliseconds: 200);
+const _kCompactBreakpoint = 600.0;
+const _kVeryCompactBreakpoint = 400.0;
+
+const _kWhite80 = Color.fromRGBO(255, 255, 255, 0.8);
+const _kWhite90 = Color.fromRGBO(255, 255, 255, 0.9);
+
+const _kGradientBlue = LinearGradient(
+  colors: [Color(0xff1E3A8A), Color(0xff3B82F6)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+const _kGradientGreen = LinearGradient(
+  colors: [Color(0xff14532D), Color(0xff22C55E)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+const _kGradientPurple = LinearGradient(
+  colors: [Color(0xff581C87), Color(0xffA855F7)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+const _kGradientOrange = LinearGradient(
+  colors: [Color(0xff7C2D12), Color(0xffF97316)],
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+);
+
+// Pre-built transforms to avoid allocating Matrix4 every build
+final _kTransformIdle = Matrix4.identity();
+final _kTransformHovered = Matrix4.identity()..setTranslationRaw(0, -2, 0);
+
+// ─── Card Config (data object, no widget overhead) ──────────────────────────
+
+class _CardConfig {
+  final IconData icon;
+  final String title;
+  final String value;
+  final LinearGradient gradient;
+  final bool isText;
+
+  const _CardConfig({
+    required this.icon,
+    required this.title,
+    required this.value,
+    required this.gradient,
+    this.isText = false,
+  });
+}
+
+// ─── StatsCards ─────────────────────────────────────────────────────────────
 
 class StatsCards extends StatelessWidget {
   final String totalScreenTime;
@@ -23,119 +73,147 @@ class StatsCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    // Config list built once per build — lightweight data objects, not widgets
+    final configs = [
+      _CardConfig(
+        icon: FluentIcons.timer,
+        title: l10n.totalScreenTime,
+        value: totalScreenTime,
+        gradient: _kGradientBlue,
+      ),
+      _CardConfig(
+        icon: FluentIcons.check_mark,
+        title: l10n.productiveTime,
+        value: totalProductiveTime,
+        gradient: _kGradientGreen,
+      ),
+      _CardConfig(
+        icon: FluentIcons.app_icon_default_list,
+        title: l10n.mostUsedApp,
+        value: mostUsedApp,
+        gradient: _kGradientPurple,
+        isText: true,
+      ),
+      _CardConfig(
+        icon: FluentIcons.focus,
+        title: l10n.focusSessions,
+        value: focusSessions,
+        gradient: _kGradientOrange,
+      ),
+    ];
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
-        final isCompact = width < 600;
-        final isVeryCompact = width < 400;
-
-        // Dynamic height based on available width
+        final isVeryCompact = width < _kVeryCompactBreakpoint;
+        final isCompact = width < _kCompactBreakpoint;
         final cardHeight = isVeryCompact ? 85.0 : (isCompact ? 95.0 : 110.0);
 
-        final cards = [
-          _StatCard(
-            icon: FluentIcons.timer,
-            title: l10n.totalScreenTime,
-            value: totalScreenTime,
-            gradient: const LinearGradient(
-              colors: [Color(0xff1E3A8A), Color(0xff3B82F6)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            height: cardHeight,
-            isCompact: isVeryCompact,
-          ),
-          _StatCard(
-            icon: FluentIcons.check_mark,
-            title: l10n.productiveTime,
-            value: totalProductiveTime,
-            gradient: const LinearGradient(
-              colors: [Color(0xff14532D), Color(0xff22C55E)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            height: cardHeight,
-            isCompact: isVeryCompact,
-          ),
-          _StatCard(
-            icon: FluentIcons.app_icon_default_list,
-            title: l10n.mostUsedApp,
-            value: mostUsedApp,
-            gradient: const LinearGradient(
-              colors: [Color(0xff581C87), Color(0xffA855F7)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            height: cardHeight,
-            isText: true,
-            isCompact: isVeryCompact,
-          ),
-          _StatCard(
-            icon: FluentIcons.focus,
-            title: l10n.focusSessions,
-            value: focusSessions,
-            gradient: const LinearGradient(
-              colors: [Color(0xff7C2D12), Color(0xffF97316)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            height: cardHeight,
-            isCompact: isVeryCompact,
-          ),
-        ];
-
-        // 2x2 grid for compact, 1x4 row for expanded
         if (isCompact) {
-          return Column(
-            children: [
-              Row(children: [
-                Expanded(child: cards[0]),
-                const SizedBox(width: 10),
-                Expanded(child: cards[1]),
-              ]),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(child: cards[2]),
-                const SizedBox(width: 10),
-                Expanded(child: cards[3]),
-              ]),
-            ],
+          return _CompactGrid(
+            configs: configs,
+            cardHeight: cardHeight,
+            isVeryCompact: isVeryCompact,
           );
         }
 
-        return Row(
-          children: [
-            Expanded(child: cards[0]),
-            const SizedBox(width: 12),
-            Expanded(child: cards[1]),
-            const SizedBox(width: 12),
-            Expanded(child: cards[2]),
-            const SizedBox(width: 12),
-            Expanded(child: cards[3]),
-          ],
+        return _ExpandedRow(
+          configs: configs,
+          cardHeight: cardHeight,
         );
       },
     );
   }
 }
 
+// ─── Layout Widgets (extracted to limit rebuild scope) ──────────────────────
+
+class _CompactGrid extends StatelessWidget {
+  final List<_CardConfig> configs;
+  final double cardHeight;
+  final bool isVeryCompact;
+
+  const _CompactGrid({
+    required this.configs,
+    required this.cardHeight,
+    required this.isVeryCompact,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(children: [
+          Expanded(
+              child: _StatCard(
+                  config: configs[0],
+                  height: cardHeight,
+                  isCompact: isVeryCompact)),
+          const SizedBox(width: 10),
+          Expanded(
+              child: _StatCard(
+                  config: configs[1],
+                  height: cardHeight,
+                  isCompact: isVeryCompact)),
+        ]),
+        const SizedBox(height: 10),
+        Row(children: [
+          Expanded(
+              child: _StatCard(
+                  config: configs[2],
+                  height: cardHeight,
+                  isCompact: isVeryCompact)),
+          const SizedBox(width: 10),
+          Expanded(
+              child: _StatCard(
+                  config: configs[3],
+                  height: cardHeight,
+                  isCompact: isVeryCompact)),
+        ]),
+      ],
+    );
+  }
+}
+
+class _ExpandedRow extends StatelessWidget {
+  final List<_CardConfig> configs;
+  final double cardHeight;
+
+  const _ExpandedRow({
+    required this.configs,
+    required this.cardHeight,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (int i = 0; i < configs.length; i++) ...[
+          if (i > 0) const SizedBox(width: 12),
+          Expanded(
+            child: _StatCard(
+              config: configs[i],
+              height: cardHeight,
+              isCompact: false,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+// ─── StatCard (single widget, config-driven) ────────────────────────────────
+
 class _StatCard extends StatefulWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-  final LinearGradient gradient;
+  final _CardConfig config;
   final double height;
-  final bool isText;
   final bool isCompact;
 
   const _StatCard({
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.gradient,
+    required this.config,
     required this.height,
-    this.isText = false,
-    this.isCompact = false,
+    required this.isCompact,
   });
 
   @override
@@ -147,31 +225,34 @@ class _StatCardState extends State<_StatCard> {
 
   @override
   Widget build(BuildContext context) {
-    final padding = widget.isCompact ? 12.0 : 16.0;
-    final iconSize = widget.isCompact ? 12.0 : 14.0;
-    final titleSize = widget.isCompact ? 10.0 : 12.0;
-    final valueSize = widget.isText
-        ? (widget.value.length > 12 ? 14.0 : 18.0)
-        : (widget.isCompact ? 22.0 : 26.0);
+    final c = widget.config;
+    final compact = widget.isCompact;
+
+    final padding = compact ? 12.0 : 16.0;
+    final iconSize = compact ? 12.0 : 14.0;
+    final titleSize = compact ? 10.0 : 12.0;
+    final valueSize = c.isText
+        ? (c.value.length > 12 ? 14.0 : 18.0)
+        : (compact ? 22.0 : 26.0);
+
+    final shadowColor = c.gradient.colors.first;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: _kHoverDuration,
         height: widget.height,
         transformAlignment: Alignment.center,
-        transform: Matrix4.identity()
-          ..setTranslationRaw(0, _isHovered ? -2 : 0, 0),
+        transform: _isHovered ? _kTransformHovered : _kTransformIdle,
         decoration: BoxDecoration(
-          gradient: widget.gradient,
+          gradient: c.gradient,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: widget.gradient.colors.first
-                  .withValues(alpha: _isHovered ? 0.4 : 0.2),
+              color: shadowColor.withValues(alpha: _isHovered ? 0.4 : 0.2),
               blurRadius: _isHovered ? 16 : 8,
-              offset: Offset(0, _isHovered ? 6 : 4),
+              offset: _isHovered ? const Offset(0, 6) : const Offset(0, 4),
             ),
           ],
         ),
@@ -183,17 +264,13 @@ class _StatCardState extends State<_StatCard> {
             children: [
               Row(
                 children: [
-                  Icon(
-                    widget.icon,
-                    size: iconSize,
-                    color: Colors.white.withValues(alpha: 0.8),
-                  ),
+                  Icon(c.icon, size: iconSize, color: _kWhite80),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      widget.title,
+                      c.title,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: _kWhite90,
                         fontSize: titleSize,
                         fontWeight: FontWeight.w500,
                       ),
@@ -206,15 +283,15 @@ class _StatCardState extends State<_StatCard> {
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  widget.value,
+                  c.value,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: valueSize,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: widget.isText ? 0 : -0.5,
+                    letterSpacing: c.isText ? 0 : -0.5,
                   ),
                   overflow: TextOverflow.ellipsis,
-                  maxLines: widget.isText ? 2 : 1,
+                  maxLines: c.isText ? 2 : 1,
                 ),
               ),
             ],
