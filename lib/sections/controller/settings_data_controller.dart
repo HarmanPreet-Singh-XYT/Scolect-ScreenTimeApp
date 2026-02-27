@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:io' show Platform;
+import 'dart:math' show max;
 import 'package:flutter/material.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -81,6 +82,25 @@ class TrackingModeOptions {
   static const String defaultMode = precise;
 }
 
+// ============================================================================
+// MIGRATIONS
+// ============================================================================
+
+class SettingsMigrations {
+  /// Bump this number each time you add a new migration block.
+  static const int currentVersion = 1;
+  static const String versionKey = "screenTime_settings_migration_version";
+
+  /// The version at which monitorControllers, monitorHIDDevices, and
+  /// monitorAudio were disabled due to crashing. Any user whose
+  /// last_shown_changelog_version is strictly below this will be migrated.
+  static const String crashFixVersion = "2.0.8";
+}
+
+// ============================================================================
+// SETTINGS MANAGER
+// ============================================================================
+
 class SettingsManager {
   static final SettingsManager _instance = SettingsManager._internal();
 
@@ -143,11 +163,10 @@ class SettingsManager {
           "mode": TrackingModeOptions.defaultMode,
           "idleDetection": true,
           "idleTimeout": IdleTimeoutOptions.defaultTimeout,
-          "monitorAudio": true,
-          "monitorControllers": true,
-          "monitorHIDDevices": true,
-          "monitorKeyboard":
-              !Platform.isMacOS, // NEW: false on macOS, true on Windows
+          "monitorAudio": false,
+          "monitorControllers": false,
+          "monitorHIDDevices": false,
+          "monitorKeyboard": true,
           "audioThreshold": 0.01,
         }
       };
@@ -155,7 +174,7 @@ class SettingsManager {
   late Map<String, dynamic> settings;
 
   Map<String, String> versionInfo = {
-    "version": "2.0.7",
+    "version": "2.0.8",
     "type": "Stable Build"
   };
 
@@ -163,12 +182,93 @@ class SettingsManager {
     _prefs = await SharedPreferences.getInstance();
     settings = Map<String, dynamic>.from(_defaultSettings);
     _loadSettings();
+    await _runMigrations();
 
     if (_isMacOS) {
       debugPrint(
           "🍎 Running on macOS - notifications disabled by default (requires permission)");
     }
   }
+
+  // --------------------------------------------------------------------------
+  // MIGRATIONS
+  // --------------------------------------------------------------------------
+
+  Future<void> _runMigrations() async {
+    final bool hasExistingSettings =
+        _prefs.getString("screenTime_settings") != null;
+
+    // New user: no saved settings → defaults are already correct (all false),
+    // just stamp the current migration version and return.
+    if (!hasExistingSettings) {
+      await _prefs.setInt(
+          SettingsMigrations.versionKey, SettingsMigrations.currentVersion);
+      debugPrint(
+          "🆕 New user — stamped migration version ${SettingsMigrations.currentVersion}");
+      return;
+    }
+
+    int migratedVersion = _prefs.getInt(SettingsMigrations.versionKey) ?? 0;
+
+    // ------------------------------------------------------------------
+    // Migration 1 — disable monitorControllers, monitorHIDDevices, and
+    // monitorAudio for existing users who were on a version below 2.0.8,
+    // as these settings caused app crashes.
+    // ------------------------------------------------------------------
+    if (migratedVersion < 1) {
+      const String changelogKey = 'last_shown_changelog_version';
+      final String? lastSeenVersion = _prefs.getString(changelogKey);
+
+      final bool isOldUser = lastSeenVersion != null &&
+          _isVersionBelow(lastSeenVersion, SettingsMigrations.crashFixVersion);
+
+      if (isOldUser) {
+        debugPrint("🔧 Migration 1: Old user on $lastSeenVersion — disabling "
+            "monitorControllers, monitorHIDDevices & monitorAudio");
+
+        if (settings.containsKey("tracking")) {
+          settings["tracking"]["monitorControllers"] = false;
+          settings["tracking"]["monitorHIDDevices"] = false;
+          settings["tracking"]["monitorAudio"] = false;
+        }
+
+        _saveSettings();
+        debugPrint("✅ Migration 1: Crash-prone settings disabled and saved");
+      } else {
+        debugPrint(
+            "ℹ️ Migration 1: Skipped — no old changelog version found or "
+            "already on ${SettingsMigrations.crashFixVersion}+");
+      }
+
+      await _prefs.setInt(SettingsMigrations.versionKey, 1);
+    }
+
+    // Add future migrations here:
+    // if (migratedVersion < 2) { ... await _prefs.setInt(..., 2); }
+  }
+
+  /// Returns true if [version] is strictly below [target].
+  /// Handles optional leading "v" (e.g. "v2.0.7" < "2.0.8").
+  bool _isVersionBelow(String version, String target) {
+    try {
+      final v = version.replaceAll('v', '').split('.').map(int.parse).toList();
+      final t = target.replaceAll('v', '').split('.').map(int.parse).toList();
+
+      for (int i = 0; i < max(v.length, t.length); i++) {
+        final vPart = i < v.length ? v[i] : 0;
+        final tPart = i < t.length ? t[i] : 0;
+        if (vPart < tPart) return true;
+        if (vPart > tPart) return false;
+      }
+      return false; // equal versions are not below
+    } catch (_) {
+      return false; // unparseable → safe default, don't force-disable
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // LOAD / SAVE
+  // --------------------------------------------------------------------------
 
   void _loadSettings() {
     String? storedSettings = _prefs.getString("screenTime_settings");
@@ -233,7 +333,7 @@ class SettingsManager {
         if (audioThreshold > 0.1) audioThreshold = 0.1;
         settings["tracking"]["audioThreshold"] = audioThreshold;
 
-        // NEW: Ensure monitorKeyboard exists with platform-specific default
+        // Ensure monitorKeyboard exists with platform-specific default
         if (!settings["tracking"].containsKey("monitorKeyboard")) {
           settings["tracking"]["monitorKeyboard"] = !Platform.isMacOS;
         }
@@ -257,6 +357,10 @@ class SettingsManager {
   void _saveSettings() {
     _prefs.setString("screenTime_settings", jsonEncode(settings));
   }
+
+  // --------------------------------------------------------------------------
+  // PUBLIC API
+  // --------------------------------------------------------------------------
 
   void updateSetting(String key, dynamic value, [BuildContext? context]) async {
     List<String> keys = key.split(".");

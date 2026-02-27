@@ -35,7 +35,7 @@ class BackgroundAppTracker {
   // ============================================================
   // STATE
   // ============================================================
-  TrackingMode _trackingMode = TrackingMode.polling;
+  TrackingMode _trackingMode = TrackingMode.precise;
   bool _isTracking = false;
   bool _isUserActive = true;
   AppLocalizations? _localizations;
@@ -514,7 +514,9 @@ class BackgroundAppTracker {
 
     if (newApp == "Productive ScreenTime") return;
     if (newApp == "screentime") newApp = _selfAppName;
-    if (newApp == "loginwindow" || newApp == "LockApp" || newApp == "UnlockingApp") return;
+    if (newApp == "loginwindow" ||
+        newApp == "LockApp" ||
+        newApp == "UnlockingApp") return;
 
     if (newApp != _currentApp) {
       _saveCurrentAppTime();
