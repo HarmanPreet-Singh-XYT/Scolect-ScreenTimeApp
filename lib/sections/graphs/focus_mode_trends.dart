@@ -66,6 +66,15 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
   }
 
   @override
+  void didUpdateWidget(FocusModeTrends oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.data != widget.data) {
+      _cachedMetric = null;
+      _cachedSpots = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final colors = _metricColors[_selectedMetric]!;

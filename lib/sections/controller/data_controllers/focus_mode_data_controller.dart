@@ -528,10 +528,6 @@ class FocusAnalyticsService {
     return groupedSessions;
   }
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // FOCUS TRENDS - OPTIMIZED: Single fetch + monthly slicing
-  // ═══════════════════════════════════════════════════════════════════════════
-
   Map<String, dynamic> getFocusTrends({
     int months = 3,
     bool useLifetimeIfLess = true,
@@ -550,18 +546,6 @@ class FocusAnalyticsService {
         }
       }
 
-      // ── Single fetch for entire range ──
-      final allSessions = _getCompletedSessions(startDate, endDate);
-
-      // ── Pre-classify all sessions once ──
-      final classifiedSessions = <_ClassifiedSession>[];
-      for (final session in allSessions) {
-        classifiedSessions.add(_ClassifiedSession(
-          session: session,
-          type: _getSessionType(session.appsBlocked),
-        ));
-      }
-
       final periods = <String>[];
       final sessionCounts = <int>[];
       final workPhaseCounts = <int>[];
@@ -576,21 +560,18 @@ class FocusAnalyticsService {
         final currentEnd = nextMonth.subtract(const Duration(days: 1));
         final adjustedEnd = currentEnd.isAfter(endDate) ? endDate : currentEnd;
 
-        // Filter sessions for this month
+        // ← Use per-month fetch exactly like old code, not the single bulk fetch
+        final sessions = _getCompletedSessions(currentStart, adjustedEnd);
+
         int monthCompleteCount = 0;
         int monthWorkCount = 0;
         Duration monthWorkTime = Duration.zero;
 
-        for (final cs in classifiedSessions) {
-          final sessionDate = cs.session.date;
-          if (sessionDate.isBefore(currentStart) ||
-              sessionDate.isAfter(adjustedEnd)) {
-            continue;
-          }
-
-          switch (cs.type) {
+        for (final session in sessions) {
+          final type = _getSessionType(session.appsBlocked);
+          switch (type) {
             case 'POMODORO_WORK':
-              monthWorkTime += cs.session.duration;
+              monthWorkTime += session.duration;
               monthWorkCount++;
               break;
             case 'POMODORO_LONG_BREAK':
@@ -598,7 +579,7 @@ class FocusAnalyticsService {
               break;
             case 'LEGACY_SESSION':
             case 'REGULAR_FOCUS':
-              monthWorkTime += cs.session.duration;
+              monthWorkTime += session.duration;
               break;
           }
         }

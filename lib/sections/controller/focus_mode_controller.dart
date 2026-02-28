@@ -320,6 +320,8 @@ class PomodoroTimerService {
 
   void navigateForward() {
     if (_currentPhaseIndex == _totalPhases - 1) {
+      if (!_autoStart) pauseTimer(); // ← add this
+      _recordPhaseCompletion();
       _completeSession();
       return;
     }
