@@ -21,17 +21,36 @@ class FocusModePieChart extends StatefulWidget {
 class _FocusModePieChartState extends State<FocusModePieChart> {
   int _touchedIndex = -1;
 
+  // OPTIMIZATION: Cache entries list so it isn't rebuilt on every paint.
+  late List<MapEntry<String, double>> _entries;
+  // OPTIMIZATION: Cache total so it isn't re-folded on every paint.
+  late double _total;
+
+  @override
+  void initState() {
+    super.initState();
+    _cacheData();
+  }
+
+  @override
+  void didUpdateWidget(FocusModePieChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dataMap != widget.dataMap) {
+      _cacheData();
+    }
+  }
+
+  void _cacheData() {
+    _entries = widget.dataMap.entries.toList();
+    _total = _entries.fold(0.0, (sum, e) => sum + e.value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final total = widget.dataMap.values.fold(0.0, (sum, val) => sum + val);
-
-    if (total == 0) {
-      return _buildEmptyState(context);
-    }
+    if (_total == 0) return _buildEmptyState(context);
 
     return Row(
       children: [
-        // Pie Chart
         Expanded(
           flex: 3,
           child: AspectRatio(
@@ -55,23 +74,20 @@ class _FocusModePieChartState extends State<FocusModePieChart> {
                 borderData: FlBorderData(show: false),
                 sectionsSpace: 3,
                 centerSpaceRadius: 40,
-                sections: _buildSections(total),
+                sections: _buildSections(),
               ),
               duration: const Duration(milliseconds: 300),
               curve: Curves.easeOutCubic,
             ),
           ),
         ),
-
         const SizedBox(width: 16),
-
-        // Legend
         Expanded(
           flex: 2,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: _buildLegend(context, total),
+            children: _buildLegend(context),
           ),
         ),
       ],
@@ -105,13 +121,12 @@ class _FocusModePieChartState extends State<FocusModePieChart> {
     );
   }
 
-  List<PieChartSectionData> _buildSections(double total) {
-    final entries = widget.dataMap.entries.toList();
-
-    return List.generate(entries.length, (index) {
+  // OPTIMIZATION: Uses cached _entries / _total; no re-fold on every paint.
+  List<PieChartSectionData> _buildSections() {
+    return List.generate(_entries.length, (index) {
       final isTouched = index == _touchedIndex;
-      final entry = entries[index];
-      final percentage = (entry.value / total) * 100;
+      final entry = _entries[index];
+      final percentage = (entry.value / _total) * 100;
       final color = widget.colorList[index % widget.colorList.length];
 
       return PieChartSectionData(
@@ -144,21 +159,16 @@ class _FocusModePieChartState extends State<FocusModePieChart> {
           ),
         ],
       ),
-      child: const Icon(
-        FluentIcons.check_mark,
-        color: Colors.white,
-        size: 12,
-      ),
+      child: const Icon(FluentIcons.check_mark, color: Colors.white, size: 12),
     );
   }
 
-  List<Widget> _buildLegend(BuildContext context, double total) {
-    final entries = widget.dataMap.entries.toList();
-
-    return List.generate(entries.length, (index) {
-      final entry = entries[index];
+  // OPTIMIZATION: Uses cached _entries / _total; no extra list allocations.
+  List<Widget> _buildLegend(BuildContext context) {
+    return List.generate(_entries.length, (index) {
+      final entry = _entries[index];
       final color = widget.colorList[index % widget.colorList.length];
-      final percentage = total > 0 ? (entry.value / total) * 100 : 0;
+      final percentage = (_entries[index].value / _total) * 100;
       final isTouched = index == _touchedIndex;
 
       return Padding(
@@ -192,8 +202,9 @@ class _FocusModePieChartState extends State<FocusModePieChart> {
                     boxShadow: isTouched
                         ? [
                             BoxShadow(
-                                color: color.withValues(alpha: 0.4),
-                                blurRadius: 4)
+                              color: color.withValues(alpha: 0.4),
+                              blurRadius: 4,
+                            )
                           ]
                         : null,
                   ),

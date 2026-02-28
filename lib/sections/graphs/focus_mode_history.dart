@@ -15,18 +15,62 @@ class FocusModeHistoryChart extends StatefulWidget {
 class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
   int _touchedIndex = -1;
 
+  // OPTIMIZATION: Static English day keys used as fallback — allocated once.
+  static const List<String> _englishDays = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
+  // OPTIMIZATION: Compute total + max in a single fold instead of two separate passes.
+  ({int total, int max}) _computeStats() {
+    int total = 0, max = 0;
+    for (final v in widget.data.values) {
+      total += v;
+      if (v > max) max = v;
+    }
+    return (total: total, max: max);
+  }
+
+  // OPTIMIZATION: Resolve a value by trying the localized name first, then English.
+  int _valueForDay(String localizedName, int index) =>
+      widget.data[localizedName] ?? widget.data[_englishDays[index]] ?? 0;
+
   @override
   Widget build(BuildContext context) {
+    // OPTIMIZATION: Resolve l10n once per build, not inside every helper.
     final l10n = AppLocalizations.of(context)!;
-    final totalSessions = widget.data.values.fold(0, (sum, val) => sum + val);
-    final maxValue = widget.data.values.isEmpty
-        ? 10
-        : widget.data.values.reduce((a, b) => a > b ? a : b);
+    final stats = _computeStats();
+
+    // Build localized day lists once per build.
+    final localizedFull = [
+      l10n.day_monday,
+      l10n.day_tuesday,
+      l10n.day_wednesday,
+      l10n.day_thursday,
+      l10n.day_friday,
+      l10n.day_saturday,
+      l10n.day_sunday,
+    ];
+    final localizedAbbr = [
+      l10n.day_mondayAbbr,
+      l10n.day_tuesdayAbbr,
+      l10n.day_wednesdayAbbr,
+      l10n.day_thursdayAbbr,
+      l10n.day_fridayAbbr,
+      l10n.day_saturdayAbbr,
+      l10n.day_sundayAbbr,
+    ];
+
+    final maxValue = stats.max == 0 ? 10 : stats.max;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Summary row
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Row(
@@ -34,21 +78,19 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
               _buildSummaryChip(
                 context,
                 label: l10n.focus_mode_this_week,
-                value: '$totalSessions sessions',
+                value: '${stats.total} sessions',
                 color: const Color(0xFF42A5F5),
               ),
               const SizedBox(width: 12),
               _buildSummaryChip(
                 context,
                 label: l10n.focus_mode_best_day,
-                value: _getBestDay(l10n),
+                value: _getBestDay(l10n, localizedFull),
                 color: const Color(0xFF4CAF50),
               ),
             ],
           ),
         ),
-
-        // Chart
         AspectRatio(
           aspectRatio: 2.5,
           child: BarChart(
@@ -62,18 +104,8 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
                   getTooltipColor: (group) =>
                       FluentTheme.of(context).micaBackgroundColor,
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    final l10n = AppLocalizations.of(context)!;
-                    final days = [
-                      l10n.day_monday,
-                      l10n.day_tuesday,
-                      l10n.day_wednesday,
-                      l10n.day_thursday,
-                      l10n.day_friday,
-                      l10n.day_saturday,
-                      l10n.day_sunday
-                    ];
                     return BarTooltipItem(
-                      '${days[groupIndex]}\n',
+                      '${localizedFull[groupIndex]}\n',
                       TextStyle(
                         color: FluentTheme.of(context).typography.body?.color,
                         fontWeight: FontWeight.w500,
@@ -104,9 +136,9 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
                   });
                 },
               ),
-              titlesData: _getTitlesData(context),
+              titlesData: _getTitlesData(context, localizedAbbr),
               borderData: FlBorderData(show: false),
-              barGroups: _getBarGroups(context, maxValue),
+              barGroups: _getBarGroups(context, maxValue, localizedFull),
               gridData: FlGridData(
                 show: true,
                 drawVerticalLine: false,
@@ -150,10 +182,7 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
           Container(
             width: 8,
             height: 8,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 8),
           Column(
@@ -184,35 +213,34 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
     );
   }
 
-  String _getBestDay(AppLocalizations l10n) {
+  // BUGFIX + OPTIMIZATION: Accept pre-built localized list; no longer rebuilds
+  // the map on every call, and resolves via the same localized keys used elsewhere.
+  String _getBestDay(AppLocalizations l10n, List<String> localizedFull) {
     if (widget.data.isEmpty) return '-';
 
-    final days = {
-      'Monday': l10n.day_monday,
-      'Tuesday': l10n.day_tuesday,
-      'Wednesday': l10n.day_wednesday,
-      'Thursday': l10n.day_thursday,
-      'Friday': l10n.day_friday,
-      'Saturday': l10n.day_saturday,
-      'Sunday': l10n.day_sunday,
-    };
-
-    String bestDay = '';
+    String bestKey = '';
     int maxSessions = 0;
 
     widget.data.forEach((day, count) {
       if (count > maxSessions) {
         maxSessions = count;
-        bestDay = day;
+        bestKey = day;
       }
     });
 
-    return maxSessions > 0 ? (days[bestDay] ?? bestDay) : '-';
+    if (maxSessions == 0) return '-';
+
+    // Try to match bestKey against localized names first, then English.
+    for (int i = 0; i < 7; i++) {
+      if (bestKey == localizedFull[i] || bestKey == _englishDays[i]) {
+        return localizedFull[i];
+      }
+    }
+    return bestKey;
   }
 
-  FlTitlesData _getTitlesData(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
+  // OPTIMIZATION: Accept pre-built abbr list instead of rebuilding inside.
+  FlTitlesData _getTitlesData(BuildContext context, List<String> abbr) {
     return FlTitlesData(
       show: true,
       bottomTitles: AxisTitles(
@@ -220,18 +248,8 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
           showTitles: true,
           reservedSize: 32,
           getTitlesWidget: (value, meta) {
-            final days = [
-              l10n.day_mondayAbbr,
-              l10n.day_tuesdayAbbr,
-              l10n.day_wednesdayAbbr,
-              l10n.day_thursdayAbbr,
-              l10n.day_fridayAbbr,
-              l10n.day_saturdayAbbr,
-              l10n.day_sundayAbbr
-            ];
-
-            final isToday = DateTime.now().weekday - 1 == value.toInt();
-
+            final index = value.toInt();
+            final isToday = DateTime.now().weekday - 1 == index;
             return SideTitleWidget(
               meta: meta,
               space: 8,
@@ -239,7 +257,7 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    days[value.toInt()],
+                    abbr[index],
                     style: TextStyle(
                       color: isToday
                           ? const Color(0xFF4CAF50)
@@ -296,35 +314,13 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
     );
   }
 
-  List<BarChartGroupData> _getBarGroups(BuildContext context, int maxValue) {
-    final l10n = AppLocalizations.of(context)!;
-    final List<String> days = [
-      l10n.day_monday,
-      l10n.day_tuesday,
-      l10n.day_wednesday,
-      l10n.day_thursday,
-      l10n.day_friday,
-      l10n.day_saturday,
-      l10n.day_sunday
-    ];
-
-    // Also check English day names as fallback
-    final List<String> englishDays = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
-    ];
-
+  // OPTIMIZATION: Accept pre-built localized full list; single-pass value lookup.
+  List<BarChartGroupData> _getBarGroups(
+      BuildContext context, int maxValue, List<String> localizedFull) {
     final todayIndex = DateTime.now().weekday - 1;
 
     return List.generate(7, (index) {
-      // Try localized name first, then English
-      int value =
-          widget.data[days[index]] ?? widget.data[englishDays[index]] ?? 0;
+      final value = _valueForDay(localizedFull[index], index);
       final isTouched = index == _touchedIndex;
       final isToday = index == todayIndex;
 
@@ -342,7 +338,7 @@ class FocusModeHistoryChartState extends State<FocusModeHistoryChart> {
                       ? [const Color(0xFF42A5F5), const Color(0xFF90CAF9)]
                       : [
                           const Color(0xFF42A5F5).withValues(alpha: 0.7),
-                          const Color(0xFF90CAF9).withValues(alpha: 0.7)
+                          const Color(0xFF90CAF9).withValues(alpha: 0.7),
                         ],
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,

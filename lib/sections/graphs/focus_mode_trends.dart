@@ -5,10 +5,7 @@ import 'package:flutter/material.dart' show Colors;
 import 'package:screentime/l10n/app_localizations.dart';
 
 class FocusModeTrends extends StatefulWidget {
-  const FocusModeTrends({
-    super.key,
-    required this.data,
-  });
+  const FocusModeTrends({super.key, required this.data});
 
   final Map<String, dynamic> data;
 
@@ -20,25 +17,52 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
   int? _touchedIndex;
   String _selectedMetric = 'sessionCounts';
 
-  // Color schemes for different metrics
-  final Map<String, List<Color>> _metricColors = {
-    'sessionCounts': [const Color(0xFF42A5F5), const Color(0xFF1976D2)],
-    'avgDuration': [const Color(0xFF66BB6A), const Color(0xFF388E3C)],
-    'totalFocusTime': [const Color(0xFFFF7043), const Color(0xFFE64A19)],
+  // OPTIMIZATION: static const — allocated once for the entire class lifetime.
+  static const Map<String, List<Color>> _metricColors = {
+    'sessionCounts': [Color(0xFF42A5F5), Color(0xFF1976D2)],
+    'avgDuration': [Color(0xFF66BB6A), Color(0xFF388E3C)],
+    'totalFocusTime': [Color(0xFFFF7043), Color(0xFFE64A19)],
   };
 
-  List<FlSpot> get allSpots {
-    final List<dynamic> values = widget.data[_selectedMetric] ?? [];
-    if (values.isEmpty) return [const FlSpot(0, 0)];
-    return List.generate(values.length,
-        (index) => FlSpot(index.toDouble(), (values[index] as num).toDouble()));
+  // OPTIMIZATION: Cache spot list & maxY so they aren't recomputed on every
+  // build triggered by hover / touch state changes.
+  List<FlSpot>? _cachedSpots;
+  String? _cachedMetric;
+
+  List<FlSpot> get _spots {
+    if (_cachedMetric == _selectedMetric && _cachedSpots != null) {
+      return _cachedSpots!;
+    }
+    final List<dynamic> values = widget.data[_selectedMetric] ?? const [];
+    _cachedSpots = values.isEmpty
+        ? const [FlSpot(0, 0)]
+        : List.generate(
+            values.length,
+            (i) => FlSpot(i.toDouble(), (values[i] as num).toDouble()),
+          );
+    _cachedMetric = _selectedMetric;
+    return _cachedSpots!;
   }
 
-  double get maxY {
-    final spots = allSpots;
+  // BUGFIX: clamp interval to ≥ 1 to avoid a division-by-zero in fl_chart.
+  double get _gridInterval =>
+      ((_maxY / 4)).ceilToDouble().clamp(1, double.infinity);
+
+  double get _maxY {
+    final spots = _spots;
     if (spots.isEmpty) return 10;
     final maxVal = spots.map((s) => s.y).reduce((a, b) => a > b ? a : b);
     return (maxVal * 1.2).ceilToDouble().clamp(5, double.infinity);
+  }
+
+  void _selectMetric(String metric) {
+    if (_selectedMetric == metric) return;
+    setState(() {
+      _selectedMetric = metric;
+      _touchedIndex = null;
+      // Invalidate cache so next access recomputes.
+      _cachedMetric = null;
+    });
   }
 
   @override
@@ -50,15 +74,10 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Metric selector
         _buildMetricSelector(context, l10n),
         const SizedBox(height: 16),
-
-        // Stats row
         _buildStatsRow(context, l10n, percentageChange, colors[0]),
         const SizedBox(height: 20),
-
-        // Chart
         AspectRatio(
           aspectRatio: 2.5,
           child: LineChart(
@@ -69,7 +88,7 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
               borderData: FlBorderData(show: false),
               lineBarsData: [_buildLineBarData(colors)],
               minY: 0,
-              maxY: maxY,
+              maxY: _maxY,
             ),
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
@@ -94,28 +113,19 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
             label: l10n.chart_sessionCount,
             isSelected: _selectedMetric == 'sessionCounts',
             color: _metricColors['sessionCounts']![0],
-            onTap: () => setState(() {
-              _selectedMetric = 'sessionCounts';
-              _touchedIndex = null;
-            }),
+            onTap: () => _selectMetric('sessionCounts'),
           ),
           _MetricTab(
             label: l10n.chart_avgDuration,
             isSelected: _selectedMetric == 'avgDuration',
             color: _metricColors['avgDuration']![0],
-            onTap: () => setState(() {
-              _selectedMetric = 'avgDuration';
-              _touchedIndex = null;
-            }),
+            onTap: () => _selectMetric('avgDuration'),
           ),
           _MetricTab(
             label: l10n.chart_totalFocus,
             isSelected: _selectedMetric == 'totalFocusTime',
             color: _metricColors['totalFocusTime']![0],
-            onTap: () => setState(() {
-              _selectedMetric = 'totalFocusTime';
-              _touchedIndex = null;
-            }),
+            onTap: () => _selectMetric('totalFocusTime'),
           ),
         ],
       ),
@@ -124,19 +134,17 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
 
   Widget _buildStatsRow(BuildContext context, AppLocalizations l10n,
       num percentageChange, Color color) {
-    final spots = allSpots;
-    final currentValue = spots.isNotEmpty ? spots.last.y : 0;
+    final spots = _spots;
+    final currentValue = spots.isNotEmpty ? spots.last.y : 0.0;
     final previousValue =
         spots.length > 1 ? spots[spots.length - 2].y : currentValue;
 
     String formatValue(double value) {
-      switch (_selectedMetric) {
-        case 'avgDuration':
-        case 'totalFocusTime':
-          return '${value.toStringAsFixed(0)} min';
-        default:
-          return value.toStringAsFixed(0);
+      if (_selectedMetric == 'avgDuration' ||
+          _selectedMetric == 'totalFocusTime') {
+        return '${value.toStringAsFixed(0)} min';
       }
+      return value.toStringAsFixed(0);
     }
 
     return Row(
@@ -153,9 +161,7 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
           color: Colors.grey,
         ),
         const SizedBox(width: 12),
-        _TrendIndicator(
-          percentageChange: percentageChange.toDouble(),
-        ),
+        _TrendIndicator(percentageChange: percentageChange.toDouble()),
       ],
     );
   }
@@ -169,20 +175,15 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
         tooltipPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         getTooltipColor: (spot) => FluentTheme.of(context).micaBackgroundColor,
         getTooltipItems: (touchedSpots) {
+          final periods = widget.data['periods'] as List? ?? const [];
           return touchedSpots.map((spot) {
-            final periods = widget.data['periods'] as List? ?? [];
-            final periodLabel =
-                spot.x.toInt() < periods.length ? periods[spot.x.toInt()] : '';
-
-            String valueText;
-            switch (_selectedMetric) {
-              case 'avgDuration':
-              case 'totalFocusTime':
-                valueText = '${spot.y.toStringAsFixed(1)} min';
-                break;
-              default:
-                valueText = spot.y.toStringAsFixed(0);
-            }
+            final periodLabel = spot.x.toInt() < periods.length
+                ? periods[spot.x.toInt()].toString()
+                : '';
+            final valueText = (_selectedMetric == 'avgDuration' ||
+                    _selectedMetric == 'totalFocusTime')
+                ? '${spot.y.toStringAsFixed(1)} min'
+                : spot.y.toStringAsFixed(0);
 
             return LineTooltipItem(
               '$periodLabel\n',
@@ -232,14 +233,12 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
             ),
             FlDotData(
               show: true,
-              getDotPainter: (spot, percent, bar, index) {
-                return FlDotCirclePainter(
-                  radius: 6,
-                  color: color,
-                  strokeWidth: 2,
-                  strokeColor: Colors.white,
-                );
-              },
+              getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+                radius: 6,
+                color: color,
+                strokeWidth: 2,
+                strokeColor: Colors.white,
+              ),
             ),
           );
         }).toList();
@@ -251,7 +250,8 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
     return FlGridData(
       show: true,
       drawVerticalLine: false,
-      horizontalInterval: maxY / 4,
+      // BUGFIX: was maxY / 4 which could be 0 if maxY==0; now clamped via getter.
+      horizontalInterval: _gridInterval,
       getDrawingHorizontalLine: (value) => FlLine(
         color: FluentTheme.of(context)
             .inactiveBackgroundColor
@@ -263,7 +263,7 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
   }
 
   FlTitlesData _buildTitlesData(BuildContext context) {
-    final periods = widget.data['periods'] as List? ?? [];
+    final periods = widget.data['periods'] as List? ?? const [];
 
     return FlTitlesData(
       bottomTitles: AxisTitles(
@@ -276,7 +276,6 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
             if (index < 0 || index >= periods.length) {
               return const SizedBox.shrink();
             }
-
             return SideTitleWidget(
               meta: meta,
               space: 8,
@@ -326,7 +325,7 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
 
   LineChartBarData _buildLineBarData(List<Color> colors) {
     return LineChartBarData(
-      spots: allSpots,
+      spots: _spots,
       isCurved: true,
       curveSmoothness: 0.3,
       preventCurveOverShooting: true,
@@ -359,6 +358,10 @@ class _FocusModeTrendsState extends State<FocusModeTrends> {
     );
   }
 }
+
+// ---------------------------------------------------------------------------
+// Private helper widgets (unchanged behaviour, minor const / style cleanup)
+// ---------------------------------------------------------------------------
 
 class _MetricTab extends StatefulWidget {
   final String label;

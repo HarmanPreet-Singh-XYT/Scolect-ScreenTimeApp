@@ -1,3 +1,4 @@
+// reports_pie_chart.dart
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -20,14 +21,33 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
   final ScrollController _scrollController = ScrollController();
   bool _showScrollIndicator = false;
 
+  // OPTIMIZATION: Cache entries & total so they aren't rebuilt on every paint.
+  late List<MapEntry<String, double>> _entries;
+  late double _total;
+
   @override
   void initState() {
     super.initState();
-    // Check if content is scrollable after build
+    _cacheData();
+    // BUGFIX: Added `mounted` guard — widget might be disposed before the
+    // post-frame callback fires (e.g. during fast navigation).
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkIfScrollable();
+      if (mounted) _checkIfScrollable();
     });
     _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void didUpdateWidget(ReportsPieChart oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dataMap != widget.dataMap) {
+      _cacheData();
+    }
+  }
+
+  void _cacheData() {
+    _entries = widget.dataMap.entries.toList();
+    _total = _entries.fold(0.0, (sum, e) => sum + e.value);
   }
 
   @override
@@ -39,30 +59,26 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
 
   void _checkIfScrollable() {
     if (_scrollController.hasClients) {
-      setState(() {
-        _showScrollIndicator = _scrollController.position.maxScrollExtent > 0 &&
-            _scrollController.offset <
-                _scrollController.position.maxScrollExtent;
-      });
+      final canScroll = _scrollController.position.maxScrollExtent > 0 &&
+          _scrollController.offset < _scrollController.position.maxScrollExtent;
+      if (canScroll != _showScrollIndicator) {
+        setState(() => _showScrollIndicator = canScroll);
+      }
     }
   }
 
   void _onScroll() {
-    if (_scrollController.hasClients) {
-      final isAtBottom = _scrollController.offset >=
-          _scrollController.position.maxScrollExtent;
-      if (_showScrollIndicator == isAtBottom) {
-        setState(() {
-          _showScrollIndicator = !isAtBottom;
-        });
-      }
+    if (!_scrollController.hasClients) return;
+    final isAtBottom =
+        _scrollController.offset >= _scrollController.position.maxScrollExtent;
+    // OPTIMIZATION: Only rebuild if the indicator visibility actually changes.
+    if (_showScrollIndicator == isAtBottom) {
+      setState(() => _showScrollIndicator = !isAtBottom);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.dataMap.values.fold(0.0, (a, b) => a + b);
-
     return Column(
       children: [
         Expanded(
@@ -86,7 +102,7 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
               borderData: FlBorderData(show: false),
               sectionsSpace: 2,
               centerSpaceRadius: 50,
-              sections: _buildSections(total),
+              sections: _buildSections(),
             ),
           ),
         ),
@@ -105,12 +121,12 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
                       spacing: 16,
                       runSpacing: 8,
                       alignment: WrapAlignment.center,
-                      children: _buildLegendItems(total),
+                      children: _buildLegendItems(),
                     ),
                   ),
                 ),
-                // Fade effect at the bottom when scrollable
-                if (_showScrollIndicator)
+                if (_showScrollIndicator) ...[
+                  // Fade overlay
                   Positioned(
                     left: 0,
                     right: 0,
@@ -133,8 +149,7 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
                       ),
                     ),
                   ),
-                // Optional: Down arrow indicator
-                if (_showScrollIndicator)
+                  // Down-arrow indicator
                   Positioned(
                     left: 0,
                     right: 0,
@@ -152,6 +167,7 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
                       ),
                     ),
                   ),
+                ],
               ],
             ),
           ),
@@ -160,21 +176,21 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
     );
   }
 
-  List<Widget> _buildLegendItems(double total) {
-    return widget.dataMap.entries.toList().asMap().entries.map((entry) {
+  // OPTIMIZATION: Uses cached _entries / _total; no per-call fold.
+  List<Widget> _buildLegendItems() {
+    return _entries.asMap().entries.map((entry) {
       final index = entry.key;
       final data = entry.value;
-      final percentage = (data.value / total * 100).toStringAsFixed(1);
+      final percentage =
+          (_total > 0) ? (data.value / _total * 100).toStringAsFixed(1) : '0.0';
       final isSelected = _touchedIndex == index;
+      final color = widget.colorList[index % widget.colorList.length];
 
       return AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected
-              ? widget.colorList[index % widget.colorList.length]
-                  .withValues(alpha: 0.1)
-              : Colors.transparent,
+          color: isSelected ? color.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(4),
         ),
         child: Row(
@@ -184,7 +200,7 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: widget.colorList[index % widget.colorList.length],
+                color: color,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -202,15 +218,17 @@ class _ReportsPieChartState extends State<ReportsPieChart> {
     }).toList();
   }
 
-  List<PieChartSectionData> _buildSections(double total) {
-    return widget.dataMap.entries.toList().asMap().entries.map((entry) {
+  // OPTIMIZATION: Uses cached _entries / _total.
+  List<PieChartSectionData> _buildSections() {
+    return _entries.asMap().entries.map((entry) {
       final index = entry.key;
       final data = entry.value;
       final isTouched = index == _touchedIndex;
-      final percentage = (data.value / total * 100);
+      final percentage = _total > 0 ? (data.value / _total * 100) : 0.0;
+      final color = widget.colorList[index % widget.colorList.length];
 
       return PieChartSectionData(
-        color: widget.colorList[index % widget.colorList.length],
+        color: color,
         value: data.value,
         title: isTouched ? '${percentage.toStringAsFixed(1)}%' : '',
         radius: isTouched ? 65 : 55,

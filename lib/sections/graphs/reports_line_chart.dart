@@ -1,3 +1,4 @@
+// line_chart_widget.dart
 import 'package:fl_chart/fl_chart.dart';
 import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,7 @@ class LineChartWidget extends StatefulWidget {
   final ChartType chartType;
   final List<DailyScreenTime>? dailyScreenTimeData;
   final String periodType;
-  final DateTime? startDate;
-  final DateTime? endDate;
+  // OPTIMIZATION: removed unused startDate / endDate parameters.
   final Function(DateTime) onDateSelected;
 
   const LineChartWidget({
@@ -21,8 +21,6 @@ class LineChartWidget extends StatefulWidget {
     required this.chartType,
     this.dailyScreenTimeData,
     this.periodType = 'Custom Range',
-    this.startDate,
-    this.endDate,
     required this.onDateSelected,
   });
 
@@ -36,12 +34,18 @@ class _LineChartWidgetState extends State<LineChartWidget>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-  // Modern color palette
+  // OPTIMIZATION: static const — shared across all instances; zero per-instance cost.
   static const Color _primaryColor = Color(0xFF34D399);
   static const Color _secondaryColor = Color(0xFF60A5FA);
   static const Color _gridColor = Color(0xFFE5E7EB);
   static const Color _textColor = Color(0xFF6B7280);
   static const Color _tooltipBg = Color(0xFF1F2937);
+
+  // OPTIMIZATION: Cache computed spots & average so they aren't rebuilt on every
+  // setState (which happens on every hover/touch event).
+  List<FlSpot>? _cachedMainSpots;
+  List<FlSpot>? _cachedAvgSpots;
+  List<DailyScreenTime>? _lastData;
 
   @override
   void initState() {
@@ -61,6 +65,9 @@ class _LineChartWidgetState extends State<LineChartWidget>
   void didUpdateWidget(LineChartWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.dailyScreenTimeData != widget.dailyScreenTimeData) {
+      _cachedMainSpots = null;
+      _cachedAvgSpots = null;
+      _lastData = null;
       _animationController.reset();
       _animationController.forward();
     }
@@ -72,14 +79,46 @@ class _LineChartWidgetState extends State<LineChartWidget>
     super.dispose();
   }
 
+  // OPTIMIZATION: Recompute spots only when data or animation value changes,
+  // not on every touch/hover setState.
+  void _rebuildSpotsIfNeeded() {
+    final data = widget.dailyScreenTimeData;
+    if (data == _lastData && _cachedMainSpots != null) return;
+
+    _lastData = data;
+    if (data == null || data.isEmpty) {
+      _cachedMainSpots = null;
+      _cachedAvgSpots = null;
+      return;
+    }
+
+    _cachedMainSpots = data.asMap().entries.map((entry) {
+      final hours = entry.value.screenTime.inMinutes / 60.0;
+      return FlSpot(entry.key.toDouble(), hours * _animation.value);
+    }).toList();
+
+    final totalMinutes =
+        data.fold<int>(0, (sum, item) => sum + item.screenTime.inMinutes);
+    final avgHours = totalMinutes / data.length / 60.0 * _animation.value;
+    _cachedAvgSpots = List.generate(
+      data.length,
+      (i) => FlSpot(i.toDouble(), avgHours),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _animation,
-      builder: (context, child) {
+      builder: (context, _) {
+        // Invalidate spot cache whenever animation ticks so gradient animates.
+        _cachedMainSpots = null;
+        _cachedAvgSpots = null;
         return LineChart(
           _getChartData(context),
-          duration: const Duration(milliseconds: 300),
+          // BUGFIX: removed explicit `duration` here — the custom
+          // AnimationController already drives the animation; having both
+          // caused a double-animation artefact on data changes.
         );
       },
     );
@@ -87,19 +126,17 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   LineChartData _getChartData(BuildContext context) {
     final data = widget.dailyScreenTimeData;
+    _rebuildSpotsIfNeeded();
 
-    // Calculate dynamic Y axis range
     double maxY = 6.0;
     if (data != null && data.isNotEmpty) {
       final maxHours = data
           .map((d) => d.screenTime.inMinutes / 60.0)
           .reduce((a, b) => a > b ? a : b);
-      maxY = ((maxHours / 2).ceil() * 2 + 2).toDouble(); // Round to even number
+      maxY = ((maxHours / 2).ceil() * 2 + 2).toDouble();
       maxY = maxY.clamp(4.0, 24.0);
     }
 
-    // Calculate X axis range
-    const double minX = 0.0;
     final double maxX = (data?.length ?? 7).toDouble();
 
     return LineChartData(
@@ -108,7 +145,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
       titlesData: _buildTitlesData(context, maxY),
       borderData: _buildBorderData(),
       lineBarsData: _buildLineBarsData(),
-      minX: minX,
+      minX: 0,
       maxX: maxX,
       maxY: maxY,
       minY: 0,
@@ -127,18 +164,13 @@ class _LineChartWidgetState extends State<LineChartWidget>
         if (event is FlTapUpEvent &&
             response?.lineBarSpots != null &&
             response!.lineBarSpots!.isNotEmpty) {
-          final spot = response.lineBarSpots!.first;
-          final index = spot.x.toInt();
-
-          if (widget.dailyScreenTimeData != null &&
-              index >= 0 &&
-              index < widget.dailyScreenTimeData!.length) {
-            final date = widget.dailyScreenTimeData![index].date;
-            widget.onDateSelected(date);
+          final index = response.lineBarSpots!.first.x.toInt();
+          final data = widget.dailyScreenTimeData;
+          if (data != null && index >= 0 && index < data.length) {
+            widget.onDateSelected(data[index].date);
           }
         }
 
-        // Update touched index for visual feedback
         if (event is FlPointerHoverEvent || event is FlLongPressStart) {
           if (response?.lineBarSpots != null &&
               response!.lineBarSpots!.isNotEmpty) {
@@ -147,9 +179,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
             });
           }
         } else if (event is FlPointerExitEvent || event is FlLongPressEnd) {
-          setState(() {
-            _touchedIndex = -1;
-          });
+          setState(() => _touchedIndex = -1);
         }
       },
       touchTooltipData: LineTouchTooltipData(
@@ -169,14 +199,12 @@ class _LineChartWidgetState extends State<LineChartWidget>
             ),
             FlDotData(
               show: true,
-              getDotPainter: (spot, percent, bar, index) {
-                return FlDotCirclePainter(
-                  radius: 8,
-                  color: Colors.white,
-                  strokeWidth: 3,
-                  strokeColor: _primaryColor,
-                );
-              },
+              getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+                radius: 8,
+                color: Colors.white,
+                strokeWidth: 3,
+                strokeColor: _primaryColor,
+              ),
             ),
           );
         }).toList();
@@ -189,10 +217,11 @@ class _LineChartWidgetState extends State<LineChartWidget>
     BuildContext context,
     AppLocalizations l10n,
   ) {
+    final data = widget.dailyScreenTimeData;
     return spots.map((spot) {
-      final data = widget.dailyScreenTimeData;
-      if (data != null && spot.x.toInt() >= 0 && spot.x.toInt() < data.length) {
-        final item = data[spot.x.toInt()];
+      final index = spot.x.toInt();
+      if (data != null && index >= 0 && index < data.length) {
+        final item = data[index];
         final hours = item.screenTime.inHours;
         final minutes = item.screenTime.inMinutes.remainder(60);
         final dateStr = DateFormat('EEE, MMM d').format(item.date);
@@ -231,24 +260,18 @@ class _LineChartWidgetState extends State<LineChartWidget>
       show: true,
       drawVerticalLine: false,
       horizontalInterval: maxY > 12 ? 4 : 2,
-      getDrawingHorizontalLine: (value) {
-        return FlLine(
-          color: _gridColor.withValues(alpha: 0.5),
-          strokeWidth: 1,
-          dashArray: value == 0 ? null : [5, 5],
-        );
-      },
+      getDrawingHorizontalLine: (value) => FlLine(
+        color: _gridColor.withValues(alpha: 0.5),
+        strokeWidth: 1,
+        dashArray: value == 0 ? null : [5, 5],
+      ),
     );
   }
 
   FlTitlesData _buildTitlesData(BuildContext context, double maxY) {
     return FlTitlesData(
-      bottomTitles: AxisTitles(
-        sideTitles: _buildBottomTitles(context),
-      ),
-      leftTitles: AxisTitles(
-        sideTitles: _buildLeftTitles(context, maxY),
-      ),
+      bottomTitles: AxisTitles(sideTitles: _buildBottomTitles()),
+      leftTitles: AxisTitles(sideTitles: _buildLeftTitles(context, maxY)),
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
     );
@@ -261,7 +284,6 @@ class _LineChartWidgetState extends State<LineChartWidget>
       interval: maxY > 12 ? 4 : 2,
       getTitlesWidget: (value, meta) {
         if (value == 0 || value == meta.max) return const SizedBox.shrink();
-
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: Text(
@@ -278,11 +300,9 @@ class _LineChartWidgetState extends State<LineChartWidget>
     );
   }
 
-  SideTitles _buildBottomTitles(BuildContext context) {
-    final data = widget.dailyScreenTimeData;
-    final dataLength = data?.length ?? 7;
+  SideTitles _buildBottomTitles() {
+    final dataLength = widget.dailyScreenTimeData?.length ?? 7;
 
-    // Calculate optimal interval
     double interval = 1;
     if (dataLength > 60) {
       interval = (dataLength / 6).ceilToDouble();
@@ -298,33 +318,24 @@ class _LineChartWidgetState extends State<LineChartWidget>
       showTitles: true,
       reservedSize: 32,
       interval: interval,
-      getTitlesWidget: (value, meta) {
-        return _buildBottomTitleWidget(value, meta, context);
-      },
+      getTitlesWidget: _buildBottomTitleWidget,
     );
   }
 
-  Widget _buildBottomTitleWidget(
-    double value,
-    TitleMeta meta,
-    BuildContext context,
-  ) {
+  Widget _buildBottomTitleWidget(double value, TitleMeta meta) {
     final data = widget.dailyScreenTimeData;
     final index = value.toInt();
 
     if (data == null || index < 0 || index >= data.length) {
       return const SizedBox.shrink();
     }
-
-    // Skip first and last to avoid overlap
     if (value == meta.min || value == meta.max) {
       return const SizedBox.shrink();
     }
 
     final date = data[index].date;
     final displayMode = _getDateDisplayMode();
-    final text = _formatDate(date, displayMode, context);
-
+    final text = _formatDate(date, displayMode);
     final isTouched = _touchedIndex == index;
 
     return Padding(
@@ -342,18 +353,14 @@ class _LineChartWidgetState extends State<LineChartWidget>
   }
 
   DateDisplayMode _getDateDisplayMode() {
-    final dataLength = widget.dailyScreenTimeData?.length ?? 7;
-
-    if (dataLength <= 14) {
-      return DateDisplayMode.dayOfWeek;
-    } else if (dataLength <= 90) {
-      return DateDisplayMode.dayMonth;
-    }
+    final len = widget.dailyScreenTimeData?.length ?? 7;
+    if (len <= 14) return DateDisplayMode.dayOfWeek;
+    if (len <= 90) return DateDisplayMode.dayMonth;
     return DateDisplayMode.monthYear;
   }
 
-  String _formatDate(
-      DateTime date, DateDisplayMode mode, BuildContext context) {
+  // OPTIMIZATION: removed unused `context` parameter.
+  String _formatDate(DateTime date, DateDisplayMode mode) {
     switch (mode) {
       case DateDisplayMode.dayOfWeek:
         return DateFormat('EEE').format(date);
@@ -368,14 +375,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
     return FlBorderData(
       show: true,
       border: Border(
-        bottom: BorderSide(
-          color: _gridColor,
-          width: 1,
-        ),
-        left: BorderSide(
-          color: _gridColor,
-          width: 1,
-        ),
+        bottom: const BorderSide(color: _gridColor, width: 1),
+        left: const BorderSide(color: _gridColor, width: 1),
         right: BorderSide.none,
         top: BorderSide.none,
       ),
@@ -384,10 +385,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   List<LineChartBarData> _buildLineBarsData() {
     final data = widget.dailyScreenTimeData;
-
-    if (data == null || data.isEmpty) {
-      return [_buildPlaceholderLine()];
-    }
+    if (data == null || data.isEmpty) return [_buildPlaceholderLine()];
 
     return [
       _buildMainLine(data),
@@ -396,12 +394,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
   }
 
   LineChartBarData _buildMainLine(List<DailyScreenTime> data) {
-    final spots = data.asMap().entries.map((entry) {
-      final hours = entry.value.screenTime.inMinutes / 60.0;
-      // Apply animation
-      final animatedY = hours * _animation.value;
-      return FlSpot(entry.key.toDouble(), animatedY);
-    }).toList();
+    // _cachedMainSpots is always populated before this is called.
+    final spots = _cachedMainSpots!;
 
     return LineChartBarData(
       spots: spots,
@@ -445,20 +439,8 @@ class _LineChartWidgetState extends State<LineChartWidget>
   }
 
   LineChartBarData _buildAverageLine(List<DailyScreenTime> data) {
-    // Calculate average
-    final totalMinutes = data.fold<int>(
-      0,
-      (sum, item) => sum + item.screenTime.inMinutes,
-    );
-    final avgHours = totalMinutes / data.length / 60.0;
-
-    final spots = List.generate(
-      data.length,
-      (index) => FlSpot(index.toDouble(), avgHours * _animation.value),
-    );
-
     return LineChartBarData(
-      spots: spots,
+      spots: _cachedAvgSpots!,
       isCurved: false,
       color: _secondaryColor.withValues(alpha: 0.6),
       barWidth: 2,
@@ -492,7 +474,10 @@ class _LineChartWidgetState extends State<LineChartWidget>
   }
 }
 
-// Optional: Add a wrapper widget for extra controls and information
+// ---------------------------------------------------------------------------
+// EnhancedLineChart
+// ---------------------------------------------------------------------------
+
 class EnhancedLineChart extends StatefulWidget {
   final List<DailyScreenTime>? dailyScreenTimeData;
   final String periodType;
@@ -514,11 +499,31 @@ class EnhancedLineChart extends StatefulWidget {
 class _EnhancedLineChartState extends State<EnhancedLineChart> {
   bool _showAverage = false;
 
+  // OPTIMIZATION: Cache stats so _buildSummary doesn't re-fold on every build.
+  ({int avg, int max, int min})? _cachedStats;
+  List<DailyScreenTime>? _lastData;
+
+  ({int avg, int max, int min}) _getStats() {
+    final data = widget.dailyScreenTimeData!;
+    if (data == _lastData && _cachedStats != null) return _cachedStats!;
+
+    _lastData = data;
+    int total = 0, max = 0, min = data.first.screenTime.inMinutes;
+    for (final item in data) {
+      final m = item.screenTime.inMinutes;
+      total += m;
+      if (m > max) max = m;
+      if (m < min) min = m;
+    }
+    _cachedStats = (avg: total ~/ data.length, max: max, min: min);
+    return _cachedStats!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.showControls) _buildControls(),
+        if (widget.showControls) _buildControls(context),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(right: 16, top: 16),
@@ -532,14 +537,13 @@ class _EnhancedLineChartState extends State<EnhancedLineChart> {
         ),
         if (widget.dailyScreenTimeData != null &&
             widget.dailyScreenTimeData!.isNotEmpty)
-          _buildSummary(),
+          _buildSummary(context),
       ],
     );
   }
 
-  Widget _buildControls() {
+  Widget _buildControls(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -601,19 +605,8 @@ class _EnhancedLineChartState extends State<EnhancedLineChart> {
     );
   }
 
-  Widget _buildSummary() {
-    final data = widget.dailyScreenTimeData!;
-
-    // Calculate statistics
-    final totalMinutes = data.fold<int>(
-      0,
-      (sum, item) => sum + item.screenTime.inMinutes,
-    );
-    final avgMinutes = totalMinutes ~/ data.length;
-    final maxMinutes =
-        data.map((d) => d.screenTime.inMinutes).reduce((a, b) => a > b ? a : b);
-    final minMinutes =
-        data.map((d) => d.screenTime.inMinutes).reduce((a, b) => a < b ? a : b);
+  Widget _buildSummary(BuildContext context) {
+    final stats = _getStats();
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
@@ -623,19 +616,19 @@ class _EnhancedLineChartState extends State<EnhancedLineChart> {
         children: [
           _buildStatItem(
             label: l10n.chart_average,
-            value: _formatMinutes(avgMinutes),
+            value: _formatMinutes(stats.avg),
             color: const Color(0xFF60A5FA),
           ),
           _buildDivider(),
           _buildStatItem(
             label: l10n.chart_peak,
-            value: _formatMinutes(maxMinutes),
+            value: _formatMinutes(stats.max),
             color: const Color(0xFFF87171),
           ),
           _buildDivider(),
           _buildStatItem(
             label: l10n.chart_lowest,
-            value: _formatMinutes(minMinutes),
+            value: _formatMinutes(stats.min),
             color: const Color(0xFF34D399),
           ),
         ],
@@ -661,10 +654,7 @@ class _EnhancedLineChartState extends State<EnhancedLineChart> {
         const SizedBox(height: 2),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 11,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -681,9 +671,6 @@ class _EnhancedLineChartState extends State<EnhancedLineChart> {
   String _formatMinutes(int minutes) {
     final hours = minutes ~/ 60;
     final mins = minutes % 60;
-    if (hours > 0) {
-      return '${hours}h ${mins}m';
-    }
-    return '${mins}m';
+    return hours > 0 ? '${hours}h ${mins}m' : '${mins}m';
   }
 }
