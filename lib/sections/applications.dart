@@ -8,6 +8,77 @@ import './controller/categories_controller.dart';
 import 'dart:async';
 import 'package:screentime/l10n/app_localizations.dart';
 
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const _kAnimationDuration = Duration(milliseconds: 400);
+const _kDebounceDuration = Duration(milliseconds: 300);
+const _kHoverDuration = Duration(milliseconds: 150);
+const _kToggleDuration = Duration(milliseconds: 200);
+
+const _kGreenColor = Color(0xFF10B981);
+const _kBlueColor = Color(0xFF3B82F6);
+const _kPurpleColor = Color(0xFF8B5CF6);
+const _kAmberColor = Color(0xFFF59E0B);
+
+// ─── Data Model ───────────────────────────────────────────────────────────────
+
+class AppViewModel {
+  final String name;
+  final String category;
+  final String screenTime;
+  bool isTracking;
+  bool isHidden;
+  final bool isProductive;
+  final Duration dailyLimit;
+  final bool limitStatus;
+
+  AppViewModel({
+    required this.name,
+    required this.category,
+    required this.screenTime,
+    required this.isTracking,
+    required this.isHidden,
+    required this.isProductive,
+    required this.dailyLimit,
+    required this.limitStatus,
+  });
+
+  factory AppViewModel.fromDetail(ApplicationBasicDetail detail) {
+    return AppViewModel(
+      name: detail.name,
+      category: detail.category,
+      screenTime: detail.formattedScreenTime,
+      isTracking: detail.isTracking,
+      isHidden: detail.isHidden,
+      isProductive: detail.isProductive,
+      dailyLimit: detail.dailyLimit,
+      limitStatus: detail.limitStatus,
+    );
+  }
+
+  bool get hasData => screenTime != "0s" && name.isNotEmpty;
+
+  bool matchesSearch(String query) =>
+      query.isEmpty || name.toLowerCase().contains(query.toLowerCase());
+
+  bool matchesCategory(String category) =>
+      category == "All" || category.contains(this.category);
+
+  bool matchesTracking(String filter) => switch (filter) {
+        "tracked" => isTracking,
+        "untracked" => !isTracking,
+        _ => true,
+      };
+
+  bool matchesVisibility(String filter) => switch (filter) {
+        "visible" => !isHidden,
+        "hidden" => isHidden,
+        _ => true,
+      };
+}
+
+// ─── Main Widget ──────────────────────────────────────────────────────────────
+
 class Applications extends StatefulWidget {
   const Applications({super.key});
 
@@ -17,98 +88,122 @@ class Applications extends StatefulWidget {
 
 class _ApplicationsState extends State<Applications>
     with SingleTickerProviderStateMixin {
-  SettingsManager settingsManager = SettingsManager();
+  final _settingsManager = SettingsManager();
+  final _appDataStore = AppDataStore();
 
-  // Filter states (for viewing ONLY - does not change app settings)
-  String trackingFilter = "all"; // "all", "tracked", "untracked"
-  String visibilityFilter = "all"; // "all", "visible", "hidden"
+  late final AnimationController _animationController;
+  late final Animation<double> _fadeAnimation;
 
-  List<dynamic> apps = [];
-  String selectedCategory = "All";
-  String searchValue = '';
+  String _trackingFilter = "all";
+  String _visibilityFilter = "all";
+  String _selectedCategory = "All";
+  String _searchValue = '';
+  List<AppViewModel> _apps = [];
+  bool _isLoading = true;
   Timer? _debounce;
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-    _fadeAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    );
+    _initAnimation();
+    _loadFilterPreferences();
 
-    // Load saved filter preferences
-    trackingFilter =
-        settingsManager.getSetting("applications.trackingFilter") ?? "all";
-    visibilityFilter =
-        settingsManager.getSetting("applications.visibilityFilter") ?? "all";
-    selectedCategory =
-        settingsManager.getSetting("applications.selectedCategory") ?? "All";
-
-    // Register this screen's refresh callback
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
     });
     _loadData();
   }
 
-  bool _isLoading = true;
+  void _initAnimation() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: _kAnimationDuration,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  void _loadFilterPreferences() {
+    _trackingFilter =
+        _settingsManager.getSetting("applications.trackingFilter") ?? "all";
+    _visibilityFilter =
+        _settingsManager.getSetting("applications.visibilityFilter") ?? "all";
+    _selectedCategory =
+        _settingsManager.getSetting("applications.selectedCategory") ?? "All";
+  }
 
   Future<void> _loadData() async {
     try {
-      final appDataProvider = ApplicationsDataProvider();
-      final List<ApplicationBasicDetail> allApps =
-          await appDataProvider.fetchAllApplications();
+      final allApps = await ApplicationsDataProvider().fetchAllApplications();
+      if (!mounted) return;
 
       setState(() {
-        apps = allApps
-            .map((app) => {
-                  "name": app.name,
-                  "category": app.category,
-                  "screenTime": app.formattedScreenTime,
-                  "isTracking": app.isTracking,
-                  "isHidden": app.isHidden,
-                  "isProductive": app.isProductive,
-                  "dailyLimit": app.dailyLimit,
-                  "limitStatus": app.limitStatus
-                })
-            .toList();
-
+        _apps = allApps.map(AppViewModel.fromDetail).toList();
         _isLoading = false;
       });
       _animationController.forward();
     } catch (e) {
-      debugPrint('Error loading overview data: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      debugPrint('Error loading applications data: $e');
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  Future<void> refreshData() async {
+  Future<void> _refreshData() async {
     _animationController.reset();
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
     await _loadData();
   }
 
-  void changeSearchValue(String value) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-
-    _debounce = Timer(const Duration(milliseconds: 300), () {
-      if (searchValue != value) {
-        setState(() {
-          searchValue = value;
-        });
+  void _onSearchChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(_kDebounceDuration, () {
+      if (_searchValue != value && mounted) {
+        setState(() => _searchValue = value);
       }
     });
   }
+
+  void _updateFilter(String key, String value, void Function(String) setter) {
+    setState(() {
+      setter(value);
+      _settingsManager.updateSetting("applications.$key", value);
+    });
+  }
+
+  Future<void> _toggleAppSetting(String type, bool value, String name) async {
+    final index = _apps.indexWhere((app) => app.name == name);
+    if (index == -1) return;
+
+    final tracker = BackgroundAppTracker();
+    final currentApp = tracker.getTrackingInfo()['currentApp'];
+
+    switch (type) {
+      case 'isTracking':
+        _apps[index].isTracking = value;
+        await _appDataStore.updateAppMetadata(name, isTracking: value);
+        if (!value && currentApp == name) {
+          debugPrint('🛑 Tracking disabled for currently active app: $name');
+        }
+      case 'isHidden':
+        _apps[index].isHidden = value;
+        await _appDataStore.updateAppMetadata(name, isVisible: !value);
+        if (value && currentApp == name) {
+          debugPrint('🛑 Visibility disabled for currently active app: $name');
+        }
+    }
+    setState(() {});
+  }
+
+  List<AppViewModel> get _filteredApps => _apps
+      .where((app) =>
+          app.hasData &&
+          app.matchesTracking(_trackingFilter) &&
+          app.matchesVisibility(_visibilityFilter) &&
+          app.matchesCategory(_selectedCategory) &&
+          app.matchesSearch(_searchValue))
+      .toList();
 
   @override
   void dispose() {
@@ -121,107 +216,6 @@ class _ApplicationsState extends State<Applications>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
-
-    void changeCategory(String category) {
-      setState(() {
-        selectedCategory = category;
-        settingsManager.updateSetting(
-            "applications.selectedCategory", category);
-      });
-    }
-
-    void changeTrackingFilter(String filter) {
-      setState(() {
-        trackingFilter = filter;
-        settingsManager.updateSetting("applications.trackingFilter", filter);
-      });
-    }
-
-    void changeVisibilityFilter(String filter) {
-      setState(() {
-        visibilityFilter = filter;
-        settingsManager.updateSetting("applications.visibilityFilter", filter);
-      });
-    }
-
-    // Toggle individual app settings (this CHANGES the app, not just filters view)
-    void toggleAppSetting(String type, bool value, String name) async {
-      switch (type) {
-        case 'isTracking':
-          apps = apps
-              .map((app) =>
-                  app['name'] == name ? {...app, "isTracking": value} : app)
-              .toList();
-          await AppDataStore().updateAppMetadata(name, isTracking: value);
-
-          // Check if this is the currently active app
-          final tracker = BackgroundAppTracker();
-          final trackingInfo = tracker.getTrackingInfo();
-          if (!value && trackingInfo['currentApp'] == name) {
-            debugPrint('🛑 Tracking disabled for currently active app: $name');
-          }
-
-          setState(() {});
-          break;
-        case 'isHidden':
-          apps = apps
-              .map((app) =>
-                  app['name'] == name ? {...app, "isHidden": value} : app)
-              .toList();
-          await AppDataStore().updateAppMetadata(name, isVisible: !value);
-
-          // Check if this is the currently active app
-          final tracker = BackgroundAppTracker();
-          final trackingInfo = tracker.getTrackingInfo();
-          if (value && trackingInfo['currentApp'] == name) {
-            debugPrint(
-                '🛑 Visibility disabled for currently active app: $name');
-          }
-
-          setState(() {});
-          break;
-      }
-    }
-
-    // Apply filters to get visible apps
-    final filteredApps = apps.where((app) {
-      // Filter by tracking status
-      bool matchesTracking = false;
-      if (trackingFilter == "all") {
-        matchesTracking = true;
-      } else if (trackingFilter == "tracked") {
-        matchesTracking = app["isTracking"] == true;
-      } else if (trackingFilter == "untracked") {
-        matchesTracking = app["isTracking"] == false;
-      }
-
-      // Filter by visibility status
-      bool matchesVisibility = false;
-      if (visibilityFilter == "all") {
-        matchesVisibility = true;
-      } else if (visibilityFilter == "visible") {
-        matchesVisibility = app["isHidden"] == false;
-      } else if (visibilityFilter == "hidden") {
-        matchesVisibility = app["isHidden"] == true;
-      }
-
-      // Filter by category
-      bool matchesCategory = selectedCategory == "All" ||
-          selectedCategory.contains(app["category"]);
-
-      // Filter by search
-      bool matchesSearch = searchValue.isEmpty ||
-          app["name"].toLowerCase().contains(searchValue.toLowerCase());
-
-      // Must have screen time and name
-      bool hasData = app["screenTime"] != "0s" && app['name'] != '';
-
-      return matchesTracking &&
-          matchesVisibility &&
-          matchesCategory &&
-          matchesSearch &&
-          hasData;
-    }).toList();
 
     if (_isLoading) {
       return ScaffoldPage(
@@ -239,6 +233,8 @@ class _ApplicationsState extends State<Applications>
       );
     }
 
+    final filteredApps = _filteredApps;
+
     return ScaffoldPage(
       padding: EdgeInsets.zero,
       content: FadeTransition(
@@ -248,25 +244,23 @@ class _ApplicationsState extends State<Applications>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Section
               _Header(
-                changeSearchValue: changeSearchValue,
-                onRefresh: refreshData,
+                changeSearchValue: _onSearchChanged,
+                onRefresh: _refreshData,
               ),
               const SizedBox(height: 20),
-
-              // Filter Bar (for viewing only)
               _FilterBar(
-                trackingFilter: trackingFilter,
-                visibilityFilter: visibilityFilter,
-                selectedCategory: selectedCategory,
-                onTrackingFilterChanged: changeTrackingFilter,
-                onVisibilityFilterChanged: changeVisibilityFilter,
-                onCategoryChanged: changeCategory,
+                trackingFilter: _trackingFilter,
+                visibilityFilter: _visibilityFilter,
+                selectedCategory: _selectedCategory,
+                onTrackingFilterChanged: (v) => _updateFilter(
+                    "trackingFilter", v, (s) => _trackingFilter = s),
+                onVisibilityFilterChanged: (v) => _updateFilter(
+                    "visibilityFilter", v, (s) => _visibilityFilter = s),
+                onCategoryChanged: (v) => _updateFilter(
+                    "selectedCategory", v, (s) => _selectedCategory = s),
               ),
               const SizedBox(height: 16),
-
-              // Results count
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 8),
                 child: Text(
@@ -279,13 +273,11 @@ class _ApplicationsState extends State<Applications>
                   ),
                 ),
               ),
-
-              // Data Table
               Expanded(
                 child: _DataTable(
                   apps: filteredApps,
-                  toggleAppSetting: toggleAppSetting,
-                  refreshData: refreshData,
+                  toggleAppSetting: _toggleAppSetting,
+                  refreshData: _refreshData,
                 ),
               ),
             ],
@@ -296,8 +288,10 @@ class _ApplicationsState extends State<Applications>
   }
 }
 
+// ─── Header ───────────────────────────────────────────────────────────────────
+
 class _Header extends StatelessWidget {
-  final void Function(String value) changeSearchValue;
+  final ValueChanged<String> changeSearchValue;
   final VoidCallback onRefresh;
 
   const _Header({
@@ -309,30 +303,16 @@ class _Header extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
+    final captionColor = theme.typography.caption?.color;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    theme.accentColor.withValues(alpha: 0.2),
-                    theme.accentColor.withValues(alpha: 0.1),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                FluentIcons.app_icon_default,
-                size: 24,
-                color: theme.accentColor,
-              ),
+            _GradientIconBox(
+              icon: FluentIcons.app_icon_default,
+              color: theme.accentColor,
             ),
             const SizedBox(width: 14),
             Column(
@@ -348,8 +328,7 @@ class _Header extends StatelessWidget {
                   l10n.applicationsSubtitle,
                   style: TextStyle(
                     fontSize: 12,
-                    color:
-                        theme.typography.caption?.color?.withValues(alpha: 0.6),
+                    color: captionColor?.withValues(alpha: 0.6),
                   ),
                 ),
               ],
@@ -358,67 +337,15 @@ class _Header extends StatelessWidget {
         ),
         Row(
           children: [
-            // Search Box
-            Container(
-              width: 260,
-              height: 36,
-              decoration: BoxDecoration(
-                color: theme.micaBackgroundColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: theme.inactiveBackgroundColor,
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  const SizedBox(width: 12),
-                  Icon(
-                    FluentIcons.search,
-                    size: 14,
-                    color:
-                        theme.typography.caption?.color?.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextBox(
-                      placeholder: l10n.searchApplication,
-                      onChanged: changeSearchValue,
-                      decoration: WidgetStateProperty.all(
-                        const BoxDecoration(
-                          border: Border(),
-                        ),
-                      ),
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                  ),
-                ],
-              ),
+            _SearchBox(
+              placeholder: l10n.searchApplication,
+              onChanged: changeSearchValue,
             ),
             const SizedBox(width: 12),
-            // Refresh Button
-            Tooltip(
-              message: l10n.refresh,
-              child: IconButton(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: theme.micaBackgroundColor,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: theme.inactiveBackgroundColor,
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    FluentIcons.refresh,
-                    size: 14,
-                    color: theme.typography.body?.color,
-                  ),
-                ),
-                onPressed: onRefresh,
-              ),
+            _BorderedIconButton(
+              tooltip: l10n.refresh,
+              icon: FluentIcons.refresh,
+              onPressed: onRefresh,
             ),
           ],
         ),
@@ -426,6 +353,116 @@ class _Header extends StatelessWidget {
     );
   }
 }
+
+class _GradientIconBox extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final double size;
+
+  const _GradientIconBox({
+    required this.icon,
+    required this.color,
+    this.size = 24,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            color.withValues(alpha: 0.2),
+            color.withValues(alpha: 0.1),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(icon, size: size, color: color),
+    );
+  }
+}
+
+class _SearchBox extends StatelessWidget {
+  final String placeholder;
+  final ValueChanged<String> onChanged;
+
+  const _SearchBox({required this.placeholder, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Container(
+      width: 260,
+      height: 36,
+      decoration: BoxDecoration(
+        color: theme.micaBackgroundColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: theme.inactiveBackgroundColor, width: 1),
+      ),
+      child: Row(
+        children: [
+          const SizedBox(width: 12),
+          Icon(
+            FluentIcons.search,
+            size: 14,
+            color: theme.typography.caption?.color?.withValues(alpha: 0.5),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextBox(
+              placeholder: placeholder,
+              onChanged: onChanged,
+              decoration: WidgetStateProperty.all(
+                const BoxDecoration(border: Border()),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BorderedIconButton extends StatelessWidget {
+  final String tooltip;
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  const _BorderedIconButton({
+    required this.tooltip,
+    required this.icon,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Tooltip(
+      message: tooltip,
+      child: IconButton(
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.micaBackgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: theme.inactiveBackgroundColor, width: 1),
+          ),
+          child: Icon(icon, size: 14, color: theme.typography.body?.color),
+        ),
+        onPressed: onPressed,
+      ),
+    );
+  }
+}
+
+// ─── Filter Bar ───────────────────────────────────────────────────────────────
 
 class _FilterBar extends StatelessWidget {
   final String trackingFilter;
@@ -447,94 +484,43 @@ class _FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = FluentTheme.of(context);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return _CardContainer(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(
             children: [
-              // Tracking Filter Dropdown
               _FilterDropdown(
                 icon: FluentIcons.checkbox_composite,
-                label: trackingFilter == "all"
-                    ? l10n.allTracking
-                    : trackingFilter == "tracked"
-                        ? l10n.tracking
-                        : l10n.notTracking,
-                activeColor: const Color(0xFF10B981),
+                label: _trackingLabel(l10n),
+                activeColor: _kGreenColor,
                 items: [
+                  _DropdownItem(FluentIcons.view_all, l10n.allTracking, "all"),
                   _DropdownItem(
-                    icon: FluentIcons.view_all,
-                    label: l10n.allTracking,
-                    value: "all",
-                  ),
+                      FluentIcons.check_mark, l10n.tracking, "tracked"),
                   _DropdownItem(
-                    icon: FluentIcons.check_mark,
-                    label: l10n.tracking,
-                    value: "tracked",
-                  ),
-                  _DropdownItem(
-                    icon: FluentIcons.cancel,
-                    label: l10n.notTracking,
-                    value: "untracked",
-                  ),
+                      FluentIcons.cancel, l10n.notTracking, "untracked"),
                 ],
                 selectedValue: trackingFilter,
                 onChanged: onTrackingFilterChanged,
               ),
               const SizedBox(width: 16),
-
-              // Visibility Filter Dropdown
               _FilterDropdown(
                 icon: FluentIcons.view,
-                label: visibilityFilter == "all"
-                    ? l10n.allVisibility
-                    : visibilityFilter == "visible"
-                        ? l10n.visible
-                        : l10n.hidden,
-                activeColor: const Color(0xFF8B5CF6),
+                label: _visibilityLabel(l10n),
+                activeColor: _kPurpleColor,
                 items: [
                   _DropdownItem(
-                    icon: FluentIcons.view_all,
-                    label: l10n.allVisibility,
-                    value: "all",
-                  ),
-                  _DropdownItem(
-                    icon: FluentIcons.red_eye,
-                    label: l10n.visible,
-                    value: "visible",
-                  ),
-                  _DropdownItem(
-                    icon: FluentIcons.hide3,
-                    label: l10n.hidden,
-                    value: "hidden",
-                  ),
+                      FluentIcons.view_all, l10n.allVisibility, "all"),
+                  _DropdownItem(FluentIcons.red_eye, l10n.visible, "visible"),
+                  _DropdownItem(FluentIcons.hide3, l10n.hidden, "hidden"),
                 ],
                 selectedValue: visibilityFilter,
                 onChanged: onVisibilityFilterChanged,
               ),
             ],
           ),
-
-          // Category Dropdown
           _CategoryDropdown(
             selectedCategory: selectedCategory,
             onChanged: onCategoryChanged,
@@ -543,6 +529,18 @@ class _FilterBar extends StatelessWidget {
       ),
     );
   }
+
+  String _trackingLabel(AppLocalizations l10n) => switch (trackingFilter) {
+        "tracked" => l10n.tracking,
+        "untracked" => l10n.notTracking,
+        _ => l10n.allTracking,
+      };
+
+  String _visibilityLabel(AppLocalizations l10n) => switch (visibilityFilter) {
+        "visible" => l10n.visible,
+        "hidden" => l10n.hidden,
+        _ => l10n.allVisibility,
+      };
 }
 
 class _DropdownItem {
@@ -550,11 +548,7 @@ class _DropdownItem {
   final String label;
   final String value;
 
-  const _DropdownItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
+  const _DropdownItem(this.icon, this.label, this.value);
 }
 
 class _FilterDropdown extends StatelessWidget {
@@ -583,10 +577,7 @@ class _FilterDropdown extends StatelessWidget {
       decoration: BoxDecoration(
         color: activeColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: activeColor.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: activeColor.withValues(alpha: 0.3), width: 1),
       ),
       child: DropDownButton(
         style: ButtonStyle(
@@ -597,11 +588,7 @@ class _FilterDropdown extends StatelessWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 12,
-              color: activeColor,
-            ),
+            Icon(icon, size: 12, color: activeColor),
             const SizedBox(width: 8),
             Text(
               label,
@@ -667,11 +654,7 @@ class _CategoryDropdown extends StatelessWidget {
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              FluentIcons.filter,
-              size: 12,
-              color: theme.accentColor,
-            ),
+            Icon(FluentIcons.filter, size: 12, color: theme.accentColor),
             const SizedBox(width: 8),
             Text(
               selectedCategory == 'All' ? l10n.allCategories : selectedCategory,
@@ -696,8 +679,10 @@ class _CategoryDropdown extends StatelessWidget {
   }
 }
 
+// ─── Data Table ───────────────────────────────────────────────────────────────
+
 class _DataTable extends StatelessWidget {
-  final List<dynamic> apps;
+  final List<AppViewModel> apps;
   final void Function(String type, bool value, String name) toggleAppSetting;
   final Future<void> Function() refreshData;
 
@@ -713,84 +698,16 @@ class _DataTable extends StatelessWidget {
     final theme = FluentTheme.of(context);
 
     if (apps.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              FluentIcons.app_icon_default,
-              size: 48,
-              color: theme.inactiveBackgroundColor,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.noApplicationsFound,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: theme.typography.body?.color?.withValues(alpha: 0.6),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.tryAdjustingFilters,
-              style: TextStyle(
-                fontSize: 13,
-                color: theme.typography.caption?.color?.withValues(alpha: 0.5),
-              ),
-            ),
-          ],
-        ),
-      );
+      return _EmptyState(theme: theme, l10n: l10n);
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return _CardContainer(
+      padding: EdgeInsets.zero,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Column(
           children: [
-            // Table Header
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
-                border: Border(
-                  bottom: BorderSide(
-                    color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-                    width: 1,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  _TableHeader(label: l10n.tableName, flex: 3),
-                  _TableHeader(label: l10n.tableCategory, flex: 2),
-                  _TableHeader(
-                      label: l10n.tableScreenTime, flex: 2, centered: true),
-                  _TableHeader(
-                      label: l10n.tableTracking, flex: 1, centered: true),
-                  _TableHeader(
-                      label: l10n.tableHidden, flex: 1, centered: true),
-                  _TableHeader(label: l10n.tableEdit, flex: 1, centered: true),
-                ],
-              ),
-            ),
-            // Table Body
+            _TableHeaderRow(l10n: l10n, theme: theme),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -798,14 +715,7 @@ class _DataTable extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final app = apps[index];
                   return _ApplicationRow(
-                    name: app["name"],
-                    category: app["category"],
-                    screenTime: app["screenTime"],
-                    tracking: app["isTracking"],
-                    isHidden: app["isHidden"],
-                    isProductive: app["isProductive"] ?? false,
-                    dailyLimit: app["dailyLimit"] ?? const Duration(),
-                    limitStatus: app["limitStatus"] ?? false,
+                    app: app,
                     toggleAppSetting: toggleAppSetting,
                     refreshData: refreshData,
                     isLast: index == apps.length - 1,
@@ -815,6 +725,79 @@ class _DataTable extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyState extends StatelessWidget {
+  final FluentThemeData theme;
+  final AppLocalizations l10n;
+
+  const _EmptyState({required this.theme, required this.l10n});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FluentIcons.app_icon_default,
+            size: 48,
+            color: theme.inactiveBackgroundColor,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.noApplicationsFound,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: theme.typography.body?.color?.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.tryAdjustingFilters,
+            style: TextStyle(
+              fontSize: 13,
+              color: theme.typography.caption?.color?.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TableHeaderRow extends StatelessWidget {
+  final AppLocalizations l10n;
+  final FluentThemeData theme;
+
+  const _TableHeaderRow({required this.l10n, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+        border: Border(
+          bottom: BorderSide(
+            color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+            width: 1,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          _TableHeader(label: l10n.tableName, flex: 3),
+          _TableHeader(label: l10n.tableCategory, flex: 2),
+          _TableHeader(label: l10n.tableScreenTime, flex: 2, centered: true),
+          _TableHeader(label: l10n.tableTracking, flex: 1, centered: true),
+          _TableHeader(label: l10n.tableHidden, flex: 1, centered: true),
+          _TableHeader(label: l10n.tableEdit, flex: 1, centered: true),
+        ],
       ),
     );
   }
@@ -853,28 +836,16 @@ class _TableHeader extends StatelessWidget {
   }
 }
 
+// ─── Application Row ──────────────────────────────────────────────────────────
+
 class _ApplicationRow extends StatefulWidget {
-  final String name;
-  final String category;
-  final String screenTime;
-  final bool tracking;
-  final bool isHidden;
-  final bool isProductive;
-  final Duration dailyLimit;
-  final bool limitStatus;
+  final AppViewModel app;
   final void Function(String type, bool value, String name) toggleAppSetting;
   final Future<void> Function() refreshData;
   final bool isLast;
 
   const _ApplicationRow({
-    required this.name,
-    required this.category,
-    required this.screenTime,
-    required this.tracking,
-    required this.isHidden,
-    required this.isProductive,
-    required this.dailyLimit,
-    required this.limitStatus,
+    required this.app,
     required this.toggleAppSetting,
     required this.refreshData,
     required this.isLast,
@@ -888,297 +859,25 @@ class _ApplicationRowState extends State<_ApplicationRow> {
   bool _isHovered = false;
 
   void _showEditDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = FluentTheme.of(context);
-
-    String selectedCategory = widget.category;
-    bool isProductiveValue = widget.isProductive;
-    bool isTrackingValue = widget.tracking;
-    bool isVisibleValue = !widget.isHidden;
-    bool limitStatusValue = widget.limitStatus;
-    int limitHours = widget.dailyLimit.inHours;
-    int limitMinutes = widget.dailyLimit.inMinutes.remainder(60);
-    bool isCustomCategory =
-        !AppCategories.categories.any((c) => c.name == selectedCategory);
-    final customCategoryController = TextEditingController(
-      text: isCustomCategory ? selectedCategory : '',
-    );
-
     showDialog(
       context: context,
-      builder: (context) {
-        return ContentDialog(
-          constraints: const BoxConstraints(maxWidth: 480),
-          title: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: theme.accentColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  FluentIcons.edit,
-                  size: 20,
-                  color: theme.accentColor,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.editAppTitle(widget.name),
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.w600),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      l10n.configureAppSettings,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.normal,
-                        color: theme.typography.caption?.color
-                            ?.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          content: StatefulBuilder(
-            builder: (context, setState) {
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Category Section
-                    _DialogSection(
-                      icon: FluentIcons.tag,
-                      title: l10n.categorySection,
-                      iconColor: const Color(0xFF3B82F6),
-                      child: Column(
-                        children: [
-                          ComboBox<String>(
-                            value: isCustomCategory
-                                ? l10n.customCategory
-                                : selectedCategory,
-                            isExpanded: true,
-                            items: [
-                              ...AppCategories.categories
-                                  .map((category) => ComboBoxItem<String>(
-                                        value: category.name,
-                                        child: Text(category.name),
-                                      )),
-                              ComboBoxItem<String>(
-                                value: l10n.customCategory,
-                                child: Text(l10n.customCategory),
-                              ),
-                            ],
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  if (value == l10n.customCategory) {
-                                    isCustomCategory = true;
-                                  } else {
-                                    isCustomCategory = false;
-                                    selectedCategory = value;
-                                  }
-                                });
-                              }
-                            },
-                          ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 200),
-                            child: isCustomCategory
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 10),
-                                    child: TextBox(
-                                      controller: customCategoryController,
-                                      placeholder:
-                                          l10n.customCategoryPlaceholder,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedCategory = value;
-                                        });
-                                      },
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Behavior Section
-                    _DialogSection(
-                      icon: FluentIcons.settings,
-                      title: l10n.behaviorSection,
-                      iconColor: const Color(0xFF10B981),
-                      child: Column(
-                        children: [
-                          _DialogToggle(
-                            icon: FluentIcons.chart,
-                            label: l10n.isProductive,
-                            value: isProductiveValue,
-                            onChanged: (v) =>
-                                setState(() => isProductiveValue = v),
-                            activeColor: const Color(0xFF10B981),
-                          ),
-                          const SizedBox(height: 8),
-                          _DialogToggle(
-                            icon: FluentIcons.timer,
-                            label: l10n.trackUsage,
-                            value: isTrackingValue,
-                            onChanged: (v) =>
-                                setState(() => isTrackingValue = v),
-                            activeColor: const Color(0xFF3B82F6),
-                          ),
-                          const SizedBox(height: 8),
-                          _DialogToggle(
-                            icon: FluentIcons.view,
-                            label: l10n.visibleInReports,
-                            value: isVisibleValue,
-                            onChanged: (v) =>
-                                setState(() => isVisibleValue = v),
-                            activeColor: const Color(0xFF8B5CF6),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Time Limits Section
-                    _DialogSection(
-                      icon: FluentIcons.clock,
-                      title: l10n.timeLimitsSection,
-                      iconColor: const Color(0xFFF59E0B),
-                      child: Column(
-                        children: [
-                          _DialogToggle(
-                            icon: FluentIcons.stopwatch,
-                            label: l10n.enableDailyLimit,
-                            value: limitStatusValue,
-                            onChanged: (v) =>
-                                setState(() => limitStatusValue = v),
-                            activeColor: const Color(0xFFF59E0B),
-                          ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 200),
-                            child: limitStatusValue
-                                ? Padding(
-                                    padding: const EdgeInsets.only(top: 12),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF59E0B)
-                                            .withValues(alpha: 0.1),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: _TimeInputField(
-                                              label: l10n.hours,
-                                              value: limitHours,
-                                              max: 24,
-                                              onChanged: (v) => setState(() =>
-                                                  limitHours = v?.toInt() ?? 0),
-                                            ),
-                                          ),
-                                          const SizedBox(width: 16),
-                                          Expanded(
-                                            child: _TimeInputField(
-                                              label: l10n.minutes,
-                                              value: limitMinutes,
-                                              max: 59,
-                                              onChanged: (v) => setState(() =>
-                                                  limitMinutes =
-                                                      v?.toInt() ?? 0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-          actions: [
-            Button(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Text(l10n.cancel),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-            FilledButton(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(FluentIcons.save, size: 14),
-                    const SizedBox(width: 8),
-                    Text(l10n.saveChanges),
-                  ],
-                ),
-              ),
-              onPressed: () async {
-                final finalCategory = isCustomCategory
-                    ? customCategoryController.text.isNotEmpty
-                        ? customCategoryController.text
-                        : l10n.uncategorized
-                    : selectedCategory;
-
-                final newDailyLimit = Duration(
-                  hours: limitHours,
-                  minutes: limitMinutes,
-                );
-
-                await AppDataStore().updateAppMetadata(
-                  widget.name,
-                  category: finalCategory,
-                  isProductive: isProductiveValue,
-                  isTracking: isTrackingValue,
-                  isVisible: isVisibleValue,
-                  dailyLimit: newDailyLimit,
-                  limitStatus: limitStatusValue,
-                );
-
-                await widget.refreshData();
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ],
-        );
-      },
+      builder: (context) => _EditAppDialog(
+        app: widget.app,
+        refreshData: widget.refreshData,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final app = widget.app;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+        duration: _kHoverDuration,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: _isHovered
@@ -1198,92 +897,58 @@ class _ApplicationRowState extends State<_ApplicationRow> {
             // Name
             Expanded(
               flex: 3,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
-                          fontSize: 13, fontWeight: FontWeight.w500),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
+              child: Text(
+                app.name,
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-
             // Category
             Expanded(
               flex: 2,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  widget.category,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    color: theme.typography.body?.color?.withValues(alpha: 0.8),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
+              child: _Chip(
+                label: app.category,
+                color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                textColor: theme.typography.body?.color?.withValues(alpha: 0.8),
               ),
             ),
-
             // Screen Time
             Expanded(
               flex: 2,
               child: Center(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: theme.accentColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    widget.screenTime,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: theme.accentColor,
-                    ),
-                  ),
+                child: _Chip(
+                  label: app.screenTime,
+                  color: theme.accentColor.withValues(alpha: 0.1),
+                  textColor: theme.accentColor,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
-
-            // Tracking Toggle (changes app setting)
+            // Tracking Toggle
             Expanded(
               flex: 1,
               child: Center(
                 child: _CompactToggle(
-                  value: widget.tracking,
+                  value: app.isTracking,
                   onChanged: (v) =>
-                      widget.toggleAppSetting('isTracking', v, widget.name),
-                  activeColor: const Color(0xFF10B981),
+                      widget.toggleAppSetting('isTracking', v, app.name),
+                  activeColor: _kGreenColor,
                 ),
               ),
             ),
-
-            // Hidden Toggle (changes app setting)
+            // Hidden Toggle
             Expanded(
               flex: 1,
               child: Center(
                 child: _CompactToggle(
-                  value: widget.isHidden,
+                  value: app.isHidden,
                   onChanged: (v) =>
-                      widget.toggleAppSetting('isHidden', v, widget.name),
-                  activeColor: const Color(0xFF8B5CF6),
+                      widget.toggleAppSetting('isHidden', v, app.name),
+                  activeColor: _kPurpleColor,
                 ),
               ),
             ),
-
             // Edit Button
             Expanded(
               flex: 1,
@@ -1317,6 +982,361 @@ class _ApplicationRowState extends State<_ApplicationRow> {
   }
 }
 
+class _Chip extends StatelessWidget {
+  final String label;
+  final Color color;
+  final Color? textColor;
+  final FontWeight fontWeight;
+
+  const _Chip({
+    required this.label,
+    required this.color,
+    this.textColor,
+    this.fontWeight = FontWeight.w500,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: fontWeight,
+          color: textColor,
+        ),
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+// ─── Edit Dialog ──────────────────────────────────────────────────────────────
+
+class _EditAppDialog extends StatefulWidget {
+  final AppViewModel app;
+  final Future<void> Function() refreshData;
+
+  const _EditAppDialog({required this.app, required this.refreshData});
+
+  @override
+  State<_EditAppDialog> createState() => _EditAppDialogState();
+}
+
+class _EditAppDialogState extends State<_EditAppDialog> {
+  late String _selectedCategory;
+  late bool _isProductive;
+  late bool _isTracking;
+  late bool _isVisible;
+  late bool _limitStatus;
+  late int _limitHours;
+  late int _limitMinutes;
+  late bool _isCustomCategory;
+  late TextEditingController _customCategoryController;
+
+  @override
+  void initState() {
+    super.initState();
+    final app = widget.app;
+    _selectedCategory = app.category;
+    _isProductive = app.isProductive;
+    _isTracking = app.isTracking;
+    _isVisible = !app.isHidden;
+    _limitStatus = app.limitStatus;
+    _limitHours = app.dailyLimit.inHours;
+    _limitMinutes = app.dailyLimit.inMinutes.remainder(60);
+    _isCustomCategory =
+        !AppCategories.categories.any((c) => c.name == _selectedCategory);
+    _customCategoryController = TextEditingController(
+      text: _isCustomCategory ? _selectedCategory : '',
+    );
+  }
+
+  @override
+  void dispose() {
+    _customCategoryController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save(AppLocalizations l10n) async {
+    final finalCategory = _isCustomCategory
+        ? (_customCategoryController.text.isNotEmpty
+            ? _customCategoryController.text
+            : l10n.uncategorized)
+        : _selectedCategory;
+
+    await AppDataStore().updateAppMetadata(
+      widget.app.name,
+      category: finalCategory,
+      isProductive: _isProductive,
+      isTracking: _isTracking,
+      isVisible: _isVisible,
+      dailyLimit: Duration(hours: _limitHours, minutes: _limitMinutes),
+      limitStatus: _limitStatus,
+    );
+
+    await widget.refreshData();
+    if (mounted) Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = FluentTheme.of(context);
+
+    return ContentDialog(
+      constraints: const BoxConstraints(maxWidth: 480),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: theme.accentColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(FluentIcons.edit, size: 20, color: theme.accentColor),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.editAppTitle(widget.app.name),
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  l10n.configureAppSettings,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color:
+                        theme.typography.caption?.color?.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Category Section
+            _DialogSection(
+              icon: FluentIcons.tag,
+              title: l10n.categorySection,
+              iconColor: _kBlueColor,
+              child: _buildCategorySection(l10n),
+            ),
+            const SizedBox(height: 16),
+            // Behavior Section
+            _DialogSection(
+              icon: FluentIcons.settings,
+              title: l10n.behaviorSection,
+              iconColor: _kGreenColor,
+              child: Column(
+                children: [
+                  _DialogToggle(
+                    icon: FluentIcons.chart,
+                    label: l10n.isProductive,
+                    value: _isProductive,
+                    onChanged: (v) => setState(() => _isProductive = v),
+                    activeColor: _kGreenColor,
+                  ),
+                  const SizedBox(height: 8),
+                  _DialogToggle(
+                    icon: FluentIcons.timer,
+                    label: l10n.trackUsage,
+                    value: _isTracking,
+                    onChanged: (v) => setState(() => _isTracking = v),
+                    activeColor: _kBlueColor,
+                  ),
+                  const SizedBox(height: 8),
+                  _DialogToggle(
+                    icon: FluentIcons.view,
+                    label: l10n.visibleInReports,
+                    value: _isVisible,
+                    onChanged: (v) => setState(() => _isVisible = v),
+                    activeColor: _kPurpleColor,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Time Limits Section
+            _DialogSection(
+              icon: FluentIcons.clock,
+              title: l10n.timeLimitsSection,
+              iconColor: _kAmberColor,
+              child: Column(
+                children: [
+                  _DialogToggle(
+                    icon: FluentIcons.stopwatch,
+                    label: l10n.enableDailyLimit,
+                    value: _limitStatus,
+                    onChanged: (v) => setState(() => _limitStatus = v),
+                    activeColor: _kAmberColor,
+                  ),
+                  AnimatedSize(
+                    duration: _kToggleDuration,
+                    child: _limitStatus
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: _kAmberColor.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _TimeInputField(
+                                      label: l10n.hours,
+                                      value: _limitHours,
+                                      max: 24,
+                                      onChanged: (v) => setState(
+                                          () => _limitHours = v?.toInt() ?? 0),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _TimeInputField(
+                                      label: l10n.minutes,
+                                      value: _limitMinutes,
+                                      max: 59,
+                                      onChanged: (v) => setState(() =>
+                                          _limitMinutes = v?.toInt() ?? 0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        Button(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(l10n.cancel),
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        FilledButton(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(FluentIcons.save, size: 14),
+                const SizedBox(width: 8),
+                Text(l10n.saveChanges),
+              ],
+            ),
+          ),
+          onPressed: () => _save(l10n),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategorySection(AppLocalizations l10n) {
+    return Column(
+      children: [
+        ComboBox<String>(
+          value: _isCustomCategory ? l10n.customCategory : _selectedCategory,
+          isExpanded: true,
+          items: [
+            ...AppCategories.categories.map((category) => ComboBoxItem<String>(
+                  value: category.name,
+                  child: Text(category.name),
+                )),
+            ComboBoxItem<String>(
+              value: l10n.customCategory,
+              child: Text(l10n.customCategory),
+            ),
+          ],
+          onChanged: (value) {
+            if (value != null) {
+              setState(() {
+                _isCustomCategory = value == l10n.customCategory;
+                if (!_isCustomCategory) _selectedCategory = value;
+              });
+            }
+          },
+        ),
+        AnimatedSize(
+          duration: _kToggleDuration,
+          child: _isCustomCategory
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: TextBox(
+                    controller: _customCategoryController,
+                    placeholder: l10n.customCategoryPlaceholder,
+                    onChanged: (value) =>
+                        setState(() => _selectedCategory = value),
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Shared Components ────────────────────────────────────────────────────────
+
+class _CardContainer extends StatelessWidget {
+  final Widget child;
+  final EdgeInsets? padding;
+
+  const _CardContainer({required this.child, this.padding});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Container(
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: theme.micaBackgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
 class _CompactToggle extends StatelessWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -1333,7 +1353,7 @@ class _CompactToggle extends StatelessWidget {
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: _kToggleDuration,
         width: 36,
         height: 20,
         decoration: BoxDecoration(
@@ -1343,7 +1363,7 @@ class _CompactToggle extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: AnimatedAlign(
-          duration: const Duration(milliseconds: 200),
+          duration: _kToggleDuration,
           curve: Curves.easeOutCubic,
           alignment: value ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
@@ -1353,11 +1373,11 @@ class _CompactToggle extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: Color.fromRGBO(0, 0, 0, 0.1),
                   blurRadius: 2,
-                  offset: const Offset(0, 1),
+                  offset: Offset(0, 1),
                 ),
               ],
             ),
@@ -1511,7 +1531,7 @@ class _TimeInputField extends StatelessWidget {
           style: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            color: Color(0xFFF59E0B),
+            color: _kAmberColor,
           ),
         ),
         const SizedBox(height: 6),

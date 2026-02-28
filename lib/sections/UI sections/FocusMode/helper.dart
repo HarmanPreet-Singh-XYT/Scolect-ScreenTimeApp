@@ -1,6 +1,21 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-// Control button widget
+/// Mixin that encapsulates the common hover/press state logic.
+mixin _HoverStateMixin<T extends StatefulWidget> on State<T> {
+  bool _isHovered = false;
+
+  MouseRegion buildHoverRegion({required Widget child}) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      cursor: SystemMouseCursors.click,
+      child: child,
+    );
+  }
+}
+
+// ─── Control Button ───────────────────────────────────────────────
+
 class ControlButton extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
@@ -17,51 +32,45 @@ class ControlButton extends StatefulWidget {
   State<ControlButton> createState() => _ControlButtonState();
 }
 
-class _ControlButtonState extends State<ControlButton> {
-  bool _isHovered = false;
+class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
   bool _isPressed = false;
+
+  void _setPressed(bool value) => setState(() => _isPressed = value);
 
   @override
   Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final accent = theme.accentColor;
+
     return Tooltip(
       message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        cursor: SystemMouseCursors.click,
+      child: buildHoverRegion(
         child: GestureDetector(
-          onTapDown: (_) => setState(() => _isPressed = true),
-          onTapUp: (_) => setState(() => _isPressed = false),
-          onTapCancel: () => setState(() => _isPressed = false),
+          onTapDown: (_) => _setPressed(true),
+          onTapUp: (_) => _setPressed(false),
+          onTapCancel: () => _setPressed(false),
           onTap: widget.onPressed,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
             width: 44,
             height: 44,
-            transform: Matrix4.identity()
-              ..scaleByDouble(
-                _isPressed ? 0.92 : 1.0, // x
-                _isPressed ? 0.92 : 1.0, // y
-                1.0, // z
-                1.0, // w
-              ),
+            transform: Matrix4.identity()..scale(_isPressed ? 0.92 : 1.0),
             transformAlignment: Alignment.center,
             decoration: BoxDecoration(
               color: _isHovered
-                  ? FluentTheme.of(context).accentColor.withValues(alpha: 0.1)
-                  : FluentTheme.of(context).micaBackgroundColor,
+                  ? accent.withValues(alpha: 0.1)
+                  : theme.micaBackgroundColor,
               shape: BoxShape.circle,
               border: Border.all(
                 color: _isHovered
-                    ? FluentTheme.of(context).accentColor.withValues(alpha: 0.3)
-                    : FluentTheme.of(context).inactiveBackgroundColor,
-                width: 1,
+                    ? accent.withValues(alpha: 0.3)
+                    : theme.inactiveBackgroundColor,
               ),
             ),
             child: Icon(
               widget.icon,
               size: 16,
-              color: _isHovered ? FluentTheme.of(context).accentColor : null,
+              color: _isHovered ? accent : null,
             ),
           ),
         ),
@@ -70,7 +79,8 @@ class _ControlButtonState extends State<ControlButton> {
   }
 }
 
-// Play/Pause button widget
+// ─── Play / Pause Button ──────────────────────────────────────────
+
 class PlayPauseButton extends StatefulWidget {
   final bool isRunning;
   final Color color;
@@ -87,27 +97,27 @@ class PlayPauseButton extends StatefulWidget {
   State<PlayPauseButton> createState() => _PlayPauseButtonState();
 }
 
-class _PlayPauseButtonState extends State<PlayPauseButton> {
-  bool _isHovered = false;
+class _PlayPauseButtonState extends State<PlayPauseButton>
+    with _HoverStateMixin {
+  static const _duration = Duration(milliseconds: 200);
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
+    final color = widget.color;
+
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: _duration,
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            color: widget.color,
+            color: color,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: widget.color.withValues(alpha: _isHovered ? 0.5 : 0.3),
+                color: color.withValues(alpha: _isHovered ? 0.5 : 0.3),
                 blurRadius: _isHovered ? 24 : 16,
                 offset: const Offset(0, 6),
                 spreadRadius: _isHovered ? 2 : 0,
@@ -115,7 +125,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
             ],
           ),
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 200),
+            duration: _duration,
             child: Icon(
               widget.isRunning ? FluentIcons.pause : FluentIcons.play_solid,
               key: ValueKey(widget.isRunning),
@@ -129,7 +139,8 @@ class _PlayPauseButtonState extends State<PlayPauseButton> {
   }
 }
 
-// Session type chip widget with tap functionality
+// ─── Session Chip ─────────────────────────────────────────────────
+
 class SessionChip extends StatefulWidget {
   final String label;
   final bool isActive;
@@ -148,49 +159,51 @@ class SessionChip extends StatefulWidget {
   State<SessionChip> createState() => _SessionChipState();
 }
 
-class _SessionChipState extends State<SessionChip> {
-  bool _isHovered = false;
-
+class _SessionChipState extends State<SessionChip> with _HoverStateMixin {
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
+    final active = widget.isActive;
+    final color = widget.color;
+
+    final Color bgColor;
+    final Color borderColor;
+    final Color textColor;
+
+    if (active) {
+      bgColor = color.withValues(alpha: 0.15);
+      borderColor = color;
+      textColor = color;
+    } else if (_isHovered) {
+      bgColor = color.withValues(alpha: 0.05);
+      borderColor = color.withValues(alpha: 0.5);
+      textColor = color.withValues(alpha: 0.8);
+    } else {
+      bgColor = Colors.transparent;
+      borderColor = FluentTheme.of(context).inactiveBackgroundColor;
+      textColor = FluentTheme.of(context)
+              .typography
+              .body
+              ?.color
+              ?.withValues(alpha: 0.6) ??
+          Colors.grey;
+    }
+
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: widget.isActive
-                ? widget.color.withValues(alpha: 0.15)
-                : _isHovered
-                    ? widget.color.withValues(alpha: 0.05)
-                    : Colors.transparent,
+            color: bgColor,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: widget.isActive
-                  ? widget.color
-                  : _isHovered
-                      ? widget.color.withValues(alpha: 0.5)
-                      : FluentTheme.of(context).inactiveBackgroundColor,
-              width: 1.5,
-            ),
+            border: Border.all(color: borderColor, width: 1.5),
           ),
           child: Text(
             widget.label,
             style: TextStyle(
-              color: widget.isActive
-                  ? widget.color
-                  : _isHovered
-                      ? widget.color.withValues(alpha: 0.8)
-                      : FluentTheme.of(context)
-                          .typography
-                          .body
-                          ?.color
-                          ?.withValues(alpha: 0.6),
-              fontWeight: widget.isActive ? FontWeight.w600 : FontWeight.w400,
+              color: textColor,
+              fontWeight: active ? FontWeight.w600 : FontWeight.w400,
               fontSize: 12,
             ),
           ),
