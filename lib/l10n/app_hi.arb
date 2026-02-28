@@ -1969,5 +1969,13 @@
 },
 "noData": "कोई डेटा नहीं",
 "yesterday": "कल",
-"changelog": "परिवर्तन लॉग"
+"changelog": "परिवर्तन लॉग",
+"exportingLabel": "निर्यात किया जा रहा है...",
+"@exportingLabel": {
+  "description": "निर्यात प्रक्रिया के दौरान निर्यात बटन पर दिखाया जाने वाला लेबल"
+},
+"exportExcelLabel": "Excel निर्यात करें",
+"@exportExcelLabel": {
+  "description": "निर्यात बटन पर दिखाया जाने वाला लेबल"
+}
 }

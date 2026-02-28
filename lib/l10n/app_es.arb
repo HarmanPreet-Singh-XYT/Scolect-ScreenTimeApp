@@ -1964,5 +1964,13 @@
 },
 "noData": "Sin datos",
 "yesterday": "Ayer",
-"changelog": "Registro de cambios"
+"changelog": "Registro de cambios",
+"exportingLabel": "Exportando...",
+"@exportingLabel": {
+  "description": "Etiqueta que se muestra en el botón de exportación mientras la exportación está en progreso"
+},
+"exportExcelLabel": "Exportar Excel",
+"@exportExcelLabel": {
+  "description": "Etiqueta que se muestra en el botón de exportación"
+}
 }

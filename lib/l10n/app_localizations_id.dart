@@ -3033,4 +3033,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get changelog => 'Catatan perubahan';
+
+  @override
+  String get exportingLabel => 'Sedang mengekspor...';
+
+  @override
+  String get exportExcelLabel => 'Ekspor Excel';
 }

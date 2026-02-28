@@ -3013,4 +3013,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get changelog => 'سجل التغييرات';
+
+  @override
+  String get exportingLabel => 'جارٍ التصدير...';
+
+  @override
+  String get exportExcelLabel => 'تصدير Excel';
 }

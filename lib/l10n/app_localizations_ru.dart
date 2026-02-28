@@ -3105,4 +3105,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get changelog => 'Журнал изменений';
+
+  @override
+  String get exportingLabel => 'Экспортируется...';
+
+  @override
+  String get exportExcelLabel => 'Экспорт в Excel';
 }

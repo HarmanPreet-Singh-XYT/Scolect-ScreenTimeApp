@@ -3034,4 +3034,10 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get changelog => 'পরিবর্তনের তালিকা';
+
+  @override
+  String get exportingLabel => 'রপ্তানি করা হচ্ছে...';
+
+  @override
+  String get exportExcelLabel => 'Excel রপ্তানি করুন';
 }

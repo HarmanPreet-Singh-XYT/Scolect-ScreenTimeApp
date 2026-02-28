@@ -3026,4 +3026,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get changelog => 'परिवर्तन लॉग';
+
+  @override
+  String get exportingLabel => 'निर्यात किया जा रहा है...';
+
+  @override
+  String get exportExcelLabel => 'Excel निर्यात करें';
 }

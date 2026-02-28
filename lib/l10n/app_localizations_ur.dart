@@ -3019,4 +3019,10 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get changelog => 'تبدیلیوں کا ریکارڈ';
+
+  @override
+  String get exportingLabel => 'برآمد کیا جا رہا ہے...';
+
+  @override
+  String get exportExcelLabel => 'Excel برآمد کریں';
 }

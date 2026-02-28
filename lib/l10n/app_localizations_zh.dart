@@ -2937,4 +2937,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get changelog => '更新日志';
+
+  @override
+  String get exportingLabel => '正在导出...';
+
+  @override
+  String get exportExcelLabel => '导出 Excel';
 }

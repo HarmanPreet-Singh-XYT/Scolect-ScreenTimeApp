@@ -2177,5 +2177,13 @@
 },
 "noData": "No data",
 "yesterday": "Yesterday",
-"changelog":"Changelog"
+"changelog":"Changelog",
+"exportingLabel": "Exporting...",
+  "@exportingLabel": {
+    "description": "Label shown on export button while export is in progress"
+  },
+  "exportExcelLabel": "Export Excel",
+  "@exportExcelLabel": {
+    "description": "Label shown on export button"
+  }
 }

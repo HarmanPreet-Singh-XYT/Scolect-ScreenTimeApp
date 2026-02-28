@@ -3,16 +3,20 @@ import 'package:screentime/l10n/app_localizations.dart';
 
 class LoadingIndicator extends StatelessWidget {
   final String message;
-  final double? progressRingSize;
+  final double strokeWidth;
+  final double? progressValue;
   final TextStyle? textStyle;
-  
+
   const LoadingIndicator({
-    super.key, 
+    super.key,
     required this.message,
-    this.progressRingSize = 24.0,
+    this.strokeWidth = 4.0,
+    this.progressValue,
     this.textStyle,
   });
-  
+
+  static const _defaultTextStyle = TextStyle(fontSize: 14);
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -21,13 +25,13 @@ class LoadingIndicator extends StatelessWidget {
         children: [
           ProgressRing(
             activeColor: FluentTheme.of(context).accentColor,
-            strokeWidth: 4.0,
-            value: progressRingSize,
+            strokeWidth: strokeWidth,
+            value: progressValue,
           ),
           const SizedBox(height: 16),
           Text(
-            message, 
-            style: textStyle ?? const TextStyle(fontSize: 14),
+            message,
+            style: textStyle ?? _defaultTextStyle,
             textAlign: TextAlign.center,
             semanticsLabel: message,
           ),
@@ -37,22 +41,26 @@ class LoadingIndicator extends StatelessWidget {
   }
 }
 
-class AppLoadingIndicator extends LoadingIndicator {
-  AppLoadingIndicator({
-    super.key,
-    required BuildContext context,
-  }) : super(
-    message: AppLocalizations.of(context)!.loadingApplication,
-    progressRingSize: 32.0,
-  );
+class AppLoadingIndicator extends StatelessWidget {
+  const AppLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LoadingIndicator(
+      message: AppLocalizations.of(context)!.loadingApplication,
+      strokeWidth: 5.0,
+    );
+  }
 }
 
-class DataLoadingIndicator extends LoadingIndicator {
-  DataLoadingIndicator({
-    super.key,
-    required BuildContext context,
-  }) : super(
-    message: AppLocalizations.of(context)!.loadingData,
-    progressRingSize: 20.0,
-  );
+class DataLoadingIndicator extends StatelessWidget {
+  const DataLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LoadingIndicator(
+      message: AppLocalizations.of(context)!.loadingData,
+      strokeWidth: 3.0,
+    );
+  }
 }

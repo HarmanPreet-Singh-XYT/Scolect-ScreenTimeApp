@@ -1968,5 +1968,13 @@
 },
 "noData": "لا توجد بيانات",
 "yesterday": "أمس",
-"changelog": "سجل التغييرات"
+"changelog": "سجل التغييرات",
+"exportingLabel": "جارٍ التصدير...",
+"@exportingLabel": {
+  "description": "التسمية المعروضة على زر التصدير أثناء عملية التصدير"
+},
+"exportExcelLabel": "تصدير Excel",
+"@exportExcelLabel": {
+  "description": "التسمية المعروضة على زر التصدير"
+}
 }

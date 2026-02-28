@@ -1961,5 +1961,13 @@
 },
 "noData": "Tidak ada data",
 "yesterday": "Kemarin",
-"changelog": "Catatan perubahan"
+"changelog": "Catatan perubahan",
+"exportingLabel": "Sedang mengekspor...",
+"@exportingLabel": {
+  "description": "Label yang ditampilkan pada tombol ekspor saat proses ekspor berlangsung"
+},
+"exportExcelLabel": "Ekspor Excel",
+"@exportExcelLabel": {
+  "description": "Label yang ditampilkan pada tombol ekspor"
+}
 }

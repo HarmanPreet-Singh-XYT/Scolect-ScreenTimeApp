@@ -3064,4 +3064,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get changelog => 'Changelog';
+
+  @override
+  String get exportingLabel => 'Exporting...';
+
+  @override
+  String get exportExcelLabel => 'Export Excel';
 }

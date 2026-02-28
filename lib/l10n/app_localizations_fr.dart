@@ -3128,4 +3128,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get changelog => 'Journal des modifications';
+
+  @override
+  String get exportingLabel => 'Exportation en cours...';
+
+  @override
+  String get exportExcelLabel => 'Exporter Excel';
 }

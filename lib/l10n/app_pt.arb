@@ -1961,5 +1961,13 @@
 },
 "noData": "Sem dados",
 "yesterday": "Ontem",
-"changelog": "Registro de alterações"
+"changelog": "Registro de alterações",
+"exportingLabel": "Exportando...",
+"@exportingLabel": {
+  "description": "Rótulo exibido no botão de exportação enquanto a exportação está em andamento"
+},
+"exportExcelLabel": "Exportar Excel",
+"@exportExcelLabel": {
+  "description": "Rótulo exibido no botão de exportação"
+}
 }

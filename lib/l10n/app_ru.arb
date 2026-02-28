@@ -1965,5 +1965,13 @@
 },
 "noData": "Нет данных",
 "yesterday": "Вчера",
-"changelog": "Журнал изменений"
+"changelog": "Журнал изменений",
+"exportingLabel": "Экспортируется...",
+"@exportingLabel": {
+  "description": "Надпись на кнопке экспорта во время выполнения экспорта"
+},
+"exportExcelLabel": "Экспорт в Excel",
+"@exportExcelLabel": {
+  "description": "Надпись на кнопке экспорта"
+}
 }

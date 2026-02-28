@@ -3115,4 +3115,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get changelog => 'Registro de cambios';
+
+  @override
+  String get exportingLabel => 'Exportando...';
+
+  @override
+  String get exportExcelLabel => 'Exportar Excel';
 }

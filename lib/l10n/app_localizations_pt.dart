@@ -3096,4 +3096,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get changelog => 'Registro de alterações';
+
+  @override
+  String get exportingLabel => 'Exportando...';
+
+  @override
+  String get exportExcelLabel => 'Exportar Excel';
 }

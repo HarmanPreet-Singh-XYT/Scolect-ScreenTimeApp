@@ -1971,5 +1971,13 @@
 },
 "noData": "کوئی ڈیٹا نہیں",
 "yesterday": "کل",
-"changelog": "تبدیلیوں کا ریکارڈ"
+"changelog": "تبدیلیوں کا ریکارڈ",
+"exportingLabel": "برآمد کیا جا رہا ہے...",
+"@exportingLabel": {
+  "description": "برآمد کے دوران برآمد بٹن پر دکھایا جانے والا لیبل"
+},
+"exportExcelLabel": "Excel برآمد کریں",
+"@exportExcelLabel": {
+  "description": "برآمد بٹن پر دکھایا جانے والا لیبل"
+}
 }

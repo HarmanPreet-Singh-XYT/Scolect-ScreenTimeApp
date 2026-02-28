@@ -5547,6 +5547,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Changelog'**
   String get changelog;
+
+  /// Label shown on export button while export is in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Exporting...'**
+  String get exportingLabel;
+
+  /// Label shown on export button
+  ///
+  /// In en, this message translates to:
+  /// **'Export Excel'**
+  String get exportExcelLabel;
 }
 
 class _AppLocalizationsDelegate

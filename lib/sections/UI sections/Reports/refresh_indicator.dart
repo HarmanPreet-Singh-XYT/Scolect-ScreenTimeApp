@@ -21,35 +21,43 @@ class AnalyticsProxyWidget extends StatelessWidget {
     required this.onRetry,
   });
 
+  static const _padding = EdgeInsets.symmetric(horizontal: 20, vertical: 10);
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: _padding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               header,
               const SizedBox(height: 20),
-              
-              if (isLoading)
-                LoadingIndicator(message: l10n.loadingAnalyticsData)
-              else if (error != null)
-                ErrorDisplay(
-                  errorMessage: error!,
-                  onRetry: onRetry,
-                )
-              else
-                ...analyticsContent,
+              _buildBody(l10n),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildBody(AppLocalizations l10n) {
+    if (isLoading) {
+      return LoadingIndicator(message: l10n.loadingAnalyticsData);
+    }
+
+    if (error != null) {
+      return ErrorDisplay(
+        errorMessage: error!,
+        onRetry: onRetry,
+      );
+    }
+
+    return Column(children: analyticsContent);
   }
 }

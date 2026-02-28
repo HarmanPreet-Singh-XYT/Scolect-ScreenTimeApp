@@ -1968,5 +1968,13 @@
 },
 "noData": "データなし",
 "yesterday": "昨日",
-"changelog": "変更履歴"
+"changelog": "変更履歴",
+"exportingLabel": "エクスポート中...",
+"@exportingLabel": {
+  "description": "エクスポート処理中にエクスポートボタンに表示されるラベル"
+},
+"exportExcelLabel": "Excelをエクスポート",
+"@exportExcelLabel": {
+  "description": "エクスポートボタンに表示されるラベル"
+}
 }

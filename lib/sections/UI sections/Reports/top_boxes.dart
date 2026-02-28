@@ -2,6 +2,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import '../../controller/data_controllers/reports_controller.dart';
 
+// ==================== TOP-LEVEL WIDGET ====================
+
 class TopBoxes extends StatelessWidget {
   final AnalyticsSummary analyticsSummary;
   final bool isLoading;
@@ -12,55 +14,61 @@ class TopBoxes extends StatelessWidget {
     this.isLoading = false,
   });
 
+  static const _colors = (
+    indigo: Color(0xFF6366F1),
+    emerald: Color(0xFF10B981),
+    amber: Color(0xFFF59E0B),
+    pink: Color(0xFFEC4899),
+  );
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final s = analyticsSummary;
 
     final items = [
       _AnalyticsItem(
         title: l10n.totalScreenTime,
-        value: _formatDuration(analyticsSummary.totalScreenTime),
-        percentChange: analyticsSummary.screenTimeComparisonPercent,
+        value: _formatDuration(s.totalScreenTime),
+        percentChange: s.screenTimeComparisonPercent,
         icon: FluentIcons.screen_time,
-        accentColor: const Color(0xFF6366F1), // Indigo
+        accentColor: _colors.indigo,
       ),
       _AnalyticsItem(
         title: l10n.productiveTime,
-        value: _formatDuration(analyticsSummary.productiveTime),
-        percentChange: analyticsSummary.productiveTimeComparisonPercent,
+        value: _formatDuration(s.productiveTime),
+        percentChange: s.productiveTimeComparisonPercent,
         icon: FluentIcons.timer,
-        accentColor: const Color(0xFF10B981), // Emerald
+        accentColor: _colors.emerald,
       ),
       _AnalyticsItem(
         title: l10n.mostUsedApp,
-        value: analyticsSummary.mostUsedApp,
-        subValue: _formatDuration(analyticsSummary.mostUsedAppTime),
+        value: s.mostUsedApp,
+        subValue: _formatDuration(s.mostUsedAppTime),
         icon: FluentIcons.account_browser,
-        accentColor: const Color(0xFFF59E0B), // Amber
+        accentColor: _colors.amber,
       ),
       _AnalyticsItem(
         title: l10n.focusSessions,
-        value: analyticsSummary.focusSessionsCount.toString(),
-        percentChange: analyticsSummary.focusSessionsComparisonPercent,
+        value: s.focusSessionsCount.toString(),
+        percentChange: s.focusSessionsComparisonPercent,
         icon: FluentIcons.red_eye,
-        accentColor: const Color(0xFFEC4899), // Pink
+        accentColor: _colors.pink,
       ),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final isCompact = constraints.maxWidth < 800;
-        final crossAxisCount = isCompact ? 2 : 4;
-        final aspectRatio = isCompact ? 1.6 : 1.8;
 
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
+            crossAxisCount: isCompact ? 2 : 4,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: aspectRatio,
+            childAspectRatio: isCompact ? 1.6 : 1.8,
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {
@@ -75,16 +83,14 @@ class TopBoxes extends StatelessWidget {
     );
   }
 
-  String _formatDuration(Duration duration) {
+  static String _formatDuration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
-
-    if (hours > 0) {
-      return "${hours}h ${minutes}m";
-    }
-    return "${minutes}m";
+    return hours > 0 ? '${hours}h ${minutes}m' : '${minutes}m';
   }
 }
+
+// ==================== DATA CLASS ====================
 
 class _AnalyticsItem {
   final String title;
@@ -104,6 +110,8 @@ class _AnalyticsItem {
   });
 }
 
+// ==================== CARD WIDGET ====================
+
 class _AnalyticsCard extends StatefulWidget {
   final _AnalyticsItem item;
   final bool isLoading;
@@ -122,15 +130,21 @@ class _AnalyticsCard extends StatefulWidget {
 class _AnalyticsCardState extends State<_AnalyticsCard>
     with SingleTickerProviderStateMixin {
   bool _isHovered = false;
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
+
+  static const _entranceDuration = Duration(milliseconds: 600);
+  static const _hoverDuration = Duration(milliseconds: 200);
+  static const _staggerDelay = Duration(milliseconds: 100);
+  static final _identityMatrix = Matrix4.identity();
+  static final _hoverMatrix = Matrix4.identity()..translate(0.0, -2.0);
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: _entranceDuration,
       vsync: this,
     );
 
@@ -142,8 +156,7 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
 
-    // Staggered entrance animation
-    Future.delayed(Duration(milliseconds: widget.index * 100), () {
+    Future.delayed(_staggerDelay * widget.index, () {
       if (mounted) _controller.forward();
     });
   }
@@ -154,11 +167,14 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
     super.dispose();
   }
 
+  void _setHovered(bool value) {
+    if (_isHovered != value) setState(() => _isHovered = value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context)!;
 
     return AnimatedBuilder(
       animation: _controller,
@@ -172,71 +188,99 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
         );
       },
       child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
+        onEnter: (_) => _setHovered(true),
+        onExit: (_) => _setHovered(false),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () => _showDetailsFlyout(context),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: _hoverDuration,
             curve: Curves.easeOutCubic,
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  isDark
-                      ? widget.item.accentColor.withValues(alpha: 0.08)
-                      : widget.item.accentColor.withValues(alpha: 0.04),
-                  isDark ? theme.micaBackgroundColor : Colors.white,
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                color: _isHovered
-                    ? widget.item.accentColor.withValues(alpha: 0.5)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-                width: _isHovered ? 1.5 : 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: _isHovered
-                      ? widget.item.accentColor.withValues(alpha: 0.15)
-                      : Colors.black.withValues(alpha: 0.05),
-                  blurRadius: _isHovered ? 20 : 10,
-                  offset: Offset(0, _isHovered ? 8 : 4),
-                ),
-              ],
-            ),
-            transform: _isHovered
-                ? (Matrix4.identity()..translateByDouble(0.0, -2.0, 0.0, 1.0))
-                : Matrix4.identity(),
+            decoration: _buildDecoration(theme, isDark),
+            transform: _isHovered ? _hoverMatrix : _identityMatrix,
             child: widget.isLoading
-                ? _buildShimmer(context)
-                : _buildContent(context, l10n, theme),
+                ? const _ShimmerPlaceholder()
+                : _CardContent(item: widget.item, isHovered: _isHovered),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildContent(
-    BuildContext context,
-    AppLocalizations l10n,
-    FluentThemeData theme,
-  ) {
+  BoxDecoration _buildDecoration(FluentThemeData theme, bool isDark) {
+    final accent = widget.item.accentColor;
+
+    return BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          accent.withValues(alpha: isDark ? 0.08 : 0.04),
+          isDark ? theme.micaBackgroundColor : Colors.white,
+        ],
+      ),
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: _isHovered
+            ? accent.withValues(alpha: 0.5)
+            : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+        width: _isHovered ? 1.5 : 1,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: _isHovered
+              ? accent.withValues(alpha: 0.15)
+              : Colors.black.withValues(alpha: 0.05),
+          blurRadius: _isHovered ? 20 : 10,
+          offset: Offset(0, _isHovered ? 8 : 4),
+        ),
+      ],
+    );
+  }
+
+  void _showDetailsFlyout(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    displayInfoBar(
+      context,
+      builder: (context, close) {
+        return InfoBar(
+          title: Text(widget.item.title),
+          content: Text(l10n.valueLabel(widget.item.value)),
+          severity: InfoBarSeverity.info,
+          isLong: false,
+        );
+      },
+    );
+  }
+}
+
+// ==================== CARD CONTENT (STATELESS) ====================
+
+class _CardContent extends StatelessWidget {
+  final _AnalyticsItem item;
+  final bool isHovered;
+
+  const _CardContent({required this.item, required this.isHovered});
+
+  static const _positiveColor = Color(0xFF10B981);
+  static const _negativeColor = Color(0xFFEF4444);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Header Row
+        // Header
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               child: Text(
-                widget.item.title,
+                item.title,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -249,7 +293,11 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
               ),
             ),
             const SizedBox(width: 8),
-            _buildIconBadge(theme),
+            _IconBadge(
+              icon: item.icon,
+              color: item.accentColor,
+              isHovered: isHovered,
+            ),
           ],
         ),
 
@@ -259,13 +307,13 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(
-            fontSize: _isHovered ? 26 : 24,
+            fontSize: isHovered ? 26 : 24,
             fontWeight: FontWeight.w700,
             color: theme.typography.title?.color,
             letterSpacing: -0.5,
           ),
           child: Text(
-            widget.item.value,
+            item.value,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -273,34 +321,17 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
 
         const SizedBox(height: 6),
 
-        // Comparison or SubValue
-        _buildFooter(l10n, theme),
+        // Footer
+        _buildFooter(theme),
       ],
     );
   }
 
-  Widget _buildIconBadge(FluentThemeData theme) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color:
-            widget.item.accentColor.withValues(alpha: _isHovered ? 0.2 : 0.1),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Icon(
-        widget.item.icon,
-        size: 18,
-        color: widget.item.accentColor,
-      ),
-    );
-  }
-
-  Widget _buildFooter(AppLocalizations l10n, FluentThemeData theme) {
-    if (widget.item.percentChange != null) {
-      final isPositive = widget.item.percentChange! >= 0;
-      final color =
-          isPositive ? const Color(0xFF10B981) : const Color(0xFFEF4444);
+  Widget _buildFooter(FluentThemeData theme) {
+    final percent = item.percentChange;
+    if (percent != null) {
+      final isPositive = percent >= 0;
+      final color = isPositive ? _positiveColor : _negativeColor;
 
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -318,7 +349,7 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
             ),
             const SizedBox(width: 4),
             Text(
-              '${isPositive ? '+' : ''}${widget.item.percentChange!.toStringAsFixed(1)}%',
+              '${isPositive ? '+' : ''}${percent.toStringAsFixed(1)}%',
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
@@ -330,21 +361,22 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
       );
     }
 
-    if (widget.item.subValue != null) {
+    final sub = item.subValue;
+    if (sub != null) {
       return Row(
         children: [
           Container(
             width: 4,
             height: 4,
             decoration: BoxDecoration(
-              color: widget.item.accentColor,
+              color: item.accentColor,
               shape: BoxShape.circle,
             ),
           ),
           const SizedBox(width: 6),
           Flexible(
             child: Text(
-              widget.item.subValue!,
+              sub,
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
@@ -359,8 +391,42 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
 
     return const SizedBox(height: 16);
   }
+}
 
-  Widget _buildShimmer(BuildContext context) {
+// ==================== ICON BADGE (STATELESS) ====================
+
+class _IconBadge extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final bool isHovered;
+
+  const _IconBadge({
+    required this.icon,
+    required this.color,
+    required this.isHovered,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: isHovered ? 0.2 : 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Icon(icon, size: 18, color: color),
+    );
+  }
+}
+
+// ==================== SHIMMER PLACEHOLDER (STATELESS) ====================
+
+class _ShimmerPlaceholder extends StatelessWidget {
+  const _ShimmerPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
     return ShimmerLoading(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,68 +434,39 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 80,
-                height: 12,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              _shimmerBox(width: 80, height: 12, radius: 4),
+              _shimmerBox(width: 34, height: 34, radius: 10),
             ],
           ),
           const Spacer(),
-          Container(
-            width: 100,
-            height: 24,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(6),
-            ),
-          ),
+          _shimmerBox(width: 100, height: 24, radius: 6),
           const SizedBox(height: 8),
-          Container(
-            width: 60,
-            height: 16,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
+          _shimmerBox(width: 60, height: 16, radius: 4),
         ],
       ),
     );
   }
 
-  void _showDetailsFlyout(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    displayInfoBar(
-      context,
-      builder: (context, close) {
-        return InfoBar(
-          title: Text(widget.item.title),
-          content: Text(l10n.valueLabel(widget.item.value)),
-          severity: InfoBarSeverity.info,
-          isLong: false,
-        );
-      },
+  static Widget _shimmerBox({
+    required double width,
+    required double height,
+    required double radius,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(radius),
+      ),
     );
   }
 }
 
-// Shimmer Loading Widget
+// ==================== SHIMMER ANIMATION ====================
+
 class ShimmerLoading extends StatefulWidget {
   final Widget child;
-
   const ShimmerLoading({super.key, required this.child});
 
   @override
@@ -438,15 +475,15 @@ class ShimmerLoading extends StatefulWidget {
 
 class _ShimmerLoadingState extends State<ShimmerLoading>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
+  late final AnimationController _controller;
+
+  static const _duration = Duration(milliseconds: 1500);
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat();
+    _controller = AnimationController(duration: _duration, vsync: this)
+      ..repeat();
   }
 
   @override
@@ -458,37 +495,32 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
   @override
   Widget build(BuildContext context) {
     final isDark = FluentTheme.of(context).brightness == Brightness.dark;
+    final colors = isDark
+        ? [Colors.grey[800], Colors.grey[700], Colors.grey[800]]
+        : [Colors.grey[300], Colors.grey[100], Colors.grey[300]];
 
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
+        final v = _controller.value;
         return ShaderMask(
           shaderCallback: (bounds) {
             return LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: isDark
-                  ? [
-                      Colors.grey[800],
-                      Colors.grey[700],
-                      Colors.grey[800],
-                    ]
-                  : [
-                      Colors.grey[300],
-                      Colors.grey[100],
-                      Colors.grey[300],
-                    ],
+              colors: colors,
               stops: [
-                _controller.value - 0.3,
-                _controller.value,
-                _controller.value + 0.3,
-              ].map((e) => e.clamp(0.0, 1.0)).toList(),
+                (v - 0.3).clamp(0.0, 1.0),
+                v.clamp(0.0, 1.0),
+                (v + 0.3).clamp(0.0, 1.0),
+              ],
             ).createShader(bounds);
           },
           blendMode: BlendMode.srcATop,
-          child: widget.child,
+          child: child,
         );
       },
+      child: widget.child,
     );
   }
 }

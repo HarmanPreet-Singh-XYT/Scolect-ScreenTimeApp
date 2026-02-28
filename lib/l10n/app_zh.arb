@@ -1970,5 +1970,13 @@
 },
 "noData": "暂无数据",
 "yesterday": "昨天",
-"changelog": "更新日志"
+"changelog": "更新日志",
+"exportingLabel": "正在导出...",
+"@exportingLabel": {
+  "description": "导出进行中时显示在导出按钮上的标签"
+},
+"exportExcelLabel": "导出 Excel",
+"@exportExcelLabel": {
+  "description": "显示在导出按钮上的标签"
+}
 }

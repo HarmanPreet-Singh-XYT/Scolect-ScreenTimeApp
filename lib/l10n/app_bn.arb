@@ -1970,6 +1970,14 @@
 },
 "noData": "কোনো তথ্য নেই",
 "yesterday": "গতকাল",
-"changelog": "পরিবর্তনের তালিকা"
+"changelog": "পরিবর্তনের তালিকা",
+"exportingLabel": "রপ্তানি করা হচ্ছে...",
+"@exportingLabel": {
+  "description": "রপ্তানি প্রক্রিয়া চলাকালীন রপ্তানি বোতামে প্রদর্শিত লেবেল"
+},
+"exportExcelLabel": "Excel রপ্তানি করুন",
+"@exportExcelLabel": {
+  "description": "রপ্তানি বোতামে প্রদর্শিত লেবেল"
+}
 
 }

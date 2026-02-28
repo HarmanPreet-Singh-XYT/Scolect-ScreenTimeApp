@@ -2966,4 +2966,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get changelog => '変更履歴';
+
+  @override
+  String get exportingLabel => 'エクスポート中...';
+
+  @override
+  String get exportExcelLabel => 'Excelをエクスポート';
 }

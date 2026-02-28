@@ -1964,5 +1964,13 @@
 },
 "noData": "Aucune donnée",
 "yesterday": "Hier",
-"changelog": "Journal des modifications"
+"changelog": "Journal des modifications",
+"exportingLabel": "Exportation en cours...",
+"@exportingLabel": {
+  "description": "Libellé affiché sur le bouton d’exportation pendant le processus d’exportation"
+},
+"exportExcelLabel": "Exporter Excel",
+"@exportExcelLabel": {
+  "description": "Libellé affiché sur le bouton d’exportation"
+}
 }
