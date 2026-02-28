@@ -2,304 +2,345 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
 class AppCategory {
-  final String name; // Keep English name for internal identification
+  final String name;
   final List<String> apps;
 
-  const AppCategory({
-    required this.name, 
-    required this.apps,
-  });
+  /// Pre-computed lowercase app names for fast matching.
+  late final List<String> _lowerApps =
+      apps.map((a) => a.toLowerCase()).toList(growable: false);
 
-  // Get localized display name
+  AppCategory({required this.name, required this.apps});
+
   String getLocalizedName(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    switch (name) {
-      case "All":
-        return l10n.categoryAll;
-      case "Productivity":
-        return l10n.categoryProductivity;
-      case "Development":
-        return l10n.categoryDevelopment;
-      case "Social Media":
-        return l10n.categorySocialMedia;
-      case "Entertainment":
-        return l10n.categoryEntertainment;
-      case "Gaming":
-        return l10n.categoryGaming;
-      case "Communication":
-        return l10n.categoryCommunication;
-      case "Web Browsing":
-        return l10n.categoryWebBrowsing;
-      case "Creative":
-        return l10n.categoryCreative;
-      case "Education":
-        return l10n.categoryEducation;
-      case "Utility":
-        return l10n.categoryUtility;
-      case "Uncategorized":
-        return l10n.categoryUncategorized;
-      default:
-        return name;
-    }
+    return _categoryL10nMap[name]?.call(l10n) ?? name;
   }
 
-  // Method to check if an app belongs to this category
-  // Now checks against localized app names too
-  bool containsApp(String appName, BuildContext context) {
+  bool containsApp(String appName, BuildContext? context) {
+    final lower = appName.toLowerCase();
+
+    // Fast path: check pre-computed lowercase English names
+    if (_lowerApps.any((app) => lower.contains(app))) return true;
+
+    // Slow path: check localized names only when context is available
+    if (context == null) return false;
     final l10n = AppLocalizations.of(context)!;
-    
-    // Check against English names
-    bool matchesEnglish = apps.any(
-      (app) => appName.toLowerCase().contains(app.toLowerCase())
-    );
-    
-    if (matchesEnglish) return true;
-    
-    // Check against localized app names
-    for (var app in apps) {
-      String localizedAppName = _getLocalizedAppName(app, l10n);
-      if (appName.toLowerCase().contains(localizedAppName.toLowerCase())) {
-        return true;
-      }
-    }
-    
-    return false;
-  }
-
-  // Get localized app name
-  static String _getLocalizedAppName(String appName, AppLocalizations l10n) {
-    // Map English app names to their localized versions
-    switch (appName) {
-      // Productivity
-      case "Microsoft Word":
-        return l10n.appMicrosoftWord;
-      case "Excel":
-        return l10n.appExcel;
-      case "PowerPoint":
-        return l10n.appPowerPoint;
-      case "Google Docs":
-        return l10n.appGoogleDocs;
-      case "Notion":
-        return l10n.appNotion;
-      case "Evernote":
-        return l10n.appEvernote;
-      case "Trello":
-        return l10n.appTrello;
-      case "Asana":
-        return l10n.appAsana;
-      case "Slack":
-        return l10n.appSlack;
-      case "Microsoft Teams":
-        return l10n.appMicrosoftTeams;
-      case "Zoom":
-        return l10n.appZoom;
-      case "Google Calendar":
-        return l10n.appGoogleCalendar;
-      case "Apple Calendar":
-        return l10n.appAppleCalendar;
-      
-      // Development
-      case "Visual Studio Code":
-        return l10n.appVisualStudioCode;
-      case "Terminal":
-        return l10n.appTerminal;
-      case "Command Prompt":
-        return l10n.appCommandPrompt;
-      
-      // Web Browsing
-      case "Chrome":
-        return l10n.appChrome;
-      case "Firefox":
-        return l10n.appFirefox;
-      case "Safari":
-        return l10n.appSafari;
-      case "Edge":
-        return l10n.appEdge;
-      case "Opera":
-        return l10n.appOpera;
-      case "Brave":
-        return l10n.appBrave;
-      
-      // Entertainment
-      case "Netflix":
-        return l10n.appNetflix;
-      case "YouTube":
-        return l10n.appYouTube;
-      case "Spotify":
-        return l10n.appSpotify;
-      case "Apple Music":
-        return l10n.appAppleMusic;
-      
-      // Utility
-      case "Calculator":
-        return l10n.appCalculator;
-      case "Notes":
-        return l10n.appNotes;
-      case "System Preferences":
-        return l10n.appSystemPreferences;
-      case "Task Manager":
-        return l10n.appTaskManager;
-      case "File Explorer":
-        return l10n.appFileExplorer;
-      case "Dropbox":
-        return l10n.appDropbox;
-      case "Google Drive":
-        return l10n.appGoogleDrive;
-      
-      // Default: return original name if no translation
-      default:
-        return appName;
-    }
+    return apps.any((app) {
+      final localized = _appL10nMap[app]?.call(l10n);
+      return localized != null && lower.contains(localized.toLowerCase());
+    });
   }
 }
 
 class AppCategories {
+  AppCategories._();
+
   static final List<AppCategory> categories = [
-    const AppCategory(
-      name: "All",
-      apps: [],
-    ),
-    const AppCategory(
+    AppCategory(name: "All", apps: const []),
+    AppCategory(
       name: "Productivity",
-      apps: [
-        "Microsoft Word", "Excel", "PowerPoint", "Google Docs", "Notion", 
-        "Evernote", "Trello", "Asana", "Slack", "Microsoft Teams", 
-        "Zoom", "Google Calendar", "Apple Calendar"
+      apps: const [
+        "Microsoft Word",
+        "Excel",
+        "PowerPoint",
+        "Google Docs",
+        "Notion",
+        "Evernote",
+        "Trello",
+        "Asana",
+        "Slack",
+        "Microsoft Teams",
+        "Zoom",
+        "Google Calendar",
+        "Apple Calendar",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Development",
-      apps: [
-        "Visual Studio Code", "IntelliJ IDEA", "PyCharm", "Xcode", 
-        "Eclipse", "Android Studio", "Sublime Text", "GitHub Desktop", 
-        "Terminal", "Command Prompt", "iTerm"
+      apps: const [
+        "Visual Studio Code",
+        "IntelliJ IDEA",
+        "PyCharm",
+        "Xcode",
+        "Eclipse",
+        "Android Studio",
+        "Sublime Text",
+        "GitHub Desktop",
+        "Terminal",
+        "Command Prompt",
+        "iTerm",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Social Media",
-      apps: [
-        "Facebook", "Instagram", "Twitter", "LinkedIn", "TikTok", 
-        "Snapchat", "Reddit", "WhatsApp", "Messenger"
+      apps: const [
+        "Facebook",
+        "Instagram",
+        "Twitter",
+        "LinkedIn",
+        "TikTok",
+        "Snapchat",
+        "Reddit",
+        "WhatsApp",
+        "Messenger",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Entertainment",
-      apps: [
-        "Netflix", "YouTube", "Spotify", "Apple Music", "Amazon Prime Video", 
-        "Hulu", "Disney+", "Twitch", "VLC Media Player", "Plex"
+      apps: const [
+        "Netflix",
+        "YouTube",
+        "Spotify",
+        "Apple Music",
+        "Amazon Prime Video",
+        "Hulu",
+        "Disney+",
+        "Twitch",
+        "VLC Media Player",
+        "Plex",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Gaming",
-      apps: [
-        "Steam", "Epic Games Launcher", "Origin", "Uplay", 
-        "Minecraft", "League of Legends", "World of Warcraft", 
-        "Counter-Strike", "Valorant"
+      apps: const [
+        "Steam",
+        "Epic Games Launcher",
+        "Origin",
+        "Uplay",
+        "Minecraft",
+        "League of Legends",
+        "World of Warcraft",
+        "Counter-Strike",
+        "Valorant",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Communication",
-      apps: [
-        "Zoom", "Skype", "Microsoft Teams", "Google Meet", "FaceTime", 
-        "Telegram", "Signal", "Discord"
+      apps: const [
+        "Zoom",
+        "Skype",
+        "Microsoft Teams",
+        "Google Meet",
+        "FaceTime",
+        "Telegram",
+        "Signal",
+        "Discord",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Web Browsing",
-      apps: [
-        "Chrome", "Firefox", "Safari", "Edge", "Opera", 
-        "Brave", "Vivaldi"
+      apps: const [
+        "Chrome",
+        "Firefox",
+        "Safari",
+        "Edge",
+        "Opera",
+        "Brave",
+        "Vivaldi",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Creative",
-      apps: [
-        "Adobe Photoshop", "Illustrator", "Premiere Pro", "Final Cut Pro", 
-        "Blender", "Lightroom", "Figma", "Sketch", "InDesign"
+      apps: const [
+        "Adobe Photoshop",
+        "Illustrator",
+        "Premiere Pro",
+        "Final Cut Pro",
+        "Blender",
+        "Lightroom",
+        "Figma",
+        "Sketch",
+        "InDesign",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Education",
-      apps: [
-        "Coursera", "edX", "Udemy", "Khan Academy", "Duolingo", 
-        "Grammarly", "Kindle", "Audible"
+      apps: const [
+        "Coursera",
+        "edX",
+        "Udemy",
+        "Khan Academy",
+        "Duolingo",
+        "Grammarly",
+        "Kindle",
+        "Audible",
       ],
     ),
-    const AppCategory(
+    AppCategory(
       name: "Utility",
-      apps: [
-        "Calculator", "Notes", "Terminal", "System Preferences", 
-        "Task Manager", "File Explorer", "Dropbox", "Google Drive"
+      apps: const [
+        "Calculator",
+        "Notes",
+        "Terminal",
+        "System Preferences",
+        "Task Manager",
+        "File Explorer",
+        "Dropbox",
+        "Google Drive",
       ],
     ),
   ];
 
-  // Method to categorize an app (checks against both English and localized names)
+  /// Pre-built lookup: category name → AppCategory
+  static final Map<String, AppCategory> _categoryMap = {
+    for (final cat in categories) cat.name: cat,
+  };
+
+  static const _uncategorized = "Uncategorized";
+
   static String categorizeApp(String appName, [BuildContext? context]) {
-    for (var category in categories) {
-      if (context != null) {
-        if (category.containsApp(appName, context)) {
-          return category.name;
-        }
-      } else {
-        // Fallback to English-only matching when context is not available
-        if (category.apps.any((app) => appName.toLowerCase().contains(app.toLowerCase()))) {
-          return category.name;
-        }
+    // Skip "All" (index 0) — it matches everything
+    for (var i = 1; i < categories.length; i++) {
+      if (categories[i].containsApp(appName, context)) {
+        return categories[i].name;
       }
     }
-    return "Uncategorized";
+    return _uncategorized;
   }
 
-  // Get localized category name
-  static String getLocalizedCategoryName(String categoryName, BuildContext context) {
-    final category = categories.firstWhere(
-      (cat) => cat.name == categoryName,
-      orElse: () => const AppCategory(name: "Uncategorized", apps: []),
-    );
-    return category.getLocalizedName(context);
+  static String getLocalizedCategoryName(
+      String categoryName, BuildContext context) {
+    return (_categoryMap[categoryName] ??
+            AppCategory(name: _uncategorized, apps: const []))
+        .getLocalizedName(context);
   }
 
-  // Method to get category color
-  static Color getCategoryColor(String categoryName) {
-    switch (categoryName) {
-      case "Productivity":
-        return Colors.blue;
-      case "Development":
-        return Colors.green;
-      case "Social Media":
-        return Colors.purple;
-      case "Entertainment":
-        return Colors.red;
-      case "Gaming":
-        return Colors.orange;
-      case "Communication":
-        return Colors.teal;
-      case "Web Browsing":
-        return Colors.grey;
-      case "Creative":
-        return Colors.yellow;
-      case "Education":
-        return Colors.successPrimaryColor;
-      case "Utility":
-        return Colors.warningPrimaryColor;
-      default:
-        return Colors.grey[500];
-    }
-  }
+  static final Map<String, Color> _colorMap = {
+    "Productivity": Colors.blue,
+    "Development": Colors.green,
+    "Social Media": Colors.purple,
+    "Entertainment": Colors.red,
+    "Gaming": Colors.orange,
+    "Communication": Colors.teal,
+    "Web Browsing": Colors.grey,
+    "Creative": Colors.yellow,
+    "Education": Colors.successPrimaryColor,
+    "Utility": Colors.warningPrimaryColor,
+  };
 
-  // Get all category names for dropdown/filter
-  static List<String> getCategoryNames() {
-    return categories.map((cat) => cat.name).toList();
-  }
+  static Color getCategoryColor(String categoryName) =>
+      _colorMap[categoryName] ?? Colors.grey[500];
 
-  // Get localized category names for dropdown/filter
-  static List<String> getLocalizedCategoryNames(BuildContext context) {
-    return categories.map((cat) => cat.getLocalizedName(context)).toList();
-  }
+  static List<String> getCategoryNames() =>
+      categories.map((c) => c.name).toList(growable: false);
+
+  static List<String> getLocalizedCategoryNames(BuildContext context) =>
+      categories
+          .map((c) => c.getLocalizedName(context))
+          .toList(growable: false);
 }
 
-// Updated widget with localization
+// ────────────────────── Localization Maps ──────────────────────
+// Single source of truth — replaces two giant switch statements.
+
+typedef _L10nAccessor = String Function(AppLocalizations l10n);
+
+const Map<String, _L10nAccessor> _categoryL10nMap = {
+  "All": _catAll,
+  "Productivity": _catProductivity,
+  "Development": _catDevelopment,
+  "Social Media": _catSocialMedia,
+  "Entertainment": _catEntertainment,
+  "Gaming": _catGaming,
+  "Communication": _catCommunication,
+  "Web Browsing": _catWebBrowsing,
+  "Creative": _catCreative,
+  "Education": _catEducation,
+  "Utility": _catUtility,
+  "Uncategorized": _catUncategorized,
+};
+
+// Top-level tear-off–friendly functions (const-map compatible)
+String _catAll(AppLocalizations l) => l.categoryAll;
+String _catProductivity(AppLocalizations l) => l.categoryProductivity;
+String _catDevelopment(AppLocalizations l) => l.categoryDevelopment;
+String _catSocialMedia(AppLocalizations l) => l.categorySocialMedia;
+String _catEntertainment(AppLocalizations l) => l.categoryEntertainment;
+String _catGaming(AppLocalizations l) => l.categoryGaming;
+String _catCommunication(AppLocalizations l) => l.categoryCommunication;
+String _catWebBrowsing(AppLocalizations l) => l.categoryWebBrowsing;
+String _catCreative(AppLocalizations l) => l.categoryCreative;
+String _catEducation(AppLocalizations l) => l.categoryEducation;
+String _catUtility(AppLocalizations l) => l.categoryUtility;
+String _catUncategorized(AppLocalizations l) => l.categoryUncategorized;
+
+const Map<String, _L10nAccessor> _appL10nMap = {
+  // Productivity
+  "Microsoft Word": _appMicrosoftWord,
+  "Excel": _appExcel,
+  "PowerPoint": _appPowerPoint,
+  "Google Docs": _appGoogleDocs,
+  "Notion": _appNotion,
+  "Evernote": _appEvernote,
+  "Trello": _appTrello,
+  "Asana": _appAsana,
+  "Slack": _appSlack,
+  "Microsoft Teams": _appMicrosoftTeams,
+  "Zoom": _appZoom,
+  "Google Calendar": _appGoogleCalendar,
+  "Apple Calendar": _appAppleCalendar,
+  // Development
+  "Visual Studio Code": _appVSCode,
+  "Terminal": _appTerminal,
+  "Command Prompt": _appCommandPrompt,
+  // Web Browsing
+  "Chrome": _appChrome,
+  "Firefox": _appFirefox,
+  "Safari": _appSafari,
+  "Edge": _appEdge,
+  "Opera": _appOpera,
+  "Brave": _appBrave,
+  // Entertainment
+  "Netflix": _appNetflix,
+  "YouTube": _appYouTube,
+  "Spotify": _appSpotify,
+  "Apple Music": _appAppleMusic,
+  // Utility
+  "Calculator": _appCalculator,
+  "Notes": _appNotes,
+  "System Preferences": _appSystemPreferences,
+  "Task Manager": _appTaskManager,
+  "File Explorer": _appFileExplorer,
+  "Dropbox": _appDropbox,
+  "Google Drive": _appGoogleDrive,
+};
+
+String _appMicrosoftWord(AppLocalizations l) => l.appMicrosoftWord;
+String _appExcel(AppLocalizations l) => l.appExcel;
+String _appPowerPoint(AppLocalizations l) => l.appPowerPoint;
+String _appGoogleDocs(AppLocalizations l) => l.appGoogleDocs;
+String _appNotion(AppLocalizations l) => l.appNotion;
+String _appEvernote(AppLocalizations l) => l.appEvernote;
+String _appTrello(AppLocalizations l) => l.appTrello;
+String _appAsana(AppLocalizations l) => l.appAsana;
+String _appSlack(AppLocalizations l) => l.appSlack;
+String _appMicrosoftTeams(AppLocalizations l) => l.appMicrosoftTeams;
+String _appZoom(AppLocalizations l) => l.appZoom;
+String _appGoogleCalendar(AppLocalizations l) => l.appGoogleCalendar;
+String _appAppleCalendar(AppLocalizations l) => l.appAppleCalendar;
+String _appVSCode(AppLocalizations l) => l.appVisualStudioCode;
+String _appTerminal(AppLocalizations l) => l.appTerminal;
+String _appCommandPrompt(AppLocalizations l) => l.appCommandPrompt;
+String _appChrome(AppLocalizations l) => l.appChrome;
+String _appFirefox(AppLocalizations l) => l.appFirefox;
+String _appSafari(AppLocalizations l) => l.appSafari;
+String _appEdge(AppLocalizations l) => l.appEdge;
+String _appOpera(AppLocalizations l) => l.appOpera;
+String _appBrave(AppLocalizations l) => l.appBrave;
+String _appNetflix(AppLocalizations l) => l.appNetflix;
+String _appYouTube(AppLocalizations l) => l.appYouTube;
+String _appSpotify(AppLocalizations l) => l.appSpotify;
+String _appAppleMusic(AppLocalizations l) => l.appAppleMusic;
+String _appCalculator(AppLocalizations l) => l.appCalculator;
+String _appNotes(AppLocalizations l) => l.appNotes;
+String _appSystemPreferences(AppLocalizations l) => l.appSystemPreferences;
+String _appTaskManager(AppLocalizations l) => l.appTaskManager;
+String _appFileExplorer(AppLocalizations l) => l.appFileExplorer;
+String _appDropbox(AppLocalizations l) => l.appDropbox;
+String _appGoogleDrive(AppLocalizations l) => l.appGoogleDrive;
+
+// ────────────────────────── Widget ──────────────────────────
+
 class AppCategoryWidget extends StatelessWidget {
   final String appName;
 
@@ -307,9 +348,10 @@ class AppCategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String categoryName = AppCategories.categorizeApp(appName, context);
-    String localizedName = AppCategories.getLocalizedCategoryName(categoryName, context);
-    Color categoryColor = AppCategories.getCategoryColor(categoryName);
+    final categoryName = AppCategories.categorizeApp(appName, context);
+    final localizedName =
+        AppCategories.getLocalizedCategoryName(categoryName, context);
+    final categoryColor = AppCategories.getCategoryColor(categoryName);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),

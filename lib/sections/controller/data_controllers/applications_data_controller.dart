@@ -9,17 +9,11 @@ extension DurationFormatter on Duration {
     final int minutes = inMinutes % 60;
 
     if (hours > 0) {
-      if (minutes > 0) {
-        return "${hours}h ${minutes}m";
-      } else {
-        return "${hours}h";
-      }
+      return minutes > 0 ? "${hours}h ${minutes}m" : "${hours}h";
     } else if (minutes > 0) {
       return "${minutes}m";
-    } else {
-      final int seconds = inSeconds % 60;
-      return "${seconds}s";
     }
+    return "${inSeconds % 60}s";
   }
 }
 
@@ -28,8 +22,10 @@ enum TimeRange { day, week, month }
 class DateRange {
   final DateTime startDate;
   final DateTime endDate;
+  final int dayCount;
 
-  DateRange({required this.startDate, required this.endDate});
+  DateRange({required this.startDate, required this.endDate})
+      : dayCount = endDate.difference(startDate).inDays + 1;
 }
 
 class ApplicationBasicDetail {
@@ -43,16 +39,16 @@ class ApplicationBasicDetail {
   final Duration dailyLimit;
   final bool limitStatus;
 
-  ApplicationBasicDetail(
-      {required this.name,
-      required this.category,
-      required this.screenTime,
-      required this.isTracking,
-      required this.isHidden,
-      required this.isProductive,
-      required this.dailyLimit,
-      required this.limitStatus})
-      : formattedScreenTime = screenTime.toHourMinuteFormat();
+  ApplicationBasicDetail({
+    required this.name,
+    required this.category,
+    required this.screenTime,
+    required this.isTracking,
+    required this.isHidden,
+    required this.isProductive,
+    required this.dailyLimit,
+    required this.limitStatus,
+  }) : formattedScreenTime = screenTime.toHourMinuteFormat();
 }
 
 class UsageTrendsData {
@@ -67,12 +63,12 @@ class UsageTrendsData {
     required this.daily,
     required this.weekly,
     required this.monthly,
-  })  : formattedDaily = daily
-            .map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-        formattedWeekly = weekly
-            .map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-        formattedMonthly = monthly
-            .map((key, value) => MapEntry(key, value.toHourMinuteFormat()));
+  })  : formattedDaily =
+            daily.map((k, v) => MapEntry(k, v.toHourMinuteFormat())),
+        formattedWeekly =
+            weekly.map((k, v) => MapEntry(k, v.toHourMinuteFormat())),
+        formattedMonthly =
+            monthly.map((k, v) => MapEntry(k, v.toHourMinuteFormat()));
 }
 
 class UsageInsights {
@@ -165,10 +161,18 @@ class ApplicationDetailedData {
     required this.usageInsights,
     required this.comparisons,
     required this.sessionBreakdown,
-  })  : formattedHourlyBreakdown = hourlyBreakdown
-            .map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-        formattedCategoryUsage = categoryUsage
-            .map((key, value) => MapEntry(key, value.toHourMinuteFormat()));
+  })  : formattedHourlyBreakdown =
+            hourlyBreakdown.map((k, v) => MapEntry(k, v.toHourMinuteFormat())),
+        formattedCategoryUsage =
+            categoryUsage.map((k, v) => MapEntry(k, v.toHourMinuteFormat()));
+}
+
+// Helper class to return combined insights and session data
+class _InsightsAndSession {
+  final UsageInsights insights;
+  final SessionBreakdown session;
+
+  _InsightsAndSession({required this.insights, required this.session});
 }
 
 class ApplicationsDataProvider {
@@ -178,51 +182,57 @@ class ApplicationsDataProvider {
   ApplicationsDataProvider._internal();
 
   final AppDataStore _dataStore = AppDataStore();
+  bool _initialized = false;
 
-  /// OPTIMIZED: Already efficient - single pass through apps
-  Future<List<ApplicationBasicDetail>> fetchAllApplications() async {
-    await _dataStore.init();
-
-    final List<ApplicationBasicDetail> applications = [];
-    final DateTime today = DateTime.now();
-    final DateTime startOfDay = DateTime(today.year, today.month, today.day);
-
-    // 🚀 Single loop - cache/Hive fallback handled in getAppUsage
-    for (final appName in _dataStore.allAppNames) {
-      final AppMetadata? metadata = _dataStore.getAppMetadata(appName);
-      final AppUsageRecord? usageRecord =
-          _dataStore.getAppUsage(appName, startOfDay);
-
-      if (metadata != null) {
-        applications.add(ApplicationBasicDetail(
-            name: appName,
-            category: metadata.category,
-            screenTime: usageRecord?.timeSpent ?? Duration.zero,
-            isTracking: metadata.isTracking,
-            isHidden: !metadata.isVisible,
-            isProductive: metadata.isProductive,
-            dailyLimit: metadata.dailyLimit,
-            limitStatus: metadata.limitStatus));
-      }
+  Future<void> _ensureInitialized() async {
+    if (!_initialized) {
+      _initialized = await _dataStore.init();
     }
-
-    applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
-    return applications;
   }
 
-  /// Already efficient - single app query
-  Future<ApplicationBasicDetail> fetchApplicationByName(String appName) async {
-    await _dataStore.init();
+  // ============================================================
+  // HELPER: Iterate dates in range (eliminates repeated while-loops)
+  // ============================================================
 
-    final AppMetadata? metadata = _dataStore.getAppMetadata(appName);
-    if (metadata == null) {
-      throw Exception('App metadata not found for: $appName');
+  Iterable<DateTime> _datesInRange(DateRange range) sync* {
+    DateTime current = range.startDate;
+    while (!current.isAfter(range.endDate)) {
+      yield current;
+      current = current.add(const Duration(days: 1));
     }
+  }
+
+  /// Sum total usage for an app across a date range.
+  Duration _sumUsageInRange(String appName, DateRange range) {
+    Duration total = Duration.zero;
+    for (final date in _datesInRange(range)) {
+      total +=
+          _dataStore.getAppUsage(appName, date)?.timeSpent ?? Duration.zero;
+    }
+    return total;
+  }
+
+  DateTime _minDate(DateTime a, DateTime b) => a.isBefore(b) ? a : b;
+
+  // ============================================================
+  // PUBLIC API
+  // ============================================================
+
+  Future<List<ApplicationBasicDetail>> fetchAllApplications() async {
+    await _ensureInitialized();
 
     final DateTime today = DateTime.now();
-    final AppUsageRecord? usageRecord = _dataStore.getAppUsage(appName, today);
+    final DateTime startOfDay = DateTime(today.year, today.month, today.day);
+    final appNames = _dataStore.allAppNames;
+    final applications = <ApplicationBasicDetail>[];
 
-    return ApplicationBasicDetail(
+    for (final appName in appNames) {
+      final metadata = _dataStore.getAppMetadata(appName);
+      if (metadata == null) continue;
+
+      final usageRecord = _dataStore.getAppUsage(appName, startOfDay);
+
+      applications.add(ApplicationBasicDetail(
         name: appName,
         category: metadata.category,
         screenTime: usageRecord?.timeSpent ?? Duration.zero,
@@ -230,44 +240,81 @@ class ApplicationsDataProvider {
         isHidden: !metadata.isVisible,
         isProductive: metadata.isProductive,
         dailyLimit: metadata.dailyLimit,
-        limitStatus: metadata.limitStatus);
+        limitStatus: metadata.limitStatus,
+      ));
+    }
+
+    applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
+    return applications;
   }
 
-  Future<ApplicationDetailedData> fetchApplicationDetails(
-      String appName, TimeRange timeRange) async {
-    await _dataStore.init();
+  Future<ApplicationBasicDetail> fetchApplicationByName(String appName) async {
+    await _ensureInitialized();
 
-    final AppMetadata? metadata = _dataStore.getAppMetadata(appName);
+    final metadata = _dataStore.getAppMetadata(appName);
     if (metadata == null) {
       throw Exception('App metadata not found for: $appName');
     }
 
-    final DateRange dateRange = _getDateRange(timeRange);
+    final usageRecord = _dataStore.getAppUsage(appName, DateTime.now());
 
-    // All these methods are already efficient - they use getAppUsage which has cache fallback
-    final usageTrendsData = await _fetchUsageTrendsData(appName, dateRange);
-    final hourlyBreakdownData =
-        await _fetchHourlyBreakdownData(appName, dateRange);
-    final categoryUsageData =
-        await _fetchCategoryUsageData(appName, metadata.category, dateRange);
-    final usageInsights = await _fetchUsageInsights(appName, dateRange);
-    final comparisonsData =
-        await _fetchComparisonsData(appName, metadata.category, dateRange);
-    final sessionBreakdown = await _fetchSessionBreakdown(appName, dateRange);
-
-    return ApplicationDetailedData(
-      usageTrends: usageTrendsData,
-      hourlyBreakdown: hourlyBreakdownData,
-      categoryUsage: categoryUsageData,
-      usageInsights: usageInsights,
-      comparisons: comparisonsData,
-      sessionBreakdown: sessionBreakdown,
+    return ApplicationBasicDetail(
+      name: appName,
+      category: metadata.category,
+      screenTime: usageRecord?.timeSpent ?? Duration.zero,
+      isTracking: metadata.isTracking,
+      isHidden: !metadata.isVisible,
+      isProductive: metadata.isProductive,
+      dailyLimit: metadata.dailyLimit,
+      limitStatus: metadata.limitStatus,
     );
   }
 
+  /// OPTIMIZED: Single date-range iteration shared across all analytics.
+  Future<ApplicationDetailedData> fetchApplicationDetails(
+      String appName, TimeRange timeRange) async {
+    await _ensureInitialized();
+
+    final metadata = _dataStore.getAppMetadata(appName);
+    if (metadata == null) {
+      throw Exception('App metadata not found for: $appName');
+    }
+
+    final dateRange = _getDateRange(timeRange);
+
+    // ── Single pass: collect all records once ──
+    final records = <DateTime, AppUsageRecord?>{};
+    for (final date in _datesInRange(dateRange)) {
+      records[date] = _dataStore.getAppUsage(appName, date);
+    }
+
+    // ── Build all analytics from the shared records map ──
+    final usageTrends = _buildUsageTrends(records, dateRange);
+    final hourlyBreakdown = _buildHourlyBreakdown(records);
+    final insightsAndSession =
+        _buildInsightsAndSession(records, hourlyBreakdown, dateRange);
+    final categoryUsage =
+        _buildCategoryUsage(appName, metadata.category, dateRange);
+    final comparisons =
+        _buildComparisons(appName, metadata.category, dateRange, records);
+
+    return ApplicationDetailedData(
+      usageTrends: usageTrends,
+      hourlyBreakdown: hourlyBreakdown,
+      categoryUsage: categoryUsage,
+      usageInsights: insightsAndSession.insights,
+      comparisons: comparisons,
+      sessionBreakdown: insightsAndSession.session,
+    );
+  }
+
+  // ============================================================
+  // DATE RANGE
+  // ============================================================
+
   DateRange _getDateRange(TimeRange timeRange) {
-    final DateTime now = DateTime.now();
-    final DateTime today = DateTime(now.year, now.month, now.day);
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
 
     switch (timeRange) {
       case TimeRange.day:
@@ -285,74 +332,51 @@ class ApplicationsDataProvider {
     }
   }
 
-  /// Already optimized - uses getAppUsage with cache fallback
-  Future<UsageTrendsData> _fetchUsageTrendsData(
-      String appName, DateRange dateRange) async {
-    final Map<String, Duration> dailyUsage = {};
-    final Map<String, Duration> weeklyUsage = {};
-    final Map<String, Duration> monthlyUsage = {};
+  // ============================================================
+  // USAGE TRENDS - Uses pre-fetched records
+  // ============================================================
 
-    // Daily usage
-    DateTime currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
-      final String dateKey = DateFormat('MM/dd').format(currentDate);
+  UsageTrendsData _buildUsageTrends(
+      Map<DateTime, AppUsageRecord?> records, DateRange dateRange) {
+    final dailyUsage = <String, Duration>{};
+    final weeklyUsage = <String, Duration>{};
+    final monthlyUsage = <String, Duration>{};
 
-      dailyUsage[dateKey] = record?.timeSpent ?? Duration.zero;
-      currentDate = currentDate.add(const Duration(days: 1));
+    final dateFormat = DateFormat('MM/dd');
+    final monthFormat = DateFormat('MMM');
+
+    // Single iteration builds daily + monthly simultaneously
+    for (final entry in records.entries) {
+      final date = entry.key;
+      final usage = entry.value?.timeSpent ?? Duration.zero;
+
+      dailyUsage[dateFormat.format(date)] = usage;
+
+      if (dateRange.dayCount >= 28) {
+        final monthKey = monthFormat.format(date);
+        monthlyUsage.update(monthKey, (v) => v + usage, ifAbsent: () => usage);
+      }
     }
 
-    // Weekly usage
-    if (dateRange.endDate.difference(dateRange.startDate).inDays >= 7) {
-      final int totalWeeks =
-          (dateRange.endDate.difference(dateRange.startDate).inDays ~/ 7) + 1;
-
-      for (int weekIndex = 0; weekIndex < totalWeeks; weekIndex++) {
+    // Weekly aggregation
+    if (dateRange.dayCount >= 7) {
+      final totalWeeks = (dateRange.dayCount - 1) ~/ 7 + 1;
+      for (int w = 0; w < totalWeeks; w++) {
         Duration weekTotal = Duration.zero;
+        final weekStart = dateRange.startDate.add(Duration(days: w * 7));
+        final weekEnd =
+            _minDate(weekStart.add(const Duration(days: 6)), dateRange.endDate);
 
-        DateTime weekStart =
-            dateRange.startDate.add(Duration(days: weekIndex * 7));
-        DateTime weekEnd = weekStart.add(const Duration(days: 6));
-
-        if (weekEnd.isAfter(dateRange.endDate)) {
-          weekEnd = dateRange.endDate;
-        }
-
-        DateTime currentWeekDate = weekStart;
-        while (currentWeekDate.isBefore(weekEnd) ||
-            currentWeekDate.isAtSameMomentAs(weekEnd)) {
-          final AppUsageRecord? record =
-              _dataStore.getAppUsage(appName, currentWeekDate);
-          weekTotal += record?.timeSpent ?? Duration.zero;
-          currentWeekDate = currentWeekDate.add(const Duration(days: 1));
+        DateTime d = weekStart;
+        while (!d.isAfter(weekEnd)) {
+          weekTotal += records[d]?.timeSpent ?? Duration.zero;
+          d = d.add(const Duration(days: 1));
         }
 
         if (weekTotal > Duration.zero) {
-          weeklyUsage['Week ${weekIndex + 1}'] = weekTotal;
+          weeklyUsage['Week ${w + 1}'] = weekTotal;
         }
       }
-    }
-
-    // Monthly usage
-    if (dateRange.endDate.difference(dateRange.startDate).inDays >= 28) {
-      final Map<String, Duration> monthMap = {};
-
-      currentDate = dateRange.startDate;
-      while (currentDate.isBefore(dateRange.endDate) ||
-          currentDate.isAtSameMomentAs(dateRange.endDate)) {
-        final String monthKey = DateFormat('MMM').format(currentDate);
-        final AppUsageRecord? record =
-            _dataStore.getAppUsage(appName, currentDate);
-
-        monthMap[monthKey] = (monthMap[monthKey] ?? Duration.zero) +
-            (record?.timeSpent ?? Duration.zero);
-
-        currentDate = currentDate.add(const Duration(days: 1));
-      }
-
-      monthlyUsage.addAll(monthMap);
     }
 
     return UsageTrendsData(
@@ -362,417 +386,229 @@ class ApplicationsDataProvider {
     );
   }
 
-  /// Already optimized - uses getAppUsage with cache fallback
-  Future<Map<int, Duration>> _fetchHourlyBreakdownData(
-      String appName, DateRange dateRange) async {
-    final Map<int, Duration> hourlyUsage = {};
+  // ============================================================
+  // HOURLY BREAKDOWN - Uses pre-fetched records
+  // ============================================================
 
-    for (int hour = 0; hour < 24; hour++) {
-      hourlyUsage[hour] = Duration.zero;
+  Map<int, Duration> _buildHourlyBreakdown(
+      Map<DateTime, AppUsageRecord?> records) {
+    final hourlyUsage = <int, Duration>{};
+    for (int h = 0; h < 24; h++) {
+      hourlyUsage[h] = Duration.zero;
     }
 
-    DateTime currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
+    for (final record in records.values) {
+      if (record == null || record.usagePeriods.isEmpty) continue;
 
-      if (record != null && record.usagePeriods.isNotEmpty) {
-        for (final period in record.usagePeriods) {
-          final int startHour = period.startTime.hour;
-          final int endHour = period.endTime.hour;
+      for (final period in record.usagePeriods) {
+        final startHour = period.startTime.hour;
+        final endHour = period.endTime.hour;
 
-          if (startHour == endHour) {
-            hourlyUsage[startHour] = hourlyUsage[startHour]! + period.duration;
-          } else {
-            for (int hour = startHour; hour <= endHour; hour++) {
-              DateTime hourStart = DateTime(period.startTime.year,
-                  period.startTime.month, period.startTime.day, hour);
-              DateTime hourEnd = hourStart.add(const Duration(hours: 1));
+        if (startHour == endHour) {
+          hourlyUsage[startHour] = hourlyUsage[startHour]! + period.duration;
+        } else {
+          for (int hour = startHour; hour <= endHour; hour++) {
+            final hourStart = DateTime(
+              period.startTime.year,
+              period.startTime.month,
+              period.startTime.day,
+              hour,
+            );
+            final hourEnd = hourStart.add(const Duration(hours: 1));
 
-              DateTime effectiveStart =
-                  hour == startHour ? period.startTime : hourStart;
-              DateTime effectiveEnd =
-                  hour == endHour ? period.endTime : hourEnd;
+            final effectiveStart =
+                hour == startHour ? period.startTime : hourStart;
+            final effectiveEnd = hour == endHour ? period.endTime : hourEnd;
 
-              Duration hourDuration = effectiveEnd.difference(effectiveStart);
-              hourlyUsage[hour] = hourlyUsage[hour]! + hourDuration;
-            }
+            hourlyUsage[hour] =
+                hourlyUsage[hour]! + effectiveEnd.difference(effectiveStart);
           }
         }
       }
-
-      currentDate = currentDate.add(const Duration(days: 1));
     }
 
     return hourlyUsage;
   }
 
-  /// Already optimized - single pass through apps
-  Future<Map<String, Duration>> _fetchCategoryUsageData(
-      String appName, String appCategory, DateRange dateRange) async {
-    final Map<String, Duration> categoryUsage = {};
+  // ============================================================
+  // INSIGHTS + SESSION BREAKDOWN - Combined single pass
+  // ============================================================
 
-    for (final name in _dataStore.allAppNames) {
-      final AppMetadata? metadata = _dataStore.getAppMetadata(name);
+  _InsightsAndSession _buildInsightsAndSession(
+    Map<DateTime, AppUsageRecord?> records,
+    Map<int, Duration> hourlyBreakdown,
+    DateRange dateRange,
+  ) {
+    // ── Active hours from pre-computed hourly breakdown ──
+    final sortedHours = hourlyBreakdown.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
 
-      if (metadata != null && metadata.category == appCategory) {
-        Duration totalUsage = Duration.zero;
-
-        DateTime currentDate = dateRange.startDate;
-        while (currentDate.isBefore(dateRange.endDate) ||
-            currentDate.isAtSameMomentAs(dateRange.endDate)) {
-          final AppUsageRecord? record =
-              _dataStore.getAppUsage(name, currentDate);
-          totalUsage += record?.timeSpent ?? Duration.zero;
-          currentDate = currentDate.add(const Duration(days: 1));
-        }
-
-        if (totalUsage > Duration.zero) {
-          categoryUsage[name] = totalUsage;
-        }
-      }
-    }
-
-    return categoryUsage;
-  }
-
-  Future<UsageInsights> _fetchUsageInsights(
-      String appName, DateRange dateRange) async {
-    final Map<int, Duration> hourlyData =
-        await _fetchHourlyBreakdownData(appName, dateRange);
-    final List<int> activeHours = [];
-
-    final List<MapEntry<int, Duration>> sortedHours =
-        hourlyData.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
-
+    final activeHours = <int>[];
     for (int i = 0; i < min(3, sortedHours.length); i++) {
       if (sortedHours[i].value > Duration.zero) {
         activeHours.add(sortedHours[i].key);
       }
     }
 
-    Duration longestSession = Duration.zero;
-
-    DateTime currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
-
-      if (record != null && record.usagePeriods.isNotEmpty) {
-        for (final period in record.usagePeriods) {
-          if (period.duration > longestSession) {
-            longestSession = period.duration;
-          }
-        }
-      }
-
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-
+    // ── Single pass for sessions, usage totals, launches ──
     Duration totalUsage = Duration.zero;
     int daysWithUsage = 0;
+    Duration longestSession = Duration.zero;
+    Duration shortestSession = const Duration(days: 365);
+    final sessionDurations = <Duration>[];
+    int totalLaunches = 0;
+    int maxLaunchesPerDay = 0;
+    int daysWithLaunches = 0;
+    DateTime? lastUsedTimestamp;
 
-    currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
+    for (final record in records.values) {
+      if (record == null) continue;
 
-      if (record != null && record.timeSpent > Duration.zero) {
+      if (record.timeSpent > Duration.zero) {
         totalUsage += record.timeSpent;
         daysWithUsage++;
       }
 
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
+      if (record.openCount > 0) {
+        totalLaunches += record.openCount;
+        daysWithLaunches++;
+        if (record.openCount > maxLaunchesPerDay) {
+          maxLaunchesPerDay = record.openCount;
+        }
+      }
 
-    final Duration averageDailyUsage = daysWithUsage > 0
-        ? Duration(seconds: totalUsage.inSeconds ~/ daysWithUsage)
-        : Duration.zero;
+      for (final period in record.usagePeriods) {
+        sessionDurations.add(period.duration);
 
-    return UsageInsights(
-      mostActiveHours: activeHours,
-      longestSession: longestSession,
-      averageDailyUsage: averageDailyUsage,
-    );
-  }
-
-  Future<UsageComparisons> _fetchComparisonsData(
-      String appName, String category, DateRange dateRange) async {
-    Duration currentPeriodUsage = Duration.zero;
-
-    DateTime currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
-      currentPeriodUsage += record?.timeSpent ?? Duration.zero;
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-
-    final int periodLengthDays =
-        dateRange.endDate.difference(dateRange.startDate).inDays + 1;
-    final DateTime previousPeriodStart =
-        dateRange.startDate.subtract(Duration(days: periodLengthDays));
-    final DateTime previousPeriodEnd =
-        dateRange.startDate.subtract(const Duration(days: 1));
-
-    Duration previousPeriodUsage = Duration.zero;
-
-    currentDate = previousPeriodStart;
-    while (currentDate.isBefore(previousPeriodEnd) ||
-        currentDate.isAtSameMomentAs(previousPeriodEnd)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
-      previousPeriodUsage += record?.timeSpent ?? Duration.zero;
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-
-    double growthPercentage = 0;
-    if (previousPeriodUsage.inSeconds > 0) {
-      growthPercentage =
-          ((currentPeriodUsage.inSeconds - previousPeriodUsage.inSeconds) /
-                  previousPeriodUsage.inSeconds) *
-              100;
-    }
-
-    final List<CategoryAppComparison> similarAppsComparison = [];
-
-    for (final name in _dataStore.allAppNames) {
-      if (name != appName) {
-        final AppMetadata? metadata = _dataStore.getAppMetadata(name);
-
-        if (metadata != null && metadata.category == category) {
-          Duration appTotalUsage = Duration.zero;
-
-          currentDate = dateRange.startDate;
-          while (currentDate.isBefore(dateRange.endDate) ||
-              currentDate.isAtSameMomentAs(dateRange.endDate)) {
-            final AppUsageRecord? record =
-                _dataStore.getAppUsage(name, currentDate);
-            appTotalUsage += record?.timeSpent ?? Duration.zero;
-            currentDate = currentDate.add(const Duration(days: 1));
-          }
-
-          if (appTotalUsage > Duration.zero) {
-            double percentage = 0;
-            if (currentPeriodUsage.inSeconds > 0) {
-              percentage =
-                  (appTotalUsage.inSeconds / currentPeriodUsage.inSeconds) *
-                      100;
-            }
-
-            similarAppsComparison.add(CategoryAppComparison(
-              appName: name,
-              usage: appTotalUsage,
-              comparisonPercentage: percentage,
-            ));
-          }
+        if (period.duration > longestSession) {
+          longestSession = period.duration;
+        }
+        if (period.duration < shortestSession) {
+          shortestSession = period.duration;
+        }
+        if (lastUsedTimestamp == null ||
+            period.endTime.isAfter(lastUsedTimestamp)) {
+          lastUsedTimestamp = period.endTime;
         }
       }
     }
 
-    similarAppsComparison.sort((a, b) => b.usage.compareTo(a.usage));
+    if (sessionDurations.isEmpty) {
+      shortestSession = Duration.zero;
+    }
+
+    final averageDailyUsage = daysWithUsage > 0
+        ? Duration(seconds: totalUsage.inSeconds ~/ daysWithUsage)
+        : Duration.zero;
+
+    Duration averageSessionDuration = Duration.zero;
+    if (sessionDurations.isNotEmpty) {
+      final totalSessionSeconds =
+          sessionDurations.fold<int>(0, (sum, d) => sum + d.inSeconds);
+      averageSessionDuration =
+          Duration(seconds: totalSessionSeconds ~/ sessionDurations.length);
+    }
+
+    final insights = UsageInsights(
+      mostActiveHours: activeHours,
+      longestSession: longestSession,
+      averageDailyUsage: averageDailyUsage,
+    );
+
+    final session = SessionBreakdown(
+      averageSessionDuration: averageSessionDuration,
+      longestSessionDuration: longestSession,
+      shortestSessionDuration: shortestSession,
+      totalSessions: sessionDurations.length,
+      averageLaunchesPerDay:
+          daysWithLaunches > 0 ? totalLaunches / daysWithLaunches : 0,
+      maxLaunchesPerDay: maxLaunchesPerDay,
+      lastUsedTimestamp: lastUsedTimestamp,
+    );
+
+    return _InsightsAndSession(insights: insights, session: session);
+  }
+
+  // ============================================================
+  // CATEGORY USAGE
+  // ============================================================
+
+  Map<String, Duration> _buildCategoryUsage(
+      String appName, String appCategory, DateRange dateRange) {
+    final categoryUsage = <String, Duration>{};
+
+    for (final name in _dataStore.allAppNames) {
+      final metadata = _dataStore.getAppMetadata(name);
+      if (metadata == null || metadata.category != appCategory) continue;
+
+      final totalUsage = _sumUsageInRange(name, dateRange);
+      if (totalUsage > Duration.zero) {
+        categoryUsage[name] = totalUsage;
+      }
+    }
+
+    return categoryUsage;
+  }
+
+  // ============================================================
+  // COMPARISONS - Reuses pre-fetched current period data
+  // ============================================================
+
+  UsageComparisons _buildComparisons(
+    String appName,
+    String category,
+    DateRange dateRange,
+    Map<DateTime, AppUsageRecord?> records,
+  ) {
+    // Current period from pre-fetched records
+    Duration currentPeriodUsage = Duration.zero;
+    for (final record in records.values) {
+      currentPeriodUsage += record?.timeSpent ?? Duration.zero;
+    }
+
+    // Previous period
+    final previousRange = DateRange(
+      startDate:
+          dateRange.startDate.subtract(Duration(days: dateRange.dayCount)),
+      endDate: dateRange.startDate.subtract(const Duration(days: 1)),
+    );
+    final previousPeriodUsage = _sumUsageInRange(appName, previousRange);
+
+    final growthPercentage = previousPeriodUsage.inSeconds > 0
+        ? ((currentPeriodUsage.inSeconds - previousPeriodUsage.inSeconds) /
+                previousPeriodUsage.inSeconds) *
+            100
+        : 0.0;
+
+    // Similar apps comparison
+    final similarApps = <CategoryAppComparison>[];
+    final currentSeconds = currentPeriodUsage.inSeconds;
+
+    for (final name in _dataStore.allAppNames) {
+      if (name == appName) continue;
+
+      final metadata = _dataStore.getAppMetadata(name);
+      if (metadata == null || metadata.category != category) continue;
+
+      final appTotalUsage = _sumUsageInRange(name, dateRange);
+      if (appTotalUsage <= Duration.zero) continue;
+
+      similarApps.add(CategoryAppComparison(
+        appName: name,
+        usage: appTotalUsage,
+        comparisonPercentage: currentSeconds > 0
+            ? (appTotalUsage.inSeconds / currentSeconds) * 100
+            : 0,
+      ));
+    }
+
+    similarApps.sort((a, b) => b.usage.compareTo(a.usage));
 
     return UsageComparisons(
       currentPeriodUsage: currentPeriodUsage,
       previousPeriodUsage: previousPeriodUsage,
       growthPercentage: growthPercentage,
-      similarAppsComparison: similarAppsComparison,
-    );
-  }
-
-  Future<SessionBreakdown> _fetchSessionBreakdown(
-      String appName, DateRange dateRange) async {
-    final List<Duration> sessionDurations = [];
-    final Map<DateTime, int> dailyLaunches = {};
-    DateTime? lastUsedTimestamp;
-
-    DateTime currentDate = dateRange.startDate;
-    while (currentDate.isBefore(dateRange.endDate) ||
-        currentDate.isAtSameMomentAs(dateRange.endDate)) {
-      final AppUsageRecord? record =
-          _dataStore.getAppUsage(appName, currentDate);
-
-      if (record != null) {
-        for (final period in record.usagePeriods) {
-          sessionDurations.add(period.duration);
-
-          if (lastUsedTimestamp == null ||
-              period.endTime.isAfter(lastUsedTimestamp)) {
-            lastUsedTimestamp = period.endTime;
-          }
-        }
-
-        dailyLaunches[currentDate] = record.openCount;
-      }
-
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-
-    Duration averageSessionDuration = Duration.zero;
-    if (sessionDurations.isNotEmpty) {
-      final int totalSeconds =
-          sessionDurations.fold(0, (sum, duration) => sum + duration.inSeconds);
-      averageSessionDuration =
-          Duration(seconds: totalSeconds ~/ sessionDurations.length);
-    }
-
-    double averageLaunchesPerDay = 0;
-    if (dailyLaunches.isNotEmpty) {
-      final int totalLaunches =
-          dailyLaunches.values.fold(0, (sum, launches) => sum + launches);
-      averageLaunchesPerDay = totalLaunches / dailyLaunches.length;
-    }
-
-    return SessionBreakdown(
-      averageSessionDuration: averageSessionDuration,
-      longestSessionDuration: sessionDurations.isEmpty
-          ? Duration.zero
-          : sessionDurations.reduce((a, b) => a > b ? a : b),
-      shortestSessionDuration: sessionDurations.isEmpty
-          ? Duration.zero
-          : sessionDurations.reduce((a, b) => a < b ? a : b),
-      totalSessions: sessionDurations.length,
-      averageLaunchesPerDay: averageLaunchesPerDay,
-      maxLaunchesPerDay: dailyLaunches.isEmpty
-          ? 0
-          : dailyLaunches.values.reduce((a, b) => a > b ? a : b),
-      lastUsedTimestamp: lastUsedTimestamp,
+      similarAppsComparison: similarApps,
     );
   }
 }
-
-// // Data classes for basic app list
-// class ApplicationBasicDetail {
-//   final String name;
-//   final String category;
-//   final Duration screenTime;
-//   final String formattedScreenTime; // New formatted time property
-//   final bool isTracking;
-//   final bool isHidden;
-
-//   ApplicationBasicDetail({
-//     required this.name,
-//     required this.category,
-//     required this.screenTime,
-//     required this.isTracking,
-//     required this.isHidden,
-//   }) : formattedScreenTime = screenTime.toHourMinuteFormat();
-// }
-
-// // Data classes for detailed app info
-// class ApplicationDetailedData {
-//   final UsageTrendsData usageTrends;
-//   final Map<int, Duration> hourlyBreakdown;
-//   final Map<int, String> formattedHourlyBreakdown; // New formatted property
-//   final Map<String, Duration> categoryUsage;
-//   final Map<String, String> formattedCategoryUsage; // New formatted property
-//   final UsageInsights usageInsights;
-//   final UsageComparisons comparisons;
-//   final SessionBreakdown sessionBreakdown;
-
-//   ApplicationDetailedData({
-//     required this.usageTrends,
-//     required this.hourlyBreakdown,
-//     required this.categoryUsage,
-//     required this.usageInsights,
-//     required this.comparisons,
-//     required this.sessionBreakdown,
-//   }) : 
-//     formattedHourlyBreakdown = hourlyBreakdown.map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-//     formattedCategoryUsage = categoryUsage.map((key, value) => MapEntry(key, value.toHourMinuteFormat()));
-// }
-
-// class UsageTrendsData {
-//   final Map<String, Duration> daily;
-//   final Map<String, Duration> weekly;
-//   final Map<String, Duration> monthly;
-//   final Map<String, String> formattedDaily; // New formatted properties
-//   final Map<String, String> formattedWeekly;
-//   final Map<String, String> formattedMonthly;
-
-//   UsageTrendsData({
-//     required this.daily,
-//     required this.weekly,
-//     required this.monthly,
-//   }) : 
-//     formattedDaily = daily.map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-//     formattedWeekly = weekly.map((key, value) => MapEntry(key, value.toHourMinuteFormat())),
-//     formattedMonthly = monthly.map((key, value) => MapEntry(key, value.toHourMinuteFormat()));
-// }
-
-// class UsageInsights {
-//   final List<int> mostActiveHours;
-//   final Duration longestSession;
-//   final String formattedLongestSession; // New formatted property
-//   final Duration averageDailyUsage;
-//   final String formattedAverageDailyUsage; // New formatted property
-
-//   UsageInsights({
-//     required this.mostActiveHours,
-//     required this.longestSession,
-//     required this.averageDailyUsage,
-//   }) : 
-//     formattedLongestSession = longestSession.toHourMinuteFormat(),
-//     formattedAverageDailyUsage = averageDailyUsage.toHourMinuteFormat();
-// }
-
-// class UsageComparisons {
-//   final Duration currentPeriodUsage;
-//   final String formattedCurrentPeriodUsage; // New formatted property
-//   final Duration previousPeriodUsage;
-//   final String formattedPreviousPeriodUsage; // New formatted property
-//   final double growthPercentage;
-//   final List<CategoryAppComparison> similarAppsComparison;
-
-//   UsageComparisons({
-//     required this.currentPeriodUsage,
-//     required this.previousPeriodUsage,
-//     required this.growthPercentage,
-//     required this.similarAppsComparison,
-//   }) : 
-//     formattedCurrentPeriodUsage = currentPeriodUsage.toHourMinuteFormat(),
-//     formattedPreviousPeriodUsage = previousPeriodUsage.toHourMinuteFormat();
-// }
-
-// class CategoryAppComparison {
-//   final String appName;
-//   final Duration usage;
-//   final String formattedUsage; // New formatted property
-//   final double comparisonPercentage;
-
-//   CategoryAppComparison({
-//     required this.appName,
-//     required this.usage,
-//     required this.comparisonPercentage,
-//   }) : formattedUsage = usage.toHourMinuteFormat();
-// }
-
-// class SessionBreakdown {
-//   final Duration averageSessionDuration;
-//   final String formattedAverageSessionDuration; // New formatted property
-//   final Duration longestSessionDuration;
-//   final String formattedLongestSessionDuration; // New formatted property
-//   final Duration shortestSessionDuration;
-//   final String formattedShortestSessionDuration; // New formatted property
-//   final int totalSessions;
-//   final double averageLaunchesPerDay;
-//   final int maxLaunchesPerDay;
-//   final DateTime? lastUsedTimestamp;
-
-//   SessionBreakdown({
-//     required this.averageSessionDuration,
-//     required this.longestSessionDuration,
-//     required this.shortestSessionDuration,
-//     required this.totalSessions,
-//     required this.averageLaunchesPerDay,
-//     required this.maxLaunchesPerDay,
-//     required this.lastUsedTimestamp,
-//   }) : 
-//     formattedAverageSessionDuration = averageSessionDuration.toHourMinuteFormat(),
-//     formattedLongestSessionDuration = longestSessionDuration.toHourMinuteFormat(),
-//     formattedShortestSessionDuration = shortestSessionDuration.toHourMinuteFormat();
-// }

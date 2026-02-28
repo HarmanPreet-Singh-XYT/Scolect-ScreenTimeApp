@@ -591,9 +591,6 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
   late final TextEditingController _secondsController;
   String? _errorMessage;
 
-  // Cache preset label map to avoid repeated switch evaluation
-  static const _presetLabelKeys = <int, String Function(AppLocalizations)>{};
-
   @override
   void initState() {
     super.initState();

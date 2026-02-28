@@ -12,7 +12,7 @@ class AppUsageSummary {
   final double percentageOfLimitUsed;
   final UsageTrend trend;
 
-  AppUsageSummary({
+  const AppUsageSummary({
     required this.appName,
     required this.category,
     required this.dailyLimit,
@@ -34,26 +34,28 @@ class AppUsageSummary {
       isProductive: json['isProductive'] as bool,
       isAboutToReachLimit: json['isAboutToReachLimit'] as bool,
       percentageOfLimitUsed: (json['percentageOfLimitUsed'] as num).toDouble(),
-      trend: UsageTrend.values.firstWhere(
-        (e) => e.toString() == json['trend'],
-        orElse: () => UsageTrend.noData,
-      ),
+      trend: _trendFromString[json['trend']] ?? UsageTrend.noData,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'appName': appName,
-      'category': category,
-      'dailyLimit': dailyLimit.inSeconds,
-      'currentUsage': currentUsage.inSeconds,
-      'limitStatus': limitStatus,
-      'isProductive': isProductive,
-      'isAboutToReachLimit': isAboutToReachLimit,
-      'percentageOfLimitUsed': percentageOfLimitUsed,
-      'trend': trend.toString(),
-    };
-  }
+  static const _trendFromString = {
+    'UsageTrend.increasing': UsageTrend.increasing,
+    'UsageTrend.decreasing': UsageTrend.decreasing,
+    'UsageTrend.stable': UsageTrend.stable,
+    'UsageTrend.noData': UsageTrend.noData,
+  };
+
+  Map<String, dynamic> toJson() => {
+        'appName': appName,
+        'category': category,
+        'dailyLimit': dailyLimit.inSeconds,
+        'currentUsage': currentUsage.inSeconds,
+        'limitStatus': limitStatus,
+        'isProductive': isProductive,
+        'isAboutToReachLimit': isAboutToReachLimit,
+        'percentageOfLimitUsed': percentageOfLimitUsed,
+        'trend': trend.toString(),
+      };
 }
 
 enum UsageTrend { increasing, decreasing, stable, noData }
@@ -69,56 +71,46 @@ class ScreenTimeDataController extends ChangeNotifier {
   Duration _overallLimit = Duration.zero;
   bool _overallLimitEnabled = false;
 
-  Future<bool> initialize() async {
-    return await _dataStore.init();
-  }
+  // Cache for app summaries to avoid redundant rebuilds within the same frame
+  List<AppUsageSummary>? _cachedSummaries;
+  DateTime? _cachedSummariesTimestamp;
+  static const _cacheValidityMs = 1000; // 1 second cache
+
+  Future<bool> initialize() => _dataStore.init();
 
   // ============================================================
   // OVERALL LIMIT MANAGEMENT
   // ============================================================
 
   void updateOverallLimit(Duration limit, bool enabled) {
+    if (_overallLimit == limit && _overallLimitEnabled == enabled) return;
     _overallLimit = limit;
     _overallLimitEnabled = enabled;
+    _invalidateSummaryCache();
     _saveOverallLimitToStorage();
     notifyListeners();
   }
 
-  Duration getOverallLimit() {
-    return _overallLimit;
-  }
+  Duration get overallLimit => _overallLimit;
+  bool get overallLimitEnabled => _overallLimitEnabled;
 
-  /// OPTIMIZED: Uses cached getTotalScreenTime
-  Duration getOverallUsage() {
-    return _dataStore.getTotalScreenTime(DateTime.now());
-  }
+  Duration getOverallUsage() => _dataStore.getTotalScreenTime(DateTime.now());
 
-  bool isOverallLimitEnabled() {
-    return _overallLimitEnabled;
-  }
-
-  bool isOverallLimitReached() {
+  bool get isOverallLimitReached {
     if (!_overallLimitEnabled || _overallLimit == Duration.zero) return false;
     return getOverallUsage() >= _overallLimit;
   }
 
   double getOverallLimitPercentage() {
-    if (!_overallLimitEnabled || _overallLimit == Duration.zero) return 0.0;
-
-    final Duration totalScreenTime = getOverallUsage();
-    if (_overallLimit.inSeconds == 0) return 0.0;
-
-    return (totalScreenTime.inSeconds / _overallLimit.inSeconds)
+    if (!_overallLimitEnabled || _overallLimit.inSeconds == 0) return 0.0;
+    return (getOverallUsage().inSeconds / _overallLimit.inSeconds)
         .clamp(0.0, 1.0);
   }
 
   bool isApproachingOverallLimit(
       {Duration threshold = const Duration(minutes: 15)}) {
     if (!_overallLimitEnabled || _overallLimit == Duration.zero) return false;
-
-    final Duration totalScreenTime = getOverallUsage();
-    final Duration remaining = _overallLimit - totalScreenTime;
-
+    final remaining = _overallLimit - getOverallUsage();
     return remaining > Duration.zero && remaining <= threshold;
   }
 
@@ -128,46 +120,55 @@ class ScreenTimeDataController extends ChangeNotifier {
   }
 
   // ============================================================
-  // APP SUMMARIES - OPTIMIZED
+  // APP SUMMARIES - OPTIMIZED WITH CACHING
   // ============================================================
 
-  /// OPTIMIZED: Single pass through all apps
+  void _invalidateSummaryCache() {
+    _cachedSummaries = null;
+    _cachedSummariesTimestamp = null;
+  }
+
   List<AppUsageSummary> getAllAppsSummary() {
-    return _buildAppSummaries();
+    final now = DateTime.now();
+    if (_cachedSummaries != null &&
+        _cachedSummariesTimestamp != null &&
+        now.difference(_cachedSummariesTimestamp!).inMilliseconds <
+            _cacheValidityMs) {
+      return _cachedSummaries!;
+    }
+
+    _cachedSummaries = _buildAppSummaries(now);
+    _cachedSummariesTimestamp = now;
+    return _cachedSummaries!;
   }
 
   AppUsageSummary? getAppSummary(String appName) {
-    final AppMetadata? metadata = _dataStore.getAppMetadata(appName);
+    final metadata = _dataStore.getAppMetadata(appName);
     if (metadata == null) return null;
 
-    final DateTime today = DateTime.now();
-    final AppUsageRecord? todayUsage = _dataStore.getAppUsage(appName, today);
-    final Duration currentUsage = todayUsage?.timeSpent ?? Duration.zero;
-
+    final todayUsage = _dataStore.getAppUsage(appName, DateTime.now());
     return _createAppSummary(
       appName: appName,
       metadata: metadata,
-      currentUsage: currentUsage,
+      currentUsage: todayUsage?.timeSpent ?? Duration.zero,
     );
   }
 
   List<AppUsageSummary> getAppsWithLimits() {
-    return getAllAppsSummary().where((app) => app.limitStatus).toList()
-      ..sort(
-          (a, b) => b.percentageOfLimitUsed.compareTo(a.percentageOfLimitUsed));
+    final apps = getAllAppsSummary().where((app) => app.limitStatus).toList();
+    apps.sort(
+        (a, b) => b.percentageOfLimitUsed.compareTo(a.percentageOfLimitUsed));
+    return apps;
   }
 
-  List<AppUsageSummary> getAppsNearLimit({double threshold = 0.8}) {
-    return getAppsWithLimits()
-        .where((app) => app.percentageOfLimitUsed >= threshold)
-        .toList();
-  }
+  List<AppUsageSummary> getAppsNearLimit({double threshold = 0.8}) =>
+      getAppsWithLimits()
+          .where((app) => app.percentageOfLimitUsed >= threshold)
+          .toList();
 
-  List<AppUsageSummary> getAppsExceededLimit() {
-    return getAppsWithLimits()
-        .where((app) => app.percentageOfLimitUsed >= 1.0)
-        .toList();
-  }
+  List<AppUsageSummary> getAppsExceededLimit() => getAppsWithLimits()
+      .where((app) => app.percentageOfLimitUsed >= 1.0)
+      .toList();
 
   // ============================================================
   // APP LIMIT MANAGEMENT
@@ -175,55 +176,73 @@ class ScreenTimeDataController extends ChangeNotifier {
 
   Future<bool> updateAppLimit(
       String appName, Duration limit, bool enableLimit) async {
-    return await _dataStore.updateAppMetadata(
+    final result = await _dataStore.updateAppMetadata(
       appName,
       dailyLimit: limit,
       limitStatus: enableLimit,
     );
+    if (result) _invalidateSummaryCache();
+    return result;
   }
 
   Future<bool> updateAppCategory(
       String appName, String category, bool isProductive) async {
-    return await _dataStore.updateAppMetadata(
+    final result = await _dataStore.updateAppMetadata(
       appName,
       category: category,
       isProductive: isProductive,
     );
+    if (result) _invalidateSummaryCache();
+    return result;
   }
 
   // ============================================================
-  // ANALYTICS
+  // ANALYTICS - OPTIMIZED: Single pass for category aggregation
   // ============================================================
 
   Map<String, Duration> getUsageByCategory() {
-    final Map<String, Duration> result = {};
-    final List<AppUsageSummary> apps = getAllAppsSummary();
-
-    for (final app in apps) {
-      result[app.category] =
-          (result[app.category] ?? Duration.zero) + app.currentUsage;
+    final result = <String, Duration>{};
+    for (final app in getAllAppsSummary()) {
+      result.update(
+        app.category,
+        (existing) => existing + app.currentUsage,
+        ifAbsent: () => app.currentUsage,
+      );
     }
-
     return result;
   }
 
   List<AppUsageSummary> getMostUsedApps({int limit = 5}) {
-    final List<AppUsageSummary> apps = getAllAppsSummary();
+    final apps = getAllAppsSummary();
     apps.sort((a, b) => b.currentUsage.compareTo(a.currentUsage));
     return apps.take(limit).toList();
   }
 
-  Future<Map<String, dynamic>> getAllData() async {
-    final List<AppUsageSummary> appSummaries = getAllAppsSummary();
-    final Map<String, Duration> usageByCategory = getUsageByCategory();
-    final List<AppUsageSummary> mostUsedApps = getMostUsedApps();
+  Map<String, dynamic> getAllData() {
+    final appSummaries = getAllAppsSummary();
+    final overallUsage = getOverallUsage();
+
+    // Compute category usage and most-used in a single pass
+    final usageByCategory = <String, Duration>{};
+    final sortedByUsage = List<AppUsageSummary>.from(appSummaries);
+
+    for (final app in appSummaries) {
+      usageByCategory.update(
+        app.category,
+        (existing) => existing + app.currentUsage,
+        ifAbsent: () => app.currentUsage,
+      );
+    }
+
+    sortedByUsage.sort((a, b) => b.currentUsage.compareTo(a.currentUsage));
+    final mostUsedApps = sortedByUsage.take(5);
 
     return {
       'appSummaries': appSummaries.map((s) => s.toJson()).toList(),
       'usageByCategory':
           usageByCategory.map((key, value) => MapEntry(key, value.inSeconds)),
       'mostUsedApps': mostUsedApps.map((app) => app.toJson()).toList(),
-      'overallUsageSeconds': getOverallUsage().inSeconds,
+      'overallUsageSeconds': overallUsage.inSeconds,
       'overallLimitSeconds': _overallLimit.inSeconds,
       'overallLimitEnabled': _overallLimitEnabled,
       'overallLimitPercentage': getOverallLimitPercentage(),
@@ -231,27 +250,23 @@ class ScreenTimeDataController extends ChangeNotifier {
   }
 
   // ============================================================
-  // PRIVATE HELPERS - OPTIMIZED
+  // PRIVATE HELPERS
   // ============================================================
 
-  /// OPTIMIZED: Single pass through apps with cache/Hive fallback
-  List<AppUsageSummary> _buildAppSummaries() {
-    final List<String> appNames = _dataStore.allAppNames;
-    final List<AppUsageSummary> result = [];
-    final DateTime today = DateTime.now();
+  List<AppUsageSummary> _buildAppSummaries(DateTime today) {
+    final appNames = _dataStore.allAppNames;
+    final result = <AppUsageSummary>[];
 
-    // 🚀 Single loop - getAppUsage handles cache fallback automatically
-    for (final String appName in appNames) {
-      final AppMetadata? metadata = _dataStore.getAppMetadata(appName);
+    for (final appName in appNames) {
+      final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null || !metadata.isVisible) continue;
 
-      final AppUsageRecord? todayUsage = _dataStore.getAppUsage(appName, today);
-      final Duration currentUsage = todayUsage?.timeSpent ?? Duration.zero;
+      final todayUsage = _dataStore.getAppUsage(appName, today);
 
       result.add(_createAppSummary(
         appName: appName,
         metadata: metadata,
-        currentUsage: currentUsage,
+        currentUsage: todayUsage?.timeSpent ?? Duration.zero,
       ));
     }
 
@@ -263,17 +278,17 @@ class ScreenTimeDataController extends ChangeNotifier {
     required AppMetadata metadata,
     required Duration currentUsage,
   }) {
-    final UsageTrend trend = _calculateUsageTrend(appName);
+    final hasActiveLimit =
+        metadata.limitStatus && metadata.dailyLimit > Duration.zero;
 
     double percentOfLimit = 0.0;
     bool isApproachingLimit = false;
 
-    if (metadata.limitStatus && metadata.dailyLimit > Duration.zero) {
+    if (hasActiveLimit) {
       percentOfLimit = currentUsage.inSeconds / metadata.dailyLimit.inSeconds;
-
-      final Duration remainingTime = metadata.dailyLimit - currentUsage;
-      isApproachingLimit = remainingTime > Duration.zero &&
-          remainingTime <= const Duration(minutes: 5);
+      final remaining = metadata.dailyLimit - currentUsage;
+      isApproachingLimit =
+          remaining > Duration.zero && remaining <= const Duration(minutes: 5);
     }
 
     return AppUsageSummary(
@@ -285,17 +300,15 @@ class ScreenTimeDataController extends ChangeNotifier {
       isProductive: metadata.isProductive,
       isAboutToReachLimit: isApproachingLimit,
       percentageOfLimitUsed: percentOfLimit,
-      trend: trend,
+      trend: _calculateUsageTrend(appName),
     );
   }
 
-  /// OPTIMIZED: Uses getAppUsageRange with cache fallback
   UsageTrend _calculateUsageTrend(String appName) {
-    final DateTime today = DateTime.now();
-    final DateTime weekAgo = today.subtract(const Duration(days: 7));
+    final today = DateTime.now();
+    final weekAgo = today.subtract(const Duration(days: 7));
 
-    // 🚀 This uses cache for recent data, Hive for older
-    final List<AppUsageRecord> weekUsage = _dataStore.getAppUsageRange(
+    final weekUsage = _dataStore.getAppUsageRange(
       appName,
       weekAgo,
       today.subtract(const Duration(days: 1)),
@@ -303,19 +316,12 @@ class ScreenTimeDataController extends ChangeNotifier {
 
     if (weekUsage.length < 3) return UsageTrend.noData;
 
-    double totalChange = 0;
-    int comparisons = 0;
-
-    for (int i = 1; i < weekUsage.length; i++) {
-      final Duration previous = weekUsage[i - 1].timeSpent;
-      final Duration current = weekUsage[i].timeSpent;
-      totalChange += current.inSeconds - previous.inSeconds;
-      comparisons++;
-    }
-
-    if (comparisons == 0) return UsageTrend.noData;
-
-    final double avgChangeSeconds = totalChange / comparisons;
+    // Calculate average change using first and last directly (O(1) vs O(n))
+    // For trend detection, the net change divided by periods is equivalent
+    final firstSeconds = weekUsage.first.timeSpent.inSeconds;
+    final lastSeconds = weekUsage.last.timeSpent.inSeconds;
+    final avgChangeSeconds =
+        (lastSeconds - firstSeconds) / (weekUsage.length - 1);
 
     if (avgChangeSeconds > 300) return UsageTrend.increasing;
     if (avgChangeSeconds < -300) return UsageTrend.decreasing;
