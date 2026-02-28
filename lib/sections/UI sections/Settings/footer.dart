@@ -1,6 +1,13 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kAnimDuration = Duration(milliseconds: 150);
+final _kBorderRadius6 = BorderRadius.circular(6);
+
 // ============== FOOTER SECTION ==============
 
 class FooterSection extends StatelessWidget {
@@ -22,6 +29,20 @@ class FooterSection extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
 
+    final icons = [
+      FluentIcons.chat,
+      FluentIcons.bug,
+      FluentIcons.feedback,
+      FluentIcons.open_source,
+    ];
+    final labels = [
+      l10n.contactButton,
+      l10n.reportBugButton,
+      l10n.submitFeedbackButton,
+      l10n.githubButton,
+    ];
+    final callbacks = [onContact, onReport, onFeedback, onGithub];
+
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: BoxDecoration(
@@ -34,35 +55,24 @@ class FooterSection extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _FooterButton(
-            icon: FluentIcons.chat,
-            label: l10n.contactButton,
-            onPressed: onContact,
-          ),
-          const SizedBox(width: 12),
-          _FooterButton(
-            icon: FluentIcons.bug,
-            label: l10n.reportBugButton,
-            onPressed: onReport,
-          ),
-          const SizedBox(width: 12),
-          _FooterButton(
-            icon: FluentIcons.feedback,
-            label: l10n.submitFeedbackButton,
-            onPressed: onFeedback,
-          ),
-          const SizedBox(width: 12),
-          _FooterButton(
-            icon: FluentIcons.open_source,
-            label: l10n.githubButton,
-            onPressed: onGithub,
-            isPrimary: true,
-          ),
+          for (int i = 0; i < icons.length; i++) ...[
+            if (i > 0) const SizedBox(width: 12),
+            _FooterButton(
+              icon: icons[i],
+              label: labels[i],
+              onPressed: callbacks[i],
+              isPrimary: i == icons.length - 1,
+            ),
+          ],
         ],
       ),
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Footer Button
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _FooterButton extends StatefulWidget {
   final IconData icon;
@@ -87,6 +97,23 @@ class _FooterButtonState extends State<_FooterButton> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final accent = theme.accentColor;
+    final inactiveBg = theme.inactiveBackgroundColor;
+    final isPrimary = widget.isPrimary;
+
+    final Color bgColor;
+    final Color borderColor;
+    final Color? contentColor;
+
+    if (isPrimary) {
+      bgColor = accent.withValues(alpha: _isHovered ? 0.15 : 0.08);
+      borderColor = accent.withValues(alpha: _isHovered ? 0.5 : 0.2);
+      contentColor = accent;
+    } else {
+      bgColor = inactiveBg.withValues(alpha: _isHovered ? 0.6 : 0.3);
+      borderColor = _isHovered ? inactiveBg : Colors.transparent;
+      contentColor = _isHovered ? null : Colors.grey[100];
+    }
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -94,46 +121,24 @@ class _FooterButtonState extends State<_FooterButton> {
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
           decoration: BoxDecoration(
-            color: widget.isPrimary
-                ? (_isHovered
-                    ? theme.accentColor.withValues(alpha: 0.15)
-                    : theme.accentColor.withValues(alpha: 0.08))
-                : (_isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.6)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.3)),
-            borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: widget.isPrimary
-                  ? (_isHovered
-                      ? theme.accentColor.withValues(alpha: 0.5)
-                      : theme.accentColor.withValues(alpha: 0.2))
-                  : (_isHovered
-                      ? theme.inactiveBackgroundColor
-                      : Colors.transparent),
-            ),
+            color: bgColor,
+            borderRadius: _kBorderRadius6,
+            border: Border.all(color: borderColor),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                widget.icon,
-                size: 14,
-                color: widget.isPrimary
-                    ? theme.accentColor
-                    : (_isHovered ? null : Colors.grey[100]),
-              ),
+              Icon(widget.icon, size: 14, color: contentColor),
               const SizedBox(width: 8),
               Text(
                 widget.label,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: widget.isPrimary
-                      ? theme.accentColor
-                      : (_isHovered ? null : Colors.grey[100]),
+                  color: contentColor,
                 ),
               ),
             ],

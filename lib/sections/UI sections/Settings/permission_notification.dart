@@ -2,7 +2,91 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/utils/app_restart.dart';
 
-/// A notification banner that appears when Input Monitoring permission is missing
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+final _kBorderRadius6 = BorderRadius.circular(6);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable Info Banner
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _InfoBanner extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final double iconSize;
+  final EdgeInsets margin;
+  final Widget? trailing;
+
+  const _InfoBanner({
+    required this.color,
+    required this.icon,
+    this.title = '',
+    this.subtitle,
+    this.iconSize = 16,
+    this.margin = const EdgeInsets.only(bottom: 12),
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: margin,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+        borderRadius: _kBorderRadius6,
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: iconSize, color: color),
+          const SizedBox(width: 12),
+          Expanded(
+            child: subtitle != null
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: color,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: Colors.grey[100],
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(
+                    title,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+          ),
+          if (trailing != null) ...[
+            const SizedBox(width: 8),
+            trailing!,
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Input Monitoring Permission Banner
+// ─────────────────────────────────────────────────────────────────────────────
+
 class InputMonitoringPermissionBanner extends StatelessWidget {
   final VoidCallback onOpenSettings;
 
@@ -15,61 +99,28 @@ class InputMonitoringPermissionBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.orange.withValues(alpha: 0.1),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        children: [
-          Icon(FluentIcons.warning, size: 16, color: Colors.orange),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.inputMonitoringPermissionTitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.orange,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  l10n.inputMonitoringPermissionDescription,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: Colors.grey[100],
-                  ),
-                ),
-              ],
-            ),
+    return _InfoBanner(
+      color: Colors.orange,
+      icon: FluentIcons.warning,
+      title: l10n.inputMonitoringPermissionTitle,
+      subtitle: l10n.inputMonitoringPermissionDescription,
+      trailing: FilledButton(
+        onPressed: onOpenSettings,
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           ),
-          const SizedBox(width: 8),
-          FilledButton(
-            onPressed: onOpenSettings,
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              ),
-            ),
-            child: Text(
-              l10n.openSettings,
-              style: const TextStyle(fontSize: 11),
-            ),
-          ),
-        ],
+        ),
+        child: Text(l10n.openSettings, style: const TextStyle(fontSize: 11)),
       ),
     );
   }
 }
 
-/// A dialog that shows after user has granted permission, prompting for restart
+// ─────────────────────────────────────────────────────────────────────────────
+// Restart Required Dialog
+// ─────────────────────────────────────────────────────────────────────────────
+
 class RestartRequiredDialog extends StatelessWidget {
   const RestartRequiredDialog({super.key});
 
@@ -85,25 +136,12 @@ class RestartRequiredDialog extends StatelessWidget {
         children: [
           Text(l10n.restartRequiredDescription),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.blue.withValues(alpha: 0.1),
-              border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              children: [
-                Icon(FluentIcons.info, size: 14, color: Colors.blue),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    l10n.restartNote,
-                    style: const TextStyle(fontSize: 11),
-                  ),
-                ),
-              ],
-            ),
+          _InfoBanner(
+            color: Colors.blue,
+            icon: FluentIcons.info,
+            iconSize: 14,
+            title: l10n.restartNote,
+            margin: EdgeInsets.zero,
           ),
         ],
       ),
@@ -120,35 +158,34 @@ class RestartRequiredDialog extends StatelessWidget {
     );
   }
 
-  /// Shows the restart dialog and restarts the app if user confirms
   static Future<void> show(BuildContext context) async {
     final shouldRestart = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const RestartRequiredDialog(),
+      builder: (_) => const RestartRequiredDialog(),
     );
 
-    if (shouldRestart == true) {
-      try {
-        await AppRestart.restart();
-      } catch (e) {
-        // Show error dialog if restart fails
-        if (context.mounted) {
-          await showDialog<void>(
-            context: context,
-            builder: (context) => ContentDialog(
-              title: Text(AppLocalizations.of(context)!.restartFailedTitle),
-              content: Text(AppLocalizations.of(context)!.restartFailedMessage),
-              actions: [
-                FilledButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(AppLocalizations.of(context)!.ok),
-                ),
-              ],
+    if (shouldRestart != true || !context.mounted) return;
+
+    try {
+      await AppRestart.restart();
+    } catch (e) {
+      if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
+
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => ContentDialog(
+          title: Text(l10n.restartFailedTitle),
+          content: Text(l10n.restartFailedMessage),
+          actions: [
+            FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.ok),
             ),
-          );
-        }
-      }
+          ],
+        ),
+      );
     }
   }
 }

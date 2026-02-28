@@ -1,8 +1,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:screentime/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI sections/Settings/resuables.dart';
+import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kAnimDuration = Duration(milliseconds: 150);
+final _kBorderRadius6 = BorderRadius.circular(6);
+
 // ============== DATA SECTION ==============
 
 class DataSection extends StatelessWidget {
@@ -11,7 +19,7 @@ class DataSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settings = Provider.of<SettingsProvider>(context);
+    final settings = context.read<SettingsProvider>();
 
     return SettingsCard(
       title: l10n.dataSection,
@@ -24,7 +32,15 @@ class DataSection extends StatelessWidget {
           control: _DangerButton(
             label: l10n.clearDataButtonLabel,
             icon: FluentIcons.delete,
-            onPressed: () => _showDataDialog(context, settings),
+            onPressed: () => _showConfirmDialog(
+              context: context,
+              iconColor: Colors.red,
+              title: l10n.clearDataDialogTitle,
+              content: l10n.clearDataDialogContent,
+              cancelLabel: l10n.cancelButton,
+              confirmLabel: l10n.clearDataButtonLabel,
+              onConfirm: settings.clearData,
+            ),
           ),
         ),
         SettingRow(
@@ -35,76 +51,54 @@ class DataSection extends StatelessWidget {
             label: l10n.resetButtonLabel,
             icon: FluentIcons.refresh,
             isWarning: true,
-            onPressed: () => _showSettingsDialog(context, settings),
+            onPressed: () => _showConfirmDialog(
+              context: context,
+              iconColor: Colors.orange,
+              title: l10n.resetSettingsDialogTitle,
+              content: l10n.resetSettingsDialogContent,
+              cancelLabel: l10n.cancelButton,
+              confirmLabel: l10n.resetButtonLabel,
+              onConfirm: settings.resetSettings,
+            ),
           ),
         ),
       ],
     );
   }
 
-  Future<void> _showDataDialog(
-      BuildContext context, SettingsProvider settings) async {
-    final l10n = AppLocalizations.of(context)!;
-
-    await showDialog<String>(
+  Future<void> _showConfirmDialog({
+    required BuildContext context,
+    required Color iconColor,
+    required String title,
+    required String content,
+    required String cancelLabel,
+    required String confirmLabel,
+    required VoidCallback onConfirm,
+  }) {
+    return showDialog<void>(
       context: context,
-      builder: (context) => ContentDialog(
+      builder: (ctx) => ContentDialog(
         title: Row(
           children: [
-            Icon(FluentIcons.warning, color: Colors.red, size: 20),
+            Icon(FluentIcons.warning, color: iconColor, size: 20),
             const SizedBox(width: 10),
-            Text(l10n.clearDataDialogTitle),
+            Text(title),
           ],
         ),
-        content: Text(l10n.clearDataDialogContent),
+        content: Text(content),
         actions: [
           Button(
-            child: Text(l10n.cancelButton),
-            onPressed: () => Navigator.pop(context),
+            child: Text(cancelLabel),
+            onPressed: () => Navigator.pop(ctx),
           ),
           FilledButton(
             style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.red),
+              backgroundColor: WidgetStatePropertyAll(iconColor),
             ),
-            child: Text(l10n.clearDataButtonLabel),
+            child: Text(confirmLabel),
             onPressed: () {
-              settings.clearData();
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showSettingsDialog(
-      BuildContext context, SettingsProvider settings) async {
-    final l10n = AppLocalizations.of(context)!;
-
-    await showDialog<String>(
-      context: context,
-      builder: (context) => ContentDialog(
-        title: Row(
-          children: [
-            Icon(FluentIcons.warning, color: Colors.orange, size: 20),
-            const SizedBox(width: 10),
-            Text(l10n.resetSettingsDialogTitle),
-          ],
-        ),
-        content: Text(l10n.resetSettingsDialogContent),
-        actions: [
-          Button(
-            child: Text(l10n.cancelButton),
-            onPressed: () => Navigator.pop(context),
-          ),
-          FilledButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.orange),
-            ),
-            child: Text(l10n.resetButtonLabel),
-            onPressed: () {
-              settings.resetSettings();
-              Navigator.pop(context);
+              onConfirm();
+              Navigator.pop(ctx);
             },
           ),
         ],
@@ -112,6 +106,10 @@ class DataSection extends StatelessWidget {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Danger Button
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _DangerButton extends StatefulWidget {
   final String label;
@@ -143,12 +141,12 @@ class _DangerButtonState extends State<_DangerButton> {
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color:
                 _isHovered ? color.withValues(alpha: 0.1) : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: _kBorderRadius6,
             border: Border.all(
               color: _isHovered ? color : color.withValues(alpha: 0.5),
             ),

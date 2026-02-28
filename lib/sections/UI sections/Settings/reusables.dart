@@ -1,6 +1,69 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as mt;
-// ============== REUSABLE COMPONENTS ==============
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kAnimDuration = Duration(milliseconds: 150);
+const _kExpandDuration = Duration(milliseconds: 250);
+final _kBorderRadius6 = BorderRadius.circular(6);
+final _kBorderRadius8 = BorderRadius.circular(8);
+
+const _kHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 14);
+const _kContentPadding = EdgeInsets.all(16);
+const _kCardShadow = BoxShadow(
+  color: Color(0x08000000), // black @ 0.03 alpha
+  blurRadius: 8,
+  offset: Offset(0, 2),
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Hover Mixin
+// ─────────────────────────────────────────────────────────────────────────────
+
+mixin _HoverStateMixin<T extends StatefulWidget> on State<T> {
+  bool isHovered = false;
+
+  Widget buildHoverRegion({required Widget child}) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: child,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Card Decoration Helper
+// ─────────────────────────────────────────────────────────────────────────────
+
+BoxDecoration _cardDecoration(FluentThemeData theme) {
+  return BoxDecoration(
+    color: theme.micaBackgroundColor,
+    borderRadius: _kBorderRadius8,
+    border: Border.all(
+      color: theme.inactiveBackgroundColor.withValues(alpha: 0.6),
+    ),
+    boxShadow: const [_kCardShadow],
+  );
+}
+
+Widget _cardHeaderIcon({
+  required IconData icon,
+  required Color color,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(6),
+    decoration: BoxDecoration(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: _kBorderRadius6,
+    ),
+    child: Icon(icon, size: 16, color: color),
+  );
+}
+
+// ============== STICKY HEADER DELEGATE ==============
 
 class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget child;
@@ -16,12 +79,16 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   double get maxExtent => height;
+
   @override
   double get minExtent => height;
+
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
+  bool shouldRebuild(covariant StickyHeaderDelegate oldDelegate) =>
+      child != oldDelegate.child || height != oldDelegate.height;
 }
+
+// ============== QUICK ACTION BUTTON ==============
 
 class QuickActionButton extends StatefulWidget {
   final IconData icon;
@@ -39,27 +106,24 @@ class QuickActionButton extends StatefulWidget {
   State<QuickActionButton> createState() => QuickActionButtonState();
 }
 
-class QuickActionButtonState extends State<QuickActionButton> {
-  bool _isHovered = false;
-
+class QuickActionButtonState extends State<QuickActionButton>
+    with _HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? FluentTheme.of(context).inactiveBackgroundColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: GestureDetector(
-            onTap: widget.onPressed,
+      child: buildHoverRegion(
+        child: GestureDetector(
+          onTap: widget.onPressed,
+          child: AnimatedContainer(
+            duration: _kAnimDuration,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isHovered
+                  ? FluentTheme.of(context).inactiveBackgroundColor
+                  : Colors.transparent,
+              borderRadius: _kBorderRadius6,
+            ),
             child: Icon(widget.icon, size: 18),
           ),
         ),
@@ -69,6 +133,7 @@ class QuickActionButtonState extends State<QuickActionButton> {
 }
 
 // ============== SETTINGS CARD ==============
+
 class SettingsCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -92,58 +157,34 @@ class SettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final effectiveColor = iconColor ?? theme.accentColor;
+    final isExpandable = onExpandToggle != null;
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor.withValues(alpha: 0.6),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: _cardDecoration(theme),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header - Replace mt.InkWell with GestureDetector
           GestureDetector(
             onTap: onExpandToggle,
             child: MouseRegion(
-              cursor: onExpandToggle != null
+              cursor: isExpandable
                   ? SystemMouseCursors.click
                   : SystemMouseCursors.basic,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding: _kHeaderPadding,
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
                       color:
                           theme.inactiveBackgroundColor.withValues(alpha: 0.4),
-                      width: 1,
                     ),
                   ),
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: (iconColor ?? theme.accentColor)
-                            .withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Icon(icon,
-                          size: 16, color: iconColor ?? theme.accentColor),
-                    ),
+                    _cardHeaderIcon(icon: icon, color: effectiveColor),
                     const SizedBox(width: 12),
                     Text(
                       title,
@@ -154,12 +195,12 @@ class SettingsCard extends StatelessWidget {
                     ),
                     const Spacer(),
                     if (trailing != null) trailing!,
-                    if (onExpandToggle != null) ...[
+                    if (isExpandable) ...[
                       const SizedBox(width: 8),
                       AnimatedRotation(
                         turns: isExpanded ? 0 : -0.25,
                         duration: const Duration(milliseconds: 200),
-                        child: Icon(FluentIcons.chevron_down, size: 12),
+                        child: const Icon(FluentIcons.chevron_down, size: 12),
                       ),
                     ],
                   ],
@@ -167,10 +208,9 @@ class SettingsCard extends StatelessWidget {
               ),
             ),
           ),
-          // Content
           if (isExpanded)
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: _kContentPadding,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: children,
@@ -206,31 +246,28 @@ class SettingRow extends StatefulWidget {
   State<SettingRow> createState() => _SettingRowState();
 }
 
-class _SettingRowState extends State<SettingRow> {
-  bool _isHovered = false;
-
+class _SettingRowState extends State<SettingRow> with _HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final isSub = widget.isSubSetting;
 
     return Column(
       children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => _isHovered = true),
-          onExit: (_) => setState(() => _isHovered = false),
+        buildHoverRegion(
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
+            duration: _kAnimDuration,
             padding: EdgeInsets.symmetric(
-              horizontal: widget.isSubSetting ? 12 : 8,
+              horizontal: isSub ? 12 : 8,
               vertical: 10,
             ),
-            margin: EdgeInsets.only(left: widget.isSubSetting ? 20 : 0),
+            margin: EdgeInsets.only(left: isSub ? 20 : 0),
             decoration: BoxDecoration(
-              color: _isHovered
+              color: isHovered
                   ? theme.inactiveBackgroundColor.withValues(alpha: 0.3)
                   : null,
-              borderRadius: BorderRadius.circular(6),
-              border: widget.isSubSetting
+              borderRadius: _kBorderRadius6,
+              border: isSub
                   ? Border(
                       left: BorderSide(
                         color: theme.accentColor.withValues(alpha: 0.3),
@@ -254,7 +291,7 @@ class _SettingRowState extends State<SettingRow> {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
-                          color: widget.isSubSetting ? Colors.grey[100] : null,
+                          color: isSub ? Colors.grey[100] : null,
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -287,7 +324,7 @@ class _SettingRowState extends State<SettingRow> {
   }
 }
 
-// ============== HELPER WIDGETS ==============
+// ============== STATUS BADGE ==============
 
 class StatusBadge extends StatelessWidget {
   final bool isActive;
@@ -303,18 +340,14 @@ class StatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final color = isActive ? Colors.green : Colors.grey;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: isActive
-            ? Colors.green.withValues(alpha: 0.1)
-            : Colors.grey.withValues(alpha: 0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isActive
-              ? Colors.green.withValues(alpha: 0.3)
-              : Colors.grey.withValues(alpha: 0.3),
-        ),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -322,10 +355,7 @@ class StatusBadge extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
-              color: isActive ? Colors.green : Colors.grey,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: 6),
           Text(
@@ -333,7 +363,7 @@ class StatusBadge extends StatelessWidget {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w500,
-              color: isActive ? Colors.green : Colors.grey,
+              color: color,
             ),
           ),
         ],
@@ -341,6 +371,8 @@ class StatusBadge extends StatelessWidget {
     );
   }
 }
+
+// ============== TIMEOUT BUTTON ==============
 
 class TimeoutButton extends StatefulWidget {
   final String value;
@@ -356,29 +388,26 @@ class TimeoutButton extends StatefulWidget {
   State<TimeoutButton> createState() => TimeoutButtonState();
 }
 
-class TimeoutButtonState extends State<TimeoutButton> {
-  bool _isHovered = false;
-
+class TimeoutButtonState extends State<TimeoutButton> with _HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final accent = theme.accentColor;
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: _isHovered
-                ? theme.accentColor.withValues(alpha: 0.1)
+            color: isHovered
+                ? accent.withValues(alpha: 0.1)
                 : theme.inactiveBackgroundColor.withValues(alpha: 0.3),
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: _kBorderRadius6,
             border: Border.all(
-              color: _isHovered
-                  ? theme.accentColor.withValues(alpha: 0.5)
+              color: isHovered
+                  ? accent.withValues(alpha: 0.5)
                   : theme.inactiveBackgroundColor,
             ),
           ),
@@ -390,14 +419,14 @@ class TimeoutButtonState extends State<TimeoutButton> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: _isHovered ? theme.accentColor : null,
+                  color: isHovered ? accent : null,
                 ),
               ),
               const SizedBox(width: 6),
               Icon(
                 FluentIcons.edit,
                 size: 12,
-                color: _isHovered ? theme.accentColor : Colors.grey,
+                color: isHovered ? accent : Colors.grey,
               ),
             ],
           ),
@@ -406,6 +435,8 @@ class TimeoutButtonState extends State<TimeoutButton> {
     );
   }
 }
+
+// ============== WARNING BANNER ==============
 
 class WarningBanner extends StatelessWidget {
   final String message;
@@ -425,7 +456,7 @@ class WarningBanner extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: _kBorderRadius6,
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Row(
@@ -446,7 +477,6 @@ class WarningBanner extends StatelessWidget {
 }
 
 // ============== ANIMATED TOGGLE CARD ==============
-// Use this for expandable sections with animation
 
 class AnimatedToggleCard extends StatefulWidget {
   final String title;
@@ -472,30 +502,23 @@ class AnimatedToggleCard extends StatefulWidget {
 
 class _AnimatedToggleCardState extends State<AnimatedToggleCard>
     with SingleTickerProviderStateMixin {
-  late bool _isExpanded;
-  late AnimationController _controller;
-  late Animation<double> _expandAnimation;
-  late Animation<double> _rotationAnimation;
+  late bool _isExpanded = widget.initiallyExpanded;
+  late final AnimationController _controller;
+  late final Animation<double> _expandAnimation;
+  late final Animation<double> _rotationAnimation;
 
   @override
   void initState() {
     super.initState();
-    _isExpanded = widget.initiallyExpanded;
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 250),
+      duration: _kExpandDuration,
       vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    );
-    _rotationAnimation = Tween<double>(begin: 0, end: 0.5).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      value: _isExpanded ? 1.0 : 0.0,
     );
 
-    if (_isExpanded) {
-      _controller.value = 1.0;
-    }
+    final curve = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _expandAnimation = curve;
+    _rotationAnimation = Tween<double>(begin: 0, end: 0.5).animate(curve);
   }
 
   @override
@@ -504,78 +527,46 @@ class _AnimatedToggleCardState extends State<AnimatedToggleCard>
     super.dispose();
   }
 
-  void _toggleExpanded() {
+  void _toggle() {
     setState(() {
       _isExpanded = !_isExpanded;
-      if (_isExpanded) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
+      _isExpanded ? _controller.forward() : _controller.reverse();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final effectiveColor = widget.iconColor ?? theme.accentColor;
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor.withValues(alpha: 0.6),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: _cardDecoration(theme),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           mt.Material(
             color: Colors.transparent,
             child: mt.InkWell(
-              onTap: _toggleExpanded,
+              onTap: _toggle,
               borderRadius: BorderRadius.vertical(
                 top: const Radius.circular(8),
                 bottom: Radius.circular(_isExpanded ? 0 : 8),
               ),
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  border: _isExpanded
-                      ? Border(
+                padding: _kHeaderPadding,
+                decoration: _isExpanded
+                    ? BoxDecoration(
+                        border: Border(
                           bottom: BorderSide(
                             color: theme.inactiveBackgroundColor
                                 .withValues(alpha: 0.4),
-                            width: 1,
                           ),
-                        )
-                      : null,
-                ),
+                        ),
+                      )
+                    : null,
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: (widget.iconColor ?? theme.accentColor)
-                            .withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Icon(
-                        widget.icon,
-                        size: 16,
-                        color: widget.iconColor ?? theme.accentColor,
-                      ),
-                    ),
+                    _cardHeaderIcon(icon: widget.icon, color: effectiveColor),
                     const SizedBox(width: 12),
                     Text(
                       widget.title,
@@ -589,21 +580,18 @@ class _AnimatedToggleCardState extends State<AnimatedToggleCard>
                     const SizedBox(width: 8),
                     RotationTransition(
                       turns: _rotationAnimation,
-                      child: Icon(FluentIcons.chevron_down, size: 12),
+                      child: const Icon(FluentIcons.chevron_down, size: 12),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          // Content
           SizeTransition(
             sizeFactor: _expandAnimation,
             child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: widget.children,
-              ),
+              padding: _kContentPadding,
+              child: Column(children: widget.children),
             ),
           ),
         ],
@@ -613,7 +601,6 @@ class _AnimatedToggleCardState extends State<AnimatedToggleCard>
 }
 
 // ============== COMPACT SETTING TILE ==============
-// Alternative compact design for dense settings
 
 class CompactSettingTile extends StatefulWidget {
   final String title;
@@ -635,24 +622,21 @@ class CompactSettingTile extends StatefulWidget {
   State<CompactSettingTile> createState() => _CompactSettingTileState();
 }
 
-class _CompactSettingTileState extends State<CompactSettingTile> {
-  bool _isHovered = false;
-
+class _CompactSettingTileState extends State<CompactSettingTile>
+    with _HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverRegion(
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
+        duration: _kAnimDuration,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: _isHovered
+          color: isHovered
               ? theme.inactiveBackgroundColor.withValues(alpha: 0.3)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: _kBorderRadius6,
         ),
         child: Row(
           children: [
@@ -679,10 +663,7 @@ class _CompactSettingTileState extends State<CompactSettingTile> {
                     const SizedBox(height: 2),
                     Text(
                       widget.subtitle!,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[100],
-                      ),
+                      style: TextStyle(fontSize: 11, color: Colors.grey[100]),
                     ),
                   ],
                 ],
@@ -697,7 +678,7 @@ class _CompactSettingTileState extends State<CompactSettingTile> {
   }
 }
 
-// ============== INFO TOOLTIP WIDGET ==============
+// ============== INFO TOOLTIP ==============
 
 class InfoTooltip extends StatelessWidget {
   final String message;
@@ -710,23 +691,19 @@ class InfoTooltip extends StatelessWidget {
       message: message,
       child: MouseRegion(
         cursor: SystemMouseCursors.help,
-        child: Icon(
-          FluentIcons.info,
-          size: 14,
-          color: Colors.grey[100],
-        ),
+        child: Icon(FluentIcons.info, size: 14, color: Colors.grey[100]),
       ),
     );
   }
 }
 
-// ============== SEGMENTED OPTION SELECTOR ==============
+// ============== SEGMENTED SELECTOR ==============
 
 class SegmentedSelector<T> extends StatelessWidget {
   final List<T> options;
   final T selected;
   final String Function(T) labelBuilder;
-  final void Function(T) onChanged;
+  final ValueChanged<T> onChanged;
 
   const SegmentedSelector({
     super.key,
@@ -743,49 +720,74 @@ class SegmentedSelector<T> extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: _kBorderRadius6,
       ),
       padding: const EdgeInsets.all(3),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: options.map((option) {
-          final isSelected = option == selected;
-          return GestureDetector(
-            onTap: () => onChanged(option),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color:
-                    isSelected ? theme.micaBackgroundColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Text(
-                labelBuilder(option),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: isSelected ? theme.accentColor : Colors.grey[100],
-                ),
-              ),
+        children: [
+          for (final option in options)
+            _SegmentOption<T>(
+              option: option,
+              isSelected: option == selected,
+              label: labelBuilder(option),
+              onTap: () => onChanged(option),
             ),
-          );
-        }).toList(),
+        ],
       ),
     );
   }
 }
 
-// ============== PROGRESS INDICATOR BUTTON ==============
+class _SegmentOption<T> extends StatelessWidget {
+  final T option;
+  final bool isSelected;
+  final String label;
+  final VoidCallback onTap;
+
+  const _SegmentOption({
+    required this.option,
+    required this.isSelected,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: _kAnimDuration,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? theme.micaBackgroundColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: isSelected
+              ? const [
+                  BoxShadow(
+                    color: Color(0x1A000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 1),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+            color: isSelected ? theme.accentColor : Colors.grey[100],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ============== PROGRESS BUTTON ==============
 
 class ProgressButton extends StatefulWidget {
   final String label;
@@ -808,14 +810,11 @@ class _ProgressButtonState extends State<ProgressButton> {
 
   Future<void> _handlePress() async {
     if (_isLoading) return;
-
     setState(() => _isLoading = true);
     try {
       await widget.onPressed();
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

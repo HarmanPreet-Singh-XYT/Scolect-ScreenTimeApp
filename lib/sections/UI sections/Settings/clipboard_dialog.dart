@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 /// Enhanced clipboard import dialog with validation
 class ClipboardImportDialog extends StatefulWidget {
-  final Function(String) onImport;
+  final ValueChanged<String> onImport;
 
   const ClipboardImportDialog({
     super.key,
@@ -19,7 +19,15 @@ class ClipboardImportDialog extends StatefulWidget {
 class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
   final _controller = TextEditingController();
   String? _errorMessage;
-  bool _isValidating = false;
+
+  static const _requiredFields = [
+    'id',
+    'name',
+    'primaryAccent',
+    'secondaryAccent',
+    'lightBackground',
+    'darkBackground',
+  ];
 
   @override
   void initState() {
@@ -35,57 +43,42 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
 
   Future<void> _loadFromClipboard() async {
     try {
-      final clipboardData = await Clipboard.getData('text/plain');
-      if (clipboardData?.text != null) {
-        _controller.text = clipboardData!.text!;
-        _validateJson(clipboardData.text!);
+      final text = (await Clipboard.getData('text/plain'))?.text;
+      if (text != null && mounted) {
+        _controller.text = text;
+        _validateJson(text);
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to load clipboard: $e';
-      });
+      if (mounted)
+        setState(() => _errorMessage = 'Failed to load clipboard: $e');
     }
   }
 
   void _validateJson(String text) {
-    setState(() {
-      _isValidating = true;
-      _errorMessage = null;
-    });
+    if (text.isEmpty) {
+      setState(() => _errorMessage = null);
+      return;
+    }
 
+    String? error;
     try {
       final json = jsonDecode(text);
-
-      // Validate required fields
-      final requiredFields = [
-        'id',
-        'name',
-        'primaryAccent',
-        'secondaryAccent',
-        'lightBackground',
-        'darkBackground'
-      ];
-
-      for (final field in requiredFields) {
-        if (!json.containsKey(field)) {
-          setState(() {
-            _errorMessage = 'Missing required field: $field';
-            _isValidating = false;
-          });
-          return;
+      if (json is! Map<String, dynamic>) {
+        error = 'Expected a JSON object';
+      } else {
+        final missing = _requiredFields.where((f) => !json.containsKey(f));
+        if (missing.isNotEmpty) {
+          error = 'Missing required field: ${missing.first}';
         }
       }
-
-      setState(() {
-        _isValidating = false;
-      });
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Invalid JSON format';
-        _isValidating = false;
-      });
+    } on FormatException {
+      error = 'Invalid JSON format';
     }
+
+    setState(() => _errorMessage = error);
   }
+
+  bool get _canImport => _errorMessage == null && _controller.text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -110,78 +103,15 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
               style: TextStyle(fontSize: 12),
             ),
             const SizedBox(height: 12),
-
-            // JSON Text Box
             TextBox(
               controller: _controller,
               maxLines: 12,
               placeholder: 'Paste theme JSON here...',
-              style: const TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 11,
-              ),
-              onChanged: (value) => _validateJson(value),
+              style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
+              onChanged: _validateJson,
             ),
-
             const SizedBox(height: 12),
-
-            // Validation Status
-            if (_isValidating)
-              Row(
-                children: [
-                  const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: ProgressRing(strokeWidth: 2),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Validating...',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: theme.typography.caption?.color,
-                    ),
-                  ),
-                ],
-              )
-            else if (_errorMessage != null)
-              Row(
-                children: [
-                  Icon(
-                    FluentIcons.error_badge,
-                    size: 16,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      _errorMessage!,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            else if (_controller.text.isNotEmpty)
-              Row(
-                children: [
-                  Icon(
-                    FluentIcons.completed,
-                    size: 16,
-                    color: Colors.green,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    'Valid theme data',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
+            _buildValidationStatus(theme),
           ],
         ),
       ),
@@ -191,7 +121,7 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
           onPressed: () => Navigator.pop(context),
         ),
         FilledButton(
-          onPressed: _errorMessage == null && _controller.text.isNotEmpty
+          onPressed: _canImport
               ? () {
                   widget.onImport(_controller.text);
                   Navigator.pop(context);
@@ -199,6 +129,57 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
               : null,
           child: const Text('Import'),
         ),
+      ],
+    );
+  }
+
+  Widget _buildValidationStatus(FluentThemeData theme) {
+    if (_errorMessage != null) {
+      return _ValidationRow(
+        icon: FluentIcons.error_badge,
+        color: Colors.red,
+        text: _errorMessage!,
+        expanded: true,
+      );
+    }
+
+    if (_controller.text.isNotEmpty) {
+      return _ValidationRow(
+        icon: FluentIcons.completed,
+        color: Colors.green,
+        text: 'Valid theme data',
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class _ValidationRow extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String text;
+  final bool expanded;
+
+  const _ValidationRow({
+    required this.icon,
+    required this.color,
+    required this.text,
+    this.expanded = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textWidget = Text(
+      text,
+      style: TextStyle(fontSize: 11, color: color),
+    );
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 8),
+        if (expanded) Expanded(child: textWidget) else textWidget,
       ],
     );
   }

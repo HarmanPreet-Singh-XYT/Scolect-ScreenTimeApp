@@ -9,6 +9,135 @@ import '../controller/models/export_models.dart';
 import '../controller/app_data_controller.dart';
 import 'package:flutter/material.dart' as mt;
 
+// ============== SHARED HELPERS ==============
+
+/// Mixin for widgets that need hover state tracking
+mixin HoverStateMixin<T extends StatefulWidget> on State<T> {
+  bool isHovered = false;
+
+  void onEnter(_) => setState(() => isHovered = true);
+  void onExit(_) => setState(() => isHovered = false);
+
+  Widget buildHoverRegion({required Widget child, MouseCursor? cursor}) {
+    return MouseRegion(
+      cursor: cursor ?? SystemMouseCursors.basic,
+      onEnter: onEnter,
+      onExit: onExit,
+      child: child,
+    );
+  }
+}
+
+/// Common decoration factory
+class _Decor {
+  const _Decor._();
+
+  static BoxDecoration card(
+    FluentThemeData theme, {
+    Color? borderColor,
+    double borderWidth = 1,
+    List<BoxShadow>? shadows,
+    Color? backgroundColor,
+    double radius = 8,
+  }) =>
+      BoxDecoration(
+        color: backgroundColor ?? theme.micaBackgroundColor,
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(
+          color: borderColor ??
+              theme.inactiveBackgroundColor.withValues(alpha: 0.6),
+          width: borderWidth,
+        ),
+        boxShadow: shadows,
+      );
+
+  static BoxDecoration badge(Color color) => BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(4),
+      );
+
+  static BoxDecoration pill(Color color) => BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      );
+
+  static BoxDecoration resultBox(Color color) => BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      );
+}
+
+/// Reusable icon in a colored container
+class _IconBox extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final double size;
+  final double padding;
+  final double alpha;
+  final double radius;
+  final BoxShape shape;
+
+  const _IconBox({
+    required this.icon,
+    required this.color,
+    this.size = 16,
+    this.padding = 6,
+    this.alpha = 0.1,
+    this.radius = 6,
+    this.shape = BoxShape.rectangle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(padding),
+      decoration: shape == BoxShape.circle
+          ? BoxDecoration(
+              color: color.withValues(alpha: alpha), shape: BoxShape.circle)
+          : BoxDecoration(
+              color: color.withValues(alpha: alpha),
+              borderRadius: BorderRadius.circular(radius),
+            ),
+      child: Icon(icon, size: size, color: color),
+    );
+  }
+}
+
+/// Common dialog title row
+class _DialogTitleRow extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final Widget? trailing;
+
+  const _DialogTitleRow({
+    required this.icon,
+    required this.color,
+    required this.title,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _IconBox(icon: icon, color: color, size: 18, padding: 8, radius: 8),
+        const SizedBox(width: 12),
+        Text(title),
+        if (trailing != null) ...[const Spacer(), trailing!],
+      ],
+    );
+  }
+}
+
+const _kAnimDuration = Duration(milliseconds: 150);
+const _kAnimDurationMedium = Duration(milliseconds: 200);
+const _kAnimDurationSlow = Duration(milliseconds: 300);
+
+// ============== QUICK ACTION BUTTON ==============
+
 class _QuickActionButton extends StatefulWidget {
   final IconData icon;
   final String tooltip;
@@ -24,27 +153,24 @@ class _QuickActionButton extends StatefulWidget {
   State<_QuickActionButton> createState() => _QuickActionButtonState();
 }
 
-class _QuickActionButtonState extends State<_QuickActionButton> {
-  bool _isHovered = false;
-
+class _QuickActionButtonState extends State<_QuickActionButton>
+    with HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.tooltip,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: _isHovered
-                ? FluentTheme.of(context).inactiveBackgroundColor
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: GestureDetector(
-            onTap: widget.onPressed,
+      child: buildHoverRegion(
+        child: GestureDetector(
+          onTap: widget.onPressed,
+          child: AnimatedContainer(
+            duration: _kAnimDuration,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: isHovered
+                  ? FluentTheme.of(context).inactiveBackgroundColor
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(6),
+            ),
             child: Icon(widget.icon, size: 18),
           ),
         ),
@@ -54,6 +180,7 @@ class _QuickActionButtonState extends State<_QuickActionButton> {
 }
 
 // ============== SETTINGS CARD ==============
+
 class SettingsCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -77,16 +204,12 @@ class SettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final effectiveColor = iconColor ?? theme.accentColor;
 
     return Container(
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.inactiveBackgroundColor.withValues(alpha: 0.6),
-          width: 1,
-        ),
-        boxShadow: [
+      decoration: _Decor.card(
+        theme,
+        shadows: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
@@ -98,61 +221,7 @@ class SettingsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Header - Replace mt.InkWell with GestureDetector
-          GestureDetector(
-            onTap: onExpandToggle,
-            child: MouseRegion(
-              cursor: onExpandToggle != null
-                  ? SystemMouseCursors.click
-                  : SystemMouseCursors.basic,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color:
-                          theme.inactiveBackgroundColor.withValues(alpha: 0.4),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: (iconColor ?? theme.accentColor)
-                            .withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Icon(icon,
-                          size: 16, color: iconColor ?? theme.accentColor),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const Spacer(),
-                    if (trailing != null) trailing!,
-                    if (onExpandToggle != null) ...[
-                      const SizedBox(width: 8),
-                      AnimatedRotation(
-                        turns: isExpanded ? 0 : -0.25,
-                        duration: const Duration(milliseconds: 200),
-                        child: Icon(FluentIcons.chevron_down, size: 12),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Content
+          _buildHeader(theme, effectiveColor),
           if (isExpanded)
             Padding(
               padding: const EdgeInsets.all(16),
@@ -162,6 +231,48 @@ class SettingsCard extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(FluentThemeData theme, Color effectiveColor) {
+    return GestureDetector(
+      onTap: onExpandToggle,
+      child: MouseRegion(
+        cursor: onExpandToggle != null
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: theme.inactiveBackgroundColor.withValues(alpha: 0.4),
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              _IconBox(icon: icon, color: effectiveColor),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              const Spacer(),
+              if (trailing != null) trailing!,
+              if (onExpandToggle != null) ...[
+                const SizedBox(width: 8),
+                AnimatedRotation(
+                  turns: isExpanded ? 0 : -0.25,
+                  duration: _kAnimDurationMedium,
+                  child: const Icon(FluentIcons.chevron_down, size: 12),
+                ),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -191,27 +302,23 @@ class SettingRow extends StatefulWidget {
   State<SettingRow> createState() => _SettingRowState();
 }
 
-class _SettingRowState extends State<SettingRow> {
-  bool _isHovered = false;
-
+class _SettingRowState extends State<SettingRow> with HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
     return Column(
       children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => _isHovered = true),
-          onExit: (_) => setState(() => _isHovered = false),
+        buildHoverRegion(
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
+            duration: _kAnimDuration,
             padding: EdgeInsets.symmetric(
               horizontal: widget.isSubSetting ? 12 : 8,
               vertical: 10,
             ),
             margin: EdgeInsets.only(left: widget.isSubSetting ? 20 : 0),
             decoration: BoxDecoration(
-              color: _isHovered
+              color: isHovered
                   ? theme.inactiveBackgroundColor.withValues(alpha: 0.3)
                   : null,
               borderRadius: BorderRadius.circular(6),
@@ -245,10 +352,7 @@ class _SettingRowState extends State<SettingRow> {
                       const SizedBox(height: 2),
                       Text(
                         widget.description,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[100],
-                        ),
+                        style: TextStyle(fontSize: 11, color: Colors.grey[100]),
                       ),
                     ],
                   ),
@@ -272,7 +376,8 @@ class _SettingRowState extends State<SettingRow> {
     );
   }
 }
-// ============== BACKUP RESTORE SECTION (Integrated) ==============
+
+// ============== BACKUP RESTORE SECTION ==============
 
 class BackupRestoreSection extends StatelessWidget {
   const BackupRestoreSection({super.key});
@@ -285,7 +390,7 @@ class BackupRestoreSection extends StatelessWidget {
       title: l10n.backupRestoreSection,
       icon: FluentIcons.cloud_upload,
       iconColor: Colors.blue,
-      trailing: _LastBackupIndicator(),
+      trailing: const _LastBackupIndicator(),
       children: [
         SettingRow(
           title: l10n.exportDataTitle,
@@ -294,8 +399,7 @@ class BackupRestoreSection extends StatelessWidget {
             icon: FluentIcons.cloud_upload,
             label: l10n.exportButton,
             color: Colors.blue,
-            onPressed: () =>
-                _showBackupRestoreDialog(context, startWithImport: false),
+            onPressed: () => _openDialog(context, startWithImport: false),
           ),
         ),
         SettingRow(
@@ -306,40 +410,34 @@ class BackupRestoreSection extends StatelessWidget {
             icon: FluentIcons.cloud_download,
             label: l10n.importButton,
             color: Colors.green,
-            onPressed: () =>
-                _showBackupRestoreDialog(context, startWithImport: true),
+            onPressed: () => _openDialog(context, startWithImport: true),
           ),
         ),
       ],
     );
   }
 
-  void _showBackupRestoreDialog(BuildContext context,
-      {required bool startWithImport}) {
+  void _openDialog(BuildContext context, {required bool startWithImport}) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) =>
-          BackupRestoreDialog(startWithImport: startWithImport),
+      builder: (_) => BackupRestoreDialog(startWithImport: startWithImport),
     );
   }
 }
 
-// Last backup indicator widget
+// ============== LAST BACKUP INDICATOR ==============
+
 class _LastBackupIndicator extends StatelessWidget {
   const _LastBackupIndicator();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    // You can implement logic to show last backup date from settings/storage
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.blue.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.blue.withValues(alpha: 0.3)),
-      ),
+      decoration: _Decor.pill(Colors.blue),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -359,7 +457,8 @@ class _LastBackupIndicator extends StatelessWidget {
   }
 }
 
-// Styled action button for backup/restore
+// ============== BACKUP ACTION BUTTON ==============
+
 class _BackupActionButton extends StatefulWidget {
   final IconData icon;
   final String label;
@@ -377,28 +476,24 @@ class _BackupActionButton extends StatefulWidget {
   State<_BackupActionButton> createState() => _BackupActionButtonState();
 }
 
-class _BackupActionButtonState extends State<_BackupActionButton> {
-  bool _isHovered = false;
-
+class _BackupActionButtonState extends State<_BackupActionButton>
+    with HoverStateMixin {
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    final hoverAlpha = isHovered ? 0.15 : 0.08;
+    final borderAlpha = isHovered ? 0.6 : 0.3;
+
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
           decoration: BoxDecoration(
-            color: _isHovered
-                ? widget.color.withValues(alpha: 0.15)
-                : widget.color.withValues(alpha: 0.08),
+            color: widget.color.withValues(alpha: hoverAlpha),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: _isHovered
-                  ? widget.color.withValues(alpha: 0.6)
-                  : widget.color.withValues(alpha: 0.3),
+              color: widget.color.withValues(alpha: borderAlpha),
             ),
           ),
           child: Row(
@@ -422,15 +517,12 @@ class _BackupActionButtonState extends State<_BackupActionButton> {
   }
 }
 
-// ============== REFINED BACKUP RESTORE DIALOG ==============
+// ============== BACKUP RESTORE DIALOG ==============
 
 class BackupRestoreDialog extends StatefulWidget {
   final bool startWithImport;
 
-  const BackupRestoreDialog({
-    super.key,
-    this.startWithImport = false,
-  });
+  const BackupRestoreDialog({super.key, this.startWithImport = false});
 
   @override
   State<BackupRestoreDialog> createState() => _BackupRestoreDialogState();
@@ -439,16 +531,17 @@ class BackupRestoreDialog extends StatefulWidget {
 class _BackupRestoreDialogState extends State<BackupRestoreDialog>
     with SingleTickerProviderStateMixin {
   late final DataExportService _exportService;
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _animationController;
+  late final Animation<double> _fadeAnimation;
+
+  static const _totalSteps = 4;
 
   bool _isProcessing = false;
   double _progress = 0.0;
   String _status = '';
   String? _resultMessage;
   bool? _isSuccess;
-  int? _currentStep;
-  final int _totalSteps = 4;
+  int _currentStep = 1;
 
   @override
   void initState() {
@@ -456,19 +549,17 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
     _exportService = DataExportService(AppDataStore());
 
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
+      duration: _kAnimDurationSlow,
       vsync: this,
-    );
+    )..forward();
+
     _fadeAnimation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
     );
-    _animationController.forward();
 
     if (widget.startWithImport) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _handleImport();
-      });
+      WidgetsBinding.instance.addPostFrameCallback((_) => _handleImport());
     }
   }
 
@@ -478,53 +569,65 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
     super.dispose();
   }
 
-  Future<void> _handleExport() async {
-    final l10n = AppLocalizations.of(context)!;
+  void _updateProgress(double progress, String status) {
+    setState(() {
+      _progress = progress;
+      _status = status;
+      _currentStep = (progress * _totalSteps).ceil().clamp(1, _totalSteps);
+    });
+  }
 
+  void _setProcessing(String initialStatus) {
     setState(() {
       _isProcessing = true;
       _progress = 0.0;
       _currentStep = 1;
-      _status = l10n.exportStarting;
+      _status = initialStatus;
       _resultMessage = null;
       _isSuccess = null;
     });
+  }
 
-    final result = await _exportService.exportData(
-      onProgress: (progress, status) {
-        setState(() {
-          _progress = progress;
-          _status = status;
-          _currentStep = (progress * _totalSteps).ceil().clamp(1, _totalSteps);
-        });
-      },
-    );
-
+  void _setResult({required bool success, required String message}) {
     setState(() {
       _isProcessing = false;
-      _isSuccess = result.success;
+      _isSuccess = success;
+      _resultMessage = message;
+    });
+  }
 
-      if (result.success) {
-        // Extract just the directory path for display
-        final directory =
-            result.filePath!.substring(0, result.filePath!.lastIndexOf('/'));
+  Future<void> _handleExport() async {
+    final l10n = AppLocalizations.of(context)!;
+    _setProcessing(l10n.exportStarting);
 
-        _resultMessage = '${l10n.exportSuccessful}\n'
+    final result = await _exportService.exportData(
+      onProgress: _updateProgress,
+    );
+
+    if (result.success) {
+      final directory =
+          result.filePath!.substring(0, result.filePath!.lastIndexOf('/'));
+      final location =
+          Platform.isMacOS ? '~/Desktop/TimeMark-Backups/' : directory;
+
+      _setResult(
+        success: true,
+        message: '${l10n.exportSuccessful}\n'
             '${l10n.fileLabel}: ${result.fileName}\n'
             '${l10n.sizeLabel}: ${_formatFileSize(result.fileSize ?? 0)}\n'
             '${l10n.recordsLabel}: ${result.recordCount}\n'
-            '\nLocation: ${Platform.isMacOS ? "~/Desktop/TimeMark-Backups/" : directory}';
-      } else {
-        _resultMessage = '${l10n.exportFailed}: ${result.error}';
-      }
-    });
+            '\nLocation: $location',
+      );
+    } else {
+      _setResult(
+          success: false, message: '${l10n.exportFailed}: ${result.error}');
+    }
 
     if (result.success && result.filePath != null && mounted) {
       final shouldShare = await showDialog<bool>(
         context: context,
-        builder: (context) => _ShareDialog(l10n: l10n),
+        builder: (_) => _ShareDialog(l10n: l10n),
       );
-
       if (shouldShare == true) {
         await _exportService.shareExport(result.filePath!);
       }
@@ -536,61 +639,45 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
 
     final importMode = await showDialog<ImportMode>(
       context: context,
-      builder: (context) => _RefinedImportModeDialog(),
+      builder: (_) => const _RefinedImportModeDialog(),
     );
-
     if (importMode == null) return;
 
     if (importMode == ImportMode.replace) {
       final confirmed = await showDialog<bool>(
         context: context,
-        builder: (context) => _ReplaceConfirmDialog(l10n: l10n),
+        builder: (_) => _ReplaceConfirmDialog(l10n: l10n),
       );
-
       if (confirmed != true) return;
     }
 
-    setState(() {
-      _isProcessing = true;
-      _progress = 0.0;
-      _currentStep = 1;
-      _status = l10n.importStarting;
-      _resultMessage = null;
-      _isSuccess = null;
-    });
+    _setProcessing(l10n.importStarting);
 
     final result = await _exportService.importData(
       mode: importMode,
-      onProgress: (progress, status) {
-        setState(() {
-          _progress = progress;
-          _status = status;
-          _currentStep = (progress * _totalSteps).ceil().clamp(1, _totalSteps);
-        });
-      },
+      onProgress: _updateProgress,
     );
 
-    setState(() {
-      _isProcessing = false;
-      _isSuccess = result.success;
-
-      if (result.success) {
-        _resultMessage = '${l10n.importSuccessful}\n'
+    if (result.success) {
+      _setResult(
+        success: true,
+        message: '${l10n.importSuccessful}\n'
             '${l10n.usageRecordsLabel}: ${result.usageRecordsImported}\n'
             '${l10n.focusSessionsLabel}: ${result.focusSessionsImported}\n'
             '${l10n.appMetadataLabel}: ${result.metadataRecordsImported}\n'
             '${l10n.updatedLabel}: ${result.recordsUpdated}\n'
-            '${l10n.skippedLabel}: ${result.recordsSkipped}';
-      } else {
-        _resultMessage = '${l10n.importFailed}: ${result.error}';
-      }
-    });
+            '${l10n.skippedLabel}: ${result.recordsSkipped}',
+      );
+    } else {
+      _setResult(
+          success: false, message: '${l10n.importFailed}: ${result.error}');
+    }
   }
 
-  String _formatFileSize(int bytes) {
+  static String _formatFileSize(int bytes) {
     if (bytes < 1024) return '$bytes B';
-    if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(1)} KB';
-    return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
+    if (bytes < 1048576) return '${(bytes / 1024).toStringAsFixed(1)} KB';
+    return '${(bytes / 1048576).toStringAsFixed(1)} MB';
   }
 
   @override
@@ -603,17 +690,12 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
         constraints: const BoxConstraints(maxWidth: 480),
         title: Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                FluentIcons.cloud_upload,
-                size: 20,
-                color: Colors.blue,
-              ),
+            _IconBox(
+              icon: FluentIcons.cloud_upload,
+              color: Colors.blue,
+              size: 20,
+              padding: 8,
+              radius: 8,
             ),
             const SizedBox(width: 12),
             Text(l10n.backupRestoreTitle),
@@ -629,18 +711,15 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Processing State
             if (_isProcessing) ...[
               _ProcessingIndicator(
                 progress: _progress,
                 status: _status,
-                currentStep: _currentStep ?? 1,
+                currentStep: _currentStep,
                 totalSteps: _totalSteps,
               ),
               const SizedBox(height: 20),
             ],
-
-            // Result Message
             if (_resultMessage != null) ...[
               _AnimatedResultBox(
                 message: _resultMessage!,
@@ -648,8 +727,6 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
               ),
               const SizedBox(height: 20),
             ],
-
-            // Action Cards (only when not processing)
             if (!_isProcessing) ...[
               _ActionCard(
                 icon: FluentIcons.cloud_upload,
@@ -657,7 +734,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
                 subtitle: l10n.exportDataDescription,
                 color: Colors.blue,
                 onPressed: _handleExport,
-                features: [
+                features: const [
                   'Save to JSON file',
                   'All app data included',
                   'Share via system dialog',
@@ -670,7 +747,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
                 subtitle: l10n.importDataDescription,
                 color: Colors.green,
                 onPressed: _handleImport,
-                features: [
+                features: const [
                   'Multiple import modes',
                   'Merge or replace data',
                   'Validation checks',
@@ -716,112 +793,15 @@ class _ProcessingIndicator extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.accentColor.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: theme.accentColor.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
-          // Step indicators
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(totalSteps, (index) {
-              final isCompleted = index < currentStep;
-              final isCurrent = index == currentStep - 1;
-              return Row(
-                children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    width: isCurrent ? 28 : 24,
-                    height: isCurrent ? 28 : 24,
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? theme.accentColor
-                          : theme.inactiveBackgroundColor
-                              .withValues(alpha: 0.5),
-                      shape: BoxShape.circle,
-                      border: isCurrent
-                          ? Border.all(color: theme.accentColor, width: 2)
-                          : null,
-                      boxShadow: isCurrent
-                          ? [
-                              BoxShadow(
-                                color: theme.accentColor.withValues(alpha: 0.3),
-                                blurRadius: 8,
-                              )
-                            ]
-                          : null,
-                    ),
-                    child: Center(
-                      child: isCompleted
-                          ? Icon(FluentIcons.check_mark,
-                              size: 12, color: Colors.white)
-                          : Text(
-                              '${index + 1}',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                                color:
-                                    isCurrent ? theme.accentColor : Colors.grey,
-                              ),
-                            ),
-                    ),
-                  ),
-                  if (index < totalSteps - 1)
-                    Container(
-                      width: 30,
-                      height: 2,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: isCompleted
-                            ? theme.accentColor
-                            : theme.inactiveBackgroundColor
-                                .withValues(alpha: 0.5),
-                        borderRadius: BorderRadius.circular(1),
-                      ),
-                    ),
-                ],
-              );
-            }),
-          ),
+          _buildStepIndicators(theme),
           const SizedBox(height: 20),
-
-          // Animated progress bar
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: mt.LinearProgressIndicator(
-              value: progress,
-              backgroundColor:
-                  theme.inactiveBackgroundColor.withValues(alpha: 0.3),
-              valueColor: AlwaysStoppedAnimation<Color>(theme.accentColor),
-              minHeight: 6,
-            ),
-          ),
+          _buildProgressBar(theme),
           const SizedBox(height: 12),
-
-          // Status text with animation
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 16,
-                height: 16,
-                child: ProgressRing(strokeWidth: 2),
-              ),
-              const SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[80],
-                  ),
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+          _buildStatusRow(),
           const SizedBox(height: 8),
           Text(
             '${(progress * 100).toInt()}%',
@@ -833,6 +813,103 @@ class _ProcessingIndicator extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStepIndicators(FluentThemeData theme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(totalSteps, (index) {
+        final isCompleted = index < currentStep;
+        final isCurrent = index == currentStep - 1;
+        final size = isCurrent ? 28.0 : 24.0;
+
+        return Row(
+          children: [
+            AnimatedContainer(
+              duration: _kAnimDurationSlow,
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                color: isCompleted
+                    ? theme.accentColor
+                    : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                shape: BoxShape.circle,
+                border: isCurrent
+                    ? Border.all(color: theme.accentColor, width: 2)
+                    : null,
+                boxShadow: isCurrent
+                    ? [
+                        BoxShadow(
+                          color: theme.accentColor.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                        )
+                      ]
+                    : null,
+              ),
+              child: Center(
+                child: isCompleted
+                    ? const Icon(FluentIcons.check_mark,
+                        size: 12, color: Colors.white)
+                    : Text(
+                        '${index + 1}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: isCurrent ? theme.accentColor : Colors.grey,
+                        ),
+                      ),
+              ),
+            ),
+            if (index < totalSteps - 1)
+              Container(
+                width: 30,
+                height: 2,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: isCompleted
+                      ? theme.accentColor
+                      : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _buildProgressBar(FluentThemeData theme) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: mt.LinearProgressIndicator(
+        value: progress,
+        backgroundColor: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+        valueColor: AlwaysStoppedAnimation<Color>(theme.accentColor),
+        minHeight: 6,
+      ),
+    );
+  }
+
+  Widget _buildStatusRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(
+          width: 16,
+          height: 16,
+          child: ProgressRing(strokeWidth: 2),
+        ),
+        const SizedBox(width: 10),
+        Flexible(
+          child: Text(
+            status,
+            style: TextStyle(fontSize: 12, color: Colors.grey[80]),
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -854,9 +931,9 @@ class _AnimatedResultBox extends StatefulWidget {
 
 class _AnimatedResultBoxState extends State<_AnimatedResultBox>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
@@ -868,9 +945,7 @@ class _AnimatedResultBoxState extends State<_AnimatedResultBox>
     _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
     );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
   }
 
@@ -884,33 +959,26 @@ class _AnimatedResultBoxState extends State<_AnimatedResultBox>
   Widget build(BuildContext context) {
     final color = widget.isSuccess ? Colors.green : Colors.red;
     final l10n = AppLocalizations.of(context)!;
+
     return FadeTransition(
       opacity: _fadeAnimation,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: color.withValues(alpha: 0.3)),
-          ),
+          decoration: _Decor.resultBox(color),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  widget.isSuccess
-                      ? FluentIcons.completed_solid
-                      : FluentIcons.error_badge,
-                  color: color,
-                  size: 18,
-                ),
+              _IconBox(
+                icon: widget.isSuccess
+                    ? FluentIcons.completed_solid
+                    : FluentIcons.error_badge,
+                color: color,
+                size: 18,
+                padding: 8,
+                alpha: 0.15,
+                shape: BoxShape.circle,
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -968,33 +1036,29 @@ class _ActionCard extends StatefulWidget {
   State<_ActionCard> createState() => _ActionCardState();
 }
 
-class _ActionCardState extends State<_ActionCard> {
-  bool _isHovered = false;
-
+class _ActionCardState extends State<_ActionCard> with HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: _kAnimDurationMedium,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: _isHovered
+            color: isHovered
                 ? widget.color.withValues(alpha: 0.08)
                 : theme.micaBackgroundColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: _isHovered
+              color: isHovered
                   ? widget.color.withValues(alpha: 0.5)
                   : theme.inactiveBackgroundColor.withValues(alpha: 0.6),
-              width: _isHovered ? 1.5 : 1,
+              width: isHovered ? 1.5 : 1,
             ),
-            boxShadow: _isHovered
+            boxShadow: isHovered
                 ? [
                     BoxShadow(
                       color: widget.color.withValues(alpha: 0.1),
@@ -1006,24 +1070,16 @@ class _ActionCardState extends State<_ActionCard> {
           ),
           child: Row(
             children: [
-              // Icon container
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: _kAnimDurationMedium,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color:
-                      widget.color.withValues(alpha: _isHovered ? 0.15 : 0.1),
+                  color: widget.color.withValues(alpha: isHovered ? 0.15 : 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
-                  widget.icon,
-                  size: 24,
-                  color: widget.color,
-                ),
+                child: Icon(widget.icon, size: 24, color: widget.color),
               ),
               const SizedBox(width: 16),
-
-              // Content
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1033,53 +1089,28 @@ class _ActionCardState extends State<_ActionCard> {
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
-                        color: _isHovered ? widget.color : null,
+                        color: isHovered ? widget.color : null,
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[100],
-                      ),
+                      style: TextStyle(fontSize: 11, color: Colors.grey[100]),
                     ),
                     const SizedBox(height: 8),
-                    // Feature tags
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: widget.features.map((feature) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.inactiveBackgroundColor
-                                .withValues(alpha: 0.4),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            feature,
-                            style: TextStyle(
-                              fontSize: 9,
-                              color: Colors.grey[100],
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                    _FeatureTags(
+                      features: widget.features,
+                      backgroundColor:
+                          theme.inactiveBackgroundColor.withValues(alpha: 0.4),
                     ),
                   ],
                 ),
               ),
-
-              // Arrow
               AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+                duration: _kAnimDurationMedium,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _isHovered
+                  color: isHovered
                       ? widget.color.withValues(alpha: 0.1)
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(6),
@@ -1087,7 +1118,7 @@ class _ActionCardState extends State<_ActionCard> {
                 child: Icon(
                   FluentIcons.chevron_right,
                   size: 16,
-                  color: _isHovered ? widget.color : Colors.grey,
+                  color: isHovered ? widget.color : Colors.grey,
                 ),
               ),
             ],
@@ -1098,7 +1129,39 @@ class _ActionCardState extends State<_ActionCard> {
   }
 }
 
-// ============== REFINED IMPORT MODE DIALOG ==============
+/// Extracted feature tags to avoid rebuilding in every hover cycle
+class _FeatureTags extends StatelessWidget {
+  final List<String> features;
+  final Color backgroundColor;
+
+  const _FeatureTags({
+    required this.features,
+    required this.backgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 4,
+      children: features.map((feature) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            feature,
+            style: TextStyle(fontSize: 9, color: Colors.grey[100]),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+// ============== IMPORT MODE DIALOG ==============
 
 class _RefinedImportModeDialog extends StatelessWidget {
   const _RefinedImportModeDialog();
@@ -1109,20 +1172,10 @@ class _RefinedImportModeDialog extends StatelessWidget {
 
     return ContentDialog(
       constraints: const BoxConstraints(maxWidth: 440),
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child:
-                Icon(FluentIcons.cloud_download, size: 18, color: Colors.green),
-          ),
-          const SizedBox(width: 12),
-          Text(l10n.importOptionsTitle),
-        ],
+      title: _DialogTitleRow(
+        icon: FluentIcons.cloud_download,
+        color: Colors.green,
+        title: l10n.importOptionsTitle,
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1195,28 +1248,24 @@ class _ImportModeCard extends StatefulWidget {
   State<_ImportModeCard> createState() => _ImportModeCardState();
 }
 
-class _ImportModeCardState extends State<_ImportModeCard> {
-  bool _isHovered = false;
-
+class _ImportModeCardState extends State<_ImportModeCard> with HoverStateMixin {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverRegion(
       child: GestureDetector(
         onTap: () => Navigator.pop(context, widget.mode),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: _isHovered
+            color: isHovered
                 ? widget.color.withValues(alpha: 0.08)
                 : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: _isHovered
+              color: isHovered
                   ? widget.color.withValues(alpha: 0.5)
                   : (widget.isRecommended
                       ? widget.color.withValues(alpha: 0.3)
@@ -1226,13 +1275,12 @@ class _ImportModeCardState extends State<_ImportModeCard> {
           ),
           child: Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: widget.color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(widget.icon, size: 20, color: widget.color),
+              _IconBox(
+                icon: widget.icon,
+                color: widget.color,
+                size: 20,
+                padding: 10,
+                radius: 8,
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -1246,19 +1294,14 @@ class _ImportModeCardState extends State<_ImportModeCard> {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
-                            color: _isHovered ? widget.color : null,
+                            color: isHovered ? widget.color : null,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: widget.color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
+                              horizontal: 6, vertical: 2),
+                          decoration: _Decor.badge(widget.color),
                           child: Text(
                             widget.badge,
                             style: TextStyle(
@@ -1273,10 +1316,7 @@ class _ImportModeCardState extends State<_ImportModeCard> {
                     const SizedBox(height: 4),
                     Text(
                       widget.subtitle,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey[100],
-                      ),
+                      style: TextStyle(fontSize: 11, color: Colors.grey[100]),
                     ),
                   ],
                 ),
@@ -1284,7 +1324,7 @@ class _ImportModeCardState extends State<_ImportModeCard> {
               Icon(
                 FluentIcons.chevron_right,
                 size: 14,
-                color: _isHovered ? widget.color : Colors.grey,
+                color: isHovered ? widget.color : Colors.grey,
               ),
             ],
           ),
@@ -1304,47 +1344,30 @@ class _ReplaceConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ContentDialog(
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(FluentIcons.warning, size: 18, color: Colors.red),
-          ),
-          const SizedBox(width: 12),
-          Text(l10n.warningTitle),
-        ],
+      title: _DialogTitleRow(
+        icon: FluentIcons.warning,
+        color: Colors.red,
+        title: l10n.warningTitle,
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+      content: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.red.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          children: [
+            Icon(FluentIcons.info, size: 16, color: Colors.red),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n.replaceWarningMessage,
+                style: TextStyle(fontSize: 12, color: Colors.red.dark),
+              ),
             ),
-            child: Row(
-              children: [
-                Icon(FluentIcons.info, size: 16, color: Colors.red),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    l10n.replaceWarningMessage,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.red.dark,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         Button(
@@ -1359,7 +1382,7 @@ class _ReplaceConfirmDialog extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(FluentIcons.delete, size: 12, color: Colors.white),
+              const Icon(FluentIcons.delete, size: 12, color: Colors.white),
               const SizedBox(width: 6),
               Text(l10n.replaceAllButton),
             ],
@@ -1382,44 +1405,29 @@ class _ShareDialog extends StatelessWidget {
     final theme = FluentTheme.of(context);
 
     return ContentDialog(
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(FluentIcons.completed_solid,
-                size: 18, color: Colors.green),
-          ),
-          const SizedBox(width: 12),
-          Text(l10n.exportComplete),
-        ],
+      title: _DialogTitleRow(
+        icon: FluentIcons.completed_solid,
+        color: Colors.green,
+        title: l10n.exportComplete,
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(8),
+      content: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Icon(FluentIcons.share, size: 24, color: Colors.blue),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                l10n.shareBackupQuestion,
+                style: const TextStyle(fontSize: 13),
+              ),
             ),
-            child: Row(
-              children: [
-                Icon(FluentIcons.share, size: 24, color: Colors.blue),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Text(
-                    l10n.shareBackupQuestion,
-                    style: const TextStyle(fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         Button(
@@ -1431,7 +1439,7 @@ class _ShareDialog extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(FluentIcons.share, size: 12, color: Colors.white),
+              const Icon(FluentIcons.share, size: 12, color: Colors.white),
               const SizedBox(width: 6),
               Text(l10n.shareButton),
             ],

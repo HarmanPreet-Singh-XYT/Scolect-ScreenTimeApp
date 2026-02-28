@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI%20sections/Settings/resuables.dart';
+import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
 import 'package:screentime/utils/update_service.dart';
 import 'package:screentime/sections/UI%20sections/Overview/changelog.dart';
 import 'package:screentime/main.dart' show autoUpdates;
@@ -34,10 +34,11 @@ class _AboutSectionState extends State<AboutSection> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settings = Provider.of<SettingsProvider>(context);
-    final version = settings.appVersion;
+    final version = context.select<SettingsProvider, Map<String, dynamic>>(
+      (s) => s.appVersion,
+    );
+    final changelogLabel = l10n.changelog;
 
-    // ── Store build: just show app info + changelog, nothing update-related ──
     if (!autoUpdates) {
       return SettingsCard(
         title: l10n.versionSection,
@@ -48,16 +49,17 @@ class _AboutSectionState extends State<AboutSection> {
           const SizedBox(height: 12),
           _OutlineIconButton(
             icon: FluentIcons.history,
-            label: l10n.changelog ?? 'Changelog',
+            label: changelogLabel,
             onPressed: () => ChangelogModal.showManually(context),
           ),
         ],
       );
     }
 
-    // ── Direct build: full update UI ─────────────────────────────────────────
     return Consumer<UpdateService>(
-      builder: (context, updater, _) {
+      builder: (context, updater, child) {
+        final isChecking = updater.status == UpdateStatus.checking;
+
         return SettingsCard(
           title: l10n.versionSection,
           icon: FluentIcons.info,
@@ -72,7 +74,7 @@ class _AboutSectionState extends State<AboutSection> {
                 Expanded(
                   child: _OutlineIconButton(
                     icon: FluentIcons.history,
-                    label: l10n.changelog ?? 'Changelog',
+                    label: changelogLabel,
                     onPressed: () => ChangelogModal.showManually(context),
                   ),
                 ),
@@ -80,15 +82,15 @@ class _AboutSectionState extends State<AboutSection> {
                 Expanded(
                   child: _OutlineIconButton(
                     icon: FluentIcons.sync,
-                    label: updater.status == UpdateStatus.checking
-                        ? 'Checking...'
-                        : 'Check Updates',
-                    isLoading: updater.status == UpdateStatus.checking,
-                    onPressed: updater.status == UpdateStatus.checking
+                    label: isChecking ? 'Checking...' : 'Check Updates',
+                    isLoading: isChecking,
+                    onPressed: isChecking
                         ? null
                         : () async {
-                            await updater.checkForUpdates();
-                            await autoUpdater.checkForUpdates();
+                            await Future.wait([
+                              updater.checkForUpdates(),
+                              autoUpdater.checkForUpdates(),
+                            ]);
                             _refreshLastCheck();
                           },
                   ),
@@ -114,26 +116,27 @@ class _AppInfoTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
+    final accent = theme.accentColor;
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            theme.accentColor.withValues(alpha: 0.05),
-            theme.accentColor.withValues(alpha: 0.02),
+            accent.withValues(alpha: 0.05),
+            accent.withValues(alpha: 0.02),
           ],
         ),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: theme.accentColor.withValues(alpha: 0.1)),
+        borderRadius: _kBorderRadius8,
+        border: Border.all(color: accent.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: theme.accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: accent.withValues(alpha: 0.1),
+              borderRadius: _kBorderRadius8,
             ),
             child: Image.asset(
               'assets/icons/tray_icon_windows.png',
@@ -164,7 +167,7 @@ class _AppInfoTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: theme.accentColor.withValues(alpha: 0.1),
+                  color: accent.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -172,7 +175,7 @@ class _AppInfoTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: theme.accentColor,
+                    color: accent,
                   ),
                 ),
               ),
@@ -199,17 +202,17 @@ class _UpdateBanner extends StatelessWidget {
 
   const _UpdateBanner({required this.updater, required this.lastCheckText});
 
+  String? _lastCheckSublabel() =>
+      lastCheckText.isEmpty ? null : 'Last checked $lastCheckText';
+
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 300),
+      duration: _kAnimDuration300,
       transitionBuilder: (child, animation) => FadeTransition(
         opacity: animation,
         child: SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.08),
-            end: Offset.zero,
-          ).animate(animation),
+          position: _kSlideOffset.animate(animation),
           child: child,
         ),
       ),
@@ -218,8 +221,8 @@ class _UpdateBanner extends StatelessWidget {
             key: const ValueKey('available'),
             update: updater.availableUpdate!,
           ),
-        UpdateStatus.checking => _StatusBanner(
-            key: const ValueKey('checking'),
+        UpdateStatus.checking => const _StatusBanner(
+            key: ValueKey('checking'),
             icon: null,
             isLoading: true,
             label: 'Checking for updates...',
@@ -230,12 +233,11 @@ class _UpdateBanner extends StatelessWidget {
             key: const ValueKey('upToDate'),
             icon: FluentIcons.skype_circle_check,
             label: "You're up to date",
-            sublabel:
-                lastCheckText.isEmpty ? null : 'Last checked $lastCheckText',
+            sublabel: _lastCheckSublabel(),
             color: Colors.successPrimaryColor,
           ),
-        UpdateStatus.error => _StatusBanner(
-            key: const ValueKey('error'),
+        UpdateStatus.error => const _StatusBanner(
+            key: ValueKey('error'),
             icon: FluentIcons.error_badge,
             label: 'Could not check for updates',
             sublabel: 'Tap "Check Updates" to retry',
@@ -245,8 +247,7 @@ class _UpdateBanner extends StatelessWidget {
             key: const ValueKey('idle'),
             icon: FluentIcons.clock,
             label: 'Update check scheduled',
-            sublabel:
-                lastCheckText.isEmpty ? null : 'Last checked $lastCheckText',
+            sublabel: _lastCheckSublabel(),
             color: Colors.grey,
           ),
       },
@@ -276,7 +277,7 @@ class _StatusBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.06),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: _kBorderRadius8,
         border: Border.all(color: color.withValues(alpha: 0.15)),
       ),
       child: Row(
@@ -297,13 +298,20 @@ class _StatusBanner extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w500, color: color),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: color,
+                  ),
                 ),
                 if (sublabel != null) ...[
                   const SizedBox(height: 1),
-                  Text(sublabel!,
-                      style: TextStyle(
-                          fontSize: 10, color: color.withValues(alpha: 0.7))),
+                  Text(
+                    sublabel!,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: color.withValues(alpha: 0.7),
+                    ),
+                  ),
                 ],
               ],
             ),
@@ -353,6 +361,7 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final accent = theme.accentColor;
+    final update = widget.update;
 
     return AnimatedBuilder(
       animation: _pulseAnim,
@@ -360,7 +369,7 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: accent.withValues(alpha: _pulseAnim.value),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: _kBorderRadius8,
           border: Border.all(color: accent.withValues(alpha: 0.3)),
         ),
         child: child,
@@ -370,26 +379,26 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
         children: [
           Row(
             children: [
-              _PulseDot(color: theme.accentColor),
+              _PulseDot(color: accent),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Update Available — ${widget.update.tagName}',
+                      'Update Available — ${update.tagName}',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: theme.accentColor,
+                        color: accent,
                       ),
                     ),
-                    if (widget.update.name.isNotEmpty)
+                    if (update.name.isNotEmpty)
                       Text(
-                        widget.update.name,
+                        update.name,
                         style: TextStyle(
                           fontSize: 10,
-                          color: theme.accentColor.withValues(alpha: 0.75),
+                          color: accent.withValues(alpha: 0.75),
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -399,9 +408,9 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
               const SizedBox(width: 8),
               FilledButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(theme.accentColor),
+                  backgroundColor: WidgetStateProperty.all(accent),
                 ),
-                onPressed: () async => await autoUpdater.checkForUpdates(),
+                onPressed: () => autoUpdater.checkForUpdates(),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: Row(
@@ -413,9 +422,10 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
                       Text(
                         'Update Now',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600),
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
@@ -423,15 +433,19 @@ class _UpdateAvailableBannerState extends State<_UpdateAvailableBanner>
               ),
             ],
           ),
-          if (widget.update.body.isNotEmpty) ...[
+          if (update.body.isNotEmpty) ...[
             const SizedBox(height: 10),
-            _ChangelogPreview(body: widget.update.body),
+            _ChangelogPreview(body: update.body),
           ],
         ],
       ),
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pulse Dot
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _PulseDot extends StatefulWidget {
   final Color color;
@@ -453,8 +467,9 @@ class _PulseDotState extends State<_PulseDot>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     )..repeat();
-    _ring = Tween<double>(begin: 0, end: 1)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    _ring = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+    );
   }
 
   @override
@@ -491,14 +506,20 @@ class _PulseDotState extends State<_PulseDot>
           Container(
             width: 7,
             height: 7,
-            decoration:
-                BoxDecoration(color: widget.color, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: widget.color,
+              shape: BoxShape.circle,
+            ),
           ),
         ],
       ),
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Changelog Preview
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _ChangelogPreview extends StatefulWidget {
   final String body;
@@ -511,32 +532,33 @@ class _ChangelogPreview extends StatefulWidget {
 class _ChangelogPreviewState extends State<_ChangelogPreview> {
   bool _expanded = false;
   static const _maxPreviewLines = 3;
+  static final _bulletPattern = RegExp(r'^[-•*]');
+
+  late final List<String> _bullets = widget.body
+      .split('\n')
+      .map((l) => l.trim())
+      .where((l) => _bulletPattern.hasMatch(l))
+      .map((l) => l.substring(1).trim())
+      .where((l) => l.isNotEmpty)
+      .toList(growable: false);
 
   @override
   Widget build(BuildContext context) {
+    if (_bullets.isEmpty) return const SizedBox.shrink();
+
     final theme = FluentTheme.of(context);
-
-    final bullets = widget.body
-        .split('\n')
-        .map((l) => l.trim())
-        .where(
-            (l) => l.startsWith('-') || l.startsWith('•') || l.startsWith('*'))
-        .map((l) => l.substring(1).trim())
-        .where((l) => l.isNotEmpty)
-        .toList();
-
-    if (bullets.isEmpty) return const SizedBox.shrink();
-
+    final accent = theme.accentColor;
     final display =
-        _expanded ? bullets : bullets.take(_maxPreviewLines).toList();
-    final hasMore = bullets.length > _maxPreviewLines;
+        _expanded ? _bullets : _bullets.take(_maxPreviewLines).toList();
+    final hasMore = _bullets.length > _maxPreviewLines;
+    final bodyColor = theme.typography.body?.color?.withValues(alpha: 0.85);
 
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: theme.accentColor.withValues(alpha: 0.05),
+        color: accent.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: theme.accentColor.withValues(alpha: 0.1)),
+        border: Border.all(color: accent.withValues(alpha: 0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,13 +568,13 @@ class _ChangelogPreviewState extends State<_ChangelogPreview> {
             style: TextStyle(
               fontSize: 10,
               fontWeight: FontWeight.w600,
-              color: theme.accentColor.withValues(alpha: 0.8),
+              color: accent.withValues(alpha: 0.8),
               letterSpacing: 0.3,
             ),
           ),
           const SizedBox(height: 6),
-          ...display.map(
-            (line) => Padding(
+          for (final line in display)
+            Padding(
               padding: const EdgeInsets.only(bottom: 3),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -562,7 +584,7 @@ class _ChangelogPreviewState extends State<_ChangelogPreview> {
                     width: 4,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: theme.accentColor.withValues(alpha: 0.6),
+                      color: accent.withValues(alpha: 0.6),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -572,15 +594,13 @@ class _ChangelogPreviewState extends State<_ChangelogPreview> {
                       style: TextStyle(
                         fontSize: 11,
                         height: 1.5,
-                        color: theme.typography.body?.color
-                            ?.withValues(alpha: 0.85),
+                        color: bodyColor,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
           if (hasMore) ...[
             const SizedBox(height: 4),
             GestureDetector(
@@ -588,11 +608,12 @@ class _ChangelogPreviewState extends State<_ChangelogPreview> {
               child: Text(
                 _expanded
                     ? 'Show less'
-                    : '+ ${bullets.length - _maxPreviewLines} more changes',
+                    : '+ ${_bullets.length - _maxPreviewLines} more changes',
                 style: TextStyle(
-                    fontSize: 10,
-                    color: theme.accentColor,
-                    fontWeight: FontWeight.w500),
+                  fontSize: 10,
+                  color: accent,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
@@ -601,6 +622,10 @@ class _ChangelogPreviewState extends State<_ChangelogPreview> {
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Outline Icon Button
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _OutlineIconButton extends StatelessWidget {
   final IconData icon;
@@ -617,17 +642,15 @@ class _OutlineIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    final accent = FluentTheme.of(context).accentColor;
 
     return Button(
       onPressed: onPressed,
       style: ButtonStyle(
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
-            side: BorderSide(
-              color: theme.accentColor.withValues(alpha: 0.2),
-            ),
-            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(color: accent.withValues(alpha: 0.2)),
+            borderRadius: _kBorderRadius8,
           ),
         ),
         padding: WidgetStateProperty.all(
@@ -641,17 +664,33 @@ class _OutlineIconButton extends StatelessWidget {
             SizedBox(
               width: 12,
               height: 12,
-              child: ProgressRing(
-                  strokeWidth: 1.5, activeColor: theme.accentColor),
+              child: ProgressRing(strokeWidth: 1.5, activeColor: accent),
             )
           else
-            Icon(icon, size: 13, color: theme.accentColor),
+            Icon(icon, size: 13, color: accent),
           const SizedBox(width: 6),
-          Text(label,
-              style: TextStyle(
-                  fontSize: 12, color: onPressed == null ? Colors.grey : null)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: onPressed == null ? Colors.grey : null,
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kAnimDuration300 = Duration(milliseconds: 300);
+
+final _kBorderRadius8 = BorderRadius.circular(8);
+
+final _kSlideOffset = Tween<Offset>(
+  begin: const Offset(0, 0.08),
+  end: Offset.zero,
+);

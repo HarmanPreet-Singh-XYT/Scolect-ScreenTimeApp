@@ -1,12 +1,25 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Shared Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kAnimDuration = Duration(milliseconds: 150);
+const _kMonoStyle = TextStyle(fontFamily: 'monospace');
+final _kBorderRadius6 = BorderRadius.circular(6);
+final _kBorderRadius8 = BorderRadius.circular(8);
+
+Color _borderColor(bool isDark) => isDark
+    ? Colors.white.withValues(alpha: 0.2)
+    : Colors.black.withValues(alpha: 0.1);
+
 // ============== FLUENT COLOR PICKER DIALOG ==============
 
 class FluentColorPickerDialog extends StatefulWidget {
   final String title;
   final Color initialColor;
-  final Function(Color) onColorSelected;
+  final ValueChanged<Color> onColorSelected;
 
   const FluentColorPickerDialog({
     super.key,
@@ -21,18 +34,14 @@ class FluentColorPickerDialog extends StatefulWidget {
     required Color initialColor,
   }) async {
     Color? selectedColor;
-
-    await showDialog<Color>(
+    await showDialog<void>(
       context: context,
-      builder: (context) => FluentColorPickerDialog(
+      builder: (_) => FluentColorPickerDialog(
         title: title,
         initialColor: initialColor,
-        onColorSelected: (color) {
-          selectedColor = color;
-        },
+        onColorSelected: (color) => selectedColor = color,
       ),
     );
-
     return selectedColor;
   }
 
@@ -41,18 +50,13 @@ class FluentColorPickerDialog extends StatefulWidget {
       _FluentColorPickerDialogState();
 }
 
-class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
-    with SingleTickerProviderStateMixin {
+class _FluentColorPickerDialogState extends State<FluentColorPickerDialog> {
   late Color _currentColor;
-  late double _hue;
-  late double _saturation;
-  late double _value;
-  late TextEditingController _hexController;
+  late double _hue, _saturation, _value;
+  late final TextEditingController _hexController;
+  int _selectedTab = 0;
 
-  int _selectedTab = 0; // 0: Spectrum, 1: Presets, 2: Custom
-
-  // Preset color palettes
-  static const List<Color> _basicColors = [
+  static const _basicColors = [
     Color(0xFFFF0000),
     Color(0xFFFF4500),
     Color(0xFFFFA500),
@@ -75,7 +79,7 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     Color(0xFF8B4513),
   ];
 
-  static const List<Color> _extendedColors = [
+  static const _extendedColors = [
     // Reds
     Color(0xFFFFCDD2), Color(0xFFEF9A9A), Color(0xFFE57373), Color(0xFFEF5350),
     Color(0xFFF44336), Color(0xFFE53935), Color(0xFFD32F2F), Color(0xFFC62828),
@@ -94,7 +98,7 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     // Greens
     Color(0xFFC8E6C9), Color(0xFFA5D6A7), Color(0xFF81C784), Color(0xFF66BB6A),
     Color(0xFF4CAF50), Color(0xFF43A047), Color(0xFF388E3C), Color(0xFF2E7D32),
-    // Yellows/Oranges
+    // Yellows
     Color(0xFFFFF9C4), Color(0xFFFFF59D), Color(0xFFFFF176), Color(0xFFFFEE58),
     Color(0xFFFFEB3B), Color(0xFFFDD835), Color(0xFFFBC02D), Color(0xFFF9A825),
     // Oranges
@@ -106,7 +110,7 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
   void initState() {
     super.initState();
     _currentColor = widget.initialColor;
-    _updateHSVFromColor(_currentColor);
+    _syncHSVFromColor(_currentColor);
     _hexController = TextEditingController(text: _colorToHex(_currentColor));
   }
 
@@ -116,14 +120,16 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     super.dispose();
   }
 
-  void _updateHSVFromColor(Color color) {
+  // ── Color conversion helpers ──────────────────────────────────────────────
+
+  void _syncHSVFromColor(Color color) {
     final hsv = HSVColor.fromColor(color);
     _hue = hsv.hue;
     _saturation = hsv.saturation;
     _value = hsv.value;
   }
 
-  void _updateColorFromHSV() {
+  void _applyHSV() {
     setState(() {
       _currentColor =
           HSVColor.fromAHSV(1.0, _hue, _saturation, _value).toColor();
@@ -131,34 +137,31 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     });
   }
 
-  String _colorToHex(Color color) {
-    return color.value.toRadixString(16).substring(2).toUpperCase();
-  }
-
-  Color? _hexToColor(String hex) {
-    try {
-      hex = hex.replaceAll('#', '');
-      if (hex.length == 6) {
-        return Color(int.parse('FF$hex', radix: 16));
-      }
-    } catch (e) {
-      // Invalid hex
-    }
-    return null;
-  }
-
   void _setColor(Color color) {
     setState(() {
       _currentColor = color;
-      _updateHSVFromColor(color);
+      _syncHSVFromColor(color);
       _hexController.text = _colorToHex(color);
     });
   }
+
+  static String _colorToHex(Color color) =>
+      color.value.toRadixString(16).substring(2).toUpperCase();
+
+  static Color? _hexToColor(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length != 6) return null;
+    final value = int.tryParse('FF$hex', radix: 16);
+    return value != null ? Color(value) : null;
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
 
     return ContentDialog(
       constraints: const BoxConstraints(maxWidth: 480, maxHeight: 600),
@@ -170,11 +173,7 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
             decoration: BoxDecoration(
               color: _currentColor,
               borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.2)
-                    : Colors.black.withValues(alpha: 0.1),
-              ),
+              border: Border.all(color: _borderColor(isDark)),
             ),
           ),
           const SizedBox(width: 12),
@@ -184,28 +183,20 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Tab Selector
-          _buildTabSelector(theme),
+          _buildTabSelector(theme, l10n),
           const SizedBox(height: 16),
-
-          // Tab Content
-          Expanded(
-            child: _buildTabContent(theme, isDark),
-          ),
-
+          Expanded(child: _buildTabContent(theme, isDark, l10n)),
           const SizedBox(height: 16),
-
-          // Hex Input & Preview
-          _buildHexInputRow(theme, isDark),
+          _buildHexInputRow(theme, isDark, l10n),
         ],
       ),
       actions: [
         Button(
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(l10n.cancel),
           onPressed: () => Navigator.pop(context),
         ),
         FilledButton(
-          child: Text(AppLocalizations.of(context)!.select),
+          child: Text(l10n.select),
           onPressed: () {
             widget.onColorSelected(_currentColor);
             Navigator.pop(context);
@@ -215,25 +206,25 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     );
   }
 
-  Widget _buildTabSelector(FluentThemeData theme) {
+  Widget _buildTabSelector(FluentThemeData theme, AppLocalizations l10n) {
     return Row(
       children: [
         _TabChip(
-          label: AppLocalizations.of(context)!.colorPickerSpectrum,
+          label: l10n.colorPickerSpectrum,
           icon: FluentIcons.color,
           isSelected: _selectedTab == 0,
           onTap: () => setState(() => _selectedTab = 0),
         ),
         const SizedBox(width: 8),
         _TabChip(
-          label: AppLocalizations.of(context)!.colorPickerPresets,
+          label: l10n.colorPickerPresets,
           icon: FluentIcons.grid_view_medium,
           isSelected: _selectedTab == 1,
           onTap: () => setState(() => _selectedTab = 1),
         ),
         const SizedBox(width: 8),
         _TabChip(
-          label: AppLocalizations.of(context)!.colorPickerSliders,
+          label: l10n.colorPickerSliders,
           icon: FluentIcons.slider,
           isSelected: _selectedTab == 2,
           onTap: () => setState(() => _selectedTab = 2),
@@ -242,26 +233,24 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     );
   }
 
-  Widget _buildTabContent(FluentThemeData theme, bool isDark) {
-    switch (_selectedTab) {
-      case 0:
-        return _buildSpectrumPicker(isDark);
-      case 1:
-        return _buildPresetsPicker(isDark);
-      case 2:
-        return _buildSlidersPicker(theme, isDark);
-      default:
-        return const SizedBox.shrink();
-    }
+  Widget _buildTabContent(
+      FluentThemeData theme, bool isDark, AppLocalizations l10n) {
+    return switch (_selectedTab) {
+      0 => _buildSpectrumPicker(),
+      1 => _buildPresetsPicker(isDark, l10n),
+      2 => _buildSlidersPicker(l10n),
+      _ => const SizedBox.shrink(),
+    };
   }
 
-  Widget _buildSpectrumPicker(bool isDark) {
+  // ── Spectrum Tab ──────────────────────────────────────────────────────────
+
+  Widget _buildSpectrumPicker() {
     return Column(
       children: [
-        // Saturation/Value Picker
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: _kBorderRadius8,
             child: _SaturationValuePicker(
               hue: _hue,
               saturation: _saturation,
@@ -269,95 +258,55 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
               onChanged: (sat, val) {
                 _saturation = sat;
                 _value = val;
-                _updateColorFromHSV();
+                _applyHSV();
               },
             ),
           ),
         ),
         const SizedBox(height: 16),
-
-        // Hue Slider
         _HueSlider(
           hue: _hue,
           onChanged: (hue) {
             _hue = hue;
-            _updateColorFromHSV();
+            _applyHSV();
           },
         ),
       ],
     );
   }
 
-  Widget _buildPresetsPicker(bool isDark) {
+  // ── Presets Tab ───────────────────────────────────────────────────────────
+
+  Widget _buildPresetsPicker(bool isDark, AppLocalizations l10n) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            AppLocalizations.of(context)!.colorPickerBasicColors,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-          ),
+          _SectionLabel(l10n.colorPickerBasicColors),
           const SizedBox(height: 8),
-          _buildColorGrid(_basicColors, isDark),
+          _ColorGrid(
+            colors: _basicColors,
+            selectedColor: _currentColor,
+            isDark: isDark,
+            onSelect: _setColor,
+          ),
           const SizedBox(height: 16),
-          Text(
-            AppLocalizations.of(context)!.colorPickerExtendedPalette,
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-          ),
+          _SectionLabel(l10n.colorPickerExtendedPalette),
           const SizedBox(height: 8),
-          _buildColorGrid(_extendedColors, isDark),
+          _ColorGrid(
+            colors: _extendedColors,
+            selectedColor: _currentColor,
+            isDark: isDark,
+            onSelect: _setColor,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildColorGrid(List<Color> colors, bool isDark) {
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: colors.map((color) {
-        final isSelected = _currentColor.value == color.value;
-        return GestureDetector(
-          onTap: () => _setColor(color),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: isSelected
-                    ? (isDark ? Colors.white : Colors.black)
-                    : Colors.transparent,
-                width: isSelected ? 2 : 1,
-              ),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: color.withValues(alpha: 0.5),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: isSelected
-                ? Icon(
-                    FluentIcons.check_mark,
-                    size: 14,
-                    color: color.computeLuminance() > 0.5
-                        ? Colors.black
-                        : Colors.white,
-                  )
-                : null,
-          ),
-        );
-      }).toList(),
-    );
-  }
+  // ── Sliders Tab ───────────────────────────────────────────────────────────
 
-  Widget _buildSlidersPicker(FluentThemeData theme, bool isDark) {
+  Widget _buildSlidersPicker(AppLocalizations l10n) {
     final r = _currentColor.red;
     final g = _currentColor.green;
     final b = _currentColor.blue;
@@ -365,72 +314,62 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     return SingleChildScrollView(
       child: Column(
         children: [
-          // RGB Sliders
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerRed,
+            label: l10n.colorPickerRed,
             value: r.toDouble(),
             max: 255,
             activeColor: Colors.red,
-            onChanged: (val) {
-              _setColor(Color.fromARGB(255, val.round(), g, b));
-            },
+            onChanged: (v) => _setColor(Color.fromARGB(255, v.round(), g, b)),
           ),
           const SizedBox(height: 12),
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerGreen,
+            label: l10n.colorPickerGreen,
             value: g.toDouble(),
             max: 255,
             activeColor: Colors.green,
-            onChanged: (val) {
-              _setColor(Color.fromARGB(255, r, val.round(), b));
-            },
+            onChanged: (v) => _setColor(Color.fromARGB(255, r, v.round(), b)),
           ),
           const SizedBox(height: 12),
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerBlue,
+            label: l10n.colorPickerBlue,
             value: b.toDouble(),
             max: 255,
             activeColor: Colors.blue,
-            onChanged: (val) {
-              _setColor(Color.fromARGB(255, r, g, val.round()));
-            },
+            onChanged: (v) => _setColor(Color.fromARGB(255, r, g, v.round())),
           ),
-
           const SizedBox(height: 24),
           const Divider(),
           const SizedBox(height: 16),
-
-          // HSV Sliders
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerHue,
+            label: l10n.colorPickerHue,
             value: _hue,
             max: 360,
             activeColor: HSVColor.fromAHSV(1, _hue, 1, 1).toColor(),
-            onChanged: (val) {
-              _hue = val;
-              _updateColorFromHSV();
+            onChanged: (v) {
+              _hue = v;
+              _applyHSV();
             },
           ),
           const SizedBox(height: 12),
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerSaturation,
+            label: l10n.colorPickerSaturation,
             value: _saturation * 100,
             max: 100,
             activeColor: _currentColor,
-            onChanged: (val) {
-              _saturation = val / 100;
-              _updateColorFromHSV();
+            onChanged: (v) {
+              _saturation = v / 100;
+              _applyHSV();
             },
           ),
           const SizedBox(height: 12),
           _ColorSliderRow(
-            label: AppLocalizations.of(context)!.colorPickerBrightness,
+            label: l10n.colorPickerBrightness,
             value: _value * 100,
             max: 100,
             activeColor: _currentColor,
-            onChanged: (val) {
-              _value = val / 100;
-              _updateColorFromHSV();
+            onChanged: (v) {
+              _value = v / 100;
+              _applyHSV();
             },
           ),
         ],
@@ -438,21 +377,19 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
     );
   }
 
-  Widget _buildHexInputRow(FluentThemeData theme, bool isDark) {
+  // ── Hex Input Row ─────────────────────────────────────────────────────────
+
+  Widget _buildHexInputRow(
+      FluentThemeData theme, bool isDark, AppLocalizations l10n) {
     return Row(
       children: [
-        // Current Color Preview
         Container(
           width: 48,
           height: 48,
           decoration: BoxDecoration(
             color: _currentColor,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.2)
-                  : Colors.black.withValues(alpha: 0.1),
-            ),
+            borderRadius: _kBorderRadius8,
+            border: Border.all(color: _borderColor(isDark)),
             boxShadow: [
               BoxShadow(
                 color: _currentColor.withValues(alpha: 0.4),
@@ -463,15 +400,14 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
           ),
         ),
         const SizedBox(width: 16),
-
-        // Hex Input
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppLocalizations.of(context)!.colorPickerHexColor,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
+                l10n.colorPickerHexColor,
+                style:
+                    const TextStyle(fontSize: 11, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 4),
               Row(
@@ -488,19 +424,16 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
                   Expanded(
                     child: TextBox(
                       controller: _hexController,
-                      placeholder: AppLocalizations.of(context)!
-                          .colorPickerHexPlaceholder,
+                      placeholder: l10n.colorPickerHexPlaceholder,
                       style: const TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 14,
-                      ),
+                          fontFamily: 'monospace', fontSize: 14),
                       maxLength: 6,
                       onChanged: (value) {
                         final color = _hexToColor(value);
                         if (color != null) {
                           setState(() {
                             _currentColor = color;
-                            _updateHSVFromColor(color);
+                            _syncHSVFromColor(color);
                           });
                         }
                       },
@@ -511,15 +444,12 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
             ],
           ),
         ),
-
         const SizedBox(width: 16),
-
-        // RGB Values Display
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              AppLocalizations.of(context)!.colorPickerRGB,
+              l10n.colorPickerRGB,
               style: TextStyle(
                 fontSize: 10,
                 color: theme.typography.caption?.color,
@@ -540,7 +470,115 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog>
   }
 }
 
-// ============== TAB CHIP ==============
+// ─────────────────────────────────────────────────────────────────────────────
+// Section Label
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _SectionLabel extends StatelessWidget {
+  final String text;
+  const _SectionLabel(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Color Grid (extracted from inline builder)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _ColorGrid extends StatelessWidget {
+  final List<Color> colors;
+  final Color selectedColor;
+  final bool isDark;
+  final ValueChanged<Color> onSelect;
+
+  const _ColorGrid({
+    required this.colors,
+    required this.selectedColor,
+    required this.isDark,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 6,
+      children: [
+        for (final color in colors)
+          _ColorSwatch(
+            color: color,
+            isSelected: selectedColor.value == color.value,
+            isDark: isDark,
+            onTap: () => onSelect(color),
+          ),
+      ],
+    );
+  }
+}
+
+class _ColorSwatch extends StatelessWidget {
+  final Color color;
+  final bool isSelected;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  const _ColorSwatch({
+    required this.color,
+    required this.isSelected,
+    required this.isDark,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: _kAnimDuration,
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: _kBorderRadius6,
+          border: Border.all(
+            color: isSelected
+                ? (isDark ? Colors.white : Colors.black)
+                : Colors.transparent,
+            width: isSelected ? 2 : 1,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.5),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
+        ),
+        child: isSelected
+            ? Icon(
+                FluentIcons.check_mark,
+                size: 14,
+                color: color.computeLuminance() > 0.5
+                    ? Colors.black
+                    : Colors.white,
+              )
+            : null,
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Tab Chip
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _TabChip extends StatefulWidget {
   final String label;
@@ -565,6 +603,9 @@ class _TabChipState extends State<_TabChip> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final selected = widget.isSelected;
+    final accent = theme.accentColor;
+    final inactiveBg = theme.inactiveBackgroundColor;
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -572,35 +613,28 @@ class _TabChipState extends State<_TabChip> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: widget.isSelected
-                ? theme.accentColor.withValues(alpha: 0.15)
-                : _isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.5)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(6),
+            color: selected
+                ? accent.withValues(alpha: 0.15)
+                : inactiveBg.withValues(alpha: _isHovered ? 0.5 : 0.2),
+            borderRadius: _kBorderRadius6,
             border: Border.all(
-              color: widget.isSelected ? theme.accentColor : Colors.transparent,
+              color: selected ? accent : Colors.transparent,
             ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                widget.icon,
-                size: 14,
-                color: widget.isSelected ? theme.accentColor : null,
-              ),
+              Icon(widget.icon, size: 14, color: selected ? accent : null),
               const SizedBox(width: 6),
               Text(
                 widget.label,
                 style: TextStyle(
                   fontSize: 12,
-                  fontWeight:
-                      widget.isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: widget.isSelected ? theme.accentColor : null,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
+                  color: selected ? accent : null,
                 ),
               ),
             ],
@@ -611,13 +645,13 @@ class _TabChipState extends State<_TabChip> {
   }
 }
 
-// ============== SATURATION/VALUE PICKER ==============
+// ─────────────────────────────────────────────────────────────────────────────
+// Saturation/Value Picker
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _SaturationValuePicker extends StatefulWidget {
-  final double hue;
-  final double saturation;
-  final double value;
-  final Function(double saturation, double value) onChanged;
+class _SaturationValuePicker extends StatelessWidget {
+  final double hue, saturation, value;
+  final void Function(double saturation, double value) onChanged;
 
   const _SaturationValuePicker({
     required this.hue,
@@ -626,36 +660,26 @@ class _SaturationValuePicker extends StatefulWidget {
     required this.onChanged,
   });
 
-  @override
-  State<_SaturationValuePicker> createState() => _SaturationValuePickerState();
-}
-
-class _SaturationValuePickerState extends State<_SaturationValuePicker> {
-  void _handlePanUpdate(Offset localPosition, Size size) {
-    final sat = (localPosition.dx / size.width).clamp(0.0, 1.0);
-    final val = 1.0 - (localPosition.dy / size.height).clamp(0.0, 1.0);
-    widget.onChanged(sat, val);
+  void _handle(Offset local, Size size) {
+    onChanged(
+      (local.dx / size.width).clamp(0.0, 1.0),
+      1.0 - (local.dy / size.height).clamp(0.0, 1.0),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+      builder: (_, constraints) {
         final size = Size(constraints.maxWidth, constraints.maxHeight);
-
         return GestureDetector(
-          onPanStart: (details) =>
-              _handlePanUpdate(details.localPosition, size),
-          onPanUpdate: (details) =>
-              _handlePanUpdate(details.localPosition, size),
-          onTapDown: (details) => _handlePanUpdate(details.localPosition, size),
+          onPanStart: (d) => _handle(d.localPosition, size),
+          onPanUpdate: (d) => _handle(d.localPosition, size),
+          onTapDown: (d) => _handle(d.localPosition, size),
           child: CustomPaint(
             size: size,
-            painter: _SaturationValuePainter(
-              hue: widget.hue,
-              saturation: widget.saturation,
-              value: widget.value,
-            ),
+            painter:
+                _SatValPainter(hue: hue, saturation: saturation, value: value),
           ),
         );
       },
@@ -663,12 +687,10 @@ class _SaturationValuePickerState extends State<_SaturationValuePicker> {
   }
 }
 
-class _SaturationValuePainter extends CustomPainter {
-  final double hue;
-  final double saturation;
-  final double value;
+class _SatValPainter extends CustomPainter {
+  final double hue, saturation, value;
 
-  _SaturationValuePainter({
+  const _SatValPainter({
     required this.hue,
     required this.saturation,
     required this.value,
@@ -678,84 +700,65 @@ class _SaturationValuePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
 
-    // Draw saturation gradient (white to hue color)
-    final saturationGradient = LinearGradient(
-      colors: [
-        Colors.white,
-        HSVColor.fromAHSV(1, hue, 1, 1).toColor(),
-      ],
-    );
+    // Saturation gradient (white → hue)
     canvas.drawRect(
-        rect, Paint()..shader = saturationGradient.createShader(rect));
-
-    // Draw value gradient (transparent to black)
-    final valueGradient = const LinearGradient(
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-      colors: [Colors.transparent, Colors.black],
-    );
-    canvas.drawRect(rect, Paint()..shader = valueGradient.createShader(rect));
-
-    // Draw indicator circle
-    final indicatorX = saturation * size.width;
-    final indicatorY = (1 - value) * size.height;
-    final indicatorCenter = Offset(indicatorX, indicatorY);
-
-    // Outer circle (white)
-    canvas.drawCircle(
-      indicatorCenter,
-      12,
+      rect,
       Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
+        ..shader = LinearGradient(colors: [
+          Colors.white,
+          HSVColor.fromAHSV(1, hue, 1, 1).toColor(),
+        ]).createShader(rect),
     );
 
-    // Inner circle (black)
-    canvas.drawCircle(
-      indicatorCenter,
-      10,
+    // Value gradient (transparent → black)
+    canvas.drawRect(
+      rect,
       Paint()
-        ..color = Colors.black
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1,
+        ..shader = const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Colors.transparent, Colors.black],
+        ).createShader(rect),
     );
 
-    // Fill with current color
+    // Indicator
+    final center = Offset(saturation * size.width, (1 - value) * size.height);
+    final currentColor = HSVColor.fromAHSV(1, hue, saturation, value).toColor();
+
     canvas.drawCircle(
-      indicatorCenter,
-      8,
-      Paint()..color = HSVColor.fromAHSV(1, hue, saturation, value).toColor(),
-    );
+        center,
+        12,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3);
+    canvas.drawCircle(
+        center,
+        10,
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1);
+    canvas.drawCircle(center, 8, Paint()..color = currentColor);
   }
 
   @override
-  bool shouldRepaint(covariant _SaturationValuePainter oldDelegate) {
-    return hue != oldDelegate.hue ||
-        saturation != oldDelegate.saturation ||
-        value != oldDelegate.value;
-  }
+  bool shouldRepaint(covariant _SatValPainter old) =>
+      hue != old.hue || saturation != old.saturation || value != old.value;
 }
 
-// ============== HUE SLIDER ==============
+// ─────────────────────────────────────────────────────────────────────────────
+// Hue Slider
+// ─────────────────────────────────────────────────────────────────────────────
 
-class _HueSlider extends StatefulWidget {
+class _HueSlider extends StatelessWidget {
   final double hue;
-  final Function(double) onChanged;
+  final ValueChanged<double> onChanged;
 
-  const _HueSlider({
-    required this.hue,
-    required this.onChanged,
-  });
+  const _HueSlider({required this.hue, required this.onChanged});
 
-  @override
-  State<_HueSlider> createState() => _HueSliderState();
-}
-
-class _HueSliderState extends State<_HueSlider> {
-  void _handlePanUpdate(Offset localPosition, double width) {
-    final hue = (localPosition.dx / width * 360).clamp(0.0, 360.0);
-    widget.onChanged(hue);
+  void _handle(Offset local, double width) {
+    onChanged((local.dx / width * 360).clamp(0.0, 360.0));
   }
 
   @override
@@ -763,19 +766,15 @@ class _HueSliderState extends State<_HueSlider> {
     return SizedBox(
       height: 24,
       child: LayoutBuilder(
-        builder: (context, constraints) {
+        builder: (_, constraints) {
           final width = constraints.maxWidth;
-
           return GestureDetector(
-            onPanStart: (details) =>
-                _handlePanUpdate(details.localPosition, width),
-            onPanUpdate: (details) =>
-                _handlePanUpdate(details.localPosition, width),
-            onTapDown: (details) =>
-                _handlePanUpdate(details.localPosition, width),
+            onPanStart: (d) => _handle(d.localPosition, width),
+            onPanUpdate: (d) => _handle(d.localPosition, width),
+            onTapDown: (d) => _handle(d.localPosition, width),
             child: CustomPaint(
               size: Size(width, 24),
-              painter: _HueSliderPainter(hue: widget.hue),
+              painter: _HuePainter(hue: hue),
             ),
           );
         },
@@ -784,74 +783,59 @@ class _HueSliderState extends State<_HueSlider> {
   }
 }
 
-class _HueSliderPainter extends CustomPainter {
+class _HuePainter extends CustomPainter {
   final double hue;
+  const _HuePainter({required this.hue});
 
-  _HueSliderPainter({required this.hue});
+  // Pre-generate hue stops once — they never change
+  static final _hueColors = List.generate(
+    7,
+    (i) => HSVColor.fromAHSV(1, i * 60.0, 1, 1).toColor(),
+  );
+  static final _hueGradient = LinearGradient(colors: _hueColors);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = RRect.fromRectAndRadius(
-      Offset.zero & size,
-      const Radius.circular(12),
-    );
+    final rect = Offset.zero & size;
+    final rrect = RRect.fromRectAndRadius(rect, const Radius.circular(12));
 
-    // Draw hue gradient
-    final colors = List.generate(
-      7,
-      (index) => HSVColor.fromAHSV(1, index * 60.0, 1, 1).toColor(),
-    );
+    canvas.drawRRect(rrect, Paint()..shader = _hueGradient.createShader(rect));
 
-    final gradient = LinearGradient(colors: colors);
-    canvas.drawRRect(
-      rect,
-      Paint()..shader = gradient.createShader(Offset.zero & size),
-    );
-
-    // Draw indicator
-    final indicatorX = (hue / 360) * size.width;
-    final indicatorCenter = Offset(indicatorX, size.height / 2);
-
-    // Outer circle
-    canvas.drawCircle(
-      indicatorCenter,
-      10,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 3,
-    );
+    // Indicator
+    final center = Offset((hue / 360) * size.width, size.height / 2);
+    final indicatorColor = HSVColor.fromAHSV(1, hue, 1, 1).toColor();
 
     canvas.drawCircle(
-      indicatorCenter,
-      8,
-      Paint()
-        ..color = Colors.black
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1,
-    );
-
+        center,
+        10,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3);
     canvas.drawCircle(
-      indicatorCenter,
-      6,
-      Paint()..color = HSVColor.fromAHSV(1, hue, 1, 1).toColor(),
-    );
+        center,
+        8,
+        Paint()
+          ..color = Colors.black
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1);
+    canvas.drawCircle(center, 6, Paint()..color = indicatorColor);
   }
 
   @override
-  bool shouldRepaint(covariant _HueSliderPainter oldDelegate) {
-    return hue != oldDelegate.hue;
-  }
+  bool shouldRepaint(covariant _HuePainter old) => hue != old.hue;
 }
 
-// ============== FIXED FLUENT COMPATIBLE SLIDER ==============
+// ─────────────────────────────────────────────────────────────────────────────
+// Color Slider Row
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _ColorSliderRow extends StatelessWidget {
   final String label;
   final double value;
   final double max;
   final Color activeColor;
-  final Function(double) onChanged;
+  final ValueChanged<double> onChanged;
 
   const _ColorSliderRow({
     required this.label,
@@ -907,10 +891,7 @@ class _ColorSliderRow extends StatelessWidget {
           width: 36,
           child: Text(
             value.round().toString(),
-            style: const TextStyle(
-              fontSize: 11,
-              fontFamily: 'monospace',
-            ),
+            style: _kMonoStyle.copyWith(fontSize: 11),
             textAlign: TextAlign.right,
           ),
         ),

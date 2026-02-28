@@ -30,7 +30,7 @@ class CustomThemeData {
   final Color darkTextPrimary;
   final Color darkTextSecondary;
 
-  CustomThemeData({
+  const CustomThemeData({
     required this.id,
     required this.name,
     this.isCustom = false,
@@ -53,59 +53,94 @@ class CustomThemeData {
     required this.darkTextSecondary,
   });
 
-  // Convert to JSON for storage
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'isCustom': isCustom,
-      'primaryAccent': primaryAccent.value,
-      'secondaryAccent': secondaryAccent.value,
-      'successColor': successColor.value,
-      'warningColor': warningColor.value,
-      'errorColor': errorColor.value,
-      'lightBackground': lightBackground.value,
-      'lightSurface': lightSurface.value,
-      'lightSurfaceSecondary': lightSurfaceSecondary.value,
-      'lightBorder': lightBorder.value,
-      'lightTextPrimary': lightTextPrimary.value,
-      'lightTextSecondary': lightTextSecondary.value,
-      'darkBackground': darkBackground.value,
-      'darkSurface': darkSurface.value,
-      'darkSurfaceSecondary': darkSurfaceSecondary.value,
-      'darkBorder': darkBorder.value,
-      'darkTextPrimary': darkTextPrimary.value,
-      'darkTextSecondary': darkTextSecondary.value,
-    };
-  }
+  // ---- Serialization ----
 
-  // Create from JSON
-  factory CustomThemeData.fromJson(Map<String, dynamic> json) {
-    return CustomThemeData(
-      id: json['id'],
-      name: json['name'],
-      isCustom: json['isCustom'] ?? false,
-      primaryAccent: Color(json['primaryAccent']),
-      secondaryAccent: Color(json['secondaryAccent']),
-      successColor: Color(json['successColor']),
-      warningColor: Color(json['warningColor']),
-      errorColor: Color(json['errorColor']),
-      lightBackground: Color(json['lightBackground']),
-      lightSurface: Color(json['lightSurface']),
-      lightSurfaceSecondary: Color(json['lightSurfaceSecondary']),
-      lightBorder: Color(json['lightBorder']),
-      lightTextPrimary: Color(json['lightTextPrimary']),
-      lightTextSecondary: Color(json['lightTextSecondary']),
-      darkBackground: Color(json['darkBackground']),
-      darkSurface: Color(json['darkSurface']),
-      darkSurfaceSecondary: Color(json['darkSurfaceSecondary']),
-      darkBorder: Color(json['darkBorder']),
-      darkTextPrimary: Color(json['darkTextPrimary']),
-      darkTextSecondary: Color(json['darkTextSecondary']),
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        'isCustom': isCustom,
+        for (final entry in _colorMap().entries) entry.key: entry.value.value,
+      };
+
+  factory CustomThemeData.fromJson(Map<String, dynamic> json) =>
+      CustomThemeData(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        isCustom: json['isCustom'] as bool? ?? false,
+        primaryAccent: Color(json['primaryAccent'] as int),
+        secondaryAccent: Color(json['secondaryAccent'] as int),
+        successColor: Color(json['successColor'] as int),
+        warningColor: Color(json['warningColor'] as int),
+        errorColor: Color(json['errorColor'] as int),
+        lightBackground: Color(json['lightBackground'] as int),
+        lightSurface: Color(json['lightSurface'] as int),
+        lightSurfaceSecondary: Color(json['lightSurfaceSecondary'] as int),
+        lightBorder: Color(json['lightBorder'] as int),
+        lightTextPrimary: Color(json['lightTextPrimary'] as int),
+        lightTextSecondary: Color(json['lightTextSecondary'] as int),
+        darkBackground: Color(json['darkBackground'] as int),
+        darkSurface: Color(json['darkSurface'] as int),
+        darkSurfaceSecondary: Color(json['darkSurfaceSecondary'] as int),
+        darkBorder: Color(json['darkBorder'] as int),
+        darkTextPrimary: Color(json['darkTextPrimary'] as int),
+        darkTextSecondary: Color(json['darkTextSecondary'] as int),
+      );
+
+  // ---- Color Map (single source of truth for key-based access) ----
+
+  /// Returns a map of all color keys to their current Color values.
+  /// Used by [toJson], [getColor], and [updateColor] to eliminate repetitive
+  /// switch statements across those three methods.
+  Map<String, Color> _colorMap() => {
+        'primaryAccent': primaryAccent,
+        'secondaryAccent': secondaryAccent,
+        'successColor': successColor,
+        'warningColor': warningColor,
+        'errorColor': errorColor,
+        'lightBackground': lightBackground,
+        'lightSurface': lightSurface,
+        'lightSurfaceSecondary': lightSurfaceSecondary,
+        'lightBorder': lightBorder,
+        'lightTextPrimary': lightTextPrimary,
+        'lightTextSecondary': lightTextSecondary,
+        'darkBackground': darkBackground,
+        'darkSurface': darkSurface,
+        'darkSurfaceSecondary': darkSurfaceSecondary,
+        'darkBorder': darkBorder,
+        'darkTextPrimary': darkTextPrimary,
+        'darkTextSecondary': darkTextSecondary,
+      };
+
+  /// Get color by key. Returns null for unknown keys.
+  Color? getColor(String colorKey) => _colorMap()[colorKey];
+
+  /// Returns a copy of this theme with one color replaced.
+  CustomThemeData updateColor(String colorKey, Color color) {
+    // Only create a new instance when the key is valid.
+    if (!_colorMap().containsKey(colorKey)) return this;
+    return copyWith(
+      primaryAccent: colorKey == 'primaryAccent' ? color : null,
+      secondaryAccent: colorKey == 'secondaryAccent' ? color : null,
+      successColor: colorKey == 'successColor' ? color : null,
+      warningColor: colorKey == 'warningColor' ? color : null,
+      errorColor: colorKey == 'errorColor' ? color : null,
+      lightBackground: colorKey == 'lightBackground' ? color : null,
+      lightSurface: colorKey == 'lightSurface' ? color : null,
+      lightSurfaceSecondary: colorKey == 'lightSurfaceSecondary' ? color : null,
+      lightBorder: colorKey == 'lightBorder' ? color : null,
+      lightTextPrimary: colorKey == 'lightTextPrimary' ? color : null,
+      lightTextSecondary: colorKey == 'lightTextSecondary' ? color : null,
+      darkBackground: colorKey == 'darkBackground' ? color : null,
+      darkSurface: colorKey == 'darkSurface' ? color : null,
+      darkSurfaceSecondary: colorKey == 'darkSurfaceSecondary' ? color : null,
+      darkBorder: colorKey == 'darkBorder' ? color : null,
+      darkTextPrimary: colorKey == 'darkTextPrimary' ? color : null,
+      darkTextSecondary: colorKey == 'darkTextSecondary' ? color : null,
     );
   }
 
-  // Create a copy with modified values
+  // ---- copyWith ----
+
   CustomThemeData copyWith({
     String? id,
     String? name,
@@ -127,304 +162,218 @@ class CustomThemeData {
     Color? darkBorder,
     Color? darkTextPrimary,
     Color? darkTextSecondary,
-  }) {
-    return CustomThemeData(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      isCustom: isCustom ?? this.isCustom,
-      primaryAccent: primaryAccent ?? this.primaryAccent,
-      secondaryAccent: secondaryAccent ?? this.secondaryAccent,
-      successColor: successColor ?? this.successColor,
-      warningColor: warningColor ?? this.warningColor,
-      errorColor: errorColor ?? this.errorColor,
-      lightBackground: lightBackground ?? this.lightBackground,
-      lightSurface: lightSurface ?? this.lightSurface,
-      lightSurfaceSecondary:
-          lightSurfaceSecondary ?? this.lightSurfaceSecondary,
-      lightBorder: lightBorder ?? this.lightBorder,
-      lightTextPrimary: lightTextPrimary ?? this.lightTextPrimary,
-      lightTextSecondary: lightTextSecondary ?? this.lightTextSecondary,
-      darkBackground: darkBackground ?? this.darkBackground,
-      darkSurface: darkSurface ?? this.darkSurface,
-      darkSurfaceSecondary: darkSurfaceSecondary ?? this.darkSurfaceSecondary,
-      darkBorder: darkBorder ?? this.darkBorder,
-      darkTextPrimary: darkTextPrimary ?? this.darkTextPrimary,
-      darkTextSecondary: darkTextSecondary ?? this.darkTextSecondary,
-    );
-  }
+  }) =>
+      CustomThemeData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        isCustom: isCustom ?? this.isCustom,
+        primaryAccent: primaryAccent ?? this.primaryAccent,
+        secondaryAccent: secondaryAccent ?? this.secondaryAccent,
+        successColor: successColor ?? this.successColor,
+        warningColor: warningColor ?? this.warningColor,
+        errorColor: errorColor ?? this.errorColor,
+        lightBackground: lightBackground ?? this.lightBackground,
+        lightSurface: lightSurface ?? this.lightSurface,
+        lightSurfaceSecondary:
+            lightSurfaceSecondary ?? this.lightSurfaceSecondary,
+        lightBorder: lightBorder ?? this.lightBorder,
+        lightTextPrimary: lightTextPrimary ?? this.lightTextPrimary,
+        lightTextSecondary: lightTextSecondary ?? this.lightTextSecondary,
+        darkBackground: darkBackground ?? this.darkBackground,
+        darkSurface: darkSurface ?? this.darkSurface,
+        darkSurfaceSecondary: darkSurfaceSecondary ?? this.darkSurfaceSecondary,
+        darkBorder: darkBorder ?? this.darkBorder,
+        darkTextPrimary: darkTextPrimary ?? this.darkTextPrimary,
+        darkTextSecondary: darkTextSecondary ?? this.darkTextSecondary,
+      );
 
-  /// Helper method to update any color by key
-  CustomThemeData updateColor(String colorKey, Color color) {
-    switch (colorKey) {
-      // Brand Colors
-      case 'primaryAccent':
-        return copyWith(primaryAccent: color);
-      case 'secondaryAccent':
-        return copyWith(secondaryAccent: color);
-      case 'successColor':
-        return copyWith(successColor: color);
-      case 'warningColor':
-        return copyWith(warningColor: color);
-      case 'errorColor':
-        return copyWith(errorColor: color);
+  // ---- Convenience helpers used by AppDesign ----
 
-      // Light Theme Colors
-      case 'lightBackground':
-        return copyWith(lightBackground: color);
-      case 'lightSurface':
-        return copyWith(lightSurface: color);
-      case 'lightSurfaceSecondary':
-        return copyWith(lightSurfaceSecondary: color);
-      case 'lightBorder':
-        return copyWith(lightBorder: color);
-      case 'lightTextPrimary':
-        return copyWith(lightTextPrimary: color);
-      case 'lightTextSecondary':
-        return copyWith(lightTextSecondary: color);
-
-      // Dark Theme Colors
-      case 'darkBackground':
-        return copyWith(darkBackground: color);
-      case 'darkSurface':
-        return copyWith(darkSurface: color);
-      case 'darkSurfaceSecondary':
-        return copyWith(darkSurfaceSecondary: color);
-      case 'darkBorder':
-        return copyWith(darkBorder: color);
-      case 'darkTextPrimary':
-        return copyWith(darkTextPrimary: color);
-      case 'darkTextSecondary':
-        return copyWith(darkTextSecondary: color);
-
-      default:
-        return this;
-    }
-  }
-
-  /// Get color by key (for dynamic access)
-  Color? getColor(String colorKey) {
-    switch (colorKey) {
-      case 'primaryAccent':
-        return primaryAccent;
-      case 'secondaryAccent':
-        return secondaryAccent;
-      case 'successColor':
-        return successColor;
-      case 'warningColor':
-        return warningColor;
-      case 'errorColor':
-        return errorColor;
-      case 'lightBackground':
-        return lightBackground;
-      case 'lightSurface':
-        return lightSurface;
-      case 'lightSurfaceSecondary':
-        return lightSurfaceSecondary;
-      case 'lightBorder':
-        return lightBorder;
-      case 'lightTextPrimary':
-        return lightTextPrimary;
-      case 'lightTextSecondary':
-        return lightTextSecondary;
-      case 'darkBackground':
-        return darkBackground;
-      case 'darkSurface':
-        return darkSurface;
-      case 'darkSurfaceSecondary':
-        return darkSurfaceSecondary;
-      case 'darkBorder':
-        return darkBorder;
-      case 'darkTextPrimary':
-        return darkTextPrimary;
-      case 'darkTextSecondary':
-        return darkTextSecondary;
-      default:
-        return null;
-    }
-  }
+  Color getBackground(bool isDark) => isDark ? darkBackground : lightBackground;
+  Color getSurface(bool isDark) => isDark ? darkSurface : lightSurface;
+  Color getSurfaceSecondary(bool isDark) =>
+      isDark ? darkSurfaceSecondary : lightSurfaceSecondary;
+  Color getBorder(bool isDark) => isDark ? darkBorder : lightBorder;
+  Color getTextPrimary(bool isDark) =>
+      isDark ? darkTextPrimary : lightTextPrimary;
+  Color getTextSecondary(bool isDark) =>
+      isDark ? darkTextSecondary : lightTextSecondary;
 }
 
 // ============== THEME PRESETS ==============
 
 class ThemePresets {
-  // Default Theme (Current)
-  static CustomThemeData get defaultTheme => CustomThemeData(
-        id: 'default',
-        name: 'Default',
-        primaryAccent: const Color(0xFF6366F1),
-        secondaryAccent: const Color(0xFF8B5CF6),
-        successColor: const Color(0xFF10B981),
-        warningColor: const Color(0xFFF59E0B),
-        errorColor: const Color(0xFFEF4444),
-        lightBackground: const Color(0xFFEEF2F7),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFE6EDF7),
-        lightBorder: const Color(0xFFCBD5E1),
-        lightTextPrimary: const Color(0xFF0F172A),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF0A0F1C),
-        darkSurface: const Color(0xFF141D2D),
-        darkSurfaceSecondary: const Color(0xFF121822),
-        darkBorder: const Color(0xFF1F2A3B),
-        darkTextPrimary: const Color(0xFFE0E5EB),
-        darkTextSecondary: const Color(0xFF7A8B9B),
-      );
+  ThemePresets._(); // prevent instantiation
 
-  // Ocean Blue Theme
-  static CustomThemeData get oceanBlue => CustomThemeData(
-        id: 'ocean_blue',
-        name: 'Ocean Blue',
-        primaryAccent: const Color(0xFF0EA5E9),
-        secondaryAccent: const Color(0xFF06B6D4),
-        successColor: const Color(0xFF14B8A6),
-        warningColor: const Color(0xFFFBBF24),
-        errorColor: const Color(0xFFF87171),
-        lightBackground: const Color(0xFFEFF6FF),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFDCEFFE),
-        lightBorder: const Color(0xFFBAE6FD),
-        lightTextPrimary: const Color(0xFF0C4A6E),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF082F49),
-        darkSurface: const Color(0xFF0E4C6D),
-        darkSurfaceSecondary: const Color(0xFF0A3A57),
-        darkBorder: const Color(0xFF155E85),
-        darkTextPrimary: const Color(0xFFE0F2FE),
-        darkTextSecondary: const Color(0xFF7DD3FC),
-      );
+  static const CustomThemeData defaultTheme = CustomThemeData(
+    id: 'default',
+    name: 'Default',
+    primaryAccent: Color(0xFF6366F1),
+    secondaryAccent: Color(0xFF8B5CF6),
+    successColor: Color(0xFF10B981),
+    warningColor: Color(0xFFF59E0B),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFEEF2F7),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFE6EDF7),
+    lightBorder: Color(0xFFCBD5E1),
+    lightTextPrimary: Color(0xFF0F172A),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF0A0F1C),
+    darkSurface: Color(0xFF141D2D),
+    darkSurfaceSecondary: Color(0xFF121822),
+    darkBorder: Color(0xFF1F2A3B),
+    darkTextPrimary: Color(0xFFE0E5EB),
+    darkTextSecondary: Color(0xFF7A8B9B),
+  );
 
-  // Forest Green Theme
-  static CustomThemeData get forestGreen => CustomThemeData(
-        id: 'forest_green',
-        name: 'Forest Green',
-        primaryAccent: const Color(0xFF10B981),
-        secondaryAccent: const Color(0xFF059669),
-        successColor: const Color(0xFF22C55E),
-        warningColor: const Color(0xFFF59E0B),
-        errorColor: const Color(0xFFEF4444),
-        lightBackground: const Color(0xFFF0FDF4),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFDCFCE7),
-        lightBorder: const Color(0xFFBBF7D0),
-        lightTextPrimary: const Color(0xFF064E3B),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF022C22),
-        darkSurface: const Color(0xFF064E3B),
-        darkSurfaceSecondary: const Color(0xFF043A2E),
-        darkBorder: const Color(0xFF065F46),
-        darkTextPrimary: const Color(0xFFD1FAE5),
-        darkTextSecondary: const Color(0xFF6EE7B7),
-      );
+  static const CustomThemeData oceanBlue = CustomThemeData(
+    id: 'ocean_blue',
+    name: 'Ocean Blue',
+    primaryAccent: Color(0xFF0EA5E9),
+    secondaryAccent: Color(0xFF06B6D4),
+    successColor: Color(0xFF14B8A6),
+    warningColor: Color(0xFFFBBF24),
+    errorColor: Color(0xFFF87171),
+    lightBackground: Color(0xFFEFF6FF),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFDCEFFE),
+    lightBorder: Color(0xFFBAE6FD),
+    lightTextPrimary: Color(0xFF0C4A6E),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF082F49),
+    darkSurface: Color(0xFF0E4C6D),
+    darkSurfaceSecondary: Color(0xFF0A3A57),
+    darkBorder: Color(0xFF155E85),
+    darkTextPrimary: Color(0xFFE0F2FE),
+    darkTextSecondary: Color(0xFF7DD3FC),
+  );
 
-  // Sunset Orange Theme
-  static CustomThemeData get sunsetOrange => CustomThemeData(
-        id: 'sunset_orange',
-        name: 'Sunset Orange',
-        primaryAccent: const Color(0xFFF97316),
-        secondaryAccent: const Color(0xFFEA580C),
-        successColor: const Color(0xFF10B981),
-        warningColor: const Color(0xFFFBBF24),
-        errorColor: const Color(0xFFEF4444),
-        lightBackground: const Color(0xFFFFF7ED),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFFFEDD5),
-        lightBorder: const Color(0xFFFED7AA),
-        lightTextPrimary: const Color(0xFF7C2D12),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF431407),
-        darkSurface: const Color(0xFF7C2D12),
-        darkSurfaceSecondary: const Color(0xFF5A1F0D),
-        darkBorder: const Color(0xFF9A3412),
-        darkTextPrimary: const Color(0xFFFED7AA),
-        darkTextSecondary: const Color(0xFFFB923C),
-      );
+  static const CustomThemeData forestGreen = CustomThemeData(
+    id: 'forest_green',
+    name: 'Forest Green',
+    primaryAccent: Color(0xFF10B981),
+    secondaryAccent: Color(0xFF059669),
+    successColor: Color(0xFF22C55E),
+    warningColor: Color(0xFFF59E0B),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFF0FDF4),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFDCFCE7),
+    lightBorder: Color(0xFFBBF7D0),
+    lightTextPrimary: Color(0xFF064E3B),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF022C22),
+    darkSurface: Color(0xFF064E3B),
+    darkSurfaceSecondary: Color(0xFF043A2E),
+    darkBorder: Color(0xFF065F46),
+    darkTextPrimary: Color(0xFFD1FAE5),
+    darkTextSecondary: Color(0xFF6EE7B7),
+  );
 
-  // Purple Dream Theme
-  static CustomThemeData get purpleDream => CustomThemeData(
-        id: 'purple_dream',
-        name: 'Purple Dream',
-        primaryAccent: const Color(0xFFA855F7),
-        secondaryAccent: const Color(0xFF9333EA),
-        successColor: const Color(0xFF10B981),
-        warningColor: const Color(0xFFF59E0B),
-        errorColor: const Color(0xFFEF4444),
-        lightBackground: const Color(0xFFFAF5FF),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFF3E8FF),
-        lightBorder: const Color(0xFFE9D5FF),
-        lightTextPrimary: const Color(0xFF581C87),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF3B0764),
-        darkSurface: const Color(0xFF581C87),
-        darkSurfaceSecondary: const Color(0xFF4A1472),
-        darkBorder: const Color(0xFF6B21A8),
-        darkTextPrimary: const Color(0xFFF3E8FF),
-        darkTextSecondary: const Color(0xFFD8B4FE),
-      );
+  static const CustomThemeData sunsetOrange = CustomThemeData(
+    id: 'sunset_orange',
+    name: 'Sunset Orange',
+    primaryAccent: Color(0xFFF97316),
+    secondaryAccent: Color(0xFFEA580C),
+    successColor: Color(0xFF10B981),
+    warningColor: Color(0xFFFBBF24),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFFFF7ED),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFFFEDD5),
+    lightBorder: Color(0xFFFED7AA),
+    lightTextPrimary: Color(0xFF7C2D12),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF431407),
+    darkSurface: Color(0xFF7C2D12),
+    darkSurfaceSecondary: Color(0xFF5A1F0D),
+    darkBorder: Color(0xFF9A3412),
+    darkTextPrimary: Color(0xFFFED7AA),
+    darkTextSecondary: Color(0xFFFB923C),
+  );
 
-  // Rose Pink Theme
-  static CustomThemeData get rosePink => CustomThemeData(
-        id: 'rose_pink',
-        name: 'Rose Pink',
-        primaryAccent: const Color(0xFFF43F5E),
-        secondaryAccent: const Color(0xFFE11D48),
-        successColor: const Color(0xFF10B981),
-        warningColor: const Color(0xFFF59E0B),
-        errorColor: const Color(0xFFEF4444),
-        lightBackground: const Color(0xFFFFF1F2),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFFFE4E6),
-        lightBorder: const Color(0xFFFECDD3),
-        lightTextPrimary: const Color(0xFF881337),
-        lightTextSecondary: const Color(0xFF475569),
-        darkBackground: const Color(0xFF4C0519),
-        darkSurface: const Color(0xFF881337),
-        darkSurfaceSecondary: const Color(0xFF6B0E28),
-        darkBorder: const Color(0xFF9F1239),
-        darkTextPrimary: const Color(0xFFFFE4E6),
-        darkTextSecondary: const Color(0xFFFDA4AF),
-      );
+  static const CustomThemeData purpleDream = CustomThemeData(
+    id: 'purple_dream',
+    name: 'Purple Dream',
+    primaryAccent: Color(0xFFA855F7),
+    secondaryAccent: Color(0xFF9333EA),
+    successColor: Color(0xFF10B981),
+    warningColor: Color(0xFFF59E0B),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFFAF5FF),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFF3E8FF),
+    lightBorder: Color(0xFFE9D5FF),
+    lightTextPrimary: Color(0xFF581C87),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF3B0764),
+    darkSurface: Color(0xFF581C87),
+    darkSurfaceSecondary: Color(0xFF4A1472),
+    darkBorder: Color(0xFF6B21A8),
+    darkTextPrimary: Color(0xFFF3E8FF),
+    darkTextSecondary: Color(0xFFD8B4FE),
+  );
 
-  // Monochrome Theme
-  static CustomThemeData get monochrome => CustomThemeData(
-        id: 'monochrome',
-        name: 'Monochrome',
-        primaryAccent: const Color(0xFF525252),
-        secondaryAccent: const Color(0xFF404040),
-        successColor: const Color(0xFF737373),
-        warningColor: const Color(0xFFA3A3A3),
-        errorColor: const Color(0xFF262626),
-        lightBackground: const Color(0xFFFAFAFA),
-        lightSurface: const Color(0xFFFFFFFF),
-        lightSurfaceSecondary: const Color(0xFFF5F5F5),
-        lightBorder: const Color(0xFFE5E5E5),
-        lightTextPrimary: const Color(0xFF171717),
-        lightTextSecondary: const Color(0xFF525252),
-        darkBackground: const Color(0xFF0A0A0A),
-        darkSurface: const Color(0xFF171717),
-        darkSurfaceSecondary: const Color(0xFF0F0F0F),
-        darkBorder: const Color(0xFF262626),
-        darkTextPrimary: const Color(0xFFFAFAFA),
-        darkTextSecondary: const Color(0xFFA3A3A3),
-      );
+  static const CustomThemeData rosePink = CustomThemeData(
+    id: 'rose_pink',
+    name: 'Rose Pink',
+    primaryAccent: Color(0xFFF43F5E),
+    secondaryAccent: Color(0xFFE11D48),
+    successColor: Color(0xFF10B981),
+    warningColor: Color(0xFFF59E0B),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFFFF1F2),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFFFE4E6),
+    lightBorder: Color(0xFFFECDD3),
+    lightTextPrimary: Color(0xFF881337),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF4C0519),
+    darkSurface: Color(0xFF881337),
+    darkSurfaceSecondary: Color(0xFF6B0E28),
+    darkBorder: Color(0xFF9F1239),
+    darkTextPrimary: Color(0xFFFFE4E6),
+    darkTextSecondary: Color(0xFFFDA4AF),
+  );
 
-  // Get all available presets
-  static List<CustomThemeData> get allPresets => [
-        defaultTheme,
-        oceanBlue,
-        forestGreen,
-        sunsetOrange,
-        purpleDream,
-        rosePink,
-        monochrome,
-      ];
+  static const CustomThemeData monochrome = CustomThemeData(
+    id: 'monochrome',
+    name: 'Monochrome',
+    primaryAccent: Color(0xFF525252),
+    secondaryAccent: Color(0xFF404040),
+    successColor: Color(0xFF737373),
+    warningColor: Color(0xFFA3A3A3),
+    errorColor: Color(0xFF262626),
+    lightBackground: Color(0xFFFAFAFA),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFF5F5F5),
+    lightBorder: Color(0xFFE5E5E5),
+    lightTextPrimary: Color(0xFF171717),
+    lightTextSecondary: Color(0xFF525252),
+    darkBackground: Color(0xFF0A0A0A),
+    darkSurface: Color(0xFF171717),
+    darkSurfaceSecondary: Color(0xFF0F0F0F),
+    darkBorder: Color(0xFF262626),
+    darkTextPrimary: Color(0xFFFAFAFA),
+    darkTextSecondary: Color(0xFFA3A3A3),
+  );
 
-  // Get preset by ID
-  static CustomThemeData? getPresetById(String id) {
-    try {
-      return allPresets.firstWhere((theme) => theme.id == id);
-    } catch (e) {
-      return null;
-    }
-  }
+  /// All built-in presets in display order.
+  static const List<CustomThemeData> allPresets = [
+    defaultTheme,
+    oceanBlue,
+    forestGreen,
+    sunsetOrange,
+    purpleDream,
+    rosePink,
+    monochrome,
+  ];
+
+  // O(1) lookup map — built once, lazily.
+  static final Map<String, CustomThemeData> _presetsById = {
+    for (final p in allPresets) p.id: p,
+  };
+
+  static CustomThemeData? getPresetById(String id) => _presetsById[id];
 }

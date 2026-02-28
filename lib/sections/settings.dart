@@ -10,7 +10,7 @@ import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/sections/controller/application_controller.dart';
 import 'UI sections/import_export_dialog.dart' as ied;
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
-import 'package:screentime/sections/UI sections/Settings/resuables.dart';
+import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
 import 'package:screentime/sections/UI sections/Settings/general.dart';
 import 'package:screentime/sections/UI sections/Settings/tracking.dart';
 import 'package:screentime/sections/UI sections/Settings/notification.dart';
@@ -20,14 +20,68 @@ import 'package:screentime/sections/UI sections/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_section.dart';
 
-// ============== SETTINGS PROVIDER (with keyboard monitoring) ==============
+// ============== CONSTANTS ==============
+
+const _kAnimDuration = Duration(milliseconds: 150);
+const _kAnimDurationMedium = Duration(milliseconds: 200);
+const _kHighlightDuration = Duration(seconds: 3);
+const _kSectionSpacing = SizedBox(height: 20);
+
+// ============== SETTINGS PROVIDER ==============
+
+/// Maps setting keys to their storage paths for simple (non-side-effect) settings.
+const _simpleSettingPaths = <String, String>{
+  'theme': 'theme.selected',
+  'language': 'language.selected',
+  'launchAtStartup': 'launchAtStartup',
+  'launchAsMinimized': 'launchAsMinimized',
+  'notificationsEnabled': 'notifications.enabled',
+  'notificationsFocusMode': 'notifications.focusMode',
+  'notificationsScreenTime': 'notifications.screenTime',
+  'notificationsAppScreenTime': 'notifications.appScreenTime',
+  'reminderFrequency': 'notificationController.reminderFrequency',
+  'voiceGender': 'focusModeSettings.voiceGender',
+  'trackingMode': 'tracking.mode',
+  'idleDetectionEnabled': 'tracking.idleDetection',
+  'idleTimeout': 'tracking.idleTimeout',
+  'monitorAudio': 'tracking.monitorAudio',
+  'monitorControllers': 'tracking.monitorControllers',
+  'monitorHIDDevices': 'tracking.monitorHIDDevices',
+  'monitorKeyboard': 'tracking.monitorKeyboard',
+  'audioThreshold': 'tracking.audioThreshold',
+};
+
+/// Field setters keyed by setting name, used to assign in-memory values.
+typedef _FieldSetter = void Function(SettingsProvider provider, dynamic value);
+
+final Map<String, _FieldSetter> _fieldSetters = {
+  'theme': (p, v) => p._theme = v,
+  'language': (p, v) => p._language = v,
+  'launchAtStartup': (p, v) => p._launchAtStartupVar = v,
+  'launchAsMinimized': (p, v) => p._launchAsMinimized = v,
+  'notificationsEnabled': (p, v) => p._notificationsEnabled = v,
+  'notificationsFocusMode': (p, v) => p._notificationsFocusMode = v,
+  'notificationsScreenTime': (p, v) => p._notificationsScreenTime = v,
+  'notificationsAppScreenTime': (p, v) => p._notificationsAppScreenTime = v,
+  'reminderFrequency': (p, v) => p._reminderFrequency = v,
+  'voiceGender': (p, v) => p._voiceGender = v,
+  'trackingMode': (p, v) => p._trackingMode = v,
+  'idleDetectionEnabled': (p, v) => p._idleDetectionEnabled = v,
+  'idleTimeout': (p, v) => p._idleTimeout = v,
+  'monitorAudio': (p, v) => p._monitorAudio = v,
+  'monitorControllers': (p, v) => p._monitorControllers = v,
+  'monitorHIDDevices': (p, v) => p._monitorHIDDevices = v,
+  'monitorKeyboard': (p, v) => p._monitorKeyboard = v,
+  'audioThreshold': (p, v) => p._audioThreshold = v,
+};
+
 class SettingsProvider extends ChangeNotifier {
   final SettingsManager _settingsManager = SettingsManager();
   final BackgroundAppTracker _tracker = BackgroundAppTracker();
   final Map<String, String> version = SettingsManager().versionInfo;
 
-  String _theme = "";
-  String _language = "en";
+  String _theme = '';
+  String _language = 'en';
   bool _launchAtStartupVar = false;
   bool _launchAsMinimized = false;
   bool _notificationsEnabled = false;
@@ -41,11 +95,11 @@ class SettingsProvider extends ChangeNotifier {
   bool _monitorAudio = true;
   bool _monitorControllers = true;
   bool _monitorHIDDevices = true;
-  bool _monitorKeyboard =
-      !Platform.isMacOS; // NEW: false on macOS, true on Windows
+  bool _monitorKeyboard = !Platform.isMacOS;
   double _audioThreshold = 0.001;
 
   String _voiceGender = VoiceGenderOptions.defaultGender;
+  int _reminderFrequency = 60;
 
   // Getters
   String get theme => _theme;
@@ -64,10 +118,11 @@ class SettingsProvider extends ChangeNotifier {
   bool get monitorAudio => _monitorAudio;
   bool get monitorControllers => _monitorControllers;
   bool get monitorHIDDevices => _monitorHIDDevices;
-  bool get monitorKeyboard => _monitorKeyboard; // NEW
+  bool get monitorKeyboard => _monitorKeyboard;
   double get audioThreshold => _audioThreshold;
 
   String get voiceGender => _voiceGender;
+  int get reminderFrequency => _reminderFrequency;
 
   List<dynamic> get themeOptions => _settingsManager.getAvailableThemes();
   List<Map<String, String>> get languageOptions =>
@@ -79,168 +134,119 @@ class SettingsProvider extends ChangeNotifier {
   List<String> get trackingModeOptions =>
       _settingsManager.getAvailableTrackingModes();
 
-  int _reminderFrequency = 60;
-  int get reminderFrequency => _reminderFrequency;
-
   SettingsProvider() {
     _loadSettings();
   }
 
   void _loadSettings() {
-    _theme = _settingsManager.getSetting("theme.selected");
-    _language = _settingsManager.getSetting("language.selected") ?? "en";
-    _launchAtStartupVar = _settingsManager.getSetting("launchAtStartup");
+    _theme = _settingsManager.getSetting('theme.selected');
+    _language = _settingsManager.getSetting('language.selected') ?? 'en';
+    _launchAtStartupVar = _settingsManager.getSetting('launchAtStartup');
     _launchAsMinimized =
-        _settingsManager.getSetting("launchAsMinimized") ?? false;
+        _settingsManager.getSetting('launchAsMinimized') ?? false;
     _notificationsEnabled =
-        _settingsManager.getSetting("notifications.enabled");
+        _settingsManager.getSetting('notifications.enabled');
     _notificationsFocusMode =
-        _settingsManager.getSetting("notifications.focusMode");
+        _settingsManager.getSetting('notifications.focusMode');
     _notificationsScreenTime =
-        _settingsManager.getSetting("notifications.screenTime");
+        _settingsManager.getSetting('notifications.screenTime');
     _notificationsAppScreenTime =
-        _settingsManager.getSetting("notifications.appScreenTime");
-    _reminderFrequency =
-        _settingsManager.getSetting("notificationController.reminderFrequency");
+        _settingsManager.getSetting('notifications.appScreenTime');
+    _reminderFrequency = _settingsManager
+            .getSetting('notificationController.reminderFrequency') ??
+        60;
 
-    _trackingMode = _settingsManager.getSetting("tracking.mode") ??
+    _trackingMode = _settingsManager.getSetting('tracking.mode') ??
         TrackingModeOptions.defaultMode;
     _idleDetectionEnabled =
-        _settingsManager.getSetting("tracking.idleDetection") ?? true;
-    _idleTimeout = _settingsManager.getSetting("tracking.idleTimeout") ??
+        _settingsManager.getSetting('tracking.idleDetection') ?? true;
+    _idleTimeout = _settingsManager.getSetting('tracking.idleTimeout') ??
         IdleTimeoutOptions.defaultTimeout;
     _monitorAudio =
-        _settingsManager.getSetting("tracking.monitorAudio") ?? true;
+        _settingsManager.getSetting('tracking.monitorAudio') ?? true;
     _monitorControllers =
-        _settingsManager.getSetting("tracking.monitorControllers") ?? true;
+        _settingsManager.getSetting('tracking.monitorControllers') ?? true;
     _monitorHIDDevices =
-        _settingsManager.getSetting("tracking.monitorHIDDevices") ?? true;
+        _settingsManager.getSetting('tracking.monitorHIDDevices') ?? true;
     _monitorKeyboard =
-        _settingsManager.getSetting("tracking.monitorKeyboard") ??
-            !Platform.isMacOS; // NEW
+        _settingsManager.getSetting('tracking.monitorKeyboard') ??
+            !Platform.isMacOS;
     _audioThreshold =
-        _settingsManager.getSetting("tracking.audioThreshold") ?? 0.001;
-
+        _settingsManager.getSetting('tracking.audioThreshold') ?? 0.001;
     _voiceGender =
-        _settingsManager.getSetting("focusModeSettings.voiceGender") ??
+        _settingsManager.getSetting('focusModeSettings.voiceGender') ??
             VoiceGenderOptions.defaultGender;
   }
 
   Future<void> updateSetting(String key, dynamic value,
       [BuildContext? context]) async {
+    // Set the in-memory field
+    _fieldSetters[key]?.call(this, value);
+
+    // Persist to storage
+    final path = _simpleSettingPaths[key];
+    if (path != null) {
+      if (key == 'theme') {
+        _settingsManager.updateSetting(path, value, context);
+      } else {
+        _settingsManager.updateSetting(path, value);
+      }
+    }
+
+    // Handle side effects
+    await _handleSideEffects(key, value);
+
+    notifyListeners();
+  }
+
+  Future<void> _handleSideEffects(String key, dynamic value) async {
     switch (key) {
-      case 'theme':
-        _theme = value;
-        _settingsManager.updateSetting("theme.selected", value, context);
-        break;
-      case 'language':
-        _language = value;
-        _settingsManager.updateSetting("language.selected", value);
-        break;
       case 'launchAtStartup':
-        _launchAtStartupVar = value;
-        _settingsManager.updateSetting("launchAtStartup", value);
         if (Platform.isMacOS) {
-          if (value) {
-            await launchAtStartup.enable();
-          } else {
-            await launchAtStartup.disable();
-          }
+          value
+              ? await launchAtStartup.enable()
+              : await launchAtStartup.disable();
         }
-        break;
-      case 'launchAsMinimized':
-        _launchAsMinimized = value;
-        _settingsManager.updateSetting("launchAsMinimized", value);
-        break;
-      case 'notificationsEnabled':
-        _notificationsEnabled = value;
-        _settingsManager.updateSetting("notifications.enabled", value);
-        break;
-      case 'notificationsFocusMode':
-        _notificationsFocusMode = value;
-        _settingsManager.updateSetting("notifications.focusMode", value);
-        break;
-      case 'notificationsScreenTime':
-        _notificationsScreenTime = value;
-        _settingsManager.updateSetting("notifications.screenTime", value);
-        break;
-      case 'notificationsAppScreenTime':
-        _notificationsAppScreenTime = value;
-        _settingsManager.updateSetting("notifications.appScreenTime", value);
-        break;
-      case 'reminderFrequency':
-        _reminderFrequency = value;
-        _settingsManager.updateSetting(
-            "notificationController.reminderFrequency", value);
-        break;
-      case 'voiceGender':
-        _voiceGender = value;
-        _settingsManager.updateSetting("focusModeSettings.voiceGender", value);
-        break;
       case 'trackingMode':
-        _trackingMode = value;
-        _settingsManager.updateSetting("tracking.mode", value);
         final mode = value == TrackingModeOptions.precise
             ? TrackingMode.precise
             : TrackingMode.polling;
         await _tracker.setTrackingMode(mode);
-        break;
       case 'idleDetectionEnabled':
-        _idleDetectionEnabled = value;
-        _settingsManager.updateSetting("tracking.idleDetection", value);
         await _tracker.updateIdleDetection(value);
-        break;
       case 'idleTimeout':
-        _idleTimeout = value;
-        _settingsManager.updateSetting("tracking.idleTimeout", value);
         await _tracker.updateIdleTimeout(value);
-        break;
       case 'monitorAudio':
-        _monitorAudio = value;
-        _settingsManager.updateSetting("tracking.monitorAudio", value);
         await _tracker.updateAudioMonitoring(value);
-        break;
       case 'monitorControllers':
-        _monitorControllers = value;
-        _settingsManager.updateSetting("tracking.monitorControllers", value);
         await _tracker.updateControllerMonitoring(value);
-        break;
       case 'monitorHIDDevices':
-        _monitorHIDDevices = value;
-        _settingsManager.updateSetting("tracking.monitorHIDDevices", value);
         await _tracker.updateHIDMonitoring(value);
-        break;
-      case 'monitorKeyboard': // NEW
-        _monitorKeyboard = value;
-        _settingsManager.updateSetting("tracking.monitorKeyboard", value);
+      case 'monitorKeyboard':
         await _tracker.updateKeyboardMonitoring(value);
-        break;
       case 'audioThreshold':
-        _audioThreshold = value;
-        _settingsManager.updateSetting("tracking.audioThreshold", value);
         await _tracker.updateAudioThreshold(value);
-        break;
     }
-    notifyListeners();
   }
 
-  Future<void> enableAllNotifications() async {
-    await updateSetting('notificationsEnabled', true);
-    await updateSetting('notificationsFocusMode', true);
-    await updateSetting('notificationsScreenTime', true);
-    await updateSetting('notificationsAppScreenTime', true);
+  Future<void> setAllNotifications(bool enabled) async {
+    const keys = [
+      'notificationsEnabled',
+      'notificationsFocusMode',
+      'notificationsScreenTime',
+      'notificationsAppScreenTime',
+    ];
+    for (final key in keys) {
+      await updateSetting(key, enabled);
+    }
   }
 
-  Future<void> disableAllNotifications() async {
-    await updateSetting('notificationsEnabled', false);
-    await updateSetting('notificationsFocusMode', false);
-    await updateSetting('notificationsScreenTime', false);
-    await updateSetting('notificationsAppScreenTime', false);
-  }
+  Future<void> enableAllNotifications() => setAllNotifications(true);
+  Future<void> disableAllNotifications() => setAllNotifications(false);
 
   int getReminderFrequency() {
     return _settingsManager
-            .getSetting("notificationController.reminderFrequency") ??
+            .getSetting('notificationController.reminderFrequency') ??
         60;
   }
 
@@ -249,7 +255,6 @@ class SettingsProvider extends ChangeNotifier {
     await dataStore.init();
     await dataStore.clearAllData();
     await _tracker.reanchorTracking();
-    // notifyListeners();
   }
 
   Future<void> resetSettings() async {
@@ -261,27 +266,26 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String formatTimeout(int seconds, AppLocalizations l10n) {
-    if (seconds < 60) {
-      return l10n.timeFormatSeconds(seconds);
-    } else if (seconds == 60) {
-      return l10n.timeFormatMinute;
-    } else {
-      final minutes = seconds ~/ 60;
-      final remainingSeconds = seconds % 60;
-      if (remainingSeconds == 0) {
-        return l10n.timeFormatMinutes(minutes);
-      } else {
-        return l10n.timeFormatMinutesSeconds(minutes, remainingSeconds);
-      }
-    }
-  }
-
   String getFormattedIdleTimeout(AppLocalizations l10n) =>
       formatTimeout(_idleTimeout, l10n);
+
+  static String formatTimeout(int seconds, AppLocalizations l10n) {
+    if (seconds < 60) return l10n.timeFormatSeconds(seconds);
+    if (seconds == 60) return l10n.timeFormatMinute;
+
+    final minutes = seconds ~/ 60;
+    final remaining = seconds % 60;
+    return remaining == 0
+        ? l10n.timeFormatMinutes(minutes)
+        : l10n.timeFormatMinutesSeconds(minutes, remaining);
+  }
 }
 
-String getPlatform() {
+// ============== URL UTILITIES ==============
+
+final _currentPlatform = _detectPlatform();
+
+String _detectPlatform() {
   if (Platform.isMacOS) return 'macos';
   if (Platform.isWindows) return 'windows';
   if (Platform.isLinux) return 'linux';
@@ -290,18 +294,18 @@ String getPlatform() {
   return 'unknown';
 }
 
-String buildUrl(String path, {bool isBugReport = false}) {
-  final platform = getPlatform();
+String getPlatform() => _currentPlatform;
 
+String buildUrl(String path, {bool isBugReport = false}) {
   final params = <String, String>{
     'source': 'app',
     'app': 'scolect',
-    'platform': platform,
+    'platform': _currentPlatform,
     'type': isBugReport ? 'report' : path,
   };
-  final versionInfo = SettingsManager().versionInfo;
 
   if (isBugReport) {
+    final versionInfo = SettingsManager().versionInfo;
     params['version'] = versionInfo['version'] ?? 'unknown';
     params['build'] = versionInfo['type'] ?? 'unknown';
   }
@@ -314,7 +318,31 @@ String buildUrl(String path, {bool isBugReport = false}) {
   ).toString();
 }
 
+Future<void> launchAppropriateUrl(String url) async {
+  if (Platform.isWindows) {
+    if (await UrlLauncherPlatform.instance.canLaunch(url)) {
+      await UrlLauncherPlatform.instance.launch(
+        url,
+        useSafariVC: false,
+        useWebView: false,
+        enableJavaScript: false,
+        enableDomStorage: false,
+        universalLinksOnly: false,
+        headers: <String, String>{},
+      );
+    } else {
+      throw Exception('Could not launch $url on Windows');
+    }
+  } else {
+    final uri = Uri.parse(url);
+    if (!await launchUrl(uri)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+}
+
 // ============== MAIN SETTINGS WIDGET ==============
+
 class Settings extends StatelessWidget {
   final Function(Locale) setLocale;
 
@@ -340,45 +368,19 @@ class SettingsContent extends StatefulWidget {
 
 class _SettingsContentState extends State<SettingsContent> {
   String? _highlightedSection;
-  Future<void> launchAppropriateUrl(String url) async {
-    if (Platform.isWindows) {
-      // Windows-specific implementation
-      if (await UrlLauncherPlatform.instance.canLaunch(url)) {
-        await UrlLauncherPlatform.instance.launch(
-          url,
-          useSafariVC: false,
-          useWebView: false,
-          enableJavaScript: false,
-          enableDomStorage: false,
-          universalLinksOnly: false,
-          headers: <String, String>{},
-        );
-      } else {
-        throw Exception('Could not launch $url on Windows');
-      }
-    } else {
-      // Other platforms
-      final Uri uri = Uri.parse(url);
-      if (!await launchUrl(uri)) {
-        throw Exception('Could not launch $url');
-      }
-    }
-  }
 
-  final contactUrl = buildUrl('contact');
-  final feedbackUrl = buildUrl('feedback');
-  final reportUrl = buildUrl('report-bug', isBugReport: true);
-
-  final String github =
+  // Pre-compute URLs once
+  static final _contactUrl = buildUrl('contact');
+  static final _feedbackUrl = buildUrl('feedback');
+  static final _reportUrl = buildUrl('report-bug', isBugReport: true);
+  static const _githubUrl =
       'https://github.com/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp';
 
   @override
   void initState() {
     super.initState();
-    // Check for navigation params after frame is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkNavigationParams();
-    });
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _checkNavigationParams());
   }
 
   @override
@@ -390,131 +392,136 @@ class _SettingsContentState extends State<SettingsContent> {
       padding: EdgeInsets.zero,
       content: CustomScrollView(
         slivers: [
-          // Sticky Header
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: StickyHeaderDelegate(
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                decoration: BoxDecoration(
-                  color: theme.micaBackgroundColor.withValues(alpha: 0.95),
-                  border: Border(
-                    bottom: BorderSide(
-                      color:
-                          theme.inactiveBackgroundColor.withValues(alpha: 0.5),
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(FluentIcons.settings, size: 24),
-                    const SizedBox(width: 12),
-                    Text(l10n.settingsTitle,
-                        style: theme.typography.subtitle?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        )),
-                    const Spacer(),
-                    QuickActionButton(
-                      icon: FluentIcons.refresh,
-                      tooltip: l10n.resetSettingsTitle2,
-                      onPressed: () => _showSettingsDialog(
-                          context, context.read<SettingsProvider>()),
-                    ),
-                  ],
-                ),
-              ),
-              height: 60,
-            ),
-          ),
-          // Content
-          SliverPadding(
-            padding: const EdgeInsets.all(24),
-            sliver: SliverList(
-              delegate: SliverChildListDelegate([
-                // Two-column layout for larger screens
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    if (constraints.maxWidth > 900) {
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                GeneralSection(setLocale: widget.setLocale),
-                                const SizedBox(height: 20),
-                                NotificationSection(
-                                    isHighlighted:
-                                        _highlightedSection == 'notifications'),
-                                const SizedBox(height: 20),
-                                const DataSection(),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                const TrackingSection(),
-                                const SizedBox(height: 20),
-                                const ied.BackupRestoreSection(),
-                                const SizedBox(height: 20),
-                                const ThemeCustomizationSection(),
-                                const SizedBox(height: 20),
-                                const AboutSection(),
-                              ],
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                    // Single column for smaller screens
-                    return Column(
-                      children: [
-                        GeneralSection(setLocale: widget.setLocale),
-                        const SizedBox(height: 20),
-                        const TrackingSection(),
-                        const SizedBox(height: 20),
-                        NotificationSection(
-                            isHighlighted:
-                                _highlightedSection == 'notifications'),
-                        const SizedBox(height: 20),
-                        const DataSection(),
-                        const SizedBox(height: 20),
-                        const ied.BackupRestoreSection(),
-                        const SizedBox(height: 20),
-                        const ThemeCustomizationSection(),
-                        const SizedBox(height: 20),
-                        const AboutSection(),
-                      ],
-                    );
-                  },
-                ),
-                const SizedBox(height: 24),
-                FooterSection(
-                  onContact: () => launchAppropriateUrl(contactUrl),
-                  onReport: () => launchAppropriateUrl(reportUrl),
-                  onFeedback: () => launchAppropriateUrl(feedbackUrl),
-                  onGithub: () => launchAppropriateUrl(github),
-                ),
-                const SizedBox(height: 16),
-              ]),
-            ),
-          ),
+          _buildStickyHeader(theme, l10n),
+          _buildContent(l10n),
         ],
       ),
     );
   }
 
-  Future<void> _showSettingsDialog(
-      BuildContext context, SettingsProvider settings) async {
+  SliverPersistentHeader _buildStickyHeader(
+      FluentThemeData theme, AppLocalizations l10n) {
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: StickyHeaderDelegate(
+        height: 60,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          decoration: BoxDecoration(
+            color: theme.micaBackgroundColor.withValues(alpha: 0.95),
+            border: Border(
+              bottom: BorderSide(
+                color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              const Icon(FluentIcons.settings, size: 24),
+              const SizedBox(width: 12),
+              Text(
+                l10n.settingsTitle,
+                style: theme.typography.subtitle
+                    ?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const Spacer(),
+              QuickActionButton(
+                icon: FluentIcons.refresh,
+                tooltip: l10n.resetSettingsTitle2,
+                onPressed: () => _showResetDialog(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  SliverPadding _buildContent(AppLocalizations l10n) {
+    return SliverPadding(
+      padding: const EdgeInsets.all(24),
+      sliver: SliverList(
+        delegate: SliverChildListDelegate([
+          LayoutBuilder(builder: _buildResponsiveLayout),
+          const SizedBox(height: 24),
+          FooterSection(
+            onContact: () => launchAppropriateUrl(_contactUrl),
+            onReport: () => launchAppropriateUrl(_reportUrl),
+            onFeedback: () => launchAppropriateUrl(_feedbackUrl),
+            onGithub: () => launchAppropriateUrl(_githubUrl),
+          ),
+          const SizedBox(height: 16),
+        ]),
+      ),
+    );
+  }
+
+  Widget _buildResponsiveLayout(
+      BuildContext context, BoxConstraints constraints) {
+    final isWide = constraints.maxWidth > 900;
+    final notificationSection = NotificationSection(
+      isHighlighted: _highlightedSection == 'notifications',
+    );
+
+    if (isWide) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              children: [
+                GeneralSection(setLocale: widget.setLocale),
+                _kSectionSpacing,
+                notificationSection,
+                _kSectionSpacing,
+                const DataSection(),
+              ],
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              children: const [
+                TrackingSection(),
+                _kSectionSpacing,
+                ied.BackupRestoreSection(),
+                _kSectionSpacing,
+                ThemeCustomizationSection(),
+                _kSectionSpacing,
+                AboutSection(),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Column(
+      children: [
+        GeneralSection(setLocale: widget.setLocale),
+        _kSectionSpacing,
+        const TrackingSection(),
+        _kSectionSpacing,
+        notificationSection,
+        _kSectionSpacing,
+        const DataSection(),
+        _kSectionSpacing,
+        const ied.BackupRestoreSection(),
+        _kSectionSpacing,
+        const ThemeCustomizationSection(),
+        _kSectionSpacing,
+        const AboutSection(),
+      ],
+    );
+  }
+
+  Future<void> _showResetDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
+    final settings = context.read<SettingsProvider>();
 
     await showDialog<String>(
       context: context,
-      builder: (context) => ContentDialog(
+      builder: (_) => ContentDialog(
         title: Row(
           children: [
             Icon(FluentIcons.warning, color: Colors.orange, size: 20),
@@ -547,26 +554,15 @@ class _SettingsContentState extends State<SettingsContent> {
     final navState = context.read<NavigationState>();
     final params = navState.navigationParams;
 
-    if (params != null && params['highlightSection'] == 'notifications') {
-      setState(() {
-        _highlightedSection = 'notifications';
-      });
+    if (params?['highlightSection'] != 'notifications') return;
 
-      // Auto-scroll to notifications section if needed
-      // _scrollToNotifications();
+    setState(() => _highlightedSection = 'notifications');
 
-      // Clear highlight after a few seconds
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            _highlightedSection = null;
-          });
-        }
-      });
+    Future.delayed(_kHighlightDuration, () {
+      if (mounted) setState(() => _highlightedSection = null);
+    });
 
-      // Clear params
-      navState.clearParams();
-    }
+    navState.clearParams();
   }
 }
 
@@ -591,25 +587,29 @@ class IdleTimeoutDialog extends StatefulWidget {
 class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
   late int _selectedValue;
   bool _isCustom = false;
-  final TextEditingController _minutesController = TextEditingController();
-  final TextEditingController _secondsController = TextEditingController();
+  late final TextEditingController _minutesController;
+  late final TextEditingController _secondsController;
   String? _errorMessage;
+
+  // Cache preset label map to avoid repeated switch evaluation
+  static const _presetLabelKeys = <int, String Function(AppLocalizations)>{};
 
   @override
   void initState() {
     super.initState();
     _selectedValue = widget.currentValue;
 
-    bool matchesPreset = widget.presets.any(
-      (preset) =>
-          preset['value'] == widget.currentValue && preset['value'] != -1,
+    final matchesPreset = widget.presets.any(
+      (p) => p['value'] == widget.currentValue && p['value'] != -1,
     );
 
-    if (!matchesPreset) {
-      _isCustom = true;
-      _minutesController.text = (widget.currentValue ~/ 60).toString();
-      _secondsController.text = (widget.currentValue % 60).toString();
-    }
+    _isCustom = !matchesPreset;
+    _minutesController = TextEditingController(
+      text: _isCustom ? (widget.currentValue ~/ 60).toString() : '',
+    );
+    _secondsController = TextEditingController(
+      text: _isCustom ? (widget.currentValue % 60).toString() : '',
+    );
   }
 
   @override
@@ -619,39 +619,19 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
     super.dispose();
   }
 
-  String _formatTimeout(int seconds) {
-    if (seconds < 60) {
-      return widget.l10n.timeFormatSeconds(seconds);
-    } else if (seconds == 60) {
-      return widget.l10n.timeFormatMinute;
-    } else {
-      final minutes = seconds ~/ 60;
-      final remainingSeconds = seconds % 60;
-      if (remainingSeconds == 0) {
-        return widget.l10n.timeFormatMinutes(minutes);
-      } else {
-        return widget.l10n.timeFormatMinutesSeconds(minutes, remainingSeconds);
-      }
-    }
-  }
+  String _formatTimeout(int seconds) =>
+      SettingsProvider.formatTimeout(seconds, widget.l10n);
 
   String _getPresetLabel(Map<String, dynamic> preset) {
-    switch (preset['value']) {
-      case 30:
-        return widget.l10n.seconds30;
-      case 60:
-        return widget.l10n.minute1;
-      case 120:
-        return widget.l10n.minutes2;
-      case 300:
-        return widget.l10n.minutes5;
-      case 600:
-        return widget.l10n.minutes10;
-      case -1:
-        return widget.l10n.customOption;
-      default:
-        return preset['label'];
-    }
+    return switch (preset['value']) {
+      30 => widget.l10n.seconds30,
+      60 => widget.l10n.minute1,
+      120 => widget.l10n.minutes2,
+      300 => widget.l10n.minutes5,
+      600 => widget.l10n.minutes10,
+      -1 => widget.l10n.customOption,
+      _ => preset['label'],
+    };
   }
 
   void _selectPreset(int value) {
@@ -673,22 +653,18 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
     final seconds = int.tryParse(_secondsController.text) ?? 0;
     final totalSeconds = (minutes * 60) + seconds;
 
-    if (totalSeconds < IdleTimeoutOptions.minTimeout) {
-      setState(() {
+    setState(() {
+      if (totalSeconds < IdleTimeoutOptions.minTimeout) {
         _errorMessage = widget.l10n
             .minimumError(_formatTimeout(IdleTimeoutOptions.minTimeout));
-      });
-    } else if (totalSeconds > IdleTimeoutOptions.maxTimeout) {
-      setState(() {
+      } else if (totalSeconds > IdleTimeoutOptions.maxTimeout) {
         _errorMessage = widget.l10n
             .maximumError(_formatTimeout(IdleTimeoutOptions.maxTimeout));
-      });
-    } else {
-      setState(() {
+      } else {
         _selectedValue = totalSeconds;
         _errorMessage = null;
-      });
-    }
+      }
+    });
   }
 
   @override
@@ -697,20 +673,7 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
 
     return ContentDialog(
       constraints: const BoxConstraints(maxWidth: 420),
-      title: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: theme.accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(FluentIcons.timer, size: 18, color: theme.accentColor),
-          ),
-          const SizedBox(width: 12),
-          Text(widget.l10n.setIdleTimeoutTitle),
-        ],
-      ),
+      title: _buildTitle(theme),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -720,120 +683,8 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
             style: TextStyle(fontSize: 12, color: Colors.grey[100]),
           ),
           const SizedBox(height: 20),
-
-          // Preset Grid
-          GridView.count(
-            crossAxisCount: 3,
-            shrinkWrap: true,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 2.5,
-            physics: const NeverScrollableScrollPhysics(),
-            children: widget.presets.map((preset) {
-              final isSelected =
-                  !_isCustom && _selectedValue == preset['value'];
-              final isCustomOption = preset['value'] == -1;
-              final isCustomSelected = _isCustom && isCustomOption;
-
-              return _PresetButton(
-                label: _getPresetLabel(preset),
-                isSelected: isSelected || isCustomSelected,
-                onPressed: () => _selectPreset(preset['value']),
-              );
-            }).toList(),
-          ),
-
-          // Custom Input
-          AnimatedCrossFade(
-            firstChild: Column(
-              children: [
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: theme.accentColor.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.l10n.customDurationTitle,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextBox(
-                              controller: _minutesController,
-                              placeholder: '0',
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => _validateCustomInput(),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Text(
-                              widget.l10n.minAbbreviation,
-                              style: TextStyle(
-                                  fontSize: 11, color: Colors.grey[100]),
-                            ),
-                          ),
-                          Expanded(
-                            child: TextBox(
-                              controller: _secondsController,
-                              placeholder: '0',
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => _validateCustomInput(),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              widget.l10n.secAbbreviation,
-                              style: TextStyle(
-                                  fontSize: 11, color: Colors.grey[100]),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (_errorMessage != null) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          _errorMessage!,
-                          style: TextStyle(fontSize: 11, color: Colors.red),
-                        ),
-                      ] else ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          widget.l10n
-                              .totalLabel(_formatTimeout(_selectedValue)),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: theme.accentColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            secondChild: const SizedBox.shrink(),
-            crossFadeState: _isCustom
-                ? CrossFadeState.showFirst
-                : CrossFadeState.showSecond,
-            duration: const Duration(milliseconds: 200),
-          ),
-
+          _buildPresetGrid(),
+          _buildCustomInput(theme),
           const SizedBox(height: 16),
           WarningBanner(
             message: widget.l10n.rangeInfo(
@@ -859,7 +710,177 @@ class _IdleTimeoutDialogState extends State<IdleTimeoutDialog> {
       ],
     );
   }
+
+  Widget _buildTitle(FluentThemeData theme) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.accentColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(FluentIcons.timer, size: 18, color: theme.accentColor),
+        ),
+        const SizedBox(width: 12),
+        Text(widget.l10n.setIdleTimeoutTitle),
+      ],
+    );
+  }
+
+  Widget _buildPresetGrid() {
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      childAspectRatio: 2.5,
+      physics: const NeverScrollableScrollPhysics(),
+      children: widget.presets.map((preset) {
+        final presetValue = preset['value'] as int;
+        final isSelected = !_isCustom && _selectedValue == presetValue;
+        final isCustomSelected = _isCustom && presetValue == -1;
+
+        return _PresetButton(
+          label: _getPresetLabel(preset),
+          isSelected: isSelected || isCustomSelected,
+          onPressed: () => _selectPreset(presetValue),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildCustomInput(FluentThemeData theme) {
+    return AnimatedCrossFade(
+      firstChild: _CustomTimeInput(
+        minutesController: _minutesController,
+        secondsController: _secondsController,
+        errorMessage: _errorMessage,
+        selectedValue: _selectedValue,
+        l10n: widget.l10n,
+        onChanged: _validateCustomInput,
+        formatTimeout: _formatTimeout,
+      ),
+      secondChild: const SizedBox.shrink(),
+      crossFadeState:
+          _isCustom ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      duration: _kAnimDurationMedium,
+    );
+  }
 }
+
+// ============== CUSTOM TIME INPUT (Extracted) ==============
+
+class _CustomTimeInput extends StatelessWidget {
+  final TextEditingController minutesController;
+  final TextEditingController secondsController;
+  final String? errorMessage;
+  final int selectedValue;
+  final AppLocalizations l10n;
+  final VoidCallback onChanged;
+  final String Function(int) formatTimeout;
+
+  const _CustomTimeInput({
+    required this.minutesController,
+    required this.secondsController,
+    required this.errorMessage,
+    required this.selectedValue,
+    required this.l10n,
+    required this.onChanged,
+    required this.formatTimeout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+
+    return Column(
+      children: [
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: theme.accentColor.withValues(alpha: 0.3),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.customDurationTitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextBox(
+                      controller: minutesController,
+                      placeholder: '0',
+                      keyboardType: TextInputType.number,
+                      onChanged: (_) => onChanged(),
+                    ),
+                  ),
+                  _TimeUnitLabel(text: l10n.minAbbreviation),
+                  Expanded(
+                    child: TextBox(
+                      controller: secondsController,
+                      placeholder: '0',
+                      keyboardType: TextInputType.number,
+                      onChanged: (_) => onChanged(),
+                    ),
+                  ),
+                  _TimeUnitLabel(text: l10n.secAbbreviation, isLast: true),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (errorMessage != null)
+                Text(
+                  errorMessage!,
+                  style: TextStyle(fontSize: 11, color: Colors.red),
+                )
+              else
+                Text(
+                  l10n.totalLabel(formatTimeout(selectedValue)),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: theme.accentColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TimeUnitLabel extends StatelessWidget {
+  final String text;
+  final bool isLast;
+
+  const _TimeUnitLabel({required this.text, this.isLast = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 8, right: isLast ? 0 : 8),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 11, color: Colors.grey[100]),
+      ),
+    );
+  }
+}
+
+// ============== PRESET BUTTON ==============
 
 class _PresetButton extends StatefulWidget {
   final String label;
@@ -882,6 +903,25 @@ class _PresetButtonState extends State<_PresetButton> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final inactive = theme.inactiveBackgroundColor;
+
+    final Color bgColor;
+    final Color borderColor;
+    final double borderWidth;
+
+    if (widget.isSelected) {
+      bgColor = theme.accentColor.withValues(alpha: 0.15);
+      borderColor = theme.accentColor;
+      borderWidth = 2;
+    } else if (_isHovered) {
+      bgColor = inactive.withValues(alpha: 0.5);
+      borderColor = inactive;
+      borderWidth = 1;
+    } else {
+      bgColor = inactive.withValues(alpha: 0.2);
+      borderColor = Colors.transparent;
+      borderWidth = 1;
+    }
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -889,22 +929,11 @@ class _PresetButtonState extends State<_PresetButton> {
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: _kAnimDuration,
           decoration: BoxDecoration(
-            color: widget.isSelected
-                ? theme.accentColor.withValues(alpha: 0.15)
-                : _isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.5)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+            color: bgColor,
             borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: widget.isSelected
-                  ? theme.accentColor
-                  : _isHovered
-                      ? theme.inactiveBackgroundColor
-                      : Colors.transparent,
-              width: widget.isSelected ? 2 : 1,
-            ),
+            border: Border.all(color: borderColor, width: borderWidth),
           ),
           child: Center(
             child: Text(

@@ -1,11 +1,19 @@
 import 'dart:io' show Platform;
+
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:screentime/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/application_controller.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI sections/Settings/resuables.dart';
+import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
 import 'package:screentime/sections/UI sections/Settings/permission_notification.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constants
+// ─────────────────────────────────────────────────────────────────────────────
+
+const _kExpandDuration = Duration(milliseconds: 200);
+final _kBorderRadius6 = BorderRadius.circular(6);
 
 // ============== TRACKING SECTION ==============
 
@@ -22,15 +30,16 @@ class _TrackingSectionState extends State<TrackingSection>
   bool _hasInputMonitoringPermission = true;
   bool _isCheckingPermission = true;
 
+  static final _isMacOS = Platform.isMacOS;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Only check permission on macOS
-    if (Platform.isMacOS) {
+    if (_isMacOS) {
       _checkInputMonitoringPermission();
     } else {
-      setState(() => _isCheckingPermission = false);
+      _isCheckingPermission = false;
     }
   }
 
@@ -42,22 +51,18 @@ class _TrackingSectionState extends State<TrackingSection>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // When app comes back to foreground, re-check permission
-    // This handles cases where user changed permission in System Settings
-    // Only on macOS
-    if (state == AppLifecycleState.resumed && Platform.isMacOS) {
+    if (state == AppLifecycleState.resumed && _isMacOS) {
       _checkInputMonitoringPermission();
     }
   }
 
+  // ── Permission Handling ───────────────────────────────────────────────────
+
   Future<void> _checkInputMonitoringPermission() async {
     setState(() => _isCheckingPermission = true);
-
     try {
-      // Access WindowFocus through BackgroundAppTracker singleton
-      final tracker = BackgroundAppTracker();
-      final hasPermission = await tracker.checkInputMonitoringPermission();
-
+      final hasPermission =
+          await BackgroundAppTracker().checkInputMonitoringPermission();
       if (mounted) {
         setState(() {
           _hasInputMonitoringPermission = hasPermission;
@@ -66,49 +71,41 @@ class _TrackingSectionState extends State<TrackingSection>
       }
     } catch (e) {
       debugPrint('Error checking input monitoring permission: $e');
-      if (mounted) {
-        setState(() => _isCheckingPermission = false);
-      }
+      if (mounted) setState(() => _isCheckingPermission = false);
     }
   }
 
   Future<void> _handleOpenInputMonitoringSettings() async {
     try {
-      // Access WindowFocus through BackgroundAppTracker singleton
-      final tracker = BackgroundAppTracker();
-      await tracker.openInputMonitoringSettings();
+      await BackgroundAppTracker().openInputMonitoringSettings();
+      if (!mounted) return;
 
-      // Show confirmation dialog
-      if (mounted) {
-        await showDialog<void>(
-          context: context,
-          builder: (context) => ContentDialog(
-            title: Text(AppLocalizations.of(context)!.permissionGrantedTitle),
-            content: Text(
-                AppLocalizations.of(context)!.permissionGrantedDescription),
-            actions: [
-              FilledButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  RestartRequiredDialog.show(context);
-                },
-                child: Text(AppLocalizations.of(context)!.continueButton),
-              ),
-            ],
-          ),
-        );
-      }
+      final l10n = AppLocalizations.of(context)!;
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => ContentDialog(
+          title: Text(l10n.permissionGrantedTitle),
+          content: Text(l10n.permissionGrantedDescription),
+          actions: [
+            FilledButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                RestartRequiredDialog.show(ctx);
+              },
+              child: Text(l10n.continueButton),
+            ),
+          ],
+        ),
+      );
     } catch (e) {
       debugPrint('Error opening input monitoring settings: $e');
-      if (mounted) {
-        _showErrorInfoBar(context, e.toString());
-      }
+      if (mounted) _showErrorInfoBar(e.toString());
     }
   }
 
-  void _showErrorInfoBar(BuildContext context, String error) {
-    displayInfoBar(context, builder: (context, close) {
-      final l10n = AppLocalizations.of(context)!;
+  void _showErrorInfoBar(String error) {
+    displayInfoBar(context, builder: (ctx, close) {
+      final l10n = AppLocalizations.of(ctx)!;
       return InfoBar(
         title: Text(l10n.error),
         content: Text(error),
@@ -118,11 +115,18 @@ class _TrackingSectionState extends State<TrackingSection>
     });
   }
 
+  // ── Build ─────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settings = context.watch<SettingsProvider>();
     final theme = FluentTheme.of(context);
+
+    final showPermissionBanner = _isMacOS &&
+        !_isCheckingPermission &&
+        !_hasInputMonitoringPermission &&
+        settings.monitorKeyboard;
 
     return SettingsCard(
       title: l10n.activityTrackingSection,
@@ -134,25 +138,19 @@ class _TrackingSectionState extends State<TrackingSection>
         inactiveText: l10n.disabled,
       ),
       children: [
-        // Permission Banner - shown only on macOS when Input Monitoring permission is missing
-        if (Platform.isMacOS &&
-            !_isCheckingPermission &&
-            !_hasInputMonitoringPermission &&
-            settings.monitorKeyboard)
+        if (showPermissionBanner)
           InputMonitoringPermissionBanner(
             onOpenSettings: _handleOpenInputMonitoringSettings,
           ),
-
         SettingRow(
           title: l10n.idleDetectionTitle,
           description: l10n.idleDetectionDescription,
           control: ToggleSwitch(
             checked: settings.idleDetectionEnabled,
-            onChanged: (value) =>
-                settings.updateSetting('idleDetectionEnabled', value),
+            onChanged: (v) => settings.updateSetting('idleDetectionEnabled', v),
           ),
         ),
-        if (settings.idleDetectionEnabled) ...[
+        if (settings.idleDetectionEnabled)
           SettingRow(
             title: l10n.idleTimeoutTitle,
             description: l10n
@@ -162,137 +160,201 @@ class _TrackingSectionState extends State<TrackingSection>
               onPressed: () => _showIdleTimeoutDialog(context, settings, l10n),
             ),
           ),
-        ],
-        // Advanced Toggle
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: GestureDetector(
-            onTap: () => setState(() => _showAdvanced = !_showAdvanced),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(FluentIcons.developer_tools, size: 14),
-                    const SizedBox(width: 8),
-                    Text(
-                      l10n.advanced_options,
-                      style:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    ),
-                    const SizedBox(width: 8),
-                    AnimatedRotation(
-                      turns: _showAdvanced ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: Icon(FluentIcons.chevron_down, size: 10),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        _AdvancedToggle(
+          isExpanded: _showAdvanced,
+          onToggle: () => setState(() => _showAdvanced = !_showAdvanced),
+          label: l10n.advanced_options,
+          theme: theme,
         ),
         AnimatedCrossFade(
-          firstChild: Column(
-            children: [
-              WarningBanner(
-                message: l10n.advancedWarning,
-                icon: FluentIcons.warning,
-                color: Colors.orange,
-              ),
-              const SizedBox(height: 12),
-              SettingRow(
-                title: l10n.monitorAudioTitle,
-                description: l10n.monitorAudioDescription,
-                isSubSetting: true,
-                control: ToggleSwitch(
-                  checked: settings.monitorAudio,
-                  onChanged: (value) =>
-                      settings.updateSetting('monitorAudio', value),
-                ),
-              ),
-              if (settings.monitorAudio)
-                SettingRow(
-                  title: l10n.audioSensitivityTitle,
-                  description: l10n.audioSensitivityDescription(
-                      settings.audioThreshold.toStringAsFixed(4)),
-                  isSubSetting: true,
-                  control: SizedBox(
-                    width: 150,
-                    child: Slider(
-                      value: settings.audioThreshold,
-                      min: 0.0001,
-                      max: 0.1,
-                      divisions: 100,
-                      onChanged: (value) =>
-                          settings.updateSetting('audioThreshold', value),
-                    ),
-                  ),
-                ),
-              SettingRow(
-                title: l10n.monitorControllersTitle,
-                description: l10n.monitorControllersDescription,
-                isSubSetting: true,
-                control: ToggleSwitch(
-                  checked: settings.monitorControllers,
-                  onChanged: (value) =>
-                      settings.updateSetting('monitorControllers', value),
-                ),
-              ),
-              SettingRow(
-                title: l10n.monitorHIDTitle,
-                description: l10n.monitorHIDDescription,
-                isSubSetting: true,
-                control: ToggleSwitch(
-                  checked: settings.monitorHIDDevices,
-                  onChanged: (value) =>
-                      settings.updateSetting('monitorHIDDevices', value),
-                ),
-              ),
-              // NEW: Keyboard Monitoring Toggle
-              SettingRow(
-                title: l10n.monitorKeyboardTitle,
-                description: l10n.monitorKeyboardDescription,
-                isSubSetting: true,
-                showDivider: false,
-                control: ToggleSwitch(
-                  checked: settings.monitorKeyboard,
-                  onChanged: (value) =>
-                      settings.updateSetting('monitorKeyboard', value),
-                ),
-              ),
-            ],
-          ),
+          firstChild: _AdvancedOptions(settings: settings, l10n: l10n),
           secondChild: const SizedBox.shrink(),
           crossFadeState: _showAdvanced
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          duration: const Duration(milliseconds: 200),
+          duration: _kExpandDuration,
         ),
       ],
     );
   }
 
-  Future<void> _showIdleTimeoutDialog(BuildContext context,
-      SettingsProvider settings, AppLocalizations l10n) async {
+  Future<void> _showIdleTimeoutDialog(
+    BuildContext context,
+    SettingsProvider settings,
+    AppLocalizations l10n,
+  ) async {
     final result = await showDialog<int>(
       context: context,
-      builder: (context) => IdleTimeoutDialog(
+      builder: (_) => IdleTimeoutDialog(
         currentValue: settings.idleTimeout,
         presets: settings.idleTimeoutPresets,
         l10n: l10n,
       ),
     );
-
     if (result != null) {
       settings.updateSetting('idleTimeout', result);
     }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Advanced Toggle Button
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AdvancedToggle extends StatelessWidget {
+  final bool isExpanded;
+  final VoidCallback onToggle;
+  final String label;
+  final FluentThemeData theme;
+
+  const _AdvancedToggle({
+    required this.isExpanded,
+    required this.onToggle,
+    required this.label,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: GestureDetector(
+        onTap: onToggle,
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+              borderRadius: _kBorderRadius6,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(FluentIcons.developer_tools, size: 14),
+                const SizedBox(width: 8),
+                Text(
+                  label,
+                  style: const TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 8),
+                AnimatedRotation(
+                  turns: isExpanded ? 0.5 : 0,
+                  duration: _kExpandDuration,
+                  child: const Icon(FluentIcons.chevron_down, size: 10),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Advanced Options Panel
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AdvancedOptions extends StatelessWidget {
+  final SettingsProvider settings;
+  final AppLocalizations l10n;
+
+  const _AdvancedOptions({
+    required this.settings,
+    required this.l10n,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        WarningBanner(
+          message: l10n.advancedWarning,
+          icon: FluentIcons.warning,
+          color: Colors.orange,
+        ),
+        const SizedBox(height: 12),
+        _AdvancedToggleRow(
+          title: l10n.monitorAudioTitle,
+          description: l10n.monitorAudioDescription,
+          settingKey: 'monitorAudio',
+          checked: settings.monitorAudio,
+        ),
+        if (settings.monitorAudio)
+          SettingRow(
+            title: l10n.audioSensitivityTitle,
+            description: l10n.audioSensitivityDescription(
+                settings.audioThreshold.toStringAsFixed(4)),
+            isSubSetting: true,
+            control: SizedBox(
+              width: 150,
+              child: Slider(
+                value: settings.audioThreshold,
+                min: 0.0001,
+                max: 0.1,
+                divisions: 100,
+                onChanged: (v) => settings.updateSetting('audioThreshold', v),
+              ),
+            ),
+          ),
+        _AdvancedToggleRow(
+          title: l10n.monitorControllersTitle,
+          description: l10n.monitorControllersDescription,
+          settingKey: 'monitorControllers',
+          checked: settings.monitorControllers,
+        ),
+        _AdvancedToggleRow(
+          title: l10n.monitorHIDTitle,
+          description: l10n.monitorHIDDescription,
+          settingKey: 'monitorHIDDevices',
+          checked: settings.monitorHIDDevices,
+        ),
+        _AdvancedToggleRow(
+          title: l10n.monitorKeyboardTitle,
+          description: l10n.monitorKeyboardDescription,
+          settingKey: 'monitorKeyboard',
+          checked: settings.monitorKeyboard,
+          showDivider: false,
+        ),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable Advanced Toggle Row
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AdvancedToggleRow extends StatelessWidget {
+  final String title;
+  final String description;
+  final String settingKey;
+  final bool checked;
+  final bool showDivider;
+
+  const _AdvancedToggleRow({
+    required this.title,
+    required this.description,
+    required this.settingKey,
+    required this.checked,
+    this.showDivider = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final settings = context.read<SettingsProvider>();
+
+    return SettingRow(
+      title: title,
+      description: description,
+      isSubSetting: true,
+      showDivider: showDivider,
+      control: ToggleSwitch(
+        checked: checked,
+        onChanged: (v) => settings.updateSetting(settingKey, v),
+      ),
+    );
   }
 }

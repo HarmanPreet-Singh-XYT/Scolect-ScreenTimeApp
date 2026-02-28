@@ -3,7 +3,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
-import 'package:screentime/sections/UI sections/Settings/resuables.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
@@ -13,6 +12,9 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import './theme_helpers.dart';
+import './reusables.dart';
+import 'package:screentime/sections/UI sections/Settings/hover_state_mixin.dart';
+
 // ============== THEME CUSTOMIZATION SECTION ==============
 
 class ThemeCustomizationSection extends StatefulWidget {
@@ -24,18 +26,17 @@ class ThemeCustomizationSection extends StatefulWidget {
 }
 
 class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
-  void _refreshTheme(BuildContext context, CustomThemeData newTheme) {
-    final adaptiveTheme = FluentAdaptiveTheme.of(context);
-    adaptiveTheme.setTheme(
-      light: buildLightTheme(newTheme),
-      dark: buildDarkTheme(newTheme),
+  void _refreshTheme(BuildContext context, CustomThemeData theme) {
+    FluentAdaptiveTheme.of(context).setTheme(
+      light: buildLightTheme(theme),
+      dark: buildDarkTheme(theme),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeCustomizationProvider>();
-    final fluentTheme = FluentTheme.of(context);
+    final provider = context.watch<ThemeCustomizationProvider>();
+    final ft = FluentTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return SettingsCard(
@@ -43,42 +44,34 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       icon: FluentIcons.color,
       iconColor: Colors.magenta,
       trailing: Text(
-        themeProvider.currentTheme.name,
+        provider.currentTheme.name,
         style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          color: fluentTheme.accentColor,
-        ),
+            fontSize: 11, fontWeight: FontWeight.w500, color: ft.accentColor),
       ),
       children: [
-        // Theme Preset Selector
+        // ---- Preset grid ----
         Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                l10n.chooseThemePreset,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: fluentTheme.typography.body?.color,
-                ),
-              ),
+              Text(l10n.chooseThemePreset,
+                  style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: ft.typography.body?.color)),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
                 children: ThemePresets.allPresets.map((preset) {
-                  final isSelected = themeProvider.currentTheme.id == preset.id;
                   return ThemePresetCard(
+                    key: ValueKey(preset.id),
                     theme: preset,
-                    isSelected: isSelected,
+                    isSelected: provider.currentTheme.id == preset.id,
                     onTap: () async {
-                      await themeProvider.setTheme(preset);
-                      if (mounted) {
-                        _refreshTheme(context, preset);
-                      }
+                      await provider.setTheme(preset);
+                      if (mounted) _refreshTheme(context, preset);
                     },
                   );
                 }).toList(),
@@ -87,8 +80,8 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
           ),
         ),
 
-        // Custom Themes List
-        if (themeProvider.customThemes.isNotEmpty) ...[
+        // ---- Custom themes list ----
+        if (provider.customThemes.isNotEmpty) ...[
           const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -98,52 +91,39 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      l10n.yourCustomThemes,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: fluentTheme.typography.body?.color,
-                      ),
-                    ),
+                    Text(l10n.yourCustomThemes,
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: ft.typography.body?.color)),
                     Row(
                       children: [
-                        // Import Button
                         IconButton(
                           icon: const Icon(FluentIcons.download, size: 14),
-                          onPressed: () => _importTheme(context, themeProvider),
+                          onPressed: () => _importTheme(context, provider),
                         ),
-                        // Create Button
                         IconButton(
                           icon: const Icon(FluentIcons.add, size: 14),
                           onPressed: () =>
-                              _createNewCustomTheme(context, themeProvider),
+                              _createNewCustomTheme(context, provider),
                         ),
                       ],
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                ...themeProvider.customThemes.map((customTheme) {
-                  final isSelected =
-                      themeProvider.currentTheme.id == customTheme.id;
-                  return _CustomThemeListItem(
-                    theme: customTheme,
-                    isSelected: isSelected,
-                    onTap: () async {
-                      await themeProvider.setTheme(customTheme);
-                      if (mounted) {
-                        _refreshTheme(context, customTheme);
-                      }
-                    },
-                    onEdit: () =>
-                        _editCustomTheme(context, themeProvider, customTheme),
-                    onDelete: () =>
-                        _deleteCustomTheme(context, themeProvider, customTheme),
-                    onExport: () =>
-                        _exportTheme(context, themeProvider, customTheme),
-                  );
-                }),
+                ...provider.customThemes.map((ct) => _CustomThemeListItem(
+                      key: ValueKey(ct.id),
+                      theme: ct,
+                      isSelected: provider.currentTheme.id == ct.id,
+                      onTap: () async {
+                        await provider.setTheme(ct);
+                        if (mounted) _refreshTheme(context, ct);
+                      },
+                      onEdit: () => _editCustomTheme(context, provider, ct),
+                      onDelete: () => _deleteCustomTheme(context, provider, ct),
+                      onExport: () => _exportTheme(context, provider, ct),
+                    )),
               ],
             ),
           ),
@@ -151,14 +131,14 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
 
         const Divider(),
 
-        // Theme Actions Row
+        // ---- Action rows ----
         Column(
           children: [
             SettingRow(
               title: l10n.createCustomTheme,
               description: l10n.designOwnColorScheme,
               control: FilledButton(
-                onPressed: () => _createNewCustomTheme(context, themeProvider),
+                onPressed: () => _createNewCustomTheme(context, provider),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -172,9 +152,9 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
             SettingRow(
               title: l10n.importTheme,
               description: l10n.importFromFile,
-              showDivider: themeProvider.customThemes.isNotEmpty ? true : false,
+              showDivider: provider.customThemes.isNotEmpty,
               control: Button(
-                onPressed: () => _importTheme(context, themeProvider),
+                onPressed: () => _importTheme(context, provider),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -188,19 +168,18 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
           ],
         ),
 
-        // Edit Current Theme (if custom)
-        if (themeProvider.currentTheme.isCustom) ...[
+        // ---- Edit current (custom only) ----
+        if (provider.currentTheme.isCustom)
           SettingRow(
             title: l10n.editCurrentTheme,
-            description:
-                l10n.customizeColorsFor(themeProvider.currentTheme.name),
+            description: l10n.customizeColorsFor(provider.currentTheme.name),
             showDivider: false,
             control: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Button(
-                  onPressed: () => _exportTheme(
-                      context, themeProvider, themeProvider.currentTheme),
+                  onPressed: () =>
+                      _exportTheme(context, provider, provider.currentTheme),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -213,7 +192,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                 const SizedBox(width: 8),
                 FilledButton(
                   onPressed: () => _editCustomTheme(
-                      context, themeProvider, themeProvider.currentTheme),
+                      context, provider, provider.currentTheme),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -226,19 +205,18 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
               ],
             ),
           ),
-        ],
       ],
     );
   }
 
-  // ============== THEME MANAGEMENT METHODS ==============
+  // ---- Theme management ----
 
   void _createNewCustomTheme(
       BuildContext context, ThemeCustomizationProvider provider) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (context) => ThemeEditorDialog(
+      builder: (_) => ThemeEditorDialog(
         initialTheme: ThemePresets.defaultTheme.copyWith(
           id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
           name: l10n.customThemeNumber(provider.customThemes.length + 1),
@@ -249,7 +227,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
           await provider.setTheme(theme);
           if (mounted) {
             _refreshTheme(context, theme);
-            _showSuccessMessage(context, l10n.themeCreatedSuccessfully);
+            _showSuccess(context, l10n.themeCreatedSuccessfully);
           }
         },
       ),
@@ -261,19 +239,14 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (context) => ThemeEditorDialog(
+      builder: (_) => ThemeEditorDialog(
         initialTheme: theme,
-        onSave: (updatedTheme) async {
-          await provider.updateCustomTheme(updatedTheme);
-          if (provider.currentTheme.id == theme.id) {
-            await provider.setTheme(updatedTheme);
-            if (mounted) {
-              _refreshTheme(context, updatedTheme);
-            }
+        onSave: (updated) async {
+          await provider.updateCustomTheme(updated);
+          if (provider.currentTheme.id == theme.id && mounted) {
+            _refreshTheme(context, updated);
           }
-          if (mounted) {
-            _showSuccessMessage(context, l10n.themeUpdatedSuccessfully);
-          }
+          if (mounted) _showSuccess(context, l10n.themeUpdatedSuccessfully);
         },
       ),
     );
@@ -284,7 +257,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
-      builder: (context) => ContentDialog(
+      builder: (_) => ContentDialog(
         title: Text(l10n.deleteCustomTheme),
         content: Text(l10n.confirmDeleteTheme(theme.name)),
         actions: [
@@ -302,7 +275,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
               if (mounted) {
                 _refreshTheme(context, provider.currentTheme);
                 Navigator.pop(context);
-                _showSuccessMessage(context, l10n.themeDeletedSuccessfully);
+                _showSuccess(context, l10n.themeDeletedSuccessfully);
               }
             },
           ),
@@ -311,129 +284,89 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     );
   }
 
-  // ============== IMPORT/EXPORT METHODS ==============
+  // ---- Import / Export ----
 
   Future<void> _exportTheme(BuildContext context,
       ThemeCustomizationProvider provider, CustomThemeData theme) async {
     final l10n = AppLocalizations.of(context)!;
-
     try {
-      // Show export options dialog
       final result = await showDialog<String>(
         context: context,
-        builder: (context) => _ExportOptionsDialog(theme: theme),
+        builder: (_) => _ExportOptionsDialog(theme: theme),
       );
-
       if (result == null || !mounted) return;
 
-      final themeJson = provider.exportTheme(theme);
+      final json = provider.exportTheme(theme);
       final fileName = '${theme.name.replaceAll(' ', '_')}_theme.json';
 
-      if (result == 'file') {
-        // Export as file
-        await _saveThemeToFile(themeJson, fileName);
-        if (mounted) {
-          _showSuccessMessage(context, l10n.themeExportedSuccessfully);
-        }
-      } else if (result == 'clipboard') {
-        // Copy to clipboard
-        await Clipboard.setData(ClipboardData(text: themeJson));
-        if (mounted) {
-          _showSuccessMessage(context, l10n.themeCopiedToClipboard);
-        }
-      } else if (result == 'share') {
-        // Share via system share sheet
-        await _shareTheme(themeJson, fileName);
+      switch (result) {
+        case 'file':
+          await _saveThemeToFile(json, fileName);
+          if (mounted) _showSuccess(context, l10n.themeExportedSuccessfully);
+        case 'clipboard':
+          await Clipboard.setData(ClipboardData(text: json));
+          if (mounted) _showSuccess(context, l10n.themeCopiedToClipboard);
+        case 'share':
+          await _shareTheme(json, fileName);
       }
     } catch (e) {
-      if (mounted) {
-        _showErrorMessage(context, '${l10n.exportFailed}: $e');
-      }
+      if (mounted) _showError(context, '${l10n.exportFailed}: $e');
     }
   }
 
   Future<void> _importTheme(
       BuildContext context, ThemeCustomizationProvider provider) async {
     final l10n = AppLocalizations.of(context)!;
-
     try {
-      // Show import options dialog
       final result = await showDialog<String>(
         context: context,
-        builder: (context) => _ImportOptionsDialog(),
+        builder: (_) => const _ImportOptionsDialog(),
       );
-
       if (result == null || !mounted) return;
 
-      String? themeJson;
-
+      String? json;
       if (result == 'file') {
-        // Import from file
-        themeJson = await _loadThemeFromFile();
+        json = await _loadThemeFromFile();
       } else if (result == 'clipboard') {
-        // Import from clipboard
-        final clipboardData = await Clipboard.getData('text/plain');
-        themeJson = clipboardData?.text;
+        json = (await Clipboard.getData('text/plain'))?.text;
       }
 
-      if (themeJson == null || themeJson.isEmpty) {
-        if (mounted) {
-          _showErrorMessage(context, l10n.noThemeDataFound);
-        }
+      if (json == null || json.isEmpty) {
+        if (mounted) _showError(context, l10n.noThemeDataFound);
         return;
       }
 
-      // Validate and import theme
-      final importedTheme = await provider.importTheme(themeJson);
-
-      if (importedTheme != null) {
-        await provider.setTheme(importedTheme);
+      final imported = await provider.importTheme(json);
+      if (imported != null) {
+        await provider.setTheme(imported);
         if (mounted) {
-          _refreshTheme(context, importedTheme);
-          _showSuccessMessage(
-              context, l10n.themeImportedSuccessfully(importedTheme.name));
+          _refreshTheme(context, imported);
+          _showSuccess(context, l10n.themeImportedSuccessfully(imported.name));
         }
       } else {
-        if (mounted) {
-          _showErrorMessage(context, l10n.invalidThemeFormat);
-        }
+        if (mounted) _showError(context, l10n.invalidThemeFormat);
       }
     } catch (e) {
-      if (mounted) {
-        _showErrorMessage(context, '${l10n.importFailed}: $e');
-      }
+      if (mounted) _showError(context, '${l10n.importFailed}: $e');
     }
   }
 
-  // ============== FILE OPERATIONS ==============
+  // ---- File helpers ----
 
-  Future<void> _saveThemeToFile(String jsonData, String fileName) async {
+  Future<void> _saveThemeToFile(String data, String fileName) async {
     if (Platform.isAndroid || Platform.isIOS) {
-      // Mobile: Use share or save to downloads
-      final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/$fileName');
-      await file.writeAsString(jsonData);
-
-      await Share.shareXFiles(
-        [XFile(file.path)],
-        subject: 'Theme Export',
-      );
+      final dir = await getApplicationDocumentsDirectory();
+      final file = File('${dir.path}/$fileName')..writeAsStringSync(data);
+      await Share.shareXFiles([XFile(file.path)], subject: 'Theme Export');
     } else {
-      // Desktop: Use file picker
-      final String? outputPath = await FilePicker.platform.saveFile(
+      final outputPath = await FilePicker.platform.saveFile(
         dialogTitle: 'Save JSON file',
         fileName: fileName,
         type: FileType.custom,
         allowedExtensions: ['json'],
       );
-
-      if (outputPath == null) {
-        throw Exception('Save cancelled');
-      }
-
-      // ✅ FIX: Actually write the file to the selected path
-      final file = File(outputPath);
-      await file.writeAsString(jsonData);
+      if (outputPath == null) throw Exception('Save cancelled');
+      await File(outputPath).writeAsString(data);
     }
   }
 
@@ -443,24 +376,16 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       allowedExtensions: ['json'],
       withData: true,
     );
-
-    if (result != null && result.files.isNotEmpty) {
-      final file = result.files.first;
-      if (file.bytes != null) {
-        return utf8.decode(file.bytes!);
-      } else if (file.path != null) {
-        return await File(file.path!).readAsString();
-      }
-    }
-
+    if (result == null || result.files.isEmpty) return null;
+    final file = result.files.first;
+    if (file.bytes != null) return utf8.decode(file.bytes!);
+    if (file.path != null) return File(file.path!).readAsString();
     return null;
   }
 
-  Future<void> _shareTheme(String jsonData, String fileName) async {
-    final directory = await getTemporaryDirectory();
-    final file = File('${directory.path}/$fileName');
-    await file.writeAsString(jsonData);
-
+  Future<void> _shareTheme(String data, String fileName) async {
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/$fileName')..writeAsStringSync(data);
     await Share.shareXFiles(
       [XFile(file.path)],
       subject: 'Custom Theme',
@@ -468,28 +393,24 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     );
   }
 
-  // ============== UI FEEDBACK ==============
+  // ---- Feedback ----
 
-  void _showSuccessMessage(BuildContext context, String message) {
-    displayInfoBar(
-      context,
-      builder: (context, close) => InfoBar(
-        title: Text(message),
-        severity: InfoBarSeverity.success,
-      ),
-    );
-  }
+  void _showSuccess(BuildContext context, String message) => displayInfoBar(
+        context,
+        builder: (_, __) => InfoBar(
+          title: Text(message),
+          severity: InfoBarSeverity.success,
+        ),
+      );
 
-  void _showErrorMessage(BuildContext context, String message) {
-    displayInfoBar(
-      context,
-      builder: (context, close) => InfoBar(
-        title: const Text('Error'),
-        content: Text(message),
-        severity: InfoBarSeverity.error,
-      ),
-    );
-  }
+  void _showError(BuildContext context, String message) => displayInfoBar(
+        context,
+        builder: (_, __) => InfoBar(
+          title: const Text('Error'),
+          content: Text(message),
+          severity: InfoBarSeverity.error,
+        ),
+      );
 }
 
 // ============== EXPORT OPTIONS DIALOG ==============
@@ -502,23 +423,17 @@ class _ExportOptionsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
     return ContentDialog(
-      title: Row(
-        children: [
-          const Icon(FluentIcons.share, size: 20),
-          const SizedBox(width: 12),
-          Text(l10n.exportTheme),
-        ],
-      ),
+      title: Row(children: [
+        const Icon(FluentIcons.share, size: 20),
+        const SizedBox(width: 12),
+        Text(l10n.exportTheme),
+      ]),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            l10n.chooseExportMethod,
-            style: const TextStyle(fontSize: 12),
-          ),
+          Text(l10n.chooseExportMethod, style: const TextStyle(fontSize: 12)),
           const SizedBox(height: 16),
           _OptionButton(
             icon: FluentIcons.save,
@@ -560,23 +475,17 @@ class _ImportOptionsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
     return ContentDialog(
-      title: Row(
-        children: [
-          const Icon(FluentIcons.download, size: 20),
-          const SizedBox(width: 12),
-          Text(l10n.importTheme),
-        ],
-      ),
+      title: Row(children: [
+        const Icon(FluentIcons.download, size: 20),
+        const SizedBox(width: 12),
+        Text(l10n.importTheme),
+      ]),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            l10n.chooseImportMethod,
-            style: const TextStyle(fontSize: 12),
-          ),
+          Text(l10n.chooseImportMethod, style: const TextStyle(fontSize: 12)),
           const SizedBox(height: 16),
           _OptionButton(
             icon: FluentIcons.open_file,
@@ -622,31 +531,26 @@ class _OptionButton extends StatefulWidget {
   State<_OptionButton> createState() => _OptionButtonState();
 }
 
-class _OptionButtonState extends State<_OptionButton> {
-  bool _isHovered = false;
-
+class _OptionButtonState extends State<_OptionButton>
+    with HoverStateMixin<_OptionButton> {
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    final ft = FluentTheme.of(context);
+    return buildHoverable(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: _isHovered
-                ? theme.accentColor.withValues(alpha: 0.1)
-                : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+            color: isHovered
+                ? ft.accentColor.withValues(alpha: 0.1)
+                : ft.inactiveBackgroundColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: _isHovered
-                  ? theme.accentColor.withValues(alpha: 0.3)
+              color: isHovered
+                  ? ft.accentColor.withValues(alpha: 0.3)
                   : Colors.transparent,
-              width: 1,
             ),
           ),
           child: Row(
@@ -654,43 +558,28 @@ class _OptionButtonState extends State<_OptionButton> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: theme.accentColor.withValues(alpha: 0.15),
+                  color: ft.accentColor.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Icon(
-                  widget.icon,
-                  size: 20,
-                  color: theme.accentColor,
-                ),
+                child: Icon(widget.icon, size: 20, color: ft.accentColor),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.label,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    Text(widget.label,
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600)),
                     const SizedBox(height: 2),
-                    Text(
-                      widget.description,
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: theme.typography.caption?.color,
-                      ),
-                    ),
+                    Text(widget.description,
+                        style: TextStyle(
+                            fontSize: 11, color: ft.typography.caption?.color)),
                   ],
                 ),
               ),
-              Icon(
-                FluentIcons.chevron_right,
-                size: 16,
-                color: theme.typography.caption?.color,
-              ),
+              Icon(FluentIcons.chevron_right,
+                  size: 16, color: ft.typography.caption?.color),
             ],
           ),
         ),
@@ -699,7 +588,7 @@ class _OptionButtonState extends State<_OptionButton> {
   }
 }
 
-// ============== CUSTOM THEME LIST ITEM (ENHANCED) ==============
+// ============== CUSTOM THEME LIST ITEM ==============
 
 class _CustomThemeListItem extends StatefulWidget {
   final CustomThemeData theme;
@@ -710,6 +599,7 @@ class _CustomThemeListItem extends StatefulWidget {
   final VoidCallback onExport;
 
   const _CustomThemeListItem({
+    super.key,
     required this.theme,
     required this.isSelected,
     required this.onTap,
@@ -722,16 +612,12 @@ class _CustomThemeListItem extends StatefulWidget {
   State<_CustomThemeListItem> createState() => _CustomThemeListItemState();
 }
 
-class _CustomThemeListItemState extends State<_CustomThemeListItem> {
-  bool _isHovered = false;
-
+class _CustomThemeListItemState extends State<_CustomThemeListItem>
+    with HoverStateMixin<_CustomThemeListItem> {
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    final ft = FluentTheme.of(context);
+    return buildHoverable(
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
@@ -739,13 +625,12 @@ class _CustomThemeListItemState extends State<_CustomThemeListItem> {
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: widget.isSelected
-                ? theme.accentColor.withValues(alpha: 0.1)
-                : _isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.3)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.1),
+                ? ft.accentColor.withValues(alpha: 0.1)
+                : ft.inactiveBackgroundColor
+                    .withValues(alpha: isHovered ? 0.3 : 0.1),
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: widget.isSelected ? theme.accentColor : Colors.transparent,
+              color: widget.isSelected ? ft.accentColor : Colors.transparent,
               width: widget.isSelected ? 2 : 1,
             ),
           ),
@@ -782,6 +667,3 @@ class _CustomThemeListItemState extends State<_CustomThemeListItem> {
     );
   }
 }
-
-// Note: Include all other classes from the original file
-// (ThemePresetCard, ColorDot, ThemeEditorDialog, etc.)

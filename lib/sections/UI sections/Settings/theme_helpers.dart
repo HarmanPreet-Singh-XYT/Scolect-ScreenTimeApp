@@ -1,8 +1,21 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/UI%20sections/Settings/colorpicker.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
+
+// ============== SHARED HOVER MIXIN ==============
+// Eliminates the repeated _isHovered + MouseRegion boilerplate found in every
+// interactive widget.
+
+mixin _HoverState<T extends StatefulWidget> on State<T> {
+  bool isHovered = false;
+
+  Widget buildHoverable({required Widget child}) => MouseRegion(
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
+        child: child,
+      );
+}
 
 // ============== THEME PRESET CARD ==============
 
@@ -12,25 +25,23 @@ class ThemePresetCard extends StatefulWidget {
   final VoidCallback onTap;
 
   const ThemePresetCard({
+    super.key,
     required this.theme,
     required this.isSelected,
     required this.onTap,
   });
 
   @override
-  State<ThemePresetCard> createState() => ThemePresetCardState();
+  State<ThemePresetCard> createState() => _ThemePresetCardState();
 }
 
-class ThemePresetCardState extends State<ThemePresetCard> {
-  bool _isHovered = false;
-
+class _ThemePresetCardState extends State<ThemePresetCard>
+    with _HoverState<ThemePresetCard> {
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    final ft = FluentTheme.of(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverable(
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
@@ -39,16 +50,15 @@ class ThemePresetCardState extends State<ThemePresetCard> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: widget.isSelected
-                ? theme.accentColor.withValues(alpha: 0.15)
-                : _isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.5)
-                    : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+                ? ft.accentColor.withValues(alpha: 0.15)
+                : ft.inactiveBackgroundColor
+                    .withValues(alpha: isHovered ? 0.5 : 0.2),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: widget.isSelected
-                  ? theme.accentColor
-                  : _isHovered
-                      ? theme.inactiveBackgroundColor
+                  ? ft.accentColor
+                  : isHovered
+                      ? ft.inactiveBackgroundColor
                       : Colors.transparent,
               width: widget.isSelected ? 2 : 1,
             ),
@@ -56,7 +66,6 @@ class ThemePresetCardState extends State<ThemePresetCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Color Preview
               Row(
                 children: [
                   ColorDot(color: widget.theme.primaryAccent),
@@ -67,14 +76,13 @@ class ThemePresetCardState extends State<ThemePresetCard> {
                 ],
               ),
               const SizedBox(height: 8),
-              // Theme Name
               Text(
                 widget.theme.name,
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight:
                       widget.isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: widget.isSelected ? theme.accentColor : null,
+                  color: widget.isSelected ? ft.accentColor : null,
                 ),
               ),
             ],
@@ -85,35 +93,36 @@ class ThemePresetCardState extends State<ThemePresetCard> {
   }
 }
 
+// ============== COLOR DOT ==============
+
 class ColorDot extends StatelessWidget {
   final Color color;
 
-  const ColorDot({required this.color});
+  const ColorDot({super.key, required this.color});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 16,
-      height: 16,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.3),
-          width: 1,
+  Widget build(BuildContext context) => Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
-// ============== ENHANCED THEME EDITOR DIALOG ==============
+// ============== THEME EDITOR DIALOG ==============
 
 class ThemeEditorDialog extends StatefulWidget {
   final CustomThemeData initialTheme;
-  final Function(CustomThemeData) onSave;
+  final ValueChanged<CustomThemeData> onSave;
 
   const ThemeEditorDialog({
+    super.key,
     required this.initialTheme,
     required this.onSave,
   });
@@ -124,7 +133,7 @@ class ThemeEditorDialog extends StatefulWidget {
 
 class ThemeEditorDialogState extends State<ThemeEditorDialog> {
   late CustomThemeData _currentTheme;
-  late TextEditingController _nameController;
+  late final TextEditingController _nameController;
   int _selectedTabIndex = 0;
 
   @override
@@ -140,11 +149,8 @@ class ThemeEditorDialogState extends State<ThemeEditorDialog> {
     super.dispose();
   }
 
-  void _updateColor(String colorKey, Color color) {
-    setState(() {
-      _currentTheme = _currentTheme.updateColor(colorKey, color);
-    });
-  }
+  void _updateColor(String colorKey, Color color) => setState(
+      () => _currentTheme = _currentTheme.updateColor(colorKey, color));
 
   @override
   Widget build(BuildContext context) {
@@ -158,41 +164,14 @@ class ThemeEditorDialogState extends State<ThemeEditorDialog> {
           const SizedBox(width: 12),
           Text(l10n.customizeTheme),
           const Spacer(),
-          // Live Preview Indicator
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: _currentTheme.primaryAccent.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: _currentTheme.primaryAccent,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  l10n.preview,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: _currentTheme.primaryAccent,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _LivePreviewBadge(
+              color: _currentTheme.primaryAccent, label: l10n.preview),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Theme Name Input
+          // Theme name
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: TextBox(
@@ -205,7 +184,7 @@ class ThemeEditorDialogState extends State<ThemeEditorDialog> {
             ),
           ),
 
-          // Tab Navigation
+          // Tabs
           SizedBox(
             height: 36,
             child: Row(
@@ -238,12 +217,20 @@ class ThemeEditorDialogState extends State<ThemeEditorDialog> {
           const Divider(),
           const SizedBox(height: 16),
 
-          // Tab Content
           Expanded(
             child: SingleChildScrollView(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: _buildTabContent(),
+              // IndexedStack keeps all three tab subtrees alive, avoiding
+              // repeated build/dispose cycles when switching tabs.
+              child: IndexedStack(
+                index: _selectedTabIndex,
+                children: [
+                  _BrandColorsTab(
+                      theme: _currentTheme, onColorChange: _updateColor),
+                  _LightThemeTab(
+                      theme: _currentTheme, onColorChange: _updateColor),
+                  _DarkThemeTab(
+                      theme: _currentTheme, onColorChange: _updateColor),
+                ],
               ),
             ),
           ),
@@ -256,53 +243,54 @@ class ThemeEditorDialogState extends State<ThemeEditorDialog> {
         ),
         Button(
           child: Text(l10n.reset),
-          onPressed: () {
-            setState(() {
-              _currentTheme = widget.initialTheme;
-              _nameController.text = widget.initialTheme.name;
-            });
-          },
+          onPressed: () => setState(() {
+            _currentTheme = widget.initialTheme;
+            _nameController.text = widget.initialTheme.name;
+          }),
         ),
         FilledButton(
           child: Text(l10n.saveTheme),
           onPressed: () {
-            final updatedTheme = _currentTheme.copyWith(
-              name: _nameController.text.trim().isEmpty
-                  ? l10n.customTheme
-                  : _nameController.text.trim(),
-            );
-            widget.onSave(updatedTheme);
+            final trimmed = _nameController.text.trim();
+            widget.onSave(_currentTheme.copyWith(
+              name: trimmed.isEmpty ? l10n.customTheme : trimmed,
+            ));
             Navigator.pop(context);
           },
         ),
       ],
     );
   }
+}
 
-  Widget _buildTabContent() {
-    switch (_selectedTabIndex) {
-      case 0:
-        return _BrandColorsTab(
-          key: const ValueKey('brand'),
-          theme: _currentTheme,
-          onColorChange: _updateColor,
-        );
-      case 1:
-        return _LightThemeTab(
-          key: const ValueKey('light'),
-          theme: _currentTheme,
-          onColorChange: _updateColor,
-        );
-      case 2:
-        return _DarkThemeTab(
-          key: const ValueKey('dark'),
-          theme: _currentTheme,
-          onColorChange: _updateColor,
-        );
-      default:
-        return const SizedBox.shrink();
-    }
-  }
+// ============== LIVE PREVIEW BADGE ==============
+
+class _LivePreviewBadge extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _LivePreviewBadge({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
+            const SizedBox(width: 6),
+            Text(label, style: TextStyle(fontSize: 11, color: color)),
+          ],
+        ),
+      );
 }
 
 // ============== TAB BUTTON ==============
@@ -324,16 +312,12 @@ class _TabButton extends StatefulWidget {
   State<_TabButton> createState() => _TabButtonState();
 }
 
-class _TabButtonState extends State<_TabButton> {
-  bool _isHovered = false;
-
+class _TabButtonState extends State<_TabButton> with _HoverState<_TabButton> {
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    final ft = FluentTheme.of(context);
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+    return buildHoverable(
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
@@ -341,14 +325,13 @@ class _TabButtonState extends State<_TabButton> {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: widget.isSelected
-                ? theme.accentColor.withValues(alpha: 0.15)
-                : _isHovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.5)
+                ? ft.accentColor.withValues(alpha: 0.15)
+                : isHovered
+                    ? ft.inactiveBackgroundColor.withValues(alpha: 0.5)
                     : Colors.transparent,
             borderRadius: BorderRadius.circular(6),
             border: Border.all(
-              color: widget.isSelected ? theme.accentColor : Colors.transparent,
-              width: 1,
+              color: widget.isSelected ? ft.accentColor : Colors.transparent,
             ),
           ),
           child: Row(
@@ -357,7 +340,7 @@ class _TabButtonState extends State<_TabButton> {
               Icon(
                 widget.icon,
                 size: 14,
-                color: widget.isSelected ? theme.accentColor : null,
+                color: widget.isSelected ? ft.accentColor : null,
               ),
               const SizedBox(width: 6),
               Text(
@@ -366,7 +349,7 @@ class _TabButtonState extends State<_TabButton> {
                   fontSize: 12,
                   fontWeight:
                       widget.isSelected ? FontWeight.w600 : FontWeight.normal,
-                  color: widget.isSelected ? theme.accentColor : null,
+                  color: widget.isSelected ? ft.accentColor : null,
                 ),
               ),
             ],
@@ -377,271 +360,42 @@ class _TabButtonState extends State<_TabButton> {
   }
 }
 
-// ============== BRAND COLORS TAB ==============
-
-class _BrandColorsTab extends StatelessWidget {
-  final CustomThemeData theme;
-  final Function(String, Color) onColorChange;
-
-  const _BrandColorsTab({
-    super.key,
-    required this.theme,
-    required this.onColorChange,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _ColorSectionHeader(
-          title: l10n.primaryColors,
-          description: l10n.primaryColorsDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.primaryAccent,
-          description: l10n.primaryAccentDesc,
-          color: theme.primaryAccent,
-          onColorChanged: (c) => onColorChange('primaryAccent', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.secondaryAccent,
-          description: l10n.secondaryAccentDesc,
-          color: theme.secondaryAccent,
-          onColorChanged: (c) => onColorChange('secondaryAccent', c),
-        ),
-
-        const SizedBox(height: 20),
-        _ColorSectionHeader(
-          title: l10n.semanticColors,
-          description: l10n.semanticColorsDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.successColor,
-          description: l10n.successColorDesc,
-          color: theme.successColor,
-          onColorChanged: (c) => onColorChange('successColor', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.warningColor,
-          description: l10n.warningColorDesc,
-          color: theme.warningColor,
-          onColorChanged: (c) => onColorChange('warningColor', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.errorColor,
-          description: l10n.errorColorDesc,
-          color: theme.errorColor,
-          onColorChanged: (c) => onColorChange('errorColor', c),
-        ),
-
-        const SizedBox(height: 20),
-        // Preview Card
-        _ThemePreviewCard(theme: theme, isDark: false),
-      ],
-    );
-  }
-}
-
-// ============== LIGHT THEME TAB ==============
-
-class _LightThemeTab extends StatelessWidget {
-  final CustomThemeData theme;
-  final Function(String, Color) onColorChange;
-
-  const _LightThemeTab({
-    super.key,
-    required this.theme,
-    required this.onColorChange,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _ColorSectionHeader(
-          title: l10n.backgroundColors,
-          description: l10n.backgroundColorsLightDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.background,
-          description: l10n.backgroundDesc,
-          color: theme.lightBackground,
-          onColorChanged: (c) => onColorChange('lightBackground', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.surface,
-          description: l10n.surfaceDesc,
-          color: theme.lightSurface,
-          onColorChanged: (c) => onColorChange('lightSurface', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.surfaceSecondary,
-          description: l10n.surfaceSecondaryDesc,
-          color: theme.lightSurfaceSecondary,
-          onColorChanged: (c) => onColorChange('lightSurfaceSecondary', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.border,
-          description: l10n.borderDesc,
-          color: theme.lightBorder,
-          onColorChanged: (c) => onColorChange('lightBorder', c),
-        ),
-
-        const SizedBox(height: 20),
-        _ColorSectionHeader(
-          title: l10n.textColors,
-          description: l10n.textColorsLightDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.textPrimary,
-          description: l10n.textPrimaryDesc,
-          color: theme.lightTextPrimary,
-          onColorChanged: (c) => onColorChange('lightTextPrimary', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.textSecondary,
-          description: l10n.textSecondaryDesc,
-          color: theme.lightTextSecondary,
-          onColorChanged: (c) => onColorChange('lightTextSecondary', c),
-        ),
-
-        const SizedBox(height: 20),
-        // Preview Card
-        _ThemePreviewCard(theme: theme, isDark: false),
-      ],
-    );
-  }
-}
-
-// ============== DARK THEME TAB ==============
-
-class _DarkThemeTab extends StatelessWidget {
-  final CustomThemeData theme;
-  final Function(String, Color) onColorChange;
-
-  const _DarkThemeTab({
-    super.key,
-    required this.theme,
-    required this.onColorChange,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _ColorSectionHeader(
-          title: l10n.backgroundColors,
-          description: l10n.backgroundColorsDarkDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.background,
-          description: l10n.backgroundDesc,
-          color: theme.darkBackground,
-          onColorChanged: (c) => onColorChange('darkBackground', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.surface,
-          description: l10n.surfaceDesc,
-          color: theme.darkSurface,
-          onColorChanged: (c) => onColorChange('darkSurface', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.surfaceSecondary,
-          description: l10n.surfaceSecondaryDesc,
-          color: theme.darkSurfaceSecondary,
-          onColorChanged: (c) => onColorChange('darkSurfaceSecondary', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.border,
-          description: l10n.borderDesc,
-          color: theme.darkBorder,
-          onColorChanged: (c) => onColorChange('darkBorder', c),
-        ),
-
-        const SizedBox(height: 20),
-        _ColorSectionHeader(
-          title: l10n.textColors,
-          description: l10n.textColorsDarkDesc,
-        ),
-        _ColorPickerRow(
-          label: l10n.textPrimary,
-          description: l10n.textPrimaryDesc,
-          color: theme.darkTextPrimary,
-          onColorChanged: (c) => onColorChange('darkTextPrimary', c),
-        ),
-        _ColorPickerRow(
-          label: l10n.textSecondary,
-          description: l10n.textSecondaryDesc,
-          color: theme.darkTextSecondary,
-          onColorChanged: (c) => onColorChange('darkTextSecondary', c),
-        ),
-
-        const SizedBox(height: 20),
-        // Preview Card
-        _ThemePreviewCard(theme: theme, isDark: true),
-      ],
-    );
-  }
-}
-
-// ============== SECTION HEADER ==============
+// ============== SHARED COLOR SECTION WIDGETS ==============
 
 class _ColorSectionHeader extends StatelessWidget {
   final String title;
   final String description;
 
-  const _ColorSectionHeader({
-    required this.title,
-    required this.description,
-  });
+  const _ColorSectionHeader({required this.title, required this.description});
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-
+    final ft = FluentTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: theme.typography.body?.color,
-            ),
-          ),
+          Text(title,
+              style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: ft.typography.body?.color)),
           const SizedBox(height: 2),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 11,
-              color: theme.typography.caption?.color,
-            ),
-          ),
+          Text(description,
+              style:
+                  TextStyle(fontSize: 11, color: ft.typography.caption?.color)),
         ],
       ),
     );
   }
 }
 
-// ============== UPDATED COLOR PICKER ROW ==============
-
 class _ColorPickerRow extends StatelessWidget {
   final String label;
   final String? description;
   final Color color;
-  final Function(Color) onColorChanged;
+  final ValueChanged<Color> onColorChanged;
 
   const _ColorPickerRow({
     required this.label,
@@ -652,8 +406,8 @@ class _ColorPickerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final ft = FluentTheme.of(context);
+    final isDark = ft.brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -663,26 +417,20 @@ class _ColorPickerRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w500),
-                ),
+                Text(label,
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w500)),
                 if (description != null)
-                  Text(
-                    description!,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: theme.typography.caption?.color,
-                    ),
-                  ),
+                  Text(description!,
+                      style: TextStyle(
+                          fontSize: 10, color: ft.typography.caption?.color)),
               ],
             ),
           ),
 
-          // Color Swatch Button
+          // Color swatch
           GestureDetector(
-            onTap: () => _showColorPicker(context),
+            onTap: () => _showPicker(context),
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: AnimatedContainer(
@@ -696,7 +444,6 @@ class _ColorPickerRow extends StatelessWidget {
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.2)
                         : Colors.black.withValues(alpha: 0.1),
-                    width: 1,
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -711,29 +458,26 @@ class _ColorPickerRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
 
-          // Hex Code Display (Clickable)
+          // Hex label
           GestureDetector(
-            onTap: () => _showColorPicker(context),
+            onTap: () => _showPicker(context),
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Container(
                 width: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
-                  color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+                  color: ft.inactiveBackgroundColor.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: theme.inactiveBackgroundColor,
-                    width: 1,
-                  ),
+                  border:
+                      Border.all(color: ft.inactiveBackgroundColor, width: 1),
                 ),
                 child: Text(
                   '#${color.value.toRadixString(16).substring(2).toUpperCase()}',
                   style: const TextStyle(
-                    fontSize: 11,
-                    fontFamily: 'monospace',
-                    fontWeight: FontWeight.w500,
-                  ),
+                      fontSize: 11,
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.w500),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -744,16 +488,175 @@ class _ColorPickerRow extends StatelessWidget {
     );
   }
 
-  Future<void> _showColorPicker(BuildContext context) async {
-    final selectedColor = await FluentColorPickerDialog.show(
+  Future<void> _showPicker(BuildContext context) async {
+    final selected = await FluentColorPickerDialog.show(
       context: context,
       title: label,
       initialColor: color,
     );
+    if (selected != null) onColorChanged(selected);
+  }
+}
 
-    if (selectedColor != null) {
-      onColorChanged(selectedColor);
-    }
+// ============== TAB CONTENT WIDGETS ==============
+// Each tab is a plain StatelessWidget; state lives in ThemeEditorDialog.
+
+class _BrandColorsTab extends StatelessWidget {
+  final CustomThemeData theme;
+  final void Function(String, Color) onColorChange;
+
+  const _BrandColorsTab({required this.theme, required this.onColorChange});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ColorSectionHeader(
+            title: l10n.primaryColors, description: l10n.primaryColorsDesc),
+        _ColorPickerRow(
+            label: l10n.primaryAccent,
+            description: l10n.primaryAccentDesc,
+            color: theme.primaryAccent,
+            onColorChanged: (c) => onColorChange('primaryAccent', c)),
+        _ColorPickerRow(
+            label: l10n.secondaryAccent,
+            description: l10n.secondaryAccentDesc,
+            color: theme.secondaryAccent,
+            onColorChanged: (c) => onColorChange('secondaryAccent', c)),
+        const SizedBox(height: 20),
+        _ColorSectionHeader(
+            title: l10n.semanticColors, description: l10n.semanticColorsDesc),
+        _ColorPickerRow(
+            label: l10n.successColor,
+            description: l10n.successColorDesc,
+            color: theme.successColor,
+            onColorChanged: (c) => onColorChange('successColor', c)),
+        _ColorPickerRow(
+            label: l10n.warningColor,
+            description: l10n.warningColorDesc,
+            color: theme.warningColor,
+            onColorChanged: (c) => onColorChange('warningColor', c)),
+        _ColorPickerRow(
+            label: l10n.errorColor,
+            description: l10n.errorColorDesc,
+            color: theme.errorColor,
+            onColorChanged: (c) => onColorChange('errorColor', c)),
+        const SizedBox(height: 20),
+        _ThemePreviewCard(theme: theme, isDark: false),
+      ],
+    );
+  }
+}
+
+class _LightThemeTab extends StatelessWidget {
+  final CustomThemeData theme;
+  final void Function(String, Color) onColorChange;
+
+  const _LightThemeTab({required this.theme, required this.onColorChange});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ColorSectionHeader(
+            title: l10n.backgroundColors,
+            description: l10n.backgroundColorsLightDesc),
+        _ColorPickerRow(
+            label: l10n.background,
+            description: l10n.backgroundDesc,
+            color: theme.lightBackground,
+            onColorChanged: (c) => onColorChange('lightBackground', c)),
+        _ColorPickerRow(
+            label: l10n.surface,
+            description: l10n.surfaceDesc,
+            color: theme.lightSurface,
+            onColorChanged: (c) => onColorChange('lightSurface', c)),
+        _ColorPickerRow(
+            label: l10n.surfaceSecondary,
+            description: l10n.surfaceSecondaryDesc,
+            color: theme.lightSurfaceSecondary,
+            onColorChanged: (c) => onColorChange('lightSurfaceSecondary', c)),
+        _ColorPickerRow(
+            label: l10n.border,
+            description: l10n.borderDesc,
+            color: theme.lightBorder,
+            onColorChanged: (c) => onColorChange('lightBorder', c)),
+        const SizedBox(height: 20),
+        _ColorSectionHeader(
+            title: l10n.textColors, description: l10n.textColorsLightDesc),
+        _ColorPickerRow(
+            label: l10n.textPrimary,
+            description: l10n.textPrimaryDesc,
+            color: theme.lightTextPrimary,
+            onColorChanged: (c) => onColorChange('lightTextPrimary', c)),
+        _ColorPickerRow(
+            label: l10n.textSecondary,
+            description: l10n.textSecondaryDesc,
+            color: theme.lightTextSecondary,
+            onColorChanged: (c) => onColorChange('lightTextSecondary', c)),
+        const SizedBox(height: 20),
+        _ThemePreviewCard(theme: theme, isDark: false),
+      ],
+    );
+  }
+}
+
+class _DarkThemeTab extends StatelessWidget {
+  final CustomThemeData theme;
+  final void Function(String, Color) onColorChange;
+
+  const _DarkThemeTab({required this.theme, required this.onColorChange});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ColorSectionHeader(
+            title: l10n.backgroundColors,
+            description: l10n.backgroundColorsDarkDesc),
+        _ColorPickerRow(
+            label: l10n.background,
+            description: l10n.backgroundDesc,
+            color: theme.darkBackground,
+            onColorChanged: (c) => onColorChange('darkBackground', c)),
+        _ColorPickerRow(
+            label: l10n.surface,
+            description: l10n.surfaceDesc,
+            color: theme.darkSurface,
+            onColorChanged: (c) => onColorChange('darkSurface', c)),
+        _ColorPickerRow(
+            label: l10n.surfaceSecondary,
+            description: l10n.surfaceSecondaryDesc,
+            color: theme.darkSurfaceSecondary,
+            onColorChanged: (c) => onColorChange('darkSurfaceSecondary', c)),
+        _ColorPickerRow(
+            label: l10n.border,
+            description: l10n.borderDesc,
+            color: theme.darkBorder,
+            onColorChanged: (c) => onColorChange('darkBorder', c)),
+        const SizedBox(height: 20),
+        _ColorSectionHeader(
+            title: l10n.textColors, description: l10n.textColorsDarkDesc),
+        _ColorPickerRow(
+            label: l10n.textPrimary,
+            description: l10n.textPrimaryDesc,
+            color: theme.darkTextPrimary,
+            onColorChanged: (c) => onColorChange('darkTextPrimary', c)),
+        _ColorPickerRow(
+            label: l10n.textSecondary,
+            description: l10n.textSecondaryDesc,
+            color: theme.darkTextSecondary,
+            onColorChanged: (c) => onColorChange('darkTextSecondary', c)),
+        const SizedBox(height: 20),
+        _ThemePreviewCard(theme: theme, isDark: true),
+      ],
+    );
   }
 }
 
@@ -763,20 +666,16 @@ class _ThemePreviewCard extends StatelessWidget {
   final CustomThemeData theme;
   final bool isDark;
 
-  const _ThemePreviewCard({
-    required this.theme,
-    required this.isDark,
-  });
+  const _ThemePreviewCard({required this.theme, required this.isDark});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final background = isDark ? theme.darkBackground : theme.lightBackground;
-    final surface = isDark ? theme.darkSurface : theme.lightSurface;
-    final border = isDark ? theme.darkBorder : theme.lightBorder;
-    final textPrimary = isDark ? theme.darkTextPrimary : theme.lightTextPrimary;
-    final textSecondary =
-        isDark ? theme.darkTextSecondary : theme.lightTextSecondary;
+    final background = theme.getBackground(isDark);
+    final surface = theme.getSurface(isDark);
+    final border = theme.getBorder(isDark);
+    final textPrimary = theme.getTextPrimary(isDark);
+    final textSecondary = theme.getTextSecondary(isDark);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -791,14 +690,9 @@ class _ThemePreviewCard extends StatelessWidget {
           Text(
             l10n.previewMode(isDark ? l10n.dark : l10n.light),
             style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: textPrimary,
-            ),
+                fontSize: 13, fontWeight: FontWeight.w600, color: textPrimary),
           ),
           const SizedBox(height: 12),
-
-          // Sample Card
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -809,48 +703,30 @@ class _ThemePreviewCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  l10n.sampleCardTitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: textPrimary,
-                  ),
-                ),
+                Text(l10n.sampleCardTitle,
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: textPrimary)),
                 const SizedBox(height: 4),
-                Text(
-                  l10n.sampleSecondaryText,
-                  style: TextStyle(
-                    fontSize: 11,
-                    color: textSecondary,
-                  ),
-                ),
+                Text(l10n.sampleSecondaryText,
+                    style: TextStyle(fontSize: 11, color: textSecondary)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     _PreviewButton(
-                      color: theme.primaryAccent,
-                      label: l10n.primary,
-                    ),
+                        color: theme.primaryAccent, label: l10n.primary),
                     const SizedBox(width: 8),
                     _PreviewButton(
-                      color: theme.successColor,
-                      label: l10n.success,
-                    ),
+                        color: theme.successColor, label: l10n.success),
                     const SizedBox(width: 8),
-                    _PreviewButton(
-                      color: theme.errorColor,
-                      label: l10n.error,
-                    ),
+                    _PreviewButton(color: theme.errorColor, label: l10n.error),
                   ],
                 ),
               ],
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // Color Swatches Row
           Row(
             children: [
               _PreviewSwatch(color: theme.primaryAccent, label: l10n.primary),
@@ -874,23 +750,16 @@ class _PreviewButton extends StatelessWidget {
   const _PreviewButton({required this.color, required this.label});
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.w600,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration:
+            BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+        child: Text(label,
+            style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: Colors.white)),
+      );
 }
 
 class _PreviewSwatch extends StatelessWidget {
@@ -900,26 +769,20 @@ class _PreviewSwatch extends StatelessWidget {
   const _PreviewSwatch({required this.color, required this.label});
 
   @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: [
-          Container(
-            height: 24,
-            margin: const EdgeInsets.symmetric(horizontal: 2),
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(4),
+  Widget build(BuildContext context) => Expanded(
+        child: Column(
+          children: [
+            Container(
+              height: 24,
+              margin: const EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(
+                  color: color, borderRadius: BorderRadius.circular(4)),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 8),
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 4),
+            Text(label,
+                style: const TextStyle(fontSize: 8),
+                overflow: TextOverflow.ellipsis),
+          ],
+        ),
+      );
 }
