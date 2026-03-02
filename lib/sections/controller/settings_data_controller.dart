@@ -37,7 +37,6 @@ class LanguageOptions {
   ];
   static const String defaultLanguage = "en";
 
-  // Pre-computed set for O(1) lookup
   static final Set<String> _validCodes =
       available.map((l) => l['code']!).toSet();
 
@@ -100,9 +99,17 @@ class TrackingModeOptions {
 
 class SettingsMigrations {
   const SettingsMigrations._();
-  static const int currentVersion = 1;
+
+  /// Bump this every time a new migration block is added.
+  static const int currentVersion = 2;
   static const String versionKey = "screenTime_settings_migration_version";
+
+  /// v2.0.8 — monitorControllers, monitorHIDDevices, monitorAudio disabled
+  ///           due to crashes.
   static const String crashFixVersion = "2.0.8";
+
+  /// v2.0.9 — monitorAudio crash fixed; re-enable it for all existing users.
+  static const String audioReenabledVersion = "2.0.9";
 }
 
 // ============================================================================
@@ -123,12 +130,12 @@ class SettingsManager {
   static final bool _isMacOS = Platform.isMacOS;
 
   Map<String, String> versionInfo = {
-    "version": "2.0.8",
+    "version": "2.0.9",
     "type": "Stable Build",
   };
 
   // --------------------------------------------------------------------------
-  // DEFAULT SETTINGS (built lazily once)
+  // DEFAULT SETTINGS
   // --------------------------------------------------------------------------
 
   Map<String, dynamic> _buildDefaultSettings() => {
@@ -170,9 +177,9 @@ class SettingsManager {
           "mode": TrackingModeOptions.defaultMode,
           "idleDetection": true,
           "idleTimeout": IdleTimeoutOptions.defaultTimeout,
-          "monitorAudio": false,
-          "monitorControllers": false,
-          "monitorHIDDevices": false,
+          "monitorAudio": true, // re-enabled in 2.0.9 (crash fixed)
+          "monitorControllers": false, // disabled — crashes
+          "monitorHIDDevices": false, // disabled — crashes
           "monitorKeyboard": true,
           "audioThreshold": 0.01,
         },
@@ -201,6 +208,7 @@ class SettingsManager {
   Future<void> _runMigrations() async {
     final bool hasExistingSettings = _prefs.getString(_storageKey) != null;
 
+    // New user: defaults are already correct — stamp current version and return.
     if (!hasExistingSettings) {
       await _prefs.setInt(
           SettingsMigrations.versionKey, SettingsMigrations.currentVersion);
@@ -211,15 +219,26 @@ class SettingsManager {
 
     int migratedVersion = _prefs.getInt(SettingsMigrations.versionKey) ?? 0;
 
+    // Migration 1 — disable crash-prone settings for users below 2.0.8.
     if (migratedVersion < 1) {
-      await _migrateCrashProneSettings();
+      await _migration1DisableCrashSettings();
       await _prefs.setInt(SettingsMigrations.versionKey, 1);
+      migratedVersion = 1; // continue so migration 2 can also run if needed
     }
 
-    // Future: if (migratedVersion < 2) { ... }
+    // Migration 2 — re-enable monitorAudio now that crash is fixed in 2.0.9.
+    if (migratedVersion < 2) {
+      await _migration2ReenableAudio();
+      await _prefs.setInt(SettingsMigrations.versionKey, 2);
+    }
+
+    // Future migrations:
+    // if (migratedVersion < 3) { await _migration3...; await _prefs.setInt(..., 3); }
   }
 
-  Future<void> _migrateCrashProneSettings() async {
+  /// Migration 1: Force-disable monitorControllers, monitorHIDDevices, and
+  /// monitorAudio for existing users who were below 2.0.8 (crash-prone builds).
+  Future<void> _migration1DisableCrashSettings() async {
     final String? lastSeenVersion = _prefs.getString(_changelogKey);
     final bool isOldUser = lastSeenVersion != null &&
         _isVersionBelow(lastSeenVersion, SettingsMigrations.crashFixVersion);
@@ -230,22 +249,36 @@ class SettingsManager {
       return;
     }
 
-    debugPrint("🔧 Migration 1: Old user on $lastSeenVersion — disabling "
-        "monitorControllers, monitorHIDDevices & monitorAudio");
+    debugPrint(
+        "🔧 Migration 1: Old user on $lastSeenVersion — disabling crash-prone settings");
 
     final tracking = settings["tracking"];
     if (tracking is Map<String, dynamic>) {
-      tracking
-        ..["monitorControllers"] = false
-        ..["monitorHIDDevices"] = false
-        ..["monitorAudio"] = false;
+      tracking["monitorControllers"] = false;
+      tracking["monitorHIDDevices"] = false;
+      tracking["monitorAudio"] =
+          false; // temporarily disabled, re-enabled in migration 2
     }
 
     _saveSettings();
-    debugPrint("✅ Migration 1: Crash-prone settings disabled and saved");
+    debugPrint("✅ Migration 1: Complete");
+  }
+
+  /// Migration 2: Re-enable monitorAudio for all existing users since the
+  /// crash was fixed in 2.0.9. monitorControllers and monitorHIDDevices
+  /// remain disabled.
+  Future<void> _migration2ReenableAudio() async {
+    final tracking = settings["tracking"];
+    if (tracking is Map<String, dynamic>) {
+      tracking["monitorAudio"] = true;
+    }
+
+    _saveSettings();
+    debugPrint("✅ Migration 2: monitorAudio re-enabled for 2.0.9");
   }
 
   /// Returns `true` if [version] is strictly below [target].
+  /// Handles optional leading "v" (e.g. "v2.0.7" < "2.0.8").
   static bool _isVersionBelow(String version, String target) {
     try {
       final v = version.replaceAll('v', '').split('.').map(int.parse).toList();
@@ -257,7 +290,7 @@ class SettingsManager {
         final tPart = i < t.length ? t[i] : 0;
         if (vPart != tPart) return vPart < tPart;
       }
-      return false;
+      return false; // equal versions are not below
     } catch (_) {
       return false;
     }
@@ -310,22 +343,18 @@ class SettingsManager {
     // Tracking
     final tracking = settings["tracking"];
     if (tracking is Map<String, dynamic>) {
-      // Mode
       if (!TrackingModeOptions.available.contains(tracking["mode"] ?? '')) {
         tracking["mode"] = TrackingModeOptions.defaultMode;
       }
 
-      // Idle timeout
       tracking["idleTimeout"] = IdleTimeoutOptions.clamp(
         tracking["idleTimeout"] ?? IdleTimeoutOptions.defaultTimeout,
       );
 
-      // Audio threshold
       final double threshold =
           (tracking["audioThreshold"] as num?)?.toDouble() ?? 0.001;
       tracking["audioThreshold"] = threshold.clamp(0.0001, 0.1);
 
-      // Monitor keyboard default
       tracking["monitorKeyboard"] ??= !_isMacOS;
     }
   }
