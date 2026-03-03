@@ -39,5 +39,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>SUPublicEDKey</key>
+    <string>UdS+9n+vphEeUg4vpMI9wIl04KiVS7OABO8bADtr/fw=</string>
 </dict>
 </plist>
