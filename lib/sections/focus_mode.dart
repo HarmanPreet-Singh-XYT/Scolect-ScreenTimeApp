@@ -841,6 +841,7 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
       onLongBreakStart: _onLongBreakStart,
       onTimerComplete: _onTimerComplete,
     );
+    _timerService.initialize();
   }
 
   void _syncDisplay() {
