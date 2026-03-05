@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
@@ -19,83 +20,92 @@ class SoundManager {
     'ja-jp',
   ];
 
-  /// Generates the filename dynamically instead of storing a massive map.
-  /// Male:   "work_start_en.mp3"
-  /// Female: "work_start_en_fm.mp3"
+  static final Set<String> _languageSet = _languages.toSet();
+
   static String _buildFileName(
       String soundType, String language, String voiceGender) {
     final suffix = voiceGender == 'female' ? '_fm' : '';
     return '${soundType}_$language$suffix.mp3';
   }
 
-  static final Set<String> _languageSet = _languages.toSet();
-
   static String _detectLanguageCode(BuildContext context) {
     final locale = Localizations.localeOf(context);
     final lang = locale.languageCode.toLowerCase();
     final country = locale.countryCode?.toLowerCase() ?? '';
 
-    // Try full locale (e.g. "zh-cn")
     if (country.isNotEmpty) {
       final full = '$lang-$country';
       if (_languageSet.contains(full)) return full;
     }
-
-    // Try language-only (e.g. "en")
     if (_languageSet.contains(lang)) return lang;
-
-    // Try partial match (e.g. "zh" → "zh-cn")
     for (final l in _languages) {
       if (l.startsWith(lang)) return l;
     }
-
     return 'en';
   }
 
-  // Reuse a single player to avoid accumulating native handles
-  static AudioPlayer? _player;
+  static AudioPlayer? _current;
 
   static Future<void> playSound({
     required BuildContext context,
     required String soundType,
     required String voiceGender,
   }) async {
-    try {
-      // Stop any currently playing sound
-      await stopAllSounds();
-
-      final language = _detectLanguageCode(context);
-      final soundFile = _buildFileName(soundType, language, voiceGender);
-
-      debugPrint('Playing sound: sounds/$soundFile (language: $language)');
-
-      final player = AudioPlayer();
-      _player = player;
-
-      player.onPlayerComplete.listen((_) {
-        // Only dispose if this is still the current player
-        if (_player == player) {
-          _player = null;
-          player.dispose();
-        }
+    // Stop and discard the previous player without listening to its events
+    final old = _current;
+    _current = null;
+    if (old != null) {
+      try {
+        await old.stop();
+      } catch (_) {}
+      // Dispose on a slight delay so iOS can finish its native teardown
+      // before we create the next player — prevents the duplicate-response error
+      Future.delayed(const Duration(milliseconds: 50), () {
+        try {
+          old.dispose();
+        } catch (_) {}
       });
+    }
 
+    final language = _detectLanguageCode(context);
+    final soundFile = _buildFileName(soundType, language, voiceGender);
+    debugPrint('Playing sound: sounds/$soundFile');
+
+    final player = AudioPlayer();
+    // Tell audioplayers not to emit a platform completion event on iOS
+    await player.setReleaseMode(ReleaseMode.release);
+    _current = player;
+
+    try {
       await player.play(AssetSource('sounds/$soundFile'));
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }
+
+    // Self-cleanup: once done, dispose without a completion listener
+    // Use a one-shot timer based on an estimated max sound duration
+    Future.delayed(const Duration(seconds: 10), () {
+      if (_current == player) {
+        _current = null;
+        try {
+          player.dispose();
+        } catch (_) {}
+      }
+    });
   }
 
   static Future<void> stopAllSounds() async {
-    final player = _player;
+    final player = _current;
+    _current = null;
     if (player == null) return;
-    _player = null;
     try {
       await player.stop();
-      await player.dispose();
-    } catch (e) {
-      debugPrint('Error stopping player: $e');
-    }
+    } catch (_) {}
+    Future.delayed(const Duration(milliseconds: 50), () {
+      try {
+        player.dispose();
+      } catch (_) {}
+    });
   }
 
   static Future<void> dispose() => stopAllSounds();

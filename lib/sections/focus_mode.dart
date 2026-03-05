@@ -128,12 +128,17 @@ class _FocusModeState extends State<FocusMode>
       final start = DateTime(now.year, now.month, now.day)
           .subtract(const Duration(days: 30));
 
+      // Scope the history chart to the current week only
+      final weekStart = DateTime(now.year, now.month, now.day)
+          .subtract(Duration(days: now.weekday - 1));
+      final weekEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
       final dist =
           _analytics.getTimeDistribution(startDate: start, endDate: now);
       final hist =
           _analytics.getGroupedPomodoroSessions(startDate: start, endDate: now);
-      final byDay =
-          _analytics.getSessionCountByDay(startDate: start, endDate: now);
+      final byDay = _analytics.getSessionCountByDay(
+          startDate: weekStart, endDate: weekEnd);
       final trends = _analytics.getFocusTrends(months: 3);
       final summary = _analytics.getWeeklySummary();
 
