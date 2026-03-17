@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui' show FontFeature;
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -757,7 +756,6 @@ class Meter extends StatefulWidget {
 
 class _MeterState extends State<Meter> with TickerProviderStateMixin {
   final _settings = SettingsManager();
-  final _audioPlayer = AudioPlayer();
 
   StreamSubscription<TimerUpdate>? _timerSub;
   late PomodoroTimerService _timerService;
@@ -795,7 +793,6 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
     _timerSub?.cancel();
     _pulseCtrl.dispose();
     _btnScaleCtrl.dispose();
-    _audioPlayer.dispose();
     super.dispose();
   }
 

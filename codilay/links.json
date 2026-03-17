@@ -1,0 +1,851 @@
+{
+  "generated": "2026-03-17T21:17:12.356085+00:00",
+  "project": "Scolect-ScreenTimeApp",
+  "documented_commit": "690d667bcd31189f49d30d15f95babb332ac1e38",
+  "documented_commit_short": "690d667",
+  "closed": [
+    {
+      "id": "wire_005",
+      "from": "lib/adaptive_fluent/adaptive_theme_fluent_ui.dart",
+      "to": "lib/adaptive_fluent/src/fluent_adaptive_theme.dart",
+      "type": "import",
+      "context": "Contains the core implementation of the adaptive theme logic and widget definitions exported by the barrel file.",
+      "opened_at": "lib/adaptive_fluent/adaptive_theme_fluent_ui.dart",
+      "resolved_in": "lib/adaptive_fluent/src/fluent_adaptive_theme.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_008",
+      "from": "lib/detect_launch.dart",
+      "to": "lib/foreground_window_plugin.dart",
+      "type": "import",
+      "context": "Provides native platform API bindings (e.g., `wasLaunchedBySystem`, `getAppLaunchInfo`) utilized by the launch detection logic.",
+      "opened_at": "lib/detect_launch.dart",
+      "resolved_in": "lib/foreground_window_plugin.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_001",
+      "from": "README.md",
+      "to": "ForegroundWindow.cpp",
+      "type": "call",
+      "context": "Native Windows C++ file used via FFI to track the currently active foreground window.",
+      "opened_at": "README.md",
+      "resolved_in": "lib/foreground_window_plugin_windows.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_009",
+      "from": "lib/foreground_window_plugin.dart",
+      "to": "lib/foreground_window_plugin_windows.dart",
+      "type": "import",
+      "context": "Provides the Windows FFI implementation and defines the core data models (WindowInfo, AppLaunchInfo) utilized by the foreground window plugin.",
+      "opened_at": "lib/foreground_window_plugin.dart",
+      "resolved_in": "lib/foreground_window_plugin_windows.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_011",
+      "from": "lib/sections/UI sections/AlertsLimits/applicationlimit.dart",
+      "to": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "type": "import",
+      "context": "Provides reusable UI wrapper components such as `rub.Card` and `rub.SliderRow` that the ApplicationLimitsCard heavily relies on for layout and input.",
+      "opened_at": "lib/sections/UI sections/AlertsLimits/applicationlimit.dart",
+      "resolved_in": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_013",
+      "from": "lib/sections/UI sections/AlertsLimits/notificationCard.dart",
+      "to": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "type": "import",
+      "context": "NotificationSettingsCard utilizes `rub.Card` and `rub.SettingTile` components to render the notification settings interface.",
+      "opened_at": "lib/sections/UI sections/AlertsLimits/notificationCard.dart",
+      "resolved_in": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_014",
+      "from": "lib/sections/UI sections/AlertsLimits/overalllimit.dart",
+      "to": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "type": "import",
+      "context": "OverallLimitCard relies on reusable.dart for `rub.Card`, `rub.SliderRow`, and `rub.TimeDisplay`. (Adds to existing open wires for this file)",
+      "opened_at": "lib/sections/UI sections/AlertsLimits/overalllimit.dart",
+      "resolved_in": "lib/sections/UI sections/AlertsLimits/reusable.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_019",
+      "from": "lib/sections/UI sections/Overview/bottom.dart",
+      "to": "lib/sections/UI sections/Overview/reusable.dart",
+      "type": "import",
+      "context": "Provides the `EmptyState` widget used in `ApplicationLimitsList` when there is no data.",
+      "opened_at": "lib/sections/UI sections/Overview/bottom.dart",
+      "resolved_in": "lib/sections/UI sections/Overview/reusable.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_022",
+      "from": "lib/sections/UI sections/Overview/main_app.dart",
+      "to": "lib/sections/UI sections/Overview/reusable.dart",
+      "type": "import",
+      "context": "Provides the EmptyState widget used in TopApplicationsList and CategoryBreakdownList when no valid data is present.",
+      "opened_at": "lib/sections/UI sections/Overview/main_app.dart",
+      "resolved_in": "lib/sections/UI sections/Overview/reusable.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_026",
+      "from": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "to": "lib/sections/UI sections/Reports/tabs/overview_tab.dart",
+      "type": "import",
+      "context": "The Overview tab component for the AppDetailsDialog.",
+      "opened_at": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/tabs/overview_tab.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_028",
+      "from": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "to": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "type": "import",
+      "context": "The Patterns (time-of-day usage) tab component for the AppDetailsDialog.",
+      "opened_at": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_027",
+      "from": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "to": "lib/sections/UI sections/Reports/tabs/usage_chart_tab.dart",
+      "type": "import",
+      "context": "The Weekly Usage Chart tab component for the AppDetailsDialog.",
+      "opened_at": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/tabs/usage_chart_tab.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_030",
+      "from": "lib/sections/UI sections/Reports/tabs/overview_tab.dart",
+      "to": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "type": "import",
+      "context": "Provides reusable structural and formatting widgets (`buildStatCard`, `buildCompactCard`, `buildInfoRow`, `formatDuration`) used extensively to build the UI cards in the Overview Tab.",
+      "opened_at": "lib/sections/UI sections/Reports/tabs/overview_tab.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_031",
+      "from": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "to": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "type": "import",
+      "context": "Provides reusable structural and formatting widgets (`buildCompactCard`) used to build the time-of-day and insight cards in the Patterns Tab.",
+      "opened_at": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_033",
+      "from": "lib/sections/UI sections/Reports/tabs/usage_chart_tab.dart",
+      "to": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "type": "import",
+      "context": "Provides text formatting utilities (`formatMinutesShort`, `formatMinutesLong`) used heavily to display durations on chart axes and tooltips.",
+      "opened_at": "lib/sections/UI sections/Reports/tabs/usage_chart_tab.dart",
+      "resolved_in": "lib/sections/UI sections/Reports/widgets/shared_widgets.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_036",
+      "from": "lib/sections/UI sections/Settings/about.dart",
+      "to": "lib/sections/UI sections/Settings/reusables.dart",
+      "type": "ui",
+      "context": "Provides SettingsCard, the base visual container used by AboutSection.",
+      "opened_at": "lib/sections/UI sections/Settings/about.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/reusables.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_042",
+      "from": "lib/sections/UI sections/Settings/data.dart",
+      "to": "lib/sections/UI sections/Settings/reusables.dart",
+      "type": "ui",
+      "context": "Supplies the structural SettingsCard and SettingRow widgets utilized by DataSection to maintain a unified layout.",
+      "opened_at": "lib/sections/UI sections/Settings/data.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/reusables.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_046",
+      "from": "lib/sections/UI sections/Settings/general.dart",
+      "to": "lib/sections/UI sections/Settings/reusables.dart",
+      "type": "ui",
+      "context": "Supplies SettingsCard and SettingRow structural wrappers used to lay out the general settings UI consistently.",
+      "opened_at": "lib/sections/UI sections/Settings/general.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/reusables.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_049",
+      "from": "lib/sections/UI sections/Settings/notification.dart",
+      "to": "lib/sections/UI sections/Settings/reusables.dart",
+      "type": "ui",
+      "context": "Supplies structural layout components like SettingsCard, SettingRow, and StatusBadge used to maintain visual consistency.",
+      "opened_at": "lib/sections/UI sections/Settings/notification.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/reusables.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_006",
+      "from": "lib/app_design.dart",
+      "to": "lib/sections/UI sections/Settings/theme_customization_model.dart",
+      "type": "model",
+      "context": "Provides the CustomThemeData model used by AppDesign to supply dynamic color properties.",
+      "opened_at": "lib/app_design.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_customization_model.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_039",
+      "from": "lib/sections/UI sections/Settings/app_design_updated.dart",
+      "to": "lib/sections/UI sections/Settings/theme_customization_model.dart",
+      "type": "model",
+      "context": "Provides CustomThemeData and ThemePresets required by AppDesign to supply dynamic color properties and generate the default fallback theme.",
+      "opened_at": "lib/sections/UI sections/Settings/app_design_updated.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_customization_model.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_051",
+      "from": "lib/sections/UI sections/Settings/theme_customization_section.dart",
+      "to": "lib/sections/UI sections/Settings/theme_helpers.dart",
+      "type": "call",
+      "context": "Provides ThemeEditorDialog, ThemePresetCard, and ColorDot components used extensively within the ThemeCustomizationSection.",
+      "opened_at": "lib/sections/UI sections/Settings/theme_customization_section.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_helpers.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_007",
+      "from": "lib/app_design.dart",
+      "to": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "type": "import",
+      "context": "Provides ThemeCustomizationProvider which holds the current user theme state read by AppDesign.",
+      "opened_at": "lib/app_design.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_045",
+      "from": "lib/sections/UI sections/Settings/general.dart",
+      "to": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "type": "model",
+      "context": "Provides the ThemeCustomizationProvider used by _CompactThemeSelector to read and update the app's theme mode.",
+      "opened_at": "lib/sections/UI sections/Settings/general.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_052",
+      "from": "lib/sections/UI sections/Settings/theme_customization_section.dart",
+      "to": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "type": "model",
+      "context": "Provides ThemeCustomizationProvider, handling theme state management, selection persistence, and JSON serialization/deserialization logic.",
+      "opened_at": "lib/sections/UI sections/Settings/theme_customization_section.dart",
+      "resolved_in": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_054",
+      "from": "lib/sections/UI sections/Settings/tracking.dart",
+      "to": "lib/sections/controller/application_controller.dart",
+      "type": "call",
+      "context": "TrackingSection relies on BackgroundAppTracker to call checkInputMonitoringPermission() and openInputMonitoringSettings() for macOS permission flows.",
+      "opened_at": "lib/sections/UI sections/Settings/tracking.dart",
+      "resolved_in": "lib/sections/controller/application_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_010",
+      "from": "lib/sections/UI sections/AlertsLimits/approw.dart",
+      "to": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "type": "model",
+      "context": "Provides the AppUsageSummary model used to populate the AppRow UI.",
+      "opened_at": "lib/sections/UI sections/AlertsLimits/approw.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_012",
+      "from": "lib/sections/UI sections/AlertsLimits/applicationlimit.dart",
+      "to": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "type": "call",
+      "context": "The ApplicationLimitsCard calls `controller.updateAppLimit` on the ScreenTimeDataController to persist user configuration changes.",
+      "opened_at": "lib/sections/UI sections/AlertsLimits/applicationlimit.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_056",
+      "from": "lib/sections/alerts_limits.dart",
+      "to": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "type": "model",
+      "context": "Provides ScreenTimeDataController which the main dashboard relies on to initialize, fetch getAllData(), and dispatch overall and per-app limit updates.",
+      "opened_at": "lib/sections/alerts_limits.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_025",
+      "from": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "to": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "type": "model",
+      "context": "Supplies ApplicationsDataProvider, ApplicationBasicDetail, and ApplicationDetailedData models used to populate the deep analytics dialog.",
+      "opened_at": "lib/sections/UI sections/Reports/appdetails.dialog.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_032",
+      "from": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "to": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "type": "model",
+      "context": "Provides the `ApplicationBasicDetail` and `ApplicationDetailedData` models required for evaluating growth percentages and generating dynamic trend insights.",
+      "opened_at": "lib/sections/UI sections/Reports/tabs/patterns_tab.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_020",
+      "from": "lib/sections/UI sections/Overview/bottom.dart",
+      "to": "lib/sections/UI sections/Overview/overview.dart (or parent data controller)",
+      "type": "model",
+      "context": "The parent view must supply the `List<dynamic>` data for `ApplicationLimitsList` and the title/value/color parameters for the `ProgressCard`.",
+      "opened_at": "lib/sections/UI sections/Overview/bottom.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/overview_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_023",
+      "from": "lib/sections/UI sections/Overview/main_app.dart",
+      "to": "lib/sections/UI sections/Overview/overview.dart (or parent controller)",
+      "type": "model",
+      "context": "The parent Overview dashboard must supply the raw List<dynamic> usage data to TopApplicationsList and CategoryBreakdownList.",
+      "opened_at": "lib/sections/UI sections/Overview/main_app.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/overview_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_024",
+      "from": "lib/sections/UI sections/Overview/statCards.dart",
+      "to": "lib/sections/UI sections/Overview/overview.dart",
+      "type": "model",
+      "context": "The parent Overview dashboard must supply the raw string metrics (`totalScreenTime`, `totalProductiveTime`, `mostUsedApp`, `focusSessions`) to the StatsCards component.",
+      "opened_at": "lib/sections/UI sections/Overview/statCards.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/overview_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_029",
+      "from": "lib/sections/UI sections/Reports/application_usage.dart",
+      "to": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "type": "model",
+      "context": "Provides the AppUsageSummary model (or re-exports it) and likely aggregates data specifically tailored for the reports dashboard.",
+      "opened_at": "lib/sections/UI sections/Reports/application_usage.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_034",
+      "from": "lib/sections/UI sections/Reports/top_boxes.dart",
+      "to": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "type": "model",
+      "context": "Supplies the AnalyticsSummary model required by TopBoxes to extract the high-level dashboard metrics (screen time, productive time, comparisons).",
+      "opened_at": "lib/sections/UI sections/Reports/top_boxes.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_060",
+      "from": "lib/sections/controller/focus_mode_controller.dart",
+      "to": "lib/sections/controller/data_controllers/focus_mode_data_controller.dart",
+      "type": "model",
+      "context": "Provides FocusAnalyticsService used to persist completed Pomodoro phases to the database.",
+      "opened_at": "lib/sections/controller/focus_mode_controller.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/focus_mode_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_065",
+      "from": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "to": "lib/sections/controller/data_controllers/focus_mode_data_controller.dart",
+      "type": "model",
+      "context": "FocusModeAnalytics delegates raw session database queries to FocusAnalyticsService to compute aggregations and streaks.",
+      "opened_at": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "resolved_in": "lib/sections/controller/data_controllers/focus_mode_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_015",
+      "from": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "to": "lib/sections/controller/notification_controller.dart",
+      "type": "import",
+      "context": "Provides `NotificationController` which checks system-level notification permissions via `canSendNotifications` and `refreshPermissionStatus`.",
+      "opened_at": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "resolved_in": "lib/sections/controller/notification_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_061",
+      "from": "lib/sections/controller/focus_mode_controller.dart",
+      "to": "lib/sections/controller/notification_controller.dart",
+      "type": "service",
+      "context": "Provides NotificationController to send alerts on timer phase changes and 1-minute warnings.",
+      "opened_at": "lib/sections/controller/focus_mode_controller.dart",
+      "resolved_in": "lib/sections/controller/notification_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_067",
+      "from": "lib/sections/controller/models/export_models.dart",
+      "to": "lib/sections/controller/export_import_controller.dart",
+      "type": "model",
+      "context": "The export models are likely consumed by an overarching controller that handles file I/O and interaction with the Hive AppDataStore to map internal models to these exportable versions.",
+      "opened_at": "lib/sections/controller/models/export_models.dart",
+      "resolved_in": "lib/sections/controller/services/data_export_services.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_016",
+      "from": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "to": "lib/sections/controller/settings_data_controller.dart",
+      "type": "import",
+      "context": "Provides `SettingsManager` to read app-level notification preferences and persist banner dismissal state locally.",
+      "opened_at": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "resolved_in": "lib/sections/controller/settings_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_021",
+      "from": "lib/sections/UI sections/Overview/changelog.dart",
+      "to": "lib/sections/controller/settings_data_controller.dart",
+      "type": "import",
+      "context": "Provides `SettingsManager` which supplies the current application version via `versionInfo['version']` to the ChangelogModal so it knows which GitHub release to fetch.",
+      "opened_at": "lib/sections/UI sections/Overview/changelog.dart",
+      "resolved_in": "lib/sections/controller/settings_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_047",
+      "from": "lib/sections/UI sections/Settings/general.dart",
+      "to": "lib/sections/controller/settings_data_controller.dart",
+      "type": "model",
+      "context": "Exports TrackingModeOptions and ThemeOptions constants/enums used by the settings selectors.",
+      "opened_at": "lib/sections/UI sections/Settings/general.dart",
+      "resolved_in": "lib/sections/controller/settings_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_068",
+      "from": "lib/sections/controller/notification_controller.dart",
+      "to": "lib/sections/controller/settings_data_controller.dart",
+      "type": "import",
+      "context": "Provides SettingsManager which the NotificationController relies on to retrieve user preferences regarding sound, reminder frequency, and allowed notification delivery methods.",
+      "opened_at": "lib/sections/controller/notification_controller.dart",
+      "resolved_in": "lib/sections/controller/settings_data_controller.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_053",
+      "from": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "to": "lib/sections/controller/settings_data_controller.dart",
+      "type": "model",
+      "context": "Provides the SettingsManager singleton, which the ThemeCustomizationProvider uses to fetch ('theme.selected') and update the base theme mode setting, keeping it in sync with general app settings.",
+      "opened_at": "lib/sections/UI sections/Settings/theme_provider.dart",
+      "resolved_in": "lib/sections/controller/settings_data_controller.dart",
+      "summary": "Resolved by processing lib/sections/controller/settings_data_controller.dart"
+    },
+    {
+      "id": "wire_018",
+      "from": "lib/sections/UI sections/FocusMode/sessionHistory.dart",
+      "to": "lib/sections/UI sections/FocusMode/focusmode.dart (or parent controller)",
+      "type": "model",
+      "context": "The parent Focus Mode view or its data controller must supply the `List<Map<String, dynamic>>` to the `SessionHistory` widget.",
+      "opened_at": "lib/sections/UI sections/FocusMode/sessionHistory.dart",
+      "resolved_in": "lib/sections/focus_mode.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_070",
+      "from": "lib/sections/graphs/resources/app_resources.dart",
+      "to": "lib/sections/graphs/resources/app_texts.dart",
+      "type": "import",
+      "context": "Exported by the resources barrel file to provide typography and text style constants for graph visualizations.",
+      "opened_at": "lib/sections/graphs/resources/app_resources.dart",
+      "resolved_in": "lib/sections/graphs/resources/app_texts.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_035",
+      "from": "lib/sections/UI sections/Settings/about.dart",
+      "to": "lib/sections/settings.dart",
+      "type": "model",
+      "context": "Provides SettingsProvider which supplies the appVersion map to the AboutSection.",
+      "opened_at": "lib/sections/UI sections/Settings/about.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_041",
+      "from": "lib/sections/UI sections/Settings/data.dart",
+      "to": "lib/sections/settings.dart",
+      "type": "model",
+      "context": "Provides the SettingsProvider which exposes the critical clearData and resetSettings methods invoked by the DataSection.",
+      "opened_at": "lib/sections/UI sections/Settings/data.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_043",
+      "from": "lib/sections/UI sections/Settings/footer.dart",
+      "to": "lib/sections/settings.dart (or parent Settings view)",
+      "type": "call",
+      "context": "The parent Settings view must instantiate FooterSection and provide the onContact, onReport, onFeedback, and onGithub callbacks to handle external link navigation.",
+      "opened_at": "lib/sections/UI sections/Settings/footer.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_044",
+      "from": "lib/sections/UI sections/Settings/general.dart",
+      "to": "lib/sections/settings.dart",
+      "type": "model",
+      "context": "Provides the SettingsProvider, which GeneralSection uses to read user preferences (language, voiceGender, launchAtStartupVar) and persist changes via updateSetting().",
+      "opened_at": "lib/sections/UI sections/Settings/general.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_048",
+      "from": "lib/sections/UI sections/Settings/notification.dart",
+      "to": "lib/sections/settings.dart",
+      "type": "model",
+      "context": "Provides the SettingsProvider which NotificationSection uses to read and persist notification preferences and reminder frequencies.",
+      "opened_at": "lib/sections/UI sections/Settings/notification.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_055",
+      "from": "lib/sections/UI sections/Settings/tracking.dart",
+      "to": "lib/sections/settings.dart",
+      "type": "model",
+      "context": "TrackingSection uses SettingsProvider to read and update tracking configurations like idleDetectionEnabled, idleTimeout, and advanced monitoring flags.",
+      "opened_at": "lib/sections/UI sections/Settings/tracking.dart",
+      "resolved_in": "lib/sections/settings.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_050",
+      "from": "lib/sections/UI sections/Settings/permission_notification.dart",
+      "to": "lib/utils/app_restart.dart",
+      "type": "call",
+      "context": "Provides AppRestart.restart() invoked by the RestartRequiredDialog to programmatically reboot the application after critical settings changes.",
+      "opened_at": "lib/sections/UI sections/Settings/permission_notification.dart",
+      "resolved_in": "lib/utils/app_restart.dart",
+      "summary": ""
+    },
+    {
+      "id": "wire_037",
+      "from": "lib/sections/UI sections/Settings/about.dart",
+      "to": "lib/utils/update_service.dart",
+      "type": "service",
+      "context": "Manages the update lifecycle, exposing UpdateService, UpdateStatus, and UpdateInfo models consumed by the AboutSection.",
+      "opened_at": "lib/sections/UI sections/Settings/about.dart",
+      "resolved_in": "lib/utils/update_service.dart",
+      "summary": ""
+    }
+  ],
+  "open": [
+    {
+      "id": "wire_000",
+      "from": "README.md",
+      "to": "lib/main.dart",
+      "type": "import",
+      "context": "Main entry point for the Flutter application, likely responsible for initializing Hive, the system tray, and native integrations.",
+      "opened_at": "README.md",
+      "classification": "missing_file",
+      "classification_note": "lib/main.dart is the entry point for the Flutter app but is absent from the provided directory tree."
+    },
+    {
+      "id": "wire_002",
+      "from": "README.md",
+      "to": "lib/models",
+      "type": "model",
+      "context": "Hive database models storing application usage data, screen time limits, and category tags.",
+      "opened_at": "README.md",
+      "classification": "missing_file",
+      "classification_note": "The lib/models directory is missing from the provided tree."
+    },
+    {
+      "id": "wire_003",
+      "from": "README.md",
+      "to": "lib/services",
+      "type": "unknown",
+      "context": "Expected to contain the core business logic handling real-time window tracking, idle detection, and Pomodoro timer operations.",
+      "opened_at": "README.md",
+      "classification": "missing_file",
+      "classification_note": "The lib/services directory is missing from the provided tree."
+    },
+    {
+      "id": "wire_004",
+      "from": "l10n.yaml",
+      "to": "lib/l10n/app_en.arb",
+      "type": "config",
+      "context": "Base English localization template required by the localization generator.",
+      "opened_at": "l10n.yaml",
+      "classification": "missing_file",
+      "classification_note": "Base localization file lib/l10n/app_en.arb is missing from the tree."
+    },
+    {
+      "id": "wire_017",
+      "from": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "to": "NavigationState",
+      "type": "model",
+      "context": "Used via Provider to navigate to the settings view (`changeIndex(5)`) when resolving app-level permission issues.",
+      "opened_at": "lib/sections/UI sections/FocusMode/permissionbanner.dart",
+      "classification": "missing_file",
+      "classification_note": "NavigationState is utilized heavily but its definition is missing, likely residing in the missing lib/main.dart."
+    },
+    {
+      "id": "wire_038",
+      "from": "lib/sections/UI sections/Settings/about.dart",
+      "to": "lib/main.dart",
+      "type": "config",
+      "context": "Supplies the global `autoUpdates` boolean flag, determining whether the update checking UI should be rendered.",
+      "opened_at": "lib/sections/UI sections/Settings/about.dart",
+      "classification": "missing_file",
+      "classification_note": "Global config reference pointing to missing lib/main.dart."
+    },
+    {
+      "id": "wire_040",
+      "from": "lib/sections/UI sections/Settings/clipboard_dialog.dart",
+      "to": "lib/sections/UI sections/Settings/theme_customization_view.dart (or parent view)",
+      "type": "call",
+      "context": "The parent view must instantiate ClipboardImportDialog and handle the `onImport` callback to parse and apply the validated theme JSON.",
+      "opened_at": "lib/sections/UI sections/Settings/clipboard_dialog.dart",
+      "classification": "unknown",
+      "classification_note": "theme_customization_view.dart is not in the tree; likely integrated directly into theme_customization_section.dart."
+    },
+    {
+      "id": "wire_057",
+      "from": "lib/sections/alerts_limits.dart",
+      "to": "lib/main.dart (navigationState)",
+      "type": "call",
+      "context": "The Alerts & Limits dashboard registers a callback via navigationState.registerRefreshCallback(_loadData) to ensure UI consistency.",
+      "opened_at": "lib/sections/alerts_limits.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on navigationState defined in the missing lib/main.dart."
+    },
+    {
+      "id": "wire_058",
+      "from": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "model",
+      "context": "Provides `AppDataStore`, `AppMetadata`, and `AppUsage` models used by the ScreenTimeDataController to retrieve historical usage and update limit/category metadata.",
+      "opened_at": "lib/sections/controller/data_controllers/alerts_limits_data_controller.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing from the tree."
+    },
+    {
+      "id": "wire_059",
+      "from": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "model",
+      "context": "Provides AppDataStore, AppUsageRecord, and AppMetadata which form the raw database layer aggregated by ApplicationsDataProvider.",
+      "opened_at": "lib/sections/controller/data_controllers/applications_data_controller.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing."
+    },
+    {
+      "id": "wire_062",
+      "from": "lib/sections/controller/focus_mode_controller.dart",
+      "to": "lib/main.dart",
+      "type": "call",
+      "context": "PomodoroTimerService invokes navigationState.refreshCurrentScreen() after a full session completes to refresh the UI.",
+      "opened_at": "lib/sections/controller/focus_mode_controller.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on navigationState defined in the missing lib/main.dart."
+    },
+    {
+      "id": "wire_063",
+      "from": "lib/sections/controller/data_controllers/overview_data_controller.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "model",
+      "context": "DailyOverviewData depends on AppDataStore to retrieve total screen times, focus counts, and raw app usage metadata.",
+      "opened_at": "lib/sections/controller/data_controllers/overview_data_controller.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing."
+    },
+    {
+      "id": "wire_064",
+      "from": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "model",
+      "context": "UsageAnalyticsController heavily relies on AppDataStore to query raw daily app usage, screen time, and category metadata during its single-pass iteration.",
+      "opened_at": "lib/sections/controller/data_controllers/reports_controller.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing."
+    },
+    {
+      "id": "wire_066",
+      "from": "lib/sections/controller/maintenance_service.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "call",
+      "context": "MaintenanceService relies on AppDataStore.checkAndRepairBoxes() to actually perform the Hive database maintenance.",
+      "opened_at": "lib/sections/controller/maintenance_service.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing."
+    },
+    {
+      "id": "wire_069",
+      "from": "lib/sections/controller/services/data_export_services.dart",
+      "to": "lib/sections/controller/app_data_controller.dart",
+      "type": "model",
+      "context": "Provides AppDataStore, which DataExportService relies on to read, write, update, and repair raw historical app usage, metadata, and focus sessions during export/import processes.",
+      "opened_at": "lib/sections/controller/services/data_export_services.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on lib/sections/controller/app_data_controller.dart, which is missing."
+    },
+    {
+      "id": "wire_071",
+      "from": "lib/sections/overview.dart",
+      "to": "lib/main.dart (navigationState)",
+      "type": "call",
+      "context": "The Overview dashboard registers a callback via navigationState.registerRefreshCallback(_loadData) to reload data automatically when the view becomes active.",
+      "opened_at": "lib/sections/overview.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on navigationState defined in the missing lib/main.dart."
+    },
+    {
+      "id": "wire_072",
+      "from": "lib/sections/reports.dart",
+      "to": "lib/main.dart",
+      "type": "call",
+      "context": "The Reports dashboard relies on the global `navigationState.registerRefreshCallback` to auto-refresh data when the tab is navigated to, similar to Overview and Alerts & Limits.",
+      "opened_at": "lib/sections/reports.dart",
+      "classification": "missing_file",
+      "classification_note": "Depends on navigationState defined in the missing lib/main.dart."
+    },
+    {
+      "id": "wire_073",
+      "from": "lib/utils/mac_launch.dart",
+      "to": "macos/Runner (Native Channel: timemark/launch)",
+      "type": "call",
+      "context": "MacOSLaunchService expects a native method channel 'timemark/launch' to be registered on macOS, which implements the 'wasLaunchedAtLogin' method.",
+      "opened_at": "lib/utils/mac_launch.dart",
+      "classification": "config_dependency",
+      "classification_note": "Native channel handled by AppDelegate in macos/Runner."
+    },
+    {
+      "id": "wire_074",
+      "from": "lib/utils/macos_window.dart",
+      "to": "macos/Runner (Native Channel: timemark/macos_window)",
+      "type": "call",
+      "context": "MacOSWindow expects a native method channel 'timemark/macos_window' to be registered on macOS, implementing handlers for 'hide', 'show', 'minimize', 'maximize', 'hideTrafficLights', and 'exit'.",
+      "opened_at": "lib/utils/macos_window.dart",
+      "classification": "config_dependency",
+      "classification_note": "Native channel handled by AppDelegate/MainFlutterWindow in macos/Runner."
+    },
+    {
+      "id": "wire_075",
+      "from": "lib/utils/single_instance_ipc.dart",
+      "to": "lib/main.dart",
+      "type": "call",
+      "context": "Main entry point likely orchestrates the SingleInstanceIPC logic by attempting to start the server and handling secondary instance behavior if the port is already bound.",
+      "opened_at": "lib/utils/single_instance_ipc.dart",
+      "classification": "missing_file",
+      "classification_note": "Initialization requires lib/main.dart, which is missing."
+    },
+    {
+      "id": "wire_076",
+      "from": "lib/utils/update_service.dart",
+      "to": "lib/main.dart",
+      "type": "call",
+      "context": "Main application entry point is expected to invoke `UpdateService().initialize(currentVersion)` on startup, conditionally based on the user's auto-update preference.",
+      "opened_at": "lib/utils/update_service.dart",
+      "classification": "missing_file",
+      "classification_note": "Initialization requires lib/main.dart, which is missing."
+    },
+    {
+      "id": "wire_077",
+      "from": "pubspec.yaml",
+      "to": "assets/icons/",
+      "type": "config",
+      "context": "Declared in pubspec.yaml as an asset directory; includes the main application logo used for MSIX packaging.",
+      "opened_at": "pubspec.yaml",
+      "classification": "missing_file",
+      "classification_note": "assets/icons/ directory is missing from the provided tree."
+    },
+    {
+      "id": "wire_078",
+      "from": "pubspec.yaml",
+      "to": "assets/sounds/",
+      "type": "config",
+      "context": "Declared in pubspec.yaml as an asset directory; provides the audio files used by the Focus Mode feature.",
+      "opened_at": "pubspec.yaml",
+      "classification": "missing_file",
+      "classification_note": "assets/sounds/ directory is missing from the provided tree."
+    },
+    {
+      "id": "wire_079",
+      "from": "pubspec.yaml",
+      "to": "https://github.com/HarmanPreet-Singh-XYT/Window_focus",
+      "type": "import",
+      "context": "Custom Git dependency for cross-platform native foreground window tracking, which powers the core screen time functionality.",
+      "opened_at": "pubspec.yaml",
+      "classification": "external_package",
+      "classification_note": "External Git dependency: HarmanPreet-Singh-XYT/Window_focus."
+    },
+    {
+      "id": "wire_080",
+      "from": "pubspec.yaml",
+      "to": "https://github.com/HarmanPreet-Singh-XYT/Screenstate",
+      "type": "import",
+      "context": "Custom Git dependency for desktop screen state tracking (e.g., idle/locked detection).",
+      "opened_at": "pubspec.yaml",
+      "classification": "external_package",
+      "classification_note": "External Git dependency: HarmanPreet-Singh-XYT/Screenstate."
+    },
+    {
+      "id": "wire_081",
+      "from": "clean.sh",
+      "to": "packages/local_notifier_custom",
+      "type": "config",
+      "context": "A local custom plugin explicitly checked for in clean.sh. It likely handles native desktop notifications and has custom modifications requiring local caching checks.",
+      "opened_at": "clean.sh",
+      "classification": "external_package",
+      "classification_note": "Local custom package 'packages/local_notifier_custom' is not in the provided tree."
+    },
+    {
+      "id": "wire_082",
+      "from": "clean.sh",
+      "to": "macos/Runner.xcworkspace",
+      "type": "unknown",
+      "context": "The native Xcode workspace for macOS builds, mentioned as the next step for development compilation after running the clean script.",
+      "opened_at": "clean.sh",
+      "classification": "config_dependency",
+      "classification_note": "macOS build workspace dynamically managed by Xcode."
+    },
+    {
+      "id": "wire_083",
+      "from": "distribute_options.yaml",
+      "to": "lib/main.dart or Environment Config",
+      "type": "config",
+      "context": "The distribute_options.yaml injects `--dart-define=APP_ENV=dev`. The application code likely reads this via `String.fromEnvironment('APP_ENV')` to switch logic based on the environment.",
+      "opened_at": "distribute_options.yaml",
+      "classification": "missing_file",
+      "classification_note": "Environmental variable usage likely handled in the missing lib/main.dart."
+    }
+  ],
+  "out_of_scope": []
+}

@@ -1,0 +1,25 @@
+{
+  "ignore": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "lib/l10n/**"
+  ],
+  "notes": "",
+  "instructions": "",
+  "entryHint": "",
+  "llm": {
+    "model": "claude-sonnet-4-20250514",
+    "maxTokensPerCall": 64000
+  },
+  "triage": {
+    "mode": "smart",
+    "includeTests": false,
+    "forceInclude": [],
+    "forceSkip": []
+  },
+  "chunking": {
+    "tokenThreshold": 6000,
+    "maxChunkTokens": 4000,
+    "overlapRatio": 0.10
+  }
+}
