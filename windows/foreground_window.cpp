@@ -64,51 +64,50 @@ private:
         char exePath[MAX_PATH] = {0};
         GetModuleFileNameA(NULL, exePath, MAX_PATH);
         
+        // Helper lambda: enumerate a Run key and check if any value contains exePath.
+        auto checkRunKey = [&](HKEY root, const char* subkey) -> bool {
+            HKEY hRunKey;
+            if (RegOpenKeyExA(root, subkey, 0, KEY_READ, &hRunKey) != ERROR_SUCCESS)
+                return false;
+
+            // Query the key to find the maximum value-data size so we can
+            // allocate a buffer large enough (registry values can exceed MAX_PATH).
+            DWORD maxValueDataLen = 0;
+            RegQueryInfoKeyA(hRunKey, NULL, NULL, NULL, NULL, NULL, NULL,
+                             NULL, NULL, &maxValueDataLen, NULL, NULL);
+            if (maxValueDataLen == 0) maxValueDataLen = MAX_PATH;
+            maxValueDataLen += 1; // null terminator
+
+            std::vector<char> valueData(maxValueDataLen, 0);
+            char valueName[MAX_PATH];
+            DWORD valueNameSize = MAX_PATH;
+            DWORD valueDataSize = maxValueDataLen;
+            DWORD index = 0;
+            bool found = false;
+
+            while (RegEnumValueA(hRunKey, index, valueName, &valueNameSize,
+                                 NULL, NULL, (LPBYTE)valueData.data(), &valueDataSize) == ERROR_SUCCESS) {
+                valueData[valueDataSize < maxValueDataLen ? valueDataSize : maxValueDataLen - 1] = '\0';
+                if (strstr(valueData.data(), exePath) != NULL) {
+                    found = true;
+                    break;
+                }
+                valueNameSize = MAX_PATH;
+                valueDataSize = maxValueDataLen;
+                index++;
+            }
+
+            RegCloseKey(hRunKey);
+            return found;
+        };
+
         // Check HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-        if (RegOpenKeyExA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-            char value[MAX_PATH] = {0};
-            DWORD valueSize = sizeof(value);
-            
-            char valueName[MAX_PATH];
-            DWORD valueNameSize = MAX_PATH;
-            DWORD index = 0;
-            
-            while (RegEnumValueA(hKey, index, valueName, &valueNameSize, NULL, NULL, (LPBYTE)value, &valueSize) == ERROR_SUCCESS) {
-                if (strstr(value, exePath) != NULL) {
-                    result = true;
-                    break;
-                }
-                
-                valueNameSize = MAX_PATH;
-                valueSize = sizeof(value);
-                index++;
-            }
-            
-            RegCloseKey(hKey);
-        }
-        
+        if (checkRunKey(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"))
+            result = true;
+
         // Also check HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-        if (!result && RegOpenKeyExA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-            char value[MAX_PATH] = {0};
-            DWORD valueSize = sizeof(value);
-            
-            char valueName[MAX_PATH];
-            DWORD valueNameSize = MAX_PATH;
-            DWORD index = 0;
-            
-            while (RegEnumValueA(hKey, index, valueName, &valueNameSize, NULL, NULL, (LPBYTE)value, &valueSize) == ERROR_SUCCESS) {
-                if (strstr(value, exePath) != NULL) {
-                    result = true;
-                    break;
-                }
-                
-                valueNameSize = MAX_PATH;
-                valueSize = sizeof(value);
-                index++;
-            }
-            
-            RegCloseKey(hKey);
-        }
+        if (!result && checkRunKey(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"))
+            result = true;
         
         return result;
     }
@@ -411,13 +410,17 @@ std::string GetProgramName(const std::string& fullProcessPath) {
             }
             
             // Get process ID
-            DWORD processID;
+            DWORD processID = 0;
             GetWindowThreadProcessId(hwnd, &processID);
-            
+            if (processID == 0) {
+                result->Error("PROCESS_ERROR", "Failed to get process ID for foreground window");
+                return;
+            }
+
             // Get window title
             char windowTitle[256] = {0};
             GetWindowTextA(hwnd, windowTitle, sizeof(windowTitle));
-            
+
             // Open the process
             HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processID);
             if (hProcess == NULL) {

@@ -244,34 +244,37 @@ class AnalyticsXLSXExporter {
     row += 2;
 
     // Statistics
-    final totalMinutes = summary.dailyScreenTimeData
-        .fold(0, (sum, day) => sum + day.screenTime.inMinutes);
-    final avgMinutes = totalMinutes / summary.dailyScreenTimeData.length;
-    final maxDay = summary.dailyScreenTimeData
-        .reduce((a, b) => a.screenTime > b.screenTime ? a : b);
-    final minDay = summary.dailyScreenTimeData
-        .reduce((a, b) => a.screenTime < b.screenTime ? a : b);
-
     _setCell(sheet, 0, row, l10n.statistics, bold: true, bgColor: _lightGray);
     _mergeCells(sheet, row, row, 0, 4);
     row++;
 
-    _setCell(sheet, 0, row, l10n.averageDaily);
-    _setCell(
-        sheet, 1, row, _formatDuration(Duration(minutes: avgMinutes.round())),
-        bold: true, fontSize: 12);
-    row++;
+    if (summary.dailyScreenTimeData.isNotEmpty) {
+      final totalMinutes = summary.dailyScreenTimeData
+          .fold(0, (sum, day) => sum + day.screenTime.inMinutes);
+      final avgMinutes = totalMinutes / summary.dailyScreenTimeData.length;
+      final maxDay = summary.dailyScreenTimeData
+          .reduce((a, b) => a.screenTime > b.screenTime ? a : b);
+      final minDay = summary.dailyScreenTimeData
+          .reduce((a, b) => a.screenTime < b.screenTime ? a : b);
 
-    _setCell(sheet, 0, row, l10n.highestDay);
-    _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(maxDay.date));
-    _setCell(sheet, 2, row, _formatDuration(maxDay.screenTime),
-        bold: true, fontColor: _dangerRed);
-    row++;
+      _setCell(sheet, 0, row, l10n.averageDaily);
+      _setCell(
+          sheet, 1, row, _formatDuration(Duration(minutes: avgMinutes.round())),
+          bold: true, fontSize: 12);
+      row++;
 
-    _setCell(sheet, 0, row, l10n.lowestDay);
-    _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(minDay.date));
-    _setCell(sheet, 2, row, _formatDuration(minDay.screenTime),
-        bold: true, fontColor: _successGreen);
+      _setCell(sheet, 0, row, l10n.highestDay);
+      _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(maxDay.date));
+      _setCell(sheet, 2, row, _formatDuration(maxDay.screenTime),
+          bold: true, fontColor: _dangerRed);
+      row++;
+
+      _setCell(sheet, 0, row, l10n.lowestDay);
+      _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(minDay.date));
+      _setCell(sheet, 2, row, _formatDuration(minDay.screenTime),
+          bold: true, fontColor: _successGreen);
+    }
+
     row += 3;
 
     // Data table
