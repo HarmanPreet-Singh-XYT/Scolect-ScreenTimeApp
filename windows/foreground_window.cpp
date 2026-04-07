@@ -57,8 +57,8 @@ private:
 
     // Check if app is registered for auto-start
     bool IsRegisteredForAutoStart() {
-        HKEY hKey;
         bool result = false;
+
         
         // Get current executable path
         char exePath[MAX_PATH] = {0};
