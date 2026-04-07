@@ -1,7 +1,7 @@
 name: screentime
 description: "Screen Time Tracking and Management Application"
 publish_to: "none"
-version: 2.0.11
+version: 2.1.0
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

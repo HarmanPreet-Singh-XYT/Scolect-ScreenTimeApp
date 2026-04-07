@@ -5,10 +5,10 @@
 // 'flutter create' template.
 
 // The application's name. By default this is also the title of the Flutter window.
-PRODUCT_NAME = Scolect - Track Screen Time & App Usage
+PRODUCT_NAME = Scolect
 
 // The application's bundle identifier
 PRODUCT_BUNDLE_IDENTIFIER = com.harmanita.scolect
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2025 Scolect. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 Scolect. All rights reserved.

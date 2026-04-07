@@ -214,12 +214,70 @@ class AppDataStore extends ChangeNotifier {
 
       try {
         // Platform-specific initialization
-        if (Platform.isMacOS) {
-          final directory = await getApplicationSupportDirectory();
-          final hivePath = '${directory.path}/harman_screentime';
-          final dir = Directory(hivePath);
-          if (!await dir.exists()) {
-            await dir.create(recursive: true);
+        String hivePath;
+
+        if (Platform.isMacOS || Platform.isWindows) {
+          final docsDir = await getApplicationDocumentsDirectory();
+          final newHivePath = '${docsDir.path}/Scolect';
+          final newDir = Directory(newHivePath);
+
+          // Migration logic
+          String? oldHivePath;
+          if (Platform.isMacOS) {
+            final supportDir = await getApplicationSupportDirectory();
+            oldHivePath = '${supportDir.path}/harman_screentime';
+          } else if (Platform.isWindows) {
+            // On Windows, if we were previously using initFlutter(),
+            // it likely used the documents root directly.
+            oldHivePath = docsDir.path;
+          }
+
+          if (oldHivePath != null && !await newDir.exists()) {
+            final oldDir = Directory(oldHivePath);
+            if (await oldDir.exists()) {
+              try {
+                if (Platform.isMacOS) {
+                  debugPrint('📦 Migrating Hive data to Documents/Scolect...');
+                  await oldDir.rename(newHivePath);
+                  debugPrint('✅ Migration complete');
+                  hivePath = newHivePath;
+                } else if (Platform.isWindows) {
+                  // On Windows, we move only the specific box files if they exist in root
+                  final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName];
+                  bool migratedAny = false;
+
+                  await newDir.create(recursive: true);
+
+                  for (final name in boxNames) {
+                    for (final ext in ['.hive', '.lock']) {
+                      final file = File('${oldDir.path}/$name$ext');
+                      if (await file.exists()) {
+                        if (!migratedAny) {
+                          debugPrint('📦 Migrating Windows Hive files to Documents/Scolect...');
+                          migratedAny = true;
+                        }
+                        await file.rename('${newDir.path}/$name$ext');
+                      }
+                    }
+                  }
+                  if (migratedAny) debugPrint('✅ Windows Migration complete');
+                  hivePath = newHivePath;
+                } else {
+                  hivePath = newHivePath;
+                }
+              } catch (e) {
+                debugPrint('⚠️ Migration failed: $e, falling back to old path');
+                hivePath = oldHivePath;
+              }
+            } else {
+              hivePath = newHivePath;
+            }
+          } else {
+            hivePath = newHivePath;
+          }
+
+          if (!await Directory(hivePath).exists()) {
+            await Directory(hivePath).create(recursive: true);
           }
           Hive.init(hivePath);
         } else {
