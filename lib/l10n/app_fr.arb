@@ -1972,5 +1972,7 @@
 "exportExcelLabel": "Exporter Excel",
 "@exportExcelLabel": {
   "description": "Libellé affiché sur le bouton d’exportation"
-}
+},
+  "dailyResetTimeTitle": "Heure de réinitialisation quotidienne",
+  "dailyResetTimeDescription": "Définissez l'heure à laquelle le compteur de temps d'écran se réinitialise pour une nouvelle journée."
 }

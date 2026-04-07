@@ -1,4 +1,5 @@
 import '../app_data_controller.dart';
+import '../settings_data_controller.dart';
 
 class DailyOverviewData {
   static final DailyOverviewData _instance = DailyOverviewData._internal();
@@ -18,7 +19,7 @@ class DailyOverviewData {
   Future<OverviewData> fetchTodayOverview() async {
     await _ensureInitialized();
 
-    final DateTime today = DateTime.now();
+    final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
     final DateTime weekAgo = today.subtract(const Duration(days: 7));
 
     // Pre-fetch shared values once

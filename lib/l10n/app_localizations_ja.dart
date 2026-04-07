@@ -2972,4 +2972,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Excelをエクスポート';
+
+  @override
+  String get dailyResetTimeTitle => 'デイリーリセット時間';
+
+  @override
+  String get dailyResetTimeDescription => 'スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。';
 }

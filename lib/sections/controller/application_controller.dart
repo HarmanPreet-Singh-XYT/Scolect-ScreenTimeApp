@@ -365,7 +365,7 @@ class BackgroundAppTracker {
         final startTime = now.subtract(const Duration(minutes: 1));
         await _appDataStore?.recordAppUsage(
           appTitle,
-          now,
+          SettingsManager().getLogicalDate(now),
           const Duration(minutes: 1),
           1,
           [TimeRange(startTime: startTime, endTime: now)],
@@ -389,8 +389,8 @@ class BackgroundAppTracker {
       if (_currentApp.isNotEmpty) {
         await _getOrCreateMetadata(_currentApp);
         final now = DateTime.now();
-        await _appDataStore
-            ?.recordAppUsage(_currentApp, now, Duration.zero, 1, []);
+        await _appDataStore?.recordAppUsage(
+            _currentApp, SettingsManager().getLogicalDate(now), Duration.zero, 1, []);
         debugPrint('✅ Re-anchored: $_currentApp');
       }
     } else {
@@ -453,7 +453,7 @@ class BackgroundAppTracker {
 
     _appDataStore?.recordAppUsage(
       _currentApp,
-      now,
+      SettingsManager().getLogicalDate(now),
       elapsed,
       0,
       [TimeRange(startTime: _currentAppStartTime, endTime: now)],
@@ -480,7 +480,7 @@ class BackgroundAppTracker {
 
     _appDataStore?.recordAppUsage(
       _currentApp,
-      now,
+      SettingsManager().getLogicalDate(now),
       elapsed,
       0,
       [TimeRange(startTime: _currentAppStartTime, endTime: now)],
@@ -587,7 +587,7 @@ class BackgroundAppTracker {
 
     _appDataStore?.recordAppUsage(
       _currentApp,
-      now,
+      SettingsManager().getLogicalDate(now),
       elapsed,
       1,
       [TimeRange(startTime: _currentAppStartTime, endTime: now)],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../app_data_controller.dart';
+import '../settings_data_controller.dart';
 
 class FocusAnalyticsService {
   final AppDataStore _dataStore;
@@ -486,7 +487,7 @@ class FocusAnalyticsService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   Map<String, dynamic> getWeeklySummary({DateTime? targetDate}) {
-    final DateTime now = targetDate ?? DateTime.now();
+    final DateTime now = targetDate ?? SettingsManager().getLogicalDate(DateTime.now());
 
     final int weekday = now.weekday;
     final DateTime startOfWeek = DateTime(now.year, now.month, now.day)
@@ -598,7 +599,7 @@ class FocusAnalyticsService {
     }
 
     try {
-      final DateTime now = DateTime.now();
+      final DateTime now = SettingsManager().getLogicalDate(DateTime.now());
       final DateTime endDate = DateTime(now.year, now.month, now.day);
       DateTime startDate = DateTime(now.year, now.month - months, 1);
 
@@ -719,8 +720,7 @@ class FocusAnalyticsService {
     if (!_dataStore.isInitialized) return false;
 
     try {
-      final DateTime date =
-          DateTime(startTime.year, startTime.month, startTime.day);
+      final DateTime date = SettingsManager().getLogicalDate(startTime);
 
       final FocusSessionRecord session = FocusSessionRecord(
         date: date,

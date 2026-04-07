@@ -1977,5 +1977,7 @@
 "exportExcelLabel": "Excel निर्यात करें",
 "@exportExcelLabel": {
   "description": "निर्यात बटन पर दिखाया जाने वाला लेबल"
-}
+},
+  "dailyResetTimeTitle": "दैनिक रीसेट समय",
+  "dailyResetTimeDescription": "वह समय निर्धारित करें जब आपका स्क्रीन टाइम काउंटर एक नए दिन के लिए रीसेट हो जाएगा।"
 }

@@ -49,6 +49,7 @@ const _simpleSettingPaths = <String, String>{
   'monitorHIDDevices': 'tracking.monitorHIDDevices',
   'monitorKeyboard': 'tracking.monitorKeyboard',
   'audioThreshold': 'tracking.audioThreshold',
+  'resetHour': 'tracking.resetHour',
 };
 
 /// Field setters keyed by setting name, used to assign in-memory values.
@@ -73,6 +74,7 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'monitorHIDDevices': (p, v) => p._monitorHIDDevices = v,
   'monitorKeyboard': (p, v) => p._monitorKeyboard = v,
   'audioThreshold': (p, v) => p._audioThreshold = v,
+  'resetHour': (p, v) => p._resetHour = v,
 };
 
 class SettingsProvider extends ChangeNotifier {
@@ -97,6 +99,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _monitorHIDDevices = true;
   bool _monitorKeyboard = !Platform.isMacOS;
   double _audioThreshold = 0.001;
+  int _resetHour = 0;
 
   String _voiceGender = VoiceGenderOptions.defaultGender;
   int _reminderFrequency = 60;
@@ -120,6 +123,7 @@ class SettingsProvider extends ChangeNotifier {
   bool get monitorHIDDevices => _monitorHIDDevices;
   bool get monitorKeyboard => _monitorKeyboard;
   double get audioThreshold => _audioThreshold;
+  int get resetHour => _resetHour;
 
   String get voiceGender => _voiceGender;
   int get reminderFrequency => _reminderFrequency;
@@ -173,6 +177,7 @@ class SettingsProvider extends ChangeNotifier {
             !Platform.isMacOS;
     _audioThreshold =
         _settingsManager.getSetting('tracking.audioThreshold') ?? 0.001;
+    _resetHour = _settingsManager.getSetting('tracking.resetHour') ?? 0;
     _voiceGender =
         _settingsManager.getSetting('focusModeSettings.voiceGender') ??
             VoiceGenderOptions.defaultGender;

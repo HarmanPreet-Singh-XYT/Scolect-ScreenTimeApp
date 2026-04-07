@@ -1978,5 +1978,7 @@
 "exportExcelLabel": "导出 Excel",
 "@exportExcelLabel": {
   "description": "显示在导出按钮上的标签"
-}
+},
+  "dailyResetTimeTitle": "每日重置时间",
+  "dailyResetTimeDescription": "设置屏幕时间计数器在新的一天重置的时间。"
 }

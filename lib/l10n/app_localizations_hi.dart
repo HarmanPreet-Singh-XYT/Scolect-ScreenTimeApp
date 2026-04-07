@@ -3032,4 +3032,11 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Excel निर्यात करें';
+
+  @override
+  String get dailyResetTimeTitle => 'दैनिक रीसेट समय';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'वह समय निर्धारित करें जब आपका स्क्रीन टाइम काउंटर एक नए दिन के लिए रीसेट हो जाएगा।';
 }

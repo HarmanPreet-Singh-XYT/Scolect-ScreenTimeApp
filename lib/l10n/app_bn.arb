@@ -1978,6 +1978,7 @@
 "exportExcelLabel": "Excel রপ্তানি করুন",
 "@exportExcelLabel": {
   "description": "রপ্তানি বোতামে প্রদর্শিত লেবেল"
-}
-
+},
+  "dailyResetTimeTitle": "দৈনিক রিসেট সময়",
+  "dailyResetTimeDescription": "আপনার স্ক্রীন টাইম কাউন্টারটি নতুন দিনে রিসেট হওয়ার সময় সেট করুন।"
 }

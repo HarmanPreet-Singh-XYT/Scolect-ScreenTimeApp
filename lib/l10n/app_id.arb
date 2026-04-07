@@ -1969,5 +1969,7 @@
 "exportExcelLabel": "Ekspor Excel",
 "@exportExcelLabel": {
   "description": "Label yang ditampilkan pada tombol ekspor"
-}
+},
+  "dailyResetTimeTitle": "Waktu Reset Harian",
+  "dailyResetTimeDescription": "Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru."
 }

@@ -87,6 +87,26 @@ class GeneralSection extends StatelessWidget {
           description: l10n.trackingModeDescription,
           control: _TrackingModeSelector(l10n: l10n),
         ),
+        SettingRow(
+          title: l10n.dailyResetTimeTitle,
+          description: l10n.dailyResetTimeDescription,
+          control: ComboBox<int>(
+            value: settings.resetHour,
+            items: List.generate(24, (i) {
+              final hour = i == 0 ? 12 : (i > 12 ? i - 12 : i);
+              final period = i < 12 ? 'AM' : 'PM';
+              return ComboBoxItem(
+                value: i,
+                child: Text('$hour:00 $period'),
+              );
+            }),
+            onChanged: (v) {
+              if (v != null) {
+                settings.updateSetting('resetHour', v);
+              }
+            },
+          ),
+        ),
         if (Platform.isMacOS)
           SettingRow(
             title: l10n.launchAtStartupTitle,

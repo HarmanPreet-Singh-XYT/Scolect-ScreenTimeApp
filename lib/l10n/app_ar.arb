@@ -1976,5 +1976,7 @@
 "exportExcelLabel": "تصدير Excel",
 "@exportExcelLabel": {
   "description": "التسمية المعروضة على زر التصدير"
-}
+},
+  "dailyResetTimeTitle": "وقت إعادة الضبط اليومي",
+  "dailyResetTimeDescription": "اضبط الوقت الذي تتم فيه إعادة ضبط عداد وقت الشاشة ليوم جديد."
 }

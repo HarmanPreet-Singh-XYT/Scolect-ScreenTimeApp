@@ -130,7 +130,7 @@ class SettingsManager {
   static final bool _isMacOS = Platform.isMacOS;
 
   Map<String, String> versionInfo = {
-    "version": "2.0.10",
+    "version": "2.1.0",
     "type": "Stable Build",
   };
 
@@ -182,6 +182,7 @@ class SettingsManager {
           "monitorHIDDevices": false, // disabled — crashes
           "monitorKeyboard": true,
           "audioThreshold": 0.01,
+          "resetHour": 0,
         },
       };
 
@@ -430,6 +431,19 @@ class SettingsManager {
   List<Map<String, String>> getAvailableVoiceGenders() =>
       VoiceGenderOptions.available;
   List<String> getAvailableTrackingModes() => TrackingModeOptions.available;
+
+  /// Get the "logical date" based on the reset hour setting.
+  /// If current time is 2 AM and reset is 3 AM, it's considered "yesterday".
+  DateTime getLogicalDate(DateTime date) {
+    final int resetHour = getSetting("tracking.resetHour") ?? 0;
+    if (resetHour == 0) return DateTime(date.year, date.month, date.day);
+
+    if (date.hour < resetHour) {
+      final prev = date.subtract(const Duration(days: 1));
+      return DateTime(prev.year, prev.month, prev.day);
+    }
+    return DateTime(date.year, date.month, date.day);
+  }
 
   // --------------------------------------------------------------------------
   // PUBLIC API — Write

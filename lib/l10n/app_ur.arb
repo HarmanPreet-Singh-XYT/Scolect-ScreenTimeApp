@@ -1979,5 +1979,7 @@
 "exportExcelLabel": "Excel برآمد کریں",
 "@exportExcelLabel": {
   "description": "برآمد بٹن پر دکھایا جانے والا لیبل"
-}
+},
+  "dailyResetTimeTitle": "روزانہ ری سیٹ کا وقت",
+  "dailyResetTimeDescription": "وہ وقت متعین کریں جب آپ کے اسکرین ٹائم کاؤنٹر نئے دن کے لیے دوبارہ شروع ہوگا۔"
 }

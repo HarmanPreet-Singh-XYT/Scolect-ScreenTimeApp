@@ -3019,4 +3019,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'تصدير Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'وقت إعادة الضبط اليومي';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'اضبط الوقت الذي تتم فيه إعادة ضبط عداد وقت الشاشة ليوم جديد.';
 }

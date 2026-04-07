@@ -1,4 +1,5 @@
 import 'package:screentime/sections/controller/app_data_controller.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'focus_mode_data_controller.dart';
@@ -415,8 +416,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       DateTime(date.year, date.month, date.day);
 
   DateTime _today() {
-    final now = DateTime.now();
-    return DateTime(now.year, now.month, now.day);
+    return SettingsManager().getLogicalDate(DateTime.now());
   }
 
   double _percentageChange(num current, num previous) {
@@ -485,7 +485,7 @@ class FocusModeAnalytics {
   static final _dayOfWeekFormat = DateFormat('EEEE');
 
   Map<String, dynamic> getLastSevenDaysData({DateTime? endDate}) {
-    final now = endDate ?? DateTime.now();
+    final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
       startDate: now.subtract(const Duration(days: 6)),
       endDate: now,
@@ -493,7 +493,7 @@ class FocusModeAnalytics {
   }
 
   Map<String, dynamic> getLastMonthData({DateTime? endDate}) {
-    final now = endDate ?? DateTime.now();
+    final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
       startDate: now.subtract(const Duration(days: 29)),
       endDate: now,
@@ -501,7 +501,7 @@ class FocusModeAnalytics {
   }
 
   Map<String, dynamic> getLastThreeMonthsData({DateTime? endDate}) {
-    final now = endDate ?? DateTime.now();
+    final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
       startDate: now.subtract(const Duration(days: 89)),
       endDate: now,
@@ -509,7 +509,7 @@ class FocusModeAnalytics {
   }
 
   Map<String, dynamic> getLifetimeData() {
-    final now = DateTime.now();
+    final now = SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
       startDate: now.subtract(const Duration(days: 365)),
       endDate: now,

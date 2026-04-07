@@ -3039,4 +3039,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Ekspor Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'Waktu Reset Harian';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru.';
 }

@@ -5559,6 +5559,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export Excel'**
   String get exportExcelLabel;
+
+  /// No description provided for @dailyResetTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reset Time'**
+  String get dailyResetTimeTitle;
+
+  /// No description provided for @dailyResetTimeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Set the time when your screen time counter resets for a new day.'**
+  String get dailyResetTimeDescription;
 }
 
 class _AppLocalizationsDelegate

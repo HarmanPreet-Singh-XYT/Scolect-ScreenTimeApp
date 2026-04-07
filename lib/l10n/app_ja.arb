@@ -1976,5 +1976,7 @@
 "exportExcelLabel": "Excelをエクスポート",
 "@exportExcelLabel": {
   "description": "エクスポートボタンに表示されるラベル"
-}
+},
+  "dailyResetTimeTitle": "デイリーリセット時間",
+  "dailyResetTimeDescription": "スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。"
 }

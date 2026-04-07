@@ -3121,4 +3121,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Exportar Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'Hora de reinicio diario';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'Establece la hora a la que el contador de tiempo de pantalla se reinicia para un nuevo día.';
 }

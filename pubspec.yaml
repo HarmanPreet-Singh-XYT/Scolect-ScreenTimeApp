@@ -1,7 +1,7 @@
 name: screentime
 description: "Screen Time Tracking and Management Application"
-publish_to: 'none'
-version: 2.0.10
+publish_to: "none"
+version: 2.0.11
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -16,7 +16,7 @@ dependencies:
   share_plus: ^12.0.1
   archive: ^3.6.1
   crypto: ^3.0.7
-  
+
   # UI and Theming
   fluent_ui: ^4.13.0
   adaptive_theme: ^3.6.0
@@ -32,12 +32,12 @@ dependencies:
   # Data Persistence and Preferences
   shared_preferences: ^2.5.2
   hive_flutter: ^1.1.0
-  
+
   # Charts and Visualization
   fl_chart: ^1.1.1
   percent_indicator: ^4.2.4
   pie_chart: ^5.4.0
-  
+
   # Utility Packages
   # package_info_plus: ^8.0.0
   intl: 0.20.2
@@ -83,7 +83,6 @@ dev_dependencies:
   msix: ^3.16.8
   dmg: ^0.1.7
 
-
 flutter:
   generate: true
   uses-material-design: true
@@ -94,7 +93,7 @@ flutter:
   #   platforms:
   #     macos:
   #       pluginClass: ForegroundWindowPlugin
-   # Add more assets as needed
+  # Add more assets as needed
   # plugin:
   #   platforms:
   #     windows:

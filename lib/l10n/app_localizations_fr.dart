@@ -3134,4 +3134,11 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Exporter Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'Heure de réinitialisation quotidienne';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'Définissez l\'heure à laquelle le compteur de temps d\'écran se réinitialise pour une nouvelle journée.';
 }

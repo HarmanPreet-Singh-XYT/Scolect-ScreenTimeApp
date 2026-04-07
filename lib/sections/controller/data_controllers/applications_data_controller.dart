@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'dart:math';
 import '../app_data_controller.dart';
+import '../settings_data_controller.dart';
 
 // Extension for formatting Duration objects
 extension DurationFormatter on Duration {
@@ -221,7 +222,7 @@ class ApplicationsDataProvider {
   Future<List<ApplicationBasicDetail>> fetchAllApplications() async {
     await _ensureInitialized();
 
-    final DateTime today = DateTime.now();
+    final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
     final DateTime startOfDay = DateTime(today.year, today.month, today.day);
     final appNames = _dataStore.allAppNames;
     final applications = <ApplicationBasicDetail>[];
@@ -256,7 +257,8 @@ class ApplicationsDataProvider {
       throw Exception('App metadata not found for: $appName');
     }
 
-    final usageRecord = _dataStore.getAppUsage(appName, DateTime.now());
+    final usageRecord = _dataStore.getAppUsage(
+        appName, SettingsManager().getLogicalDate(DateTime.now()));
 
     return ApplicationBasicDetail(
       name: appName,
@@ -313,8 +315,7 @@ class ApplicationsDataProvider {
   // ============================================================
 
   DateRange _getDateRange(TimeRange timeRange) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
+    final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
 
     switch (timeRange) {
       case TimeRange.day:

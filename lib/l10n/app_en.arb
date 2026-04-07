@@ -2185,5 +2185,7 @@
   "exportExcelLabel": "Export Excel",
   "@exportExcelLabel": {
     "description": "Label shown on export button"
-  }
+  },
+  "dailyResetTimeTitle": "Daily Reset Time",
+  "dailyResetTimeDescription": "Set the time when your screen time counter resets for a new day."
 }

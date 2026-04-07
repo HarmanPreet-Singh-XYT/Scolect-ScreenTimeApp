@@ -2943,4 +2943,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get exportExcelLabel => '导出 Excel';
+
+  @override
+  String get dailyResetTimeTitle => '每日重置时间';
+
+  @override
+  String get dailyResetTimeDescription => '设置屏幕时间计数器在新的一天重置的时间。';
 }

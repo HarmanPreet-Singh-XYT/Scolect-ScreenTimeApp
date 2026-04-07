@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
+import '../settings_data_controller.dart';
 
 class AppUsageSummary {
   final String appName;
@@ -94,7 +95,8 @@ class ScreenTimeDataController extends ChangeNotifier {
   Duration get overallLimit => _overallLimit;
   bool get overallLimitEnabled => _overallLimitEnabled;
 
-  Duration getOverallUsage() => _dataStore.getTotalScreenTime(DateTime.now());
+  Duration getOverallUsage() =>
+      _dataStore.getTotalScreenTime(SettingsManager().getLogicalDate(DateTime.now()));
 
   bool get isOverallLimitReached {
     if (!_overallLimitEnabled || _overallLimit == Duration.zero) return false;
@@ -146,7 +148,8 @@ class ScreenTimeDataController extends ChangeNotifier {
     final metadata = _dataStore.getAppMetadata(appName);
     if (metadata == null) return null;
 
-    final todayUsage = _dataStore.getAppUsage(appName, DateTime.now());
+    final todayUsage = _dataStore.getAppUsage(
+        appName, SettingsManager().getLogicalDate(DateTime.now()));
     return _createAppSummary(
       appName: appName,
       metadata: metadata,
@@ -305,7 +308,7 @@ class ScreenTimeDataController extends ChangeNotifier {
   }
 
   UsageTrend _calculateUsageTrend(String appName) {
-    final today = DateTime.now();
+    final today = SettingsManager().getLogicalDate(DateTime.now());
     final weekAgo = today.subtract(const Duration(days: 7));
 
     final weekUsage = _dataStore.getAppUsageRange(

@@ -3040,4 +3040,11 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Excel রপ্তানি করুন';
+
+  @override
+  String get dailyResetTimeTitle => 'দৈনিক রিসেট সময়';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'আপনার স্ক্রীন টাইম কাউন্টারটি নতুন দিনে রিসেট হওয়ার সময় সেট করুন।';
 }

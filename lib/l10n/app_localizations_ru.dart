@@ -3111,4 +3111,11 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Экспорт в Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'Время ежедневного сброса';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'Установите время, когда счетчик времени экрана сбрасывается для нового дня.';
 }

@@ -3070,4 +3070,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Export Excel';
+
+  @override
+  String get dailyResetTimeTitle => 'Daily Reset Time';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'Set the time when your screen time counter resets for a new day.';
 }

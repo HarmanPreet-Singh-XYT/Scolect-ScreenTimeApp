@@ -3025,4 +3025,11 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get exportExcelLabel => 'Excel برآمد کریں';
+
+  @override
+  String get dailyResetTimeTitle => 'روزانہ ری سیٹ کا وقت';
+
+  @override
+  String get dailyResetTimeDescription =>
+      'وہ وقت متعین کریں جب آپ کے اسکرین ٹائم کاؤنٹر نئے دن کے لیے دوبارہ شروع ہوگا۔';
 }
