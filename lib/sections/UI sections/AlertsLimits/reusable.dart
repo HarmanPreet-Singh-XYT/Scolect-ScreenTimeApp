@@ -59,9 +59,10 @@ class SliderRow extends StatelessWidget {
   static const _badgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
 
   int get _displayValue =>
-      step > 1 ? (value.round() ~/ step * step) : value.round();
+      step > 1 ? ((value / step).round() * step) : value.round();
 
-  double _snap(double v) => step > 1 ? (v ~/ step * step).toDouble() : v;
+  double _snap(double v) =>
+      step > 1 ? ((v / step).round() * step).toDouble() : v;
 
   @override
   Widget build(BuildContext context) {
