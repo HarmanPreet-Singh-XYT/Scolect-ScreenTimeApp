@@ -366,7 +366,9 @@ Scolect monitors foreground application activity in real-time using Windows nati
 <details>
 <summary><b>Is my data private?</b></summary>
 
-Yes! Scolect stores all data locally on your device. There is no cloud sync, no telemetry, and no data collection. Your usage data never leaves your computer.
+Yes! Scolect stores all your usage data locally on your device — there is no cloud sync and your screen time history never leaves your computer.
+
+Scolect does collect **anonymous crash reports** (via Sentry) to help fix bugs. These reports contain only error details, your OS version, and app version — no usage data, app names, or any personal information. You can opt out at any time in **Settings → Data → Crash Reporting**.
 </details>
 
 <details>
