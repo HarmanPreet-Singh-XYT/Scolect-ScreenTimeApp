@@ -16,9 +16,10 @@ class SentryService {
   SentryService._();
 
   /// Whether crash reporting is currently enabled (respects user opt-out).
-  static bool get isEnabled =>
-      !kDebugMode &&
-      (SettingsManager().getSetting('crashReportingEnabled') ?? true) as bool;
+  static bool get isEnabled => false;
+  // static bool get isEnabled =>
+  //     !kDebugMode &&
+  //     (SettingsManager().getSetting('crashReportingEnabled') ?? true) as bool;
 
   /// Call this as the outermost wrapper in main(), passing the real app runner.
   ///
