@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:auto_updater/auto_updater.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+import 'utils/sentry_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -23,7 +26,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:tray_manager/tray_manager.dart';
 import './sections/controller/application_controller.dart';
 import 'utils/single_instance_ipc.dart';
-import 'dart:ui' show lerpDouble;
+import 'dart:ui' show lerpDouble, PlatformDispatcher;
 import 'package:provider/provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
@@ -133,7 +136,42 @@ final NavigationState navigationState = NavigationState();
 // ============================================================================
 
 void main(List<String> args) async {
+  await SentryService.init(() => _appMain(args));
+}
+
+Future<void> _appMain(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Catch Flutter framework errors (widget build errors, etc.) and send to Sentry.
+  if (!kDebugMode) {
+    final originalOnError = FlutterError.onError;
+    FlutterError.onError = (FlutterErrorDetails details) {
+      Sentry.captureException(
+        details.exception,
+        stackTrace: details.stack,
+        withScope: (scope) {
+          scope.setTag('platform', Platform.operatingSystem);
+          scope.setTag('error_type', 'flutter_framework');
+          scope.setTag('error_context', details.context?.toString() ?? '');
+          scope.setTag('error_library', details.library ?? '');
+        },
+      );
+      originalOnError?.call(details);
+    };
+
+    // Catch errors outside the Flutter framework (async, isolate, etc.).
+    PlatformDispatcher.instance.onError = (error, stack) {
+      Sentry.captureException(
+        error,
+        stackTrace: stack,
+        withScope: (scope) {
+          scope.setTag('platform', Platform.operatingSystem);
+          scope.setTag('error_type', 'platform_dispatcher');
+        },
+      );
+      return false; // let the default handler also run
+    };
+  }
 
   if (Platform.isMacOS) {
     launchAtStartup.setup(
@@ -403,7 +441,18 @@ class _MyAppState extends State<MyApp>
 
   bool _trayShowingUpdateIcon = false;
 
-  void changeIndex(int value) => navigationState.changeIndex(value);
+  static const List<String> _sectionNames = [
+    'Overview', 'Applications', 'Alerts & Limits',
+    'Reports', 'Focus Mode', 'Settings', 'Help',
+  ];
+
+  void changeIndex(int value) {
+    final name = (value >= 0 && value < _sectionNames.length)
+        ? _sectionNames[value]
+        : 'Section $value';
+    SentryService.addBreadcrumb('Navigated to $name', category: 'navigation');
+    navigationState.changeIndex(value);
+  }
 
   void setLocale(Locale locale) async {
     setState(() => _locale = locale);
@@ -622,6 +671,7 @@ class _AppWithTheme extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: locale,
         debugShowCheckedModeBanner: false,
+        navigatorObservers: [SentryNavigatorObserver()],
         home: HomePage(setLocale: setLocale),
       ),
     );
