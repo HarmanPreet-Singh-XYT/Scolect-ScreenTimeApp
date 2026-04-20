@@ -16,10 +16,9 @@ class SentryService {
   SentryService._();
 
   /// Whether crash reporting is currently enabled (respects user opt-out).
-  static bool get isEnabled => false;
-  // static bool get isEnabled =>
-  //     !kDebugMode &&
-  //     (SettingsManager().getSetting('crashReportingEnabled') ?? true) as bool;
+  static bool get isEnabled =>
+      !kDebugMode &&
+      (SettingsManager().getSetting('crashReportingEnabled') ?? true) as bool;
 
   /// Call this as the outermost wrapper in main(), passing the real app runner.
   ///
@@ -32,6 +31,9 @@ class SentryService {
     await SentryFlutter.init(
       (options) {
         options.dsn = _sentryDsn;
+
+        // Skip the native process spawning on Windows (avoids certain crashes/issues)
+        options.enableNativeCrashHandling = false;
 
         // Capture 100 % of crashes; tune down for high-traffic apps.
         options.tracesSampleRate = 1.0;

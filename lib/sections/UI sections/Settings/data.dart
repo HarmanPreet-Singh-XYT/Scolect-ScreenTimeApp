@@ -26,15 +26,15 @@ class DataSection extends StatelessWidget {
       icon: FluentIcons.database,
       iconColor: Colors.red,
       children: [
-        // SettingRow(
-        //   title: l10n.crashReportingTitle,
-        //   description: l10n.crashReportingDescription,
-        //   control: ToggleSwitch(
-        //     checked: settings.crashReportingEnabled,
-        //     onChanged: (value) =>
-        //         settings.updateSetting('crashReportingEnabled', value),
-        //   ),
-        // ),
+        SettingRow(
+          title: l10n.crashReportingTitle,
+          description: l10n.crashReportingDescription,
+          control: ToggleSwitch(
+            checked: settings.crashReportingEnabled,
+            onChanged: (value) =>
+                settings.updateSetting('crashReportingEnabled', value),
+          ),
+        ),
         SettingRow(
           title: l10n.clearDataTitle,
           description: l10n.clearDataDescription,
