@@ -188,7 +188,7 @@ class _EnabledContent extends StatelessWidget {
         const SizedBox(height: 8),
         rub.SliderRow(
           label: l10n.minutes,
-          value: hours, // ← will fix below
+          value: roundedMinutes.toDouble(),
           max: 55,
           divisions: 11,
           step: 5,
