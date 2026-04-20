@@ -999,6 +999,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Iniciar la aplicación en la Bandeja del Sistema (Recomendado para Windows 10)';
 
   @override
+  String get crashReportingTitle => 'Informes de fallos';
+
+  @override
+  String get crashReportingDescription =>
+      'Envía informes de fallos anónimos para ayudar a mejorar Scolect. No incluye datos personales ni historial de uso.';
+
+  @override
   String get notificationsTitle => 'Notificaciones';
 
   @override

@@ -35,6 +35,7 @@ const _simpleSettingPaths = <String, String>{
   'language': 'language.selected',
   'launchAtStartup': 'launchAtStartup',
   'launchAsMinimized': 'launchAsMinimized',
+  'crashReportingEnabled': 'crashReportingEnabled',
   'notificationsEnabled': 'notifications.enabled',
   'notificationsFocusMode': 'notifications.focusMode',
   'notificationsScreenTime': 'notifications.screenTime',
@@ -60,6 +61,7 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'language': (p, v) => p._language = v,
   'launchAtStartup': (p, v) => p._launchAtStartupVar = v,
   'launchAsMinimized': (p, v) => p._launchAsMinimized = v,
+  'crashReportingEnabled': (p, v) => p._crashReportingEnabled = v,
   'notificationsEnabled': (p, v) => p._notificationsEnabled = v,
   'notificationsFocusMode': (p, v) => p._notificationsFocusMode = v,
   'notificationsScreenTime': (p, v) => p._notificationsScreenTime = v,
@@ -86,6 +88,7 @@ class SettingsProvider extends ChangeNotifier {
   String _language = 'en';
   bool _launchAtStartupVar = false;
   bool _launchAsMinimized = false;
+  bool _crashReportingEnabled = true;
   bool _notificationsEnabled = false;
   bool _notificationsFocusMode = false;
   bool _notificationsScreenTime = false;
@@ -109,6 +112,7 @@ class SettingsProvider extends ChangeNotifier {
   String get language => _language;
   bool get launchAtStartupVar => _launchAtStartupVar;
   bool get launchAsMinimized => _launchAsMinimized;
+  bool get crashReportingEnabled => _crashReportingEnabled;
   bool get notificationsEnabled => _notificationsEnabled;
   bool get notificationsFocusMode => _notificationsFocusMode;
   bool get notificationsScreenTime => _notificationsScreenTime;

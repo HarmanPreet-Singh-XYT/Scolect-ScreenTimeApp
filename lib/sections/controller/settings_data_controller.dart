@@ -143,6 +143,7 @@ class SettingsManager {
         "language": {"selected": LanguageOptions.defaultLanguage},
         "launchAtStartup": true,
         "launchAsMinimized": false,
+        "crashReportingEnabled": true,
         "notifications": {
           "enabled": !_isMacOS,
           "focusMode": !_isMacOS,

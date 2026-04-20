@@ -983,6 +983,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'एप्लिकेशन को सिस्टम ट्रे में शुरू करें (Windows 10 के लिए अनुशंसित)';
 
   @override
+  String get crashReportingTitle => 'क्रैश रिपोर्टिंग';
+
+  @override
+  String get crashReportingDescription =>
+      'Scolect को बेहतर बनाने में मदद करने के लिए अनाम क्रैश रिपोर्ट भेजें। इसमें कोई व्यक्तिगत डेटा या उपयोग इतिहास शामिल नहीं है।';
+
+  @override
   String get notificationsTitle => 'नोटिफिकेशन';
 
   @override

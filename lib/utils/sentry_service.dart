@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart';
 
 // ============================================================================
 // SENTRY SERVICE
@@ -14,11 +15,16 @@ const String _sentryDsn =
 class SentryService {
   SentryService._();
 
+  /// Whether crash reporting is currently enabled (respects user opt-out).
+  static bool get isEnabled =>
+      !kDebugMode &&
+      (SettingsManager().getSetting('crashReportingEnabled') ?? true) as bool;
+
   /// Call this as the outermost wrapper in main(), passing the real app runner.
   ///
   ///   await SentryService.init(() => runApp(MyApp()));
   static Future<void> init(AppRunner appRunner) async {
-    if (kDebugMode) {
+    if (!isEnabled) {
       await appRunner();
       return;
     }
@@ -62,6 +68,7 @@ class SentryService {
     String? tag,
     Map<String, dynamic>? extras,
   }) async {
+    if (!isEnabled) return;
     await Sentry.captureException(
       exception,
       stackTrace: stackTrace,
@@ -75,6 +82,7 @@ class SentryService {
 
   /// Add a manual breadcrumb (e.g. "user opened Focus Mode").
   static void addBreadcrumb(String message, {String category = 'app'}) {
+    if (!isEnabled) return;
     Sentry.addBreadcrumb(
       Breadcrumb(message: message, category: category),
     );

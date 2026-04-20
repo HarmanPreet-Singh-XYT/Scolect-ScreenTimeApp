@@ -986,6 +986,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Запускать приложение в системном трее (рекомендуется для Windows 10)';
 
   @override
+  String get crashReportingTitle => 'Отчеты о сбоях';
+
+  @override
+  String get crashReportingDescription =>
+      'Отправляйте анонимные отчеты о сбоях, чтобы помочь улучшить Scolect. Не содержит личных данных или истории использования.';
+
+  @override
   String get notificationsTitle => 'Уведомления';
 
   @override

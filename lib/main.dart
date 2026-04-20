@@ -146,29 +146,33 @@ Future<void> _appMain(List<String> args) async {
   if (!kDebugMode) {
     final originalOnError = FlutterError.onError;
     FlutterError.onError = (FlutterErrorDetails details) {
-      Sentry.captureException(
-        details.exception,
-        stackTrace: details.stack,
-        withScope: (scope) {
-          scope.setTag('platform', Platform.operatingSystem);
-          scope.setTag('error_type', 'flutter_framework');
-          scope.setTag('error_context', details.context?.toString() ?? '');
-          scope.setTag('error_library', details.library ?? '');
-        },
-      );
+      if (SentryService.isEnabled) {
+        Sentry.captureException(
+          details.exception,
+          stackTrace: details.stack,
+          withScope: (scope) {
+            scope.setTag('platform', Platform.operatingSystem);
+            scope.setTag('error_type', 'flutter_framework');
+            scope.setTag('error_context', details.context?.toString() ?? '');
+            scope.setTag('error_library', details.library ?? '');
+          },
+        );
+      }
       originalOnError?.call(details);
     };
 
     // Catch errors outside the Flutter framework (async, isolate, etc.).
     PlatformDispatcher.instance.onError = (error, stack) {
-      Sentry.captureException(
-        error,
-        stackTrace: stack,
-        withScope: (scope) {
-          scope.setTag('platform', Platform.operatingSystem);
-          scope.setTag('error_type', 'platform_dispatcher');
-        },
-      );
+      if (SentryService.isEnabled) {
+        Sentry.captureException(
+          error,
+          stackTrace: stack,
+          withScope: (scope) {
+            scope.setTag('platform', Platform.operatingSystem);
+            scope.setTag('error_type', 'platform_dispatcher');
+          },
+        );
+      }
       return false; // let the default handler also run
     };
   }

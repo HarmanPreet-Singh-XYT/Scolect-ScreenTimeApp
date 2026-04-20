@@ -952,6 +952,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get launchMinimizedDescription => '在系统托盘中启动应用程序（推荐Windows 10用户使用）';
 
   @override
+  String get crashReportingTitle => '崩溃报告';
+
+  @override
+  String get crashReportingDescription =>
+      '发送匿名崩溃报告以帮助改进 Scolect。不包含任何个人数据或使用历史。';
+
+  @override
   String get notificationsTitle => '通知';
 
   @override

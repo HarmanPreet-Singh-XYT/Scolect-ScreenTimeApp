@@ -1971,5 +1971,7 @@
   "description": "Label yang ditampilkan pada tombol ekspor"
 },
   "dailyResetTimeTitle": "Waktu Reset Harian",
-  "dailyResetTimeDescription": "Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru."
+  "dailyResetTimeDescription": "Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru.",
+  "crashReportingTitle": "Pelaporan Kerusakan",
+  "crashReportingDescription": "Kirim laporan kerusakan anonim untuk membantu meningkatkan Scolect. Tidak termasuk data pribadi atau riwayat penggunaan."
 }

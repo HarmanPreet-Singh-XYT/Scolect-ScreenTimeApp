@@ -979,7 +979,10 @@
   
   "launchMinimizedTitle": "Launch as Minimized",
   "launchMinimizedDescription": "Start the application in System Tray (Recommended for Windows 10)",
-  
+
+  "crashReportingTitle": "Crash Reporting",
+  "crashReportingDescription": "Send anonymous crash reports to help improve Scolect. No personal data or usage history is included.",
+
   "notificationsTitle": "Notifications",
   "notificationsAllDescription": "All notifications of the application",
   

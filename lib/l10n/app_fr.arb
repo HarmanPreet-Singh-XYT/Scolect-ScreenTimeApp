@@ -1974,5 +1974,7 @@
   "description": "Libellé affiché sur le bouton d’exportation"
 },
   "dailyResetTimeTitle": "Heure de réinitialisation quotidienne",
-  "dailyResetTimeDescription": "Définissez l'heure à laquelle le compteur de temps d'écran se réinitialise pour une nouvelle journée."
+  "dailyResetTimeDescription": "Définissez l'heure à laquelle le compteur de temps d'écran se réinitialise pour une nouvelle journée.",
+  "crashReportingTitle": "Rapports de plantage",
+  "crashReportingDescription": "Envoyez des rapports de plantage anonymes pour aider à améliorer Scolect. Aucune donnée personnelle ni historique d'utilisation n'est inclus."
 }

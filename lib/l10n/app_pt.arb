@@ -1971,5 +1971,7 @@
   "description": "Rótulo exibido no botão de exportação"
 },
   "dailyResetTimeTitle": "Hora de reinício diário",
-  "dailyResetTimeDescription": "Defina a hora em que o contador de tempo de ecrã se reinicia para um novo dia."
+  "dailyResetTimeDescription": "Defina a hora em que o contador de tempo de ecrã se reinicia para um novo dia.",
+  "crashReportingTitle": "Relatórios de falhas",
+  "crashReportingDescription": "Envie relatórios de falhas anônimos para ajudar a melhorar o Scolect. Não inclui dados pessoais ou histórico de uso."
 }

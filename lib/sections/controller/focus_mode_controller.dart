@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/main.dart';
 
 import 'data_controllers/focus_mode_data_controller.dart';
+import 'settings_data_controller.dart';
 import './notification_controller.dart';
 
 enum TimerState { work, shortBreak, longBreak, idle }
@@ -74,6 +75,9 @@ class PomodoroTimerService {
   // Session statistics
   int _completedFullSessions = 0;
 
+  // Date tracking for daily reset
+  DateTime? _lastActiveDate;
+
   // Track current session for database - FIXED VERSION
   DateTime? _currentSessionStart;
   DateTime? _currentSessionEnd;
@@ -133,6 +137,30 @@ class PomodoroTimerService {
       SessionPhase(TimerState.longBreak, _longBreakDuration, 7),
     ];
     debugPrint('✅ Session chain built with ${_sessionChain.length} phases');
+  }
+
+  /// Resets the daily session counter and idles the timer if the logical date
+  /// has changed since this was last called. Should be called whenever the
+  /// user initiates a new session start.
+  void _checkDateReset() {
+    final today = SettingsManager().getLogicalDate(DateTime.now());
+    if (_lastActiveDate != null &&
+        (today.year != _lastActiveDate!.year ||
+            today.month != _lastActiveDate!.month ||
+            today.day != _lastActiveDate!.day)) {
+      debugPrint('📅 Date changed — resetting daily session counter');
+      _timer?.cancel();
+      _timer = null;
+      _currentState = TimerState.idle;
+      _currentPhaseIndex = -1;
+      _secondsRemaining = _workDuration * 60;
+      _completedFullSessions = 0;
+      _currentSessionStart = null;
+      _currentSessionEnd = null;
+      _currentPhaseStart = null;
+      _sessionPhases = [];
+    }
+    _lastActiveDate = today;
   }
 
   Future<void> initialize() async {
@@ -257,6 +285,7 @@ class PomodoroTimerService {
 
   void startWorkSession() {
     debugPrint('▶️ startWorkSession called');
+    _checkDateReset();
     _startPhaseByIndex(0); // Always start from the beginning of the chain
   }
 
@@ -329,6 +358,7 @@ class PomodoroTimerService {
 
   void resumeTimer() {
     debugPrint('▶️ Resuming timer');
+    _checkDateReset();
     if (!isRunning && _secondsRemaining > 0) {
       _startTimer();
 
@@ -363,6 +393,7 @@ class PomodoroTimerService {
   // Record phase completion with actual duration and SAVE TO DATABASE
   Future<void> _recordPhaseCompletion() async {
     if (_currentPhaseStart == null) return;
+    if (_currentPhaseIndex < 0 || _currentPhaseIndex >= _sessionChain.length) return;
 
     final phaseEnd = DateTime.now();
     final actualDuration = phaseEnd.difference(_currentPhaseStart!);
@@ -493,7 +524,9 @@ class PomodoroTimerService {
     if (_currentPhaseIndex == 7) {
       debugPrint('✅ Long break completed - FULL SESSION DONE');
       // _completeSession handles recording the final phase itself
-      _completeSession();
+      _completeSession().catchError((e) {
+        debugPrint('❌ Error completing session: $e');
+      });
     } else {
       // Record this phase before advancing
       _recordPhaseCompletion().then((_) {
@@ -520,6 +553,8 @@ class PomodoroTimerService {
 
         debugPrint('Current phase index after handling: $_currentPhaseIndex');
         debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      }).catchError((e) {
+        debugPrint('❌ Error recording phase completion: $e');
       });
     }
   }

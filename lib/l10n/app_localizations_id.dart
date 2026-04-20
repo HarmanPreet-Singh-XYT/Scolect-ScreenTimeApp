@@ -984,6 +984,13 @@ class AppLocalizationsId extends AppLocalizations {
       'Mulai aplikasi di System Tray (Direkomendasikan untuk Windows 10)';
 
   @override
+  String get crashReportingTitle => 'Pelaporan Kerusakan';
+
+  @override
+  String get crashReportingDescription =>
+      'Kirim laporan kerusakan anonim untuk membantu meningkatkan Scolect. Tidak termasuk data pribadi atau riwayat penggunaan.';
+
+  @override
   String get notificationsTitle => 'Notifikasi';
 
   @override

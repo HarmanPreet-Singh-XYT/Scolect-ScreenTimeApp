@@ -970,6 +970,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'بدء التطبيق في شريط النظام (موصى به لويندوز 10)';
 
   @override
+  String get crashReportingTitle => 'الإبلاغ عن الأعطال';
+
+  @override
+  String get crashReportingDescription =>
+      'أرسل تقارير الأعطال المجهولة للمساعدة في تحسين Scolect. لا يتضمن أي بيانات شخصية أو سجل استخدام.';
+
+  @override
   String get notificationsTitle => 'الإشعارات';
 
   @override

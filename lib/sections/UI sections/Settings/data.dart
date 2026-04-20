@@ -19,13 +19,22 @@ class DataSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final settings = context.read<SettingsProvider>();
+    final settings = context.watch<SettingsProvider>();
 
     return SettingsCard(
       title: l10n.dataSection,
       icon: FluentIcons.database,
       iconColor: Colors.red,
       children: [
+        SettingRow(
+          title: l10n.crashReportingTitle,
+          description: l10n.crashReportingDescription,
+          control: ToggleSwitch(
+            checked: settings.crashReportingEnabled,
+            onChanged: (value) =>
+                settings.updateSetting('crashReportingEnabled', value),
+          ),
+        ),
         SettingRow(
           title: l10n.clearDataTitle,
           description: l10n.clearDataDescription,

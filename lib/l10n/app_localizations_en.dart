@@ -975,6 +975,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Start the application in System Tray (Recommended for Windows 10)';
 
   @override
+  String get crashReportingTitle => 'Crash Reporting';
+
+  @override
+  String get crashReportingDescription =>
+      'Send anonymous crash reports to help improve Scolect. No personal data or usage history is included.';
+
+  @override
   String get notificationsTitle => 'Notifications';
 
   @override

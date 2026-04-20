@@ -1864,6 +1864,18 @@ abstract class AppLocalizations {
   /// **'Start the application in System Tray (Recommended for Windows 10)'**
   String get launchMinimizedDescription;
 
+  /// No description provided for @crashReportingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Crash Reporting'**
+  String get crashReportingTitle;
+
+  /// No description provided for @crashReportingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Send anonymous crash reports to help improve Scolect. No personal data or usage history is included.'**
+  String get crashReportingDescription;
+
   /// No description provided for @notificationsTitle.
   ///
   /// In en, this message translates to:

@@ -1003,6 +1003,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Démarrer l\'application dans la barre système (Recommandé pour Windows 10)';
 
   @override
+  String get crashReportingTitle => 'Rapports de plantage';
+
+  @override
+  String get crashReportingDescription =>
+      'Envoyez des rapports de plantage anonymes pour aider à améliorer Scolect. Aucune donnée personnelle ni historique d\'utilisation n\'est inclus.';
+
+  @override
   String get notificationsTitle => 'Notifications';
 
   @override

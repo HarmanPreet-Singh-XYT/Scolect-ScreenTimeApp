@@ -1978,5 +1978,7 @@
   "description": "التسمية المعروضة على زر التصدير"
 },
   "dailyResetTimeTitle": "وقت إعادة الضبط اليومي",
-  "dailyResetTimeDescription": "اضبط الوقت الذي تتم فيه إعادة ضبط عداد وقت الشاشة ليوم جديد."
+  "dailyResetTimeDescription": "اضبط الوقت الذي تتم فيه إعادة ضبط عداد وقت الشاشة ليوم جديد.",
+  "crashReportingTitle": "الإبلاغ عن الأعطال",
+  "crashReportingDescription": "أرسل تقارير الأعطال المجهولة للمساعدة في تحسين Scolect. لا يتضمن أي بيانات شخصية أو سجل استخدام."
 }

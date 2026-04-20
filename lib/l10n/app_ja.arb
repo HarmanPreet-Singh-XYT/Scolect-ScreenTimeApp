@@ -1978,5 +1978,7 @@
   "description": "エクスポートボタンに表示されるラベル"
 },
   "dailyResetTimeTitle": "デイリーリセット時間",
-  "dailyResetTimeDescription": "スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。"
+  "dailyResetTimeDescription": "スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。",
+  "crashReportingTitle": "クラッシュレポート",
+  "crashReportingDescription": "Scolectの改善に役立つ匿名クラッシュレポートを送信します。個人データや使用履歴は含まれません。"
 }

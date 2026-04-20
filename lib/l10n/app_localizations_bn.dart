@@ -983,6 +983,13 @@ class AppLocalizationsBn extends AppLocalizations {
       'সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)';
 
   @override
+  String get crashReportingTitle => 'ক্র্যাশ রিপোর্টিং';
+
+  @override
+  String get crashReportingDescription =>
+      'Scolect উন্নত করতে সাহায্য করার জন্য বেনামী ক্র্যাশ রিপোর্ট পাঠান। এতে কোনো ব্যক্তিগত ডেটা বা ব্যবহারের ইতিহাস অন্তর্ভুক্ত নেই।';
+
+  @override
   String get notificationsTitle => 'বিজ্ঞপ্তি';
 
   @override

@@ -1980,5 +1980,7 @@
   "description": "显示在导出按钮上的标签"
 },
   "dailyResetTimeTitle": "每日重置时间",
-  "dailyResetTimeDescription": "设置屏幕时间计数器在新的一天重置的时间。"
+  "dailyResetTimeDescription": "设置屏幕时间计数器在新的一天重置的时间。",
+  "crashReportingTitle": "崩溃报告",
+  "crashReportingDescription": "发送匿名崩溃报告以帮助改进 Scolect。不包含任何个人数据或使用历史。"
 }

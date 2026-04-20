@@ -961,6 +961,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get launchMinimizedDescription => 'システムトレイでアプリケーションを起動（Windows 10に推奨）';
 
   @override
+  String get crashReportingTitle => 'クラッシュレポート';
+
+  @override
+  String get crashReportingDescription =>
+      'Scolectの改善に役立つ匿名クラッシュレポートを送信します。個人データや使用履歴は含まれません。';
+
+  @override
   String get notificationsTitle => '通知';
 
   @override

@@ -981,6 +981,13 @@ class AppLocalizationsUr extends AppLocalizations {
       'ایپلیکیشن کو سسٹم ٹرے میں شروع کریں (ونڈوز 10 کے لیے تجویز کردہ)';
 
   @override
+  String get crashReportingTitle => 'کریش رپورٹنگ';
+
+  @override
+  String get crashReportingDescription =>
+      'Scolect کو بہتر بنانے میں مدد کے لیے غیر فعال کریش رپورٹس بھیجیں۔ اس میں کوئی ذاتی ڈیٹا یا استعمال کی تاریخ شامل نہیں ہے۔';
+
+  @override
   String get notificationsTitle => 'اطلاعات';
 
   @override
