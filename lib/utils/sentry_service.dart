@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -101,3 +102,4 @@ class SentryService {
     Sentry.configureScope((scope) => scope.setUser(null));
   }
 }
+*/

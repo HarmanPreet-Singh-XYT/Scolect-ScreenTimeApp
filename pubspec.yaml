@@ -75,7 +75,7 @@ dependencies:
       url: https://github.com/HarmanPreet-Singh-XYT/Screenstate
       ref: main
   auto_updater: ^1.0.0
-  sentry_flutter: ^9.16.1
+  # sentry_flutter: ^9.16.1
 
 dev_dependencies:
   flutter_test:

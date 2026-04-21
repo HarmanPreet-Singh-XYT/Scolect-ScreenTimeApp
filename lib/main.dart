@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:auto_updater/auto_updater.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-import 'utils/sentry_service.dart';
+// import 'package:sentry_flutter/sentry_flutter.dart';
+// import 'utils/sentry_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -136,46 +136,18 @@ final NavigationState navigationState = NavigationState();
 // ============================================================================
 
 void main(List<String> args) async {
-  await SentryService.init(() => _appMain(args));
+  _appMain(args);
 }
 
 Future<void> _appMain(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  /*
   // Catch Flutter framework errors (widget build errors, etc.) and send to Sentry.
   if (!kDebugMode) {
-    final originalOnError = FlutterError.onError;
-    FlutterError.onError = (FlutterErrorDetails details) {
-      if (SentryService.isEnabled) {
-        Sentry.captureException(
-          details.exception,
-          stackTrace: details.stack,
-          withScope: (scope) {
-            scope.setTag('platform', Platform.operatingSystem);
-            scope.setTag('error_type', 'flutter_framework');
-            scope.setTag('error_context', details.context?.toString() ?? '');
-            scope.setTag('error_library', details.library ?? '');
-          },
-        );
-      }
-      originalOnError?.call(details);
-    };
-
-    // Catch errors outside the Flutter framework (async, isolate, etc.).
-    PlatformDispatcher.instance.onError = (error, stack) {
-      if (SentryService.isEnabled) {
-        Sentry.captureException(
-          error,
-          stackTrace: stack,
-          withScope: (scope) {
-            scope.setTag('platform', Platform.operatingSystem);
-            scope.setTag('error_type', 'platform_dispatcher');
-          },
-        );
-      }
-      return false; // let the default handler also run
-    };
+    ...
   }
+  */
 
   if (Platform.isMacOS) {
     launchAtStartup.setup(
@@ -454,7 +426,7 @@ class _MyAppState extends State<MyApp>
     final name = (value >= 0 && value < _sectionNames.length)
         ? _sectionNames[value]
         : 'Section $value';
-    SentryService.addBreadcrumb('Navigated to $name', category: 'navigation');
+    // SentryService.addBreadcrumb('Navigated to $name', category: 'navigation');
     navigationState.changeIndex(value);
   }
 
@@ -675,7 +647,7 @@ class _AppWithTheme extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: locale,
         debugShowCheckedModeBanner: false,
-        navigatorObservers: [SentryNavigatorObserver()],
+        // navigatorObservers: [SentryNavigatorObserver()],
         home: HomePage(setLocale: setLocale),
       ),
     );
