@@ -764,9 +764,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
               Expanded(
-                child: _ContentArea(
-                  selectedIndex: selectedIndex,
-                  setLocale: widget.setLocale,
+                child: RepaintBoundary(
+                  child: _ContentArea(
+                    selectedIndex: selectedIndex,
+                    setLocale: widget.setLocale,
+                  ),
                 ),
               ),
             ],
@@ -822,32 +824,41 @@ class CustomSidebar extends StatelessWidget {
     required this.customTheme,
   });
 
-  // Static builder so a new List isn't allocated each frame during animation
-  static List<_NavItemData> _buildNavItems(AppLocalizations l10n) {
-    return [
-      _NavItemData(icon: FluentIcons.home, label: l10n.navOverview, index: 0),
-      _NavItemData(
-          icon: FluentIcons.app_icon_default_list,
-          label: l10n.navApplications,
-          index: 1),
-      _NavItemData(
-          icon: FluentIcons.alert_settings,
-          label: l10n.navAlertsLimits,
-          index: 2),
-      _NavItemData(
-          icon: FluentIcons.analytics_report, label: l10n.navReports, index: 3),
-      _NavItemData(
-          icon: FluentIcons.red_eye, label: l10n.navFocusMode, index: 4),
-      _NavItemData.separator(),
-      _NavItemData(
-          icon: FluentIcons.settings, label: l10n.navSettings, index: 5),
-      _NavItemData(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 6),
-    ];
+  // Cached by l10n instance — rebuilt only on locale change, not every frame.
+  static AppLocalizations? _cachedL10n;
+  static List<_NavItemData>? _cachedNavItems;
+
+  static List<_NavItemData> _getNavItems(AppLocalizations l10n) {
+    if (!identical(l10n, _cachedL10n)) {
+      _cachedL10n = l10n;
+      _cachedNavItems = [
+        _NavItemData(icon: FluentIcons.home, label: l10n.navOverview, index: 0),
+        _NavItemData(
+            icon: FluentIcons.app_icon_default_list,
+            label: l10n.navApplications,
+            index: 1),
+        _NavItemData(
+            icon: FluentIcons.alert_settings,
+            label: l10n.navAlertsLimits,
+            index: 2),
+        _NavItemData(
+            icon: FluentIcons.analytics_report,
+            label: l10n.navReports,
+            index: 3),
+        _NavItemData(
+            icon: FluentIcons.red_eye, label: l10n.navFocusMode, index: 4),
+        _NavItemData.separator(),
+        _NavItemData(
+            icon: FluentIcons.settings, label: l10n.navSettings, index: 5),
+        _NavItemData(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 6),
+      ];
+    }
+    return _cachedNavItems!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final navItems = _buildNavItems(l10n);
+    final navItems = _getNavItems(l10n);
     final isCompact = expandProgress < 0.5;
 
     return ClipRect(
