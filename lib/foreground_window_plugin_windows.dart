@@ -158,6 +158,20 @@ class AppLaunchInfo {
 // ─── Plugin ───────────────────────────────────────────────────────────────────
 
 class ForegroundWindowPlugin {
+  // ── Main-isolate caches (persist across compute() calls) ──
+
+  /// Maps exe full path → human-readable program name.
+  /// Populated on first encounter; exe version resources don't change at runtime.
+  static final Map<String, String> _programNameCache = {};
+
+  /// Maps process ID → parent process ID.
+  /// Avoids CreateToolhelp32Snapshot (full process snapshot) on repeated lookups.
+  static final Map<int, int> _parentPidCache = {};
+
+  /// Maps parent process ID → parent process name.
+  /// PIDs are reused by Windows but infrequently; good enough as a soft cache.
+  static final Map<int, String> _parentNameCache = {};
+
   // ── DLL handles (lazy, loaded once) ──
 
   static final DynamicLibrary _user32 = DynamicLibrary.open('user32.dll');
@@ -211,11 +225,68 @@ class ForegroundWindowPlugin {
 
   // ── Public API ────────────────────────────────────────────────────────────
 
-  /// Returns foreground window info on the platform thread via [compute].
+  /// Returns foreground window info. Uses a two-step strategy to avoid
+  /// repeated disk I/O (version resource reads) and expensive process snapshots
+  /// (CreateToolhelp32Snapshot) on every focus-change event:
+  ///
+  /// Step 1 — cheap compute: get HWND, process ID, window title, exe path.
+  /// Step 2 — main-isolate cache lookup for programName & parentProcessName.
+  ///           Only dispatches a second compute for cache misses.
+  ///
   /// Never throws; returns [WindowInfo.unknown()] on any failure.
   static Future<WindowInfo> getForegroundWindowInfo() async {
     try {
-      return await compute(_getForegroundWindowInfoNative, null);
+      // Step 1: lightweight — no disk I/O, no process snapshot.
+      final raw = await compute(_getRawWindowInfo, null);
+      if (raw == null) return WindowInfo.unknown();
+
+      final String processPath = raw['processPath'] as String;
+      final String windowTitle = raw['windowTitle'] as String;
+      final String executableName = raw['executableName'] as String;
+      final int processId = raw['processId'] as int;
+      final bool elevated = raw['elevated'] as bool;
+
+      // Step 2: resolve human-readable names using main-isolate caches.
+      String programName;
+      if (elevated) {
+        programName = _heuristicProgramName(windowTitle);
+      } else if (processPath.isEmpty) {
+        programName = 'Unknown';
+      } else if (_programNameCache.containsKey(processPath)) {
+        programName = _programNameCache[processPath]!;
+      } else {
+        // Cache miss — read version resource once, then cache it.
+        programName = await compute(_resolveVersionInfo, processPath);
+        _programNameCache[processPath] = programName;
+      }
+
+      // Resolve parent PID (CreateToolhelp32Snapshot) with caching.
+      int parentProcessId;
+      if (_parentPidCache.containsKey(processId)) {
+        parentProcessId = _parentPidCache[processId]!;
+      } else {
+        parentProcessId = await compute(_resolveParentPid, processId);
+        _parentPidCache[processId] = parentProcessId;
+      }
+
+      String parentProcessName;
+      if (_parentNameCache.containsKey(parentProcessId)) {
+        parentProcessName = _parentNameCache[parentProcessId]!;
+      } else {
+        parentProcessName =
+            await compute(_resolveParentProcessName, parentProcessId);
+        _parentNameCache[parentProcessId] = parentProcessName;
+      }
+
+      return WindowInfo(
+        windowTitle: windowTitle,
+        processName: processPath,
+        executableName: executableName,
+        programName: programName,
+        processId: processId,
+        parentProcessId: parentProcessId,
+        parentProcessName: parentProcessName,
+      );
     } catch (e, st) {
       debugPrint('ForegroundWindowPlugin: unexpected error: $e\n$st');
       return WindowInfo.unknown();
@@ -347,11 +418,15 @@ class ForegroundWindowPlugin {
     }
   }
 
-  // ── Core native logic (runs inside compute isolate) ───────────────────────
+  // ── Compute targets ───────────────────────────────────────────────────────
 
-  static WindowInfo _getForegroundWindowInfoNative(dynamic _) {
+  /// Step 1 (cheap): returns raw window/process info with NO disk I/O.
+  /// Only calls Win32 APIs that are in-memory (no version resource reads,
+  /// no CreateToolhelp32Snapshot).
+  /// Returns null if no foreground window is found.
+  static Map<String, dynamic>? _getRawWindowInfo(dynamic _) {
     final hwnd = _getForegroundWindow();
-    if (hwnd.address == 0) return WindowInfo.unknown();
+    if (hwnd.address == 0) return null;
 
     // ── Process ID ──
     final processIdPtr = calloc<Uint32>();
@@ -362,7 +437,7 @@ class ForegroundWindowPlugin {
     } finally {
       calloc.free(processIdPtr);
     }
-    if (processId == 0) return WindowInfo.unknown();
+    if (processId == 0) return null;
 
     // ── Window title ──
     final titlePtr = calloc<Char>(_kMaxTitle);
@@ -374,12 +449,10 @@ class ForegroundWindowPlugin {
       calloc.free(titlePtr);
     }
 
-    // ── Process details ──
-    String processName = 'Unknown';
+    // ── Exe path (in-memory, no disk read) ──
+    String processPath = '';
     String executableName = 'Unknown';
-    String programName = 'Unknown';
-    int parentProcessId = 0;
-    String parentProcessName = 'Unknown';
+    bool elevated = false;
 
     final hProcess =
         _openProcess(_kProcessQueryInformation | _kProcessVMRead, 0, processId);
@@ -391,33 +464,45 @@ class ForegroundWindowPlugin {
           final result =
               _getModuleFileNameExA(hProcess, nullptr, namePtr, _kMaxPath);
           if (result > 0) {
-            processName = _safeDartString(namePtr, length: result);
-            executableName = _extractExecutableName(processName);
-            programName = _getProgramNameFromVersionInfo(processName);
+            processPath = _safeDartString(namePtr, length: result);
+            executableName = _extractExecutableName(processPath);
           }
         } finally {
           calloc.free(namePtr);
         }
-
-        parentProcessId = _getParentProcessId(processId);
-        parentProcessName = _getProcessNameById(parentProcessId);
+        // Parent PID and parent name resolved on the main isolate with caching.
       } finally {
         _closeHandle(hProcess);
       }
     } else {
-      // Elevated or protected process – fall back to window-title heuristics.
-      programName = _heuristicProgramName(windowTitle);
+      elevated = true;
     }
 
-    return WindowInfo(
-      windowTitle: windowTitle,
-      processName: processName,
-      executableName: executableName,
-      programName: programName,
-      processId: processId,
-      parentProcessId: parentProcessId,
-      parentProcessName: parentProcessName,
-    );
+    return {
+      'processPath': processPath,
+      'windowTitle': windowTitle,
+      'executableName': executableName,
+      'processId': processId,
+      'elevated': elevated,
+    };
+  }
+
+  /// Step 2a (on cache miss): reads the PE version resource from disk to get
+  /// the human-readable program name. Only called once per unique exe path.
+  static String _resolveVersionInfo(String fullPath) {
+    return _getProgramNameFromVersionInfo(fullPath);
+  }
+
+  /// Step 2b (on cache miss): runs CreateToolhelp32Snapshot to find the
+  /// parent PID for the given process ID. Only called once per unique PID.
+  static int _resolveParentPid(int processId) {
+    return _getParentProcessId(processId);
+  }
+
+  /// Step 2c (on cache miss): opens the parent process to get its exe name.
+  /// Only called once per unique parent PID.
+  static String _resolveParentProcessName(int processId) {
+    return _getProcessNameById(processId);
   }
 
   /// Very lightweight heuristic for protected processes we can't open.

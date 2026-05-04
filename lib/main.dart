@@ -418,8 +418,13 @@ class _MyAppState extends State<MyApp>
   bool _trayShowingUpdateIcon = false;
 
   static const List<String> _sectionNames = [
-    'Overview', 'Applications', 'Alerts & Limits',
-    'Reports', 'Focus Mode', 'Settings', 'Help',
+    'Overview',
+    'Applications',
+    'Alerts & Limits',
+    'Reports',
+    'Focus Mode',
+    'Settings',
+    'Help',
   ];
 
   void changeIndex(int value) {
