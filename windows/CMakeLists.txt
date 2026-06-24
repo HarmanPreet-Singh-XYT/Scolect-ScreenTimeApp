@@ -6,7 +6,6 @@ project(${PROJECT_NAME} LANGUAGES CXX)
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "screentime")
-set(PLUGIN_NAME "screentime_plugin")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -53,40 +52,6 @@ add_subdirectory("runner")
 # Generated plugin build rules
 include(flutter/generated_plugins.cmake)
 
-# Define plugin library - it's important that this is defined BEFORE it's linked in runner/CMakeLists.txt
-# Make sure plugin library is built before the app
-add_library(${PLUGIN_NAME} SHARED
-  "foreground_window.cpp"
-)
-
-# Apply standard settings to the plugin 
-APPLY_STANDARD_SETTINGS(${PLUGIN_NAME})
-set_target_properties(${PLUGIN_NAME} PROPERTIES
-  CXX_VISIBILITY_PRESET hidden)
-target_compile_definitions(${PLUGIN_NAME} PRIVATE FLUTTER_PLUGIN_IMPL)
-target_compile_definitions(${PLUGIN_NAME} PRIVATE _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
-target_include_directories(${PLUGIN_NAME} INTERFACE
-  "${CMAKE_CURRENT_SOURCE_DIR}/include")
-
-# Link Flutter wrapper and system libraries to the plugin
-target_link_libraries(${PLUGIN_NAME} PRIVATE
-  flutter_wrapper_plugin
-  flutter_wrapper_app
-  user32
-  kernel32
-  psapi
-  shell32
-  advapi32
-  Version.lib
-)
-
-# Important: Set output directories to match what the linker expects
-set_target_properties(${PLUGIN_NAME} PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/runner/$<CONFIG>"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>"
-)
-
 # === Installation ===
 set(BUILD_BUNDLE_DIR "$<TARGET_FILE_DIR:${BINARY_NAME}>")
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
@@ -98,10 +63,6 @@ set(INSTALL_BUNDLE_DATA_DIR "${CMAKE_INSTALL_PREFIX}/data")
 set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_INSTALL_PREFIX}")
 
 install(TARGETS ${BINARY_NAME} RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}"
-  COMPONENT Runtime)
-
-# Also install the plugin
-install(TARGETS ${PLUGIN_NAME} DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
   COMPONENT Runtime)
 
 install(FILES "${FLUTTER_ICU_DATA_FILE}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"

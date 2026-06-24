@@ -218,13 +218,13 @@ class AppDataStore extends ChangeNotifier {
 
         if (Platform.isMacOS || Platform.isWindows) {
           final docsDir = await getApplicationDocumentsDirectory();
+          final supportDir = await getApplicationSupportDirectory();
           final newHivePath = '${docsDir.path}/Scolect';
           final newDir = Directory(newHivePath);
 
           // Migration logic
           String? oldHivePath;
           if (Platform.isMacOS) {
-            final supportDir = await getApplicationSupportDirectory();
             oldHivePath = '${supportDir.path}/harman_screentime';
           } else if (Platform.isWindows) {
             // On Windows, if we were previously using initFlutter(),
@@ -274,6 +274,24 @@ class AppDataStore extends ChangeNotifier {
             }
           } else {
             hivePath = newHivePath;
+          }
+
+          // On macOS, Documents folder requires user consent (TCC). If the
+          // directory can't be created or written to, fall back to Application
+          // Support which macOS always permits without a permission prompt.
+          if (Platform.isMacOS) {
+            try {
+              final dir = Directory(hivePath);
+              if (!await dir.exists()) await dir.create(recursive: true);
+              // Probe write access with a temp file before committing to this path.
+              final probe = File('${hivePath}/.write_probe');
+              await probe.writeAsString('');
+              await probe.delete();
+            } catch (e) {
+              final fallback = '${supportDir.path}/Scolect';
+              debugPrint('⚠️ Documents folder not accessible ($e), falling back to Application Support');
+              hivePath = fallback;
+            }
           }
 
           if (!await Directory(hivePath).exists()) {
