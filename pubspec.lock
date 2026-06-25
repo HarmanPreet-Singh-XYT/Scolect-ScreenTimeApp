@@ -237,8 +237,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: "3dc62c18c6c12d461bef173a32d1d40da62cf65a"
+      ref: rust
+      resolved-ref: "8cebab807720cb419e74c9c04c567f714c8c37f2"
       url: "https://github.com/HarmanPreet-Singh-XYT/Screenstate"
     source: git
     version: "0.0.6+1"
@@ -1056,8 +1056,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: exp
-      resolved-ref: fb31abf9c3e7f1393398e3b0bb7977c5258ca5a6
+      ref: rust
+      resolved-ref: da51593042e397cbb74edebc85fd9644c9dd5a46
       url: "https://github.com/HarmanPreet-Singh-XYT/Window_focus"
     source: git
     version: "1.2.1"

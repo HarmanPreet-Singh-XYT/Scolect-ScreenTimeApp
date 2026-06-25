@@ -9,7 +9,6 @@
 #include <audioplayers_windows/audioplayers_windows_plugin.h>
 #include <auto_updater_windows/auto_updater_windows_plugin_c_api.h>
 #include <bitsdojo_window_windows/bitsdojo_window_plugin.h>
-#include <desktop_screenstate/desktop_screenstate_plugin.h>
 #include <flutter_localization/flutter_localization_plugin_c_api.h>
 #include <local_notifier/local_notifier_plugin.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
@@ -26,8 +25,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("AutoUpdaterWindowsPluginCApi"));
   BitsdojoWindowPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("BitsdojoWindowPlugin"));
-  DesktopScreenstatePluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("DesktopScreenstatePlugin"));
   FlutterLocalizationPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterLocalizationPluginCApi"));
   LocalNotifierPluginRegisterWithRegistrar(

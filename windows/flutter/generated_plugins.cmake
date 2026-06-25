@@ -6,7 +6,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
   auto_updater_windows
   bitsdojo_window_windows
-  desktop_screenstate
   flutter_localization
   local_notifier
   screen_retriever_windows
@@ -18,6 +17,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
+  desktop_screenstate
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

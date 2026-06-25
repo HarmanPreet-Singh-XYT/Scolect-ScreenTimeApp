@@ -58,7 +58,7 @@ dependencies:
   window_focus:
     git:
       url: https://github.com/HarmanPreet-Singh-XYT/Window_focus
-      ref: exp
+      ref: rust
   url_launcher: ^6.3.2
   flutter_colorpicker: ^1.0.3
   audioplayers: ^6.5.1
@@ -73,7 +73,7 @@ dependencies:
   desktop_screenstate:
     git:
       url: https://github.com/HarmanPreet-Singh-XYT/Screenstate
-      ref: main
+      ref: rust
   auto_updater: ^1.0.0
   # sentry_flutter: ^9.16.1
 
