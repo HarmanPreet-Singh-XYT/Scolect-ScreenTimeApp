@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 
 class SoundManager {
@@ -44,69 +44,62 @@ class SoundManager {
     return 'en';
   }
 
-  static AudioPlayer? _current;
+  static AudioPlayer? _player;
+  static String? _lastSoundFile;
+  
+  static AudioPlayer get player {
+    _player ??= AudioPlayer();
+    return _player!;
+  }
 
   static Future<void> playSound({
     required BuildContext context,
     required String soundType,
     required String voiceGender,
   }) async {
-    // Stop and discard the previous player without listening to its events
-    final old = _current;
-    _current = null;
-    if (old != null) {
-      try {
-        await old.stop();
-      } catch (_) {}
-      // Dispose on a slight delay so iOS can finish its native teardown
-      // before we create the next player — prevents the duplicate-response error
-      Future.delayed(const Duration(milliseconds: 50), () {
-        try {
-          old.dispose();
-        } catch (_) {}
-      });
-    }
-
     final language = _detectLanguageCode(context);
     final soundFile = _buildFileName(soundType, language, voiceGender);
     debugPrint('Playing sound: sounds/$soundFile');
 
-    final player = AudioPlayer();
-    // Tell audioplayers not to emit a platform completion event on iOS
-    await player.setReleaseMode(ReleaseMode.release);
-    _current = player;
-
     try {
-      await player.play(AssetSource('sounds/$soundFile'));
+      // Unconditionally stop any previous playback
+      if (_player != null) {
+        await _player!.stop();
+      }
+      
+      if (_lastSoundFile != soundFile) {
+        // If it's a new file, load it.
+        await player.setAsset('assets/sounds/$soundFile');
+        _lastSoundFile = soundFile;
+      }
+      
+      // Unconditionally seek to zero to avoid any glitchy internal states
+      // where the player remembers the end of a previous playback.
+      await player.seek(Duration.zero);
+      
+      // Do not await play() so rapid clicks don't throw an interrupted exception here
+      player.play();
     } catch (e) {
+      // Ignore benign interruption exceptions from rapid clicking
+      if (e.toString().toLowerCase().contains('interrupted')) return;
       debugPrint('Error playing sound: $e');
     }
-
-    // Self-cleanup: once done, dispose without a completion listener
-    // Use a one-shot timer based on an estimated max sound duration
-    Future.delayed(const Duration(seconds: 10), () {
-      if (_current == player) {
-        _current = null;
-        try {
-          player.dispose();
-        } catch (_) {}
-      }
-    });
   }
 
   static Future<void> stopAllSounds() async {
-    final player = _current;
-    _current = null;
-    if (player == null) return;
-    try {
-      await player.stop();
-    } catch (_) {}
-    Future.delayed(const Duration(milliseconds: 50), () {
+    if (_player != null && _player!.playing) {
       try {
-        player.dispose();
+        await _player!.stop();
       } catch (_) {}
-    });
+    }
   }
 
-  static Future<void> dispose() => stopAllSounds();
+  static Future<void> dispose() async {
+    if (_player != null) {
+      try {
+        await _player!.dispose();
+        _player = null;
+      } catch (_) {}
+    }
+  }
 }

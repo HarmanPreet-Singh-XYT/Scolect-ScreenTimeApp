@@ -61,7 +61,6 @@ dependencies:
       ref: rust
   url_launcher: ^6.3.2
   flutter_colorpicker: ^1.0.3
-  audioplayers: ^6.5.1
   launch_at_startup: ^0.5.1
   excel: ^4.0.6
   # Native Code Interaction for Foreground Window
@@ -75,6 +74,8 @@ dependencies:
       url: https://github.com/HarmanPreet-Singh-XYT/Screenstate
       ref: rust
   auto_updater: ^1.0.0
+  just_audio: ^0.10.5
+  just_audio_windows: ^0.2.3
   # sentry_flutter: ^9.16.1
 
 dev_dependencies:

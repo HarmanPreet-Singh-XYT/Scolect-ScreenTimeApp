@@ -867,20 +867,9 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
           update.secondsRemaining > 0 ? update.secondsRemaining / total : 1.0;
     });
 
-    // State transition sounds
-    if (prev != _state && prev != TimerState.idle) {
-      switch (_state) {
-        case TimerState.work:
-          _onWorkStart();
-        case TimerState.shortBreak:
-          _onShortBreakStart();
-        case TimerState.longBreak:
-          _onLongBreakStart();
-        case TimerState.idle:
-          break;
-      }
-    }
-
+    // State transition sounds are now handled exclusively by PomodoroTimerService
+    // callbacks and explicit manual UI actions to prevent duplicate overlapping sounds.
+    
     // Pulse animation
     if (_isRunning && !_pulseCtrl.isAnimating) {
       _pulseCtrl.repeat(reverse: true);
