@@ -130,7 +130,7 @@ class SettingsManager {
   static final bool _isMacOS = Platform.isMacOS;
 
   Map<String, String> versionInfo = {
-    "version": "2.1.2",
+    "version": "2.1.3",
     "type": "Stable Build",
   };
 
