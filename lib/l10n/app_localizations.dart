@@ -5583,6 +5583,266 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Set the time when your screen time counter resets for a new day.'**
   String get dailyResetTimeDescription;
+
+  /// No description provided for @narrativeTodaySpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Today you spent {timeStr} at your computer.'**
+  String narrativeTodaySpent(String timeStr);
+
+  /// No description provided for @narrativeMostFocused.
+  ///
+  /// In en, this message translates to:
+  /// **'Your most focused stretch was {start} – {end}.'**
+  String narrativeMostFocused(String start, String end);
+
+  /// No description provided for @narrativeFocusSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'You completed {focusSessions} focus {focusSessionsCount, plural, =1{session} other{sessions}} totalling {fsMinutes}m.'**
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes);
+
+  /// No description provided for @narrativeCheckedAppShort.
+  ///
+  /// In en, this message translates to:
+  /// **'You checked {topAppName} {topAppOpenCount} times but kept each visit short.'**
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount);
+
+  /// No description provided for @narrativeCheckedAppLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Most of your time went to {topAppName} in just {topAppOpenCount} {topAppOpenCountPlural, plural, =1{session} other{sessions}}.'**
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural);
+
+  /// No description provided for @narrativeToneSolid.
+  ///
+  /// In en, this message translates to:
+  /// **'Solid day.'**
+  String get narrativeToneSolid;
+
+  /// No description provided for @narrativeToneDecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Decent progress.'**
+  String get narrativeToneDecent;
+
+  /// No description provided for @narrativeToneLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light day — nothing wrong with that.'**
+  String get narrativeToneLight;
+
+  /// No description provided for @narrativeToneImprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Room to improve tomorrow.'**
+  String get narrativeToneImprove;
+
+  /// No description provided for @habitDnaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Habit DNA'**
+  String get habitDnaTitle;
+
+  /// No description provided for @habitDnaAnalyzed.
+  ///
+  /// In en, this message translates to:
+  /// **'{daysAnalyzed}d analyzed'**
+  String habitDnaAnalyzed(int daysAnalyzed);
+
+  /// No description provided for @habitDnaChronotype.
+  ///
+  /// In en, this message translates to:
+  /// **'Chronotype'**
+  String get habitDnaChronotype;
+
+  /// No description provided for @habitDnaWorkStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Work Style'**
+  String get habitDnaWorkStyle;
+
+  /// No description provided for @habitDnaPeakFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak Focus'**
+  String get habitDnaPeakFocus;
+
+  /// No description provided for @habitDnaAvgSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg Session'**
+  String get habitDnaAvgSession;
+
+  /// No description provided for @habitDnaBestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Day'**
+  String get habitDnaBestDay;
+
+  /// No description provided for @habitDnaRoughDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Rough Day'**
+  String get habitDnaRoughDay;
+
+  /// No description provided for @habitDnaKryptonite.
+  ///
+  /// In en, this message translates to:
+  /// **'Top distraction: {appName}'**
+  String habitDnaKryptonite(String appName);
+
+  /// No description provided for @chronotypeMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning Person'**
+  String get chronotypeMorning;
+
+  /// No description provided for @chronotypeAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon Peak'**
+  String get chronotypeAfternoon;
+
+  /// No description provided for @chronotypeNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Night Owl'**
+  String get chronotypeNight;
+
+  /// No description provided for @chronotypeMixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Mixed'**
+  String get chronotypeMixed;
+
+  /// No description provided for @workStyleDeep.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Focus'**
+  String get workStyleDeep;
+
+  /// No description provided for @workStyleSwitcher.
+  ///
+  /// In en, this message translates to:
+  /// **'Task Switcher'**
+  String get workStyleSwitcher;
+
+  /// No description provided for @workStyleBalanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Balanced'**
+  String get workStyleBalanced;
+
+  /// No description provided for @timeFormatAm.
+  ///
+  /// In en, this message translates to:
+  /// **'{hour} AM'**
+  String timeFormatAm(int hour);
+
+  /// No description provided for @timeFormatPm.
+  ///
+  /// In en, this message translates to:
+  /// **'{hour} PM'**
+  String timeFormatPm(int hour);
+
+  /// No description provided for @timeFormatMidnight.
+  ///
+  /// In en, this message translates to:
+  /// **'Midnight'**
+  String get timeFormatMidnight;
+
+  /// No description provided for @timeFormatNoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Noon'**
+  String get timeFormatNoon;
+
+  /// No description provided for @weeklyStoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This Week'**
+  String get weeklyStoryTitle;
+
+  /// No description provided for @weeklyStoryWeekNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Week {weekNumber}'**
+  String weeklyStoryWeekNumber(int weekNumber);
+
+  /// No description provided for @weeklyStoryHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Week {weekNumber} — {timeStr} on screen so far.'**
+  String weeklyStoryHeadline(int weekNumber, String timeStr);
+
+  /// No description provided for @weeklyStoryReclaimed.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reclaimed {diff} compared to Week 1.'**
+  String weeklyStoryReclaimed(String diff);
+
+  /// No description provided for @weeklyStoryUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen time is up {diff} from Week 1.'**
+  String weeklyStoryUp(String diff);
+
+  /// No description provided for @weeklyStoryImprovementArea.
+  ///
+  /// In en, this message translates to:
+  /// **'Still working on: {timeLabel} in {worstCat}.'**
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat);
+
+  /// No description provided for @weekdayNameMonday.
+  ///
+  /// In en, this message translates to:
+  /// **'Monday'**
+  String get weekdayNameMonday;
+
+  /// No description provided for @weekdayNameTuesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Tuesday'**
+  String get weekdayNameTuesday;
+
+  /// No description provided for @weekdayNameWednesday.
+  ///
+  /// In en, this message translates to:
+  /// **'Wednesday'**
+  String get weekdayNameWednesday;
+
+  /// No description provided for @weekdayNameThursday.
+  ///
+  /// In en, this message translates to:
+  /// **'Thursday'**
+  String get weekdayNameThursday;
+
+  /// No description provided for @weekdayNameFriday.
+  ///
+  /// In en, this message translates to:
+  /// **'Friday'**
+  String get weekdayNameFriday;
+
+  /// No description provided for @weekdayNameSaturday.
+  ///
+  /// In en, this message translates to:
+  /// **'Saturday'**
+  String get weekdayNameSaturday;
+
+  /// No description provided for @weekdayNameSunday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunday'**
+  String get weekdayNameSunday;
+
+  /// No description provided for @weekdayNameUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'that day'**
+  String get weekdayNameUnknown;
 }
 
 class _AppLocalizationsDelegate

@@ -79,6 +79,7 @@ class DailyOverviewData {
           percentageOfTotalTime:
               hasTotalTime ? (timeSpent.inSeconds / totalSeconds) * 100 : 0.0,
           isVisible: metadata.isVisible,
+          isProductive: metadata.isProductive,
         ));
       }
 
@@ -218,6 +219,7 @@ class ApplicationDetail {
   final double percentageOfTotalTime;
   final String formattedScreenTime;
   final bool isVisible;
+  final bool isProductive;
 
   ApplicationDetail({
     required this.name,
@@ -225,6 +227,7 @@ class ApplicationDetail {
     required this.screenTime,
     required this.percentageOfTotalTime,
     required this.isVisible,
+    required this.isProductive,
   }) : formattedScreenTime = DailyOverviewData.formatDuration(screenTime);
 }
 

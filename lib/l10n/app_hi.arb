@@ -1,76 +1,61 @@
 {
   "@@locale": "hi",
-  
   "appWindowTitle": "Scolect - स्क्रीन टाइम और ऐप उपयोग ट्रैक करें",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "Scolect",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "उत्पादक स्क्रीनटाइम",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "स्क्रीनटाइम",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "ओपन सोर्स",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "विंडो दिखाएं",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "फोकस मोड शुरू करें",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "फोकस मोड बंद करें",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "रिपोर्ट",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "अलर्ट और सीमाएं",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "एप्लिकेशन",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "नोटिफिकेशन बंद करें",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "नोटिफिकेशन चालू करें",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "संस्करण: ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "संस्करण: {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "बाहर निकलें",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "अवलोकन",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "एप्लिकेशन",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "अलर्ट और सीमाएं",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "रिपोर्ट",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "फोकस मोड",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "सेटिंग्स",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "मदद",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "मदद",
-  
   "faqCategoryGeneral": "सामान्य प्रश्न",
   "faqCategoryApplications": "एप्लिकेशन प्रबंधन",
   "faqCategoryReports": "उपयोग विश्लेषण और रिपोर्ट",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "फोकस मोड और पोमोडोरो टाइमर",
   "faqCategorySettings": "सेटिंग्स और अनुकूलन",
   "faqCategoryTroubleshooting": "समस्या निवारण",
-  
   "faqGeneralQ1": "यह ऐप स्क्रीन टाइम कैसे ट्रैक करता है?",
   "faqGeneralA1": "ऐप आपके डिवाइस के उपयोग को रियल-टाइम में मॉनिटर करता है, विभिन्न एप्लिकेशन पर बिताए गए समय को ट्रैक करता है। यह आपकी डिजिटल आदतों के बारे में व्यापक जानकारी प्रदान करता है, जिसमें कुल स्क्रीन टाइम, उत्पादक समय और एप्लिकेशन-विशिष्ट उपयोग शामिल है।",
-  
   "faqGeneralQ2": "किसी ऐप को 'उत्पादक' क्या बनाता है?",
   "faqGeneralA2": "आप 'एप्लिकेशन' सेक्शन में ऐप्स को मैन्युअल रूप से उत्पादक के रूप में चिह्नित कर सकते हैं। उत्पादक ऐप्स आपके उत्पादकता स्कोर में योगदान करते हैं, जो काम से संबंधित या लाभदायक एप्लिकेशन पर बिताए गए स्क्रीन टाइम का प्रतिशत गणना करता है।",
-  
   "faqGeneralQ3": "स्क्रीन टाइम ट्रैकिंग कितनी सटीक है?",
   "faqGeneralA3": "ऐप आपके डिवाइस उपयोग का सटीक माप प्रदान करने के लिए सिस्टम-लेवल ट्रैकिंग का उपयोग करता है। यह न्यूनतम बैटरी प्रभाव के साथ प्रत्येक एप्लिकेशन के फोरग्राउंड समय को कैप्चर करता है।",
-  
   "faqGeneralQ4": "क्या मैं अपनी ऐप श्रेणीकरण को अनुकूलित कर सकता हूं?",
   "faqGeneralA4": "बिल्कुल! आप कस्टम श्रेणियां बना सकते हैं, ऐप्स को विशिष्ट श्रेणियों में असाइन कर सकते हैं, और 'एप्लिकेशन' सेक्शन में इन असाइनमेंट को आसानी से संशोधित कर सकते हैं। यह अधिक सार्थक उपयोग विश्लेषण बनाने में मदद करता है।",
-  
   "faqGeneralQ5": "मुझे इस ऐप से कौन सी जानकारी मिल सकती है?",
   "faqGeneralA5": "ऐप व्यापक जानकारी प्रदान करता है जिसमें उत्पादकता स्कोर, दिन के समय के अनुसार उपयोग पैटर्न, विस्तृत एप्लिकेशन उपयोग, फोकस सेशन ट्रैकिंग, और आपकी डिजिटल आदतों को समझने और सुधारने में मदद करने के लिए ग्राफ और पाई चार्ट जैसे विजुअल एनालिटिक्स शामिल हैं।",
-  
   "faqAppsQ1": "मैं विशिष्ट ऐप्स को ट्रैकिंग से कैसे छिपाऊं?",
   "faqAppsA1": "'एप्लिकेशन' सेक्शन में, आप ऐप्स की दृश्यता को टॉगल कर सकते हैं।",
-  
   "faqAppsQ2": "क्या मैं अपने एप्लिकेशन खोज और फिल्टर कर सकता हूं?",
   "faqAppsA2": "हां, एप्लिकेशन सेक्शन में सर्च फंक्शनालिटी और फिल्टरिंग ऑप्शन शामिल हैं। आप श्रेणी, उत्पादकता स्थिति, ट्रैकिंग स्थिति और दृश्यता के आधार पर ऐप्स फिल्टर कर सकते हैं।",
-  
   "faqAppsQ3": "एप्लिकेशन के लिए कौन से एडिटिंग विकल्प उपलब्ध हैं?",
   "faqAppsA3": "प्रत्येक एप्लिकेशन के लिए, आप एडिट कर सकते हैं: श्रेणी असाइनमेंट, उत्पादकता स्थिति, उपयोग ट्रैकिंग, रिपोर्ट में दृश्यता, और व्यक्तिगत दैनिक समय सीमा सेट करें।",
-  
   "faqAppsQ4": "एप्लिकेशन श्रेणियां कैसे निर्धारित होती हैं?",
   "faqAppsA4": "प्रारंभिक श्रेणियां सिस्टम-सुझाई गई हैं, लेकिन आपके पास अपने वर्कफ्लो और प्राथमिकताओं के आधार पर कस्टम श्रेणियां बनाने, संशोधित करने और असाइन करने का पूर्ण नियंत्रण है।",
-  
   "faqReportsQ1": "किस प्रकार की रिपोर्ट उपलब्ध हैं?",
   "faqReportsA1": "रिपोर्ट में शामिल हैं: कुल स्क्रीन टाइम, उत्पादक समय, सबसे अधिक उपयोग किए गए ऐप्स, फोकस सेशन, दैनिक स्क्रीन टाइम ग्राफ, श्रेणी ब्रेकडाउन पाई चार्ट, विस्तृत एप्लिकेशन उपयोग, साप्ताहिक उपयोग ट्रेंड, और दिन के समय के अनुसार उपयोग पैटर्न विश्लेषण।",
-  
   "faqReportsQ2": "एप्लिकेशन उपयोग रिपोर्ट कितनी विस्तृत हैं?",
   "faqReportsA2": "विस्तृत एप्लिकेशन उपयोग रिपोर्ट दिखाती हैं: ऐप नाम, श्रेणी, बिताया गया कुल समय, उत्पादकता स्थिति, और उपयोग सारांश, दैनिक सीमाएं, उपयोग ट्रेंड, और उत्पादकता मेट्रिक्स जैसी गहरी जानकारी के साथ 'एक्शन' सेक्शन प्रदान करती हैं।",
-  
   "faqReportsQ3": "क्या मैं समय के साथ अपने उपयोग ट्रेंड का विश्लेषण कर सकता हूं?",
   "faqReportsA3": "हां! ऐप सप्ताह-दर-सप्ताह तुलना प्रदान करता है, पिछले हफ्तों के उपयोग के ग्राफ, औसत दैनिक उपयोग, सबसे लंबे सेशन, और साप्ताहिक कुल दिखाता है ताकि आप अपनी डिजिटल आदतों को ट्रैक कर सकें।",
-  
   "faqReportsQ4": "'उपयोग पैटर्न' विश्लेषण क्या है?",
   "faqReportsA4": "उपयोग पैटर्न आपके स्क्रीन टाइम को सुबह, दोपहर, शाम और रात के खंडों में विभाजित करता है। यह आपको समझने में मदद करता है कि आप अपने डिवाइस पर कब सबसे अधिक सक्रिय हैं और सुधार के संभावित क्षेत्रों की पहचान करता है।",
-  
   "faqAlertsQ1": "स्क्रीन टाइम सीमाएं कितनी विस्तृत हैं?",
   "faqAlertsA1": "आप समग्र दैनिक स्क्रीन टाइम सीमाएं और व्यक्तिगत ऐप सीमाएं सेट कर सकते हैं। सीमाएं घंटों और मिनटों में कॉन्फ़िगर की जा सकती हैं, आवश्यकतानुसार रीसेट या समायोजित करने के विकल्पों के साथ।",
-  
   "faqAlertsQ2": "कौन से नोटिफिकेशन विकल्प उपलब्ध हैं?",
   "faqAlertsA2": "ऐप कई प्रकार के नोटिफिकेशन प्रदान करता है: स्क्रीन टाइम पार करने पर सिस्टम अलर्ट, अनुकूलन योग्य अंतराल (1, 5, 15, 30, या 60 मिनट) पर बार-बार अलर्ट, और फोकस मोड, स्क्रीन टाइम, और एप्लिकेशन-विशिष्ट नोटिफिकेशन के लिए टॉगल।",
-  
   "faqAlertsQ3": "क्या मैं सीमा अलर्ट को अनुकूलित कर सकता हूं?",
   "faqAlertsA3": "हां, आप अलर्ट की आवृत्ति को अनुकूलित कर सकते हैं, विशिष्ट प्रकार के अलर्ट को सक्षम/अक्षम कर सकते हैं, और समग्र स्क्रीन टाइम और व्यक्तिगत एप्लिकेशन के लिए अलग-अलग सीमाएं सेट कर सकते हैं।",
-  
   "faqFocusQ1": "किस प्रकार के फोकस मोड उपलब्ध हैं?",
   "faqFocusA1": "उपलब्ध मोड में डीप वर्क (लंबे फोकस्ड सेशन), क्विक टास्क (काम के छोटे बर्स्ट), और रीडिंग मोड शामिल हैं। प्रत्येक मोड आपके काम और ब्रेक टाइम को प्रभावी ढंग से संरचित करने में मदद करता है।",
-  
   "faqFocusQ2": "पोमोडोरो टाइमर कितना लचीला है?",
   "faqFocusA2": "टाइमर अत्यधिक अनुकूलन योग्य है। आप काम की अवधि, छोटे ब्रेक की लंबाई, और लंबे ब्रेक की अवधि समायोजित कर सकते हैं। अतिरिक्त विकल्पों में अगले सेशन के लिए ऑटो-स्टार्ट और नोटिफिकेशन सेटिंग्स शामिल हैं।",
-  
   "faqFocusQ3": "फोकस मोड हिस्ट्री क्या दिखाती है?",
   "faqFocusA3": "फोकस मोड हिस्ट्री दैनिक फोकस सेशन को ट्रैक करती है, प्रति दिन सेशन की संख्या, ट्रेंड ग्राफ, औसत सेशन अवधि, कुल फोकस समय, और वर्क सेशन, शॉर्ट ब्रेक, और लॉन्ग ब्रेक को विभाजित करने वाला टाइम डिस्ट्रीब्यूशन पाई चार्ट दिखाती है।",
-  
   "faqFocusQ4": "क्या मैं अपने फोकस सेशन प्रोग्रेस को ट्रैक कर सकता हूं?",
   "faqFocusA4": "ऐप में प्ले/पॉज़, रीलोड, और सेटिंग्स बटन के साथ एक सर्कुलर टाइमर UI है। आप सहज नियंत्रणों के साथ अपने फोकस सेशन को आसानी से ट्रैक और प्रबंधित कर सकते हैं।",
-  
   "faqSettingsQ1": "कौन से अनुकूलन विकल्प उपलब्ध हैं?",
   "faqSettingsA1": "अनुकूलन में थीम चयन (सिस्टम, लाइट, डार्क), भाषा सेटिंग्स, स्टार्टअप व्यवहार, व्यापक नोटिफिकेशन नियंत्रण, और डेटा क्लियर करने या सेटिंग्स रीसेट करने जैसे डेटा प्रबंधन विकल्प शामिल हैं।",
-  
   "faqSettingsQ2": "मैं फीडबैक कैसे दूं या समस्याएं कैसे रिपोर्ट करूं?",
   "faqSettingsA2": "सेटिंग्स सेक्शन के नीचे, आपको बग रिपोर्ट करने, फीडबैक सबमिट करने, या सपोर्ट से संपर्क करने के बटन मिलेंगे। ये आपको उचित सपोर्ट चैनलों पर रीडायरेक्ट करेंगे।",
-  
   "faqSettingsQ3": "जब मैं अपना डेटा क्लियर करता हूं तो क्या होता है?",
   "faqSettingsA3": "डेटा क्लियर करने से आपके सभी उपयोग आंकड़े, फोकस सेशन हिस्ट्री, और कस्टम सेटिंग्स रीसेट हो जाएंगी। यह फ्रेश स्टार्ट या समस्या निवारण के लिए उपयोगी है।",
-  
   "faqTroubleQ1": "डेटा नहीं दिख रहा, hive नहीं खुल रहा एरर",
   "faqTroubleA1": "यह समस्या ज्ञात है, अस्थायी समाधान है सेटिंग्स के माध्यम से डेटा क्लियर करना और अगर यह काम नहीं करता है तो Documents में जाएं और यदि वे मौजूद हैं तो निम्नलिखित फाइलें हटाएं - harman_screentime_app_usage_box.hive और harman_screentime_app_usage.lock, आपको ऐप को नवीनतम संस्करण में अपडेट करने का भी सुझाव दिया जाता है।",
-  
   "faqTroubleQ2": "ऐप हर स्टार्टअप पर खुलता है, क्या करें?",
   "faqTroubleA2": "यह एक ज्ञात समस्या है जो Windows 10 पर होती है, अस्थायी समाधान है सेटिंग्स में Launch as Minimized को सक्षम करना ताकि यह Minimized के रूप में लॉन्च हो।",
-  
   "usageAnalytics": "उपयोग विश्लेषण",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "पिछले 7 दिन",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "पिछला महीना",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "पिछले 3 महीने",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "लाइफटाइम",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "कस्टम",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "विश्लेषण डेटा लोड हो रहा है...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "पुनः प्रयास करें",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "विश्लेषण प्रारंभ करने में विफल। कृपया एप्लिकेशन को पुनरारंभ करें।",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "एक अप्रत्याशित त्रुटि हुई: {error}। कृपया बाद में पुनः प्रयास करें।",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "विश्लेषण डेटा लोड करने में त्रुटि: {error}। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "कस्टम",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "तिथि सीमा",
+  "dateRange": "तारीख सीमा:",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "विशिष्ट तिथि",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "प्रारंभ तिथि: ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "समाप्ति तिथि: ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "तिथि: ",
+  "date": "तारीख",
   "@date": {
     "description": "Label for single date picker"
   },
-  
   "cancel": "रद्द करें",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "लागू करें",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "ठीक है",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "अमान्य तिथि सीमा",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "प्रारंभ तिथि समाप्ति तिथि से पहले या बराबर होनी चाहिए।",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
-  "totalScreenTime": "कुल स्क्रीन टाइम",
+  "totalScreenTime": "कुल स्क्रीन समय",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
   "productiveTime": "उत्पादक समय",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
   "mostUsedApp": "सबसे अधिक उपयोग किया गया ऐप",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
-  "focusSessions": "फोकस सेशन",
+  "focusSessions": "फोकस सत्र",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% पिछली अवधि की तुलना में",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% पिछली अवधि की तुलना में",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "{title} आइकन",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "दैनिक स्क्रीन टाइम",
+  "dailyScreenTime": "दैनिक स्क्रीन समय",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "श्रेणी विभाजन",
+  "categoryBreakdown": "श्रेणी विवरण",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "कोई डेटा उपलब्ध नहीं",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
-  "sectionLabel": "{title} सेक्शन",
+  "sectionLabel": "{title} अनुभाग",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "विस्तृत एप्लिकेशन उपयोग",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "एप्लिकेशन खोजें",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "नाम",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "श्रेणी",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "कुल समय",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "उत्पादकता",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "क्रियाएं",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "क्रमबद्ध करें: {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "नाम",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "श्रेणी",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "उपयोग",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "उत्पादक",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "गैर-उत्पादक",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "आपके खोज मानदंडों से कोई एप्लिकेशन मेल नहीं खाता",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "विवरण देखें",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "उपयोग सारांश",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "पिछले सप्ताह का उपयोग",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "दिन के समय के अनुसार उपयोग पैटर्न",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "पैटर्न विश्लेषण",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "आज",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "दैनिक सीमा",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "कोई सीमा नहीं",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "उपयोग ट्रेंड",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "उत्पादकता",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "बढ़ रहा है",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "घट रहा है",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "स्थिर",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "औसत दैनिक उपयोग",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
-  "longestSession": "सबसे लंबा सेशन",
+  "longestSession": "सबसे लंबा सत्र",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "साप्ताहिक कुल",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "कोई ऐतिहासिक डेटा उपलब्ध नहीं",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "सुबह (6-12)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "दोपहर (12-5)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "शाम (5-9)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "रात (9-6)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "उपयोग अंतर्दृष्टि",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "सीमा स्थिति",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "बंद करें",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "आप मुख्य रूप से {appName} का उपयोग {timeOfDay} के दौरान करते हैं।",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "आपका उपयोग पिछली अवधि की तुलना में काफी बढ़ा है ({percentage}%)।",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "आपका उपयोग पिछली अवधि की तुलना में ऊपर की ओर ट्रेंड कर रहा है।",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "आपका उपयोग पिछली अवधि की तुलना में काफी घटा है ({percentage}%)।",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "आपका उपयोग पिछली अवधि की तुलना में नीचे की ओर ट्रेंड कर रहा है।",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "आपका उपयोग पिछली अवधि की तुलना में सुसंगत रहा है।",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "यह आपकी सेटिंग्स में एक उत्पादक ऐप के रूप में चिह्नित है।",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "यह आपकी सेटिंग्स में एक गैर-उत्पादक ऐप के रूप में चिह्नित है।",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "आपका सबसे सक्रिय समय लगभग {time} है।",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "इस एप्लिकेशन के लिए कोई उपयोग सीमा सेट नहीं की गई है।",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "आपने इस एप्लिकेशन के लिए अपनी दैनिक सीमा तक पहुंच गई है।",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "आप अपनी दैनिक सीमा तक पहुंचने वाले हैं, केवल {remainingTime} शेष है।",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "आपने अपनी दैनिक सीमा का {percent}% उपयोग किया है, {remainingTime} शेष है।",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "आपके पास अपनी दैनिक सीमा में से {time} शेष है।",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "आज",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "{hour} AM",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "{hour} PM",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,7 +610,6 @@
       }
     }
   },
-  
   "durationHoursMinutes": "{hours}घं {minutes}मि",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
@@ -765,7 +624,6 @@
       }
     }
   },
-  
   "durationMinutesOnly": "{minutes}मि",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
@@ -776,120 +634,104 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "अलर्ट और सीमाएं",
   "notificationsSettings": "नोटिफिकेशन सेटिंग्स",
   "overallScreenTimeLimit": "समग्र स्क्रीन टाइम सीमा",
   "applicationLimits": "एप्लिकेशन सीमाएं",
-  
   "popupAlerts": "पॉप-अप अलर्ट",
   "frequentAlerts": "बार-बार अलर्ट",
   "soundAlerts": "ध्वनि अलर्ट",
   "systemAlerts": "सिस्टम अलर्ट",
-  
   "dailyTotalLimit": "दैनिक कुल सीमा: ",
-  "hours": "घंटे: ",
-  "minutes": "मिनट: ",
+  "hours": "घंटे",
+  "minutes": "मिनट",
   "currentUsage": "वर्तमान उपयोग: ",
-  
   "tableName": "नाम",
   "tableCategory": "श्रेणी",
   "tableDailyLimit": "दैनिक सीमा",
   "tableCurrentUsage": "वर्तमान उपयोग",
   "tableStatus": "स्थिति",
   "tableActions": "क्रियाएं",
-  
   "addLimit": "सीमा जोड़ें",
   "noApplicationsToDisplay": "प्रदर्शित करने के लिए कोई एप्लिकेशन नहीं",
-  
   "statusActive": "सक्रिय",
   "statusOff": "बंद",
   "durationNone": "कोई नहीं",
-  
   "addApplicationLimit": "एप्लिकेशन सीमा जोड़ें",
   "selectApplication": "एप्लिकेशन चुनें",
   "selectApplicationPlaceholder": "एक एप्लिकेशन चुनें",
   "enableLimit": "सीमा सक्षम करें: ",
-  
   "editLimitTitle": "सीमा संपादित करें: {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "डेटा लोड करने में विफल: {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "सेटिंग्स रीसेट करें?",
   "resetSettingsContent": "यदि आप सेटिंग्स रीसेट करते हैं, तो आप इसे पुनर्प्राप्त नहीं कर पाएंगे। क्या आप इसे रीसेट करना चाहते हैं?",
   "resetAll": "सब रीसेट करें",
-  "refresh": "रीफ्रेश",
+  "refresh": "रीफ्रेश करें",
   "save": "सहेजें",
   "add": "जोड़ें",
   "error": "त्रुटि",
   "retry": "पुनः प्रयास करें",
-  
   "applicationsTitle": "एप्लिकेशन",
   "searchApplication": "एप्लिकेशन खोजें",
-  
-  "tracking": "ट्रैकिंग",
+  "tracking": "ट्रैक किए गए",
   "hiddenVisible": "छिपा/दृश्यमान",
   "selectCategory": "एक श्रेणी चुनें",
   "allCategories": "सभी",
-  
   "tableScreenTime": "स्क्रीन टाइम",
   "tableTracking": "ट्रैकिंग",
   "tableHidden": "छिपा",
   "tableEdit": "संपादित करें",
-  
   "editAppTitle": "{appName} संपादित करें",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "श्रेणी",
   "customCategory": "कस्टम",
   "customCategoryPlaceholder": "कस्टम श्रेणी नाम दर्ज करें",
   "uncategorized": "अवर्गीकृत",
-  
   "isProductive": "उत्पादक है",
   "trackUsage": "उपयोग ट्रैक करें",
   "visibleInReports": "रिपोर्ट में दृश्यमान",
-  
   "timeLimitsSection": "समय सीमाएं",
   "enableDailyLimit": "दैनिक सीमा सक्षम करें",
   "setDailyTimeLimit": "दैनिक समय सीमा सेट करें:",
-  
   "saveChanges": "परिवर्तन सहेजें",
-  
   "errorLoadingData": "अवलोकन डेटा लोड करने में त्रुटि: {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "फोकस मोड",
-  
   "historySection": "इतिहास",
   "trendsSection": "ट्रेंड",
   "timeDistributionSection": "समय वितरण",
   "sessionHistorySection": "सेशन इतिहास",
-  
   "workSession": "कार्य सेशन",
   "shortBreak": "छोटा ब्रेक",
   "longBreak": "लंबा ब्रेक",
-  
   "dateHeader": "तिथि",
   "durationHeader": "अवधि",
-  
   "monday": "सोमवार",
   "tuesday": "मंगलवार",
   "wednesday": "बुधवार",
@@ -897,218 +739,179 @@
   "friday": "शुक्रवार",
   "saturday": "शनिवार",
   "sunday": "रविवार",
-  
   "focusModeSettingsTitle": "फोकस मोड सेटिंग्स",
-  
   "modeCustom": "कस्टम",
   "modeDeepWork": "डीप वर्क (60 मिनट)",
   "modeQuickTasks": "क्विक टास्क (25 मिनट)",
   "modeReading": "रीडिंग (45 मिनट)",
-  
   "workDurationLabel": "कार्य अवधि: {minutes} मिनट",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "छोटा ब्रेक: {minutes} मिनट",
+  "shortBreakLabel": "छोटा ब्रेक",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "लंबा ब्रेक: {minutes} मिनट",
+  "longBreakLabel": "लंबा ब्रेक",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "अगला सेशन ऑटो-स्टार्ट करें",
   "blockDistractions": "फोकस मोड के दौरान विचलन को ब्लॉक करें",
   "enableNotifications": "नोटिफिकेशन सक्षम करें",
-  
   "saved": "सहेजा गया",
-  
   "errorLoadingFocusModeData": "फोकस मोड डेटा लोड करने में त्रुटि: {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "आज का अवलोकन",
   "startFocusMode": "फोकस मोड शुरू करें",
-  
   "loadingProductivityData": "आपका उत्पादकता डेटा लोड हो रहा है...",
   "noActivityDataAvailable": "अभी तक कोई गतिविधि डेटा उपलब्ध नहीं है",
   "startUsingApplications": "स्क्रीन टाइम और उत्पादकता ट्रैक करने के लिए अपने एप्लिकेशन का उपयोग शुरू करें।",
   "refreshData": "डेटा रीफ्रेश करें",
-  
   "topApplications": "शीर्ष एप्लिकेशन",
-  
   "noAppUsageDataAvailable": "अभी तक कोई एप्लिकेशन उपयोग डेटा उपलब्ध नहीं है",
   "noApplicationDataAvailable": "कोई एप्लिकेशन डेटा उपलब्ध नहीं है",
   "noCategoryDataAvailable": "कोई श्रेणी डेटा उपलब्ध नहीं है",
   "noApplicationLimitsSet": "कोई एप्लिकेशन सीमाएं सेट नहीं की गई हैं",
-  
   "screenLabel": "स्क्रीन",
   "timeLabel": "समय",
   "productiveLabel": "उत्पादक",
   "scoreLabel": "स्कोर",
-  
   "defaultNone": "कोई नहीं",
   "defaultTime": "0घं 0मि",
   "defaultCount": "0",
   "unknownApp": "अज्ञात",
-  
   "settingsTitle": "सेटिंग्स",
-  
   "generalSection": "सामान्य",
   "notificationsSection": "नोटिफिकेशन",
   "dataSection": "डेटा",
   "versionSection": "संस्करण",
-  
   "themeTitle": "थीम",
-  "themeDescription": "एप्लिकेशन की रंग थीम (बदलाव के लिए पुनरारंभ आवश्यक)",
-  
+  "themeDescription": "एप्लिकेशन की रंग थीम",
   "languageTitle": "भाषा",
   "languageDescription": "एप्लिकेशन की भाषा",
-  
   "startupBehaviourTitle": "स्टार्टअप व्यवहार",
   "startupBehaviourDescription": "OS स्टार्टअप पर लॉन्च करें",
-  
   "launchMinimizedTitle": "मिनिमाइज़ के रूप में लॉन्च करें",
   "launchMinimizedDescription": "एप्लिकेशन को सिस्टम ट्रे में शुरू करें (Windows 10 के लिए अनुशंसित)",
-  
   "notificationsTitle": "नोटिफिकेशन",
   "notificationsAllDescription": "एप्लिकेशन की सभी नोटिफिकेशन",
-  
   "focusModeNotificationsTitle": "फोकस मोड",
   "focusModeNotificationsDescription": "फोकस मोड के लिए सभी नोटिफिकेशन",
-  
   "screenTimeNotificationsTitle": "स्क्रीन टाइम",
   "screenTimeNotificationsDescription": "स्क्रीन टाइम प्रतिबंध के लिए सभी नोटिफिकेशन",
-  
   "appScreenTimeNotificationsTitle": "एप्लिकेशन स्क्रीन टाइम",
   "appScreenTimeNotificationsDescription": "एप्लिकेशन स्क्रीन टाइम प्रतिबंध के लिए सभी नोटिफिकेशन",
-  
   "frequentAlertsTitle": "बार-बार अलर्ट अंतराल",
   "frequentAlertsDescription": "बार-बार नोटिफिकेशन के लिए अंतराल सेट करें (मिनट)",
-  
   "clearDataTitle": "डेटा साफ़ करें",
   "clearDataDescription": "सभी इतिहास और अन्य संबंधित डेटा साफ़ करें",
-  
   "resetSettingsTitle2": "सेटिंग्स रीसेट करें",
   "resetSettingsDescription": "सभी सेटिंग्स रीसेट करें",
-  
   "versionTitle": "संस्करण",
   "versionDescription": "ऐप का वर्तमान संस्करण",
-  
   "contactButton": "संपर्क",
   "reportBugButton": "बग रिपोर्ट करें",
   "submitFeedbackButton": "प्रतिक्रिया सबमिट करें",
   "githubButton": "Github",
-  
   "clearDataDialogTitle": "डेटा साफ़ करें?",
   "clearDataDialogContent": "यह सभी इतिहास और संबंधित डेटा साफ़ कर देगा। आप इसे पुनर्प्राप्त नहीं कर पाएंगे। क्या आप आगे बढ़ना चाहते हैं?",
   "clearDataButtonLabel": "डेटा साफ़ करें",
-  
   "resetSettingsDialogTitle": "सेटिंग्स रीसेट करें?",
   "resetSettingsDialogContent": "यह सभी सेटिंग्स को उनके डिफ़ॉल्ट मानों पर रीसेट कर देगा। क्या आप आगे बढ़ना चाहते हैं?",
   "resetButtonLabel": "रीसेट",
-  
   "cancelButton": "रद्द करें",
-  
   "couldNotLaunchUrl": "{url} लॉन्च नहीं किया जा सका",
   "@couldNotLaunchUrl": {
     "placeholders": {
-      "url": {"type": "String"}
+      "url": {
+        "type": "String"
+      }
     }
   },
-  
   "errorMessage": "त्रुटि: {message}",
   "@errorMessage": {
     "placeholders": {
-      "message": {"type": "String"}
+      "message": {
+        "type": "String"
+      }
     }
   },
-
   "chart_focusTrends": "फोकस ट्रेंड",
   "@chart_focusTrends": {
     "description": "Title for focus trends chart"
   },
-  
   "chart_sessionCount": "सेशन गिनती",
   "@chart_sessionCount": {
     "description": "Label for session count metric"
   },
-  
   "chart_avgDuration": "औसत अवधि",
   "@chart_avgDuration": {
     "description": "Label for average duration metric"
   },
-  
   "chart_totalFocus": "कुल फोकस",
   "@chart_totalFocus": {
     "description": "Label for total focus time metric"
   },
-  
   "chart_yAxis_sessions": "सेशन",
   "@chart_yAxis_sessions": {
     "description": "Y-axis label for session count"
   },
-  
   "chart_yAxis_minutes": "मिनट",
   "@chart_yAxis_minutes": {
     "description": "Y-axis label for time in minutes"
   },
-  
   "chart_yAxis_value": "मान",
   "@chart_yAxis_value": {
     "description": "Generic y-axis label"
   },
-  
   "chart_monthOverMonthChange": "महीने-दर-महीने परिवर्तन: ",
   "@chart_monthOverMonthChange": {
     "description": "Label for percentage change display"
   },
-  
   "chart_customRange": "कस्टम रेंज",
   "@chart_customRange": {
     "description": "Label for custom date range"
   },
-  
   "day_monday": "सोमवार",
   "day_mondayShort": "सोम",
   "day_mondayAbbr": "सो",
-  
   "day_tuesday": "मंगलवार",
   "day_tuesdayShort": "मंग",
   "day_tuesdayAbbr": "मं",
-  
   "day_wednesday": "बुधवार",
   "day_wednesdayShort": "बुध",
-    "day_wednesdayAbbr": "बु",
-  
+  "day_wednesdayAbbr": "बु",
   "day_thursday": "गुरुवार",
   "day_thursdayShort": "गुरु",
   "day_thursdayAbbr": "गु",
-  
   "day_friday": "शुक्रवार",
   "day_fridayShort": "शुक्र",
   "day_fridayAbbr": "शु",
-  
   "day_saturday": "शनिवार",
   "day_saturdayShort": "शनि",
   "day_saturdayAbbr": "श",
-  
   "day_sunday": "रविवार",
   "day_sundayShort": "रवि",
   "day_sundayAbbr": "र",
-  
   "time_hours": "{count}घं",
   "@time_hours": {
     "description": "Hours format",
@@ -1118,7 +921,6 @@
       }
     }
   },
-  
   "time_hoursMinutes": "{hours}घं {minutes}मि",
   "@time_hoursMinutes": {
     "description": "Hours and minutes format",
@@ -1131,7 +933,6 @@
       }
     }
   },
-  
   "time_minutesFormat": "{count} मिनट",
   "@time_minutesFormat": {
     "description": "Minutes format for tooltips",
@@ -1141,7 +942,6 @@
       }
     }
   },
-  
   "tooltip_dateScreenTime": "{date}: {hours}घं {minutes}मि",
   "@tooltip_dateScreenTime": {
     "description": "Tooltip showing date and screen time",
@@ -1157,7 +957,6 @@
       }
     }
   },
-  
   "tooltip_hoursFormat": "{count} घंटे",
   "@tooltip_hoursFormat": {
     "description": "Hours format for tooltip fallback",
@@ -1167,7 +966,6 @@
       }
     }
   },
-  
   "month_january": "जनवरी",
   "month_januaryShort": "जन",
   "month_february": "फरवरी",
@@ -1192,7 +990,6 @@
   "month_novemberShort": "नव",
   "month_december": "दिसंबर",
   "month_decemberShort": "दिस",
-  
   "categoryAll": "सभी",
   "@categoryAll": {
     "description": "Category filter for all applications"
@@ -1208,7 +1005,6 @@
   "categoryEducation": "शिक्षा",
   "categoryUtility": "उपयोगिता",
   "categoryUncategorized": "अवर्गीकृत",
-  
   "appMicrosoftWord": "Microsoft Word",
   "appExcel": "Excel",
   "appPowerPoint": "PowerPoint",
@@ -1242,7 +1038,6 @@
   "appFileExplorer": "फाइल एक्सप्लोरर",
   "appDropbox": "Dropbox",
   "appGoogleDrive": "Google Drive",
-  
   "loadingApplication": "एप्लिकेशन लोड हो रहा है...",
   "@loadingApplication": {
     "description": "Message shown when the application is loading"
@@ -1259,7 +1054,6 @@
   "@reportsRetry": {
     "description": "Button text to retry an operation"
   },
-  
   "backupRestoreSection": "बैकअप और पुनर्स्थापना",
   "backupRestoreTitle": "बैकअप और पुनर्स्थापना",
   "exportDataTitle": "डेटा निर्यात करें",
@@ -1272,7 +1066,7 @@
   "noButton": "नहीं",
   "shareButton": "शेयर करें",
   "exportStarting": "निर्यात शुरू हो रहा है...",
-  "exportSuccessful": "निर्यात सफल! फाइल Documents/Scolect-Backups में सहेजी गई",
+  "exportSuccessful": "निर्यात सफल",
   "exportFailed": "निर्यात विफल",
   "exportComplete": "निर्यात पूर्ण",
   "shareBackupQuestion": "क्या आप बैकअप फाइल शेयर करना चाहेंगे?",
@@ -1298,13 +1092,10 @@
   "appMetadataLabel": "ऐप मेटाडेटा",
   "updatedLabel": "अपडेट किया गया",
   "skippedLabel": "छोड़ा गया",
-  
   "faqSettingsQ4": "मैं अपना डेटा कैसे पुनर्स्थापित या निर्यात कर सकता हूं?",
   "faqSettingsA4": "आप सेटिंग्स में जा सकते हैं, और वहां आपको बैकअप और पुनर्स्थापना सेक्शन मिलेगा। आप यहां से डेटा निर्यात या आयात कर सकते हैं, ध्यान दें कि निर्यात की गई डेटा फाइल Documents में Scolect-Backups फोल्डर में संग्रहीत है और केवल इस फाइल का उपयोग डेटा पुनर्स्थापित करने के लिए किया जा सकता है, कोई अन्य फाइल नहीं।",
-  
   "faqGeneralQ6": "मैं भाषा कैसे बदल सकता हूं और कौन सी भाषाएं उपलब्ध हैं, अगर मुझे लगे कि अनुवाद गलत है तो क्या करूं?",
   "faqGeneralA6": "भाषा को सेटिंग्स सामान्य सेक्शन के माध्यम से बदला जा सकता है, सभी उपलब्ध भाषाएं वहां सूचीबद्ध हैं, आप संपर्क पर क्लिक करके और दी गई भाषा के साथ अपना अनुरोध भेजकर अनुवाद का अनुरोध कर सकते हैं। बस जान लें कि अनुवाद गलत हो सकता है क्योंकि यह AI द्वारा अंग्रेजी से उत्पन्न किया गया है और यदि आप रिपोर्ट करना चाहते हैं तो आप बग रिपोर्ट करें, या संपर्क के माध्यम से रिपोर्ट कर सकते हैं, या यदि आप डेवलपर हैं तो Github पर इश्यू खोलें। भाषा के संबंध में योगदान का भी स्वागत है!",
-  
   "faqGeneralQ7": "अगर मुझे लगे कि अनुवाद गलत है तो क्या करूं?",
   "faqGeneralA7": "अनुवाद गलत हो सकता है क्योंकि यह AI द्वारा अंग्रेजी से उत्पन्न किया गया है और यदि आप रिपोर्ट करना चाहते हैं तो आप बग रिपोर्ट करें, या संपर्क के माध्यम से रिपोर्ट कर सकते हैं, या यदि आप डेवलपर हैं तो Github पर इश्यू खोलें। भाषा के संबंध में योगदान का भी स्वागत है!",
   "activityTrackingSection": "गतिविधि ट्रैकिंग",
@@ -1343,18 +1134,14 @@
   "timeFormatMinute": "1 मिनट",
   "timeFormatMinutes": "{minutes} मिनट",
   "timeFormatMinutesSeconds": "{minutes} मि {seconds}से",
-
   "alertsLimitsSubtitle": "अपने स्क्रीन टाइम की सीमा और सूचनाओं को प्रबंधित करें",
   "themeLight": "हल्का",
   "themeDark": "गहरा",
   "themeSystem": "सिस्टम",
-  "themeTitle": "थीम",
-  "themeDescription": "एप्लिकेशन की रंग थीम",
   "voiceGenderTitle": "आवाज़ का लिंग",
   "voiceGenderDescription": "टाइमर सूचनाओं के लिए आवाज़ का लिंग चुनें",
   "voiceGenderMale": "पुरुष",
   "voiceGenderFemale": "महिला",
-
   "applicationsSubtitle": "अपने ट्रैक किए गए एप्लिकेशन प्रबंधित करें",
   "applicationCount": "{count, plural, =1{1 एप्लिकेशन} other{{count} एप्लिकेशन}}",
   "@applicationCount": {
@@ -1364,12 +1151,10 @@
       }
     }
   },
-  "refresh": "रीफ्रेश करें",
   "noApplicationsFound": "कोई एप्लिकेशन नहीं मिला",
   "tryAdjustingFilters": "अपने फ़िल्टर समायोजित करने का प्रयास करें",
   "configureAppSettings": "एप्लिकेशन सेटिंग्स कॉन्फ़िगर करें",
   "behaviorSection": "व्यवहार",
-  
   "helpSubtitle": "{count, plural, =1{7 श्रेणियों में 1 प्रश्न} other{7 श्रेणियों में {count} प्रश्न}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1386,22 +1171,11 @@
   "noResultsFound": "कोई परिणाम नहीं मिला",
   "tryDifferentKeywords": "विभिन्न कीवर्ड के साथ खोजने का प्रयास करें",
   "clearSearch": "खोज साफ़ करें",
-  
   "greetingMorning": "सुप्रभात! यह आपकी गतिविधि का सारांश है।",
   "greetingAfternoon": "शुभ दोपहर! यह आपकी गतिविधि का सारांश है।",
   "greetingEvening": "शुभ संध्या! यह आपकी गतिविधि का सारांश है।",
   "screenTimeProgress": "स्क्रीन\nटाइम",
   "productiveScoreProgress": "उत्पादक\nस्कोर",
-  
-  "sectionLabel": "{title} अनुभाग",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "केंद्रित रहें, उत्पादक बनें",
   "thisWeek": "इस सप्ताह",
   "sessions": "सत्र",
@@ -1413,8 +1187,6 @@
   "longBreakStatus": "लंबा ब्रेक",
   "readyToFocus": "फोकस के लिए तैयार",
   "focus": "फोकस",
-  "shortBreakLabel": "छोटा ब्रेक",
-  "longBreakLabel": "लंबा ब्रेक",
   "restartSession": "सत्र पुनः प्रारंभ करें",
   "skipToNext": "अगले पर जाएं",
   "settings": "सेटिंग्स",
@@ -1451,7 +1223,6 @@
   "notification_permission_denied_hint": "ScreenTime के लिए सूचनाओं को सक्षम करने के लिए सिस्टम सेटिंग्स खोलें।",
   "notification_permission_required": "सूचना अनुमति आवश्यक",
   "notification_permission_required_message": "ScreenTime को आपको सूचनाएं भेजने के लिए अनुमति की आवश्यकता है।",
-  "cancel": "रद्द करें",
   "open_settings": "सेटिंग्स खोलें",
   "allow_notifications": "सूचनाओं की अनुमति दें",
   "permission_allowed": "अनुमत",
@@ -1468,8 +1239,7 @@
   "disabled": "अक्षम",
   "advanced_options": "उन्नत विकल्प",
   "sync_ready": "सिंक तैयार",
-  "success": "सफल!",
-  "error": "त्रुटि",
+  "success": "सफलता",
   "destructive_badge": "विनाशकारी",
   "recommended_badge": "अनुशंसित",
   "safe_badge": "सुरक्षित",
@@ -1478,9 +1248,7 @@
   "apps": "ऐप्स",
   "sortAscending": "आरोही क्रम में क्रमबद्ध करें",
   "sortDescending": "अवरोही क्रम में क्रमबद्ध करें",
-  "clearSearch": "खोज साफ़ करें",
   "applicationsShowing": "{count} एप्लिकेशन दिखाई जा रही हैं",
-  "totalTime": "कुल समय",
   "valueLabel": "मान: {value}",
   "appsCount": "{count} ऐप्स",
   "categoriesCount": "{count} श्रेणियाँ",
@@ -1527,7 +1295,6 @@
   "colorPickerHexColor": "हेक्स रंग",
   "colorPickerHexPlaceholder": "RRGGBB",
   "colorPickerRGB": "RGB",
-  "cancel": "रद्द करें",
   "select": "चुनें",
   "themeCustomization": "थीम अनुकूलन",
   "chooseThemePreset": "थीम प्रीसेट चुनें",
@@ -1544,7 +1311,6 @@
       }
     }
   },
-  "edit": "संपादित करें",
   "customThemeNumber": "कस्टम थीम {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1617,8 +1383,6 @@
   "sampleCardTitle": "नमूना कार्ड शीर्षक",
   "sampleSecondaryText": "यह नीचे दिखाई देने वाला द्वितीयक पाठ है।",
   "primary": "प्राथमिक",
-  "success": "सफलता",
-  "error": "त्रुटि",
   "secondary": "द्वितीयक",
   "warning": "चेतावनी",
   "launchAtStartupTitle": "स्टार्टअप पर लॉन्च करें",
@@ -1636,8 +1400,6 @@
   "restartLater": "बाद में पुनः प्रारंभ करें",
   "restartFailedTitle": "पुनः प्रारंभ विफल",
   "restartFailedMessage": "ऐप स्वतः पुनः प्रारंभ नहीं हो सका। कृपया बाहर निकलें (Cmd+Q) और मैन्युअल रूप से फिर से खोलें।",
-  "ok": "ठीक है",
-  "error": "त्रुटि",
   "exportAnalyticsReport": "एनालिटिक्स रिपोर्ट निर्यात करें",
   "chooseExportFormat": "निर्यात प्रारूप चुनें:",
   "beautifulExcelReport": "सुंदर एक्सेल रिपोर्ट",
@@ -1647,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 दैनिक विवरण - दृश्य उपयोग पैटर्न",
   "appsSheetDescription": "📱 ऐप्स शीट - विस्तृत ऐप रैंकिंग",
   "insightsDescription": "💡 अंतर्दृष्टि - स्मार्ट सिफारिशें",
-  "cancel": "रद्द करें",
-  "exportSuccessful": "निर्यात सफल",
   "beautifulExcelExportSuccess": "सुंदर एक्सेल रिपोर्ट सफलतापूर्वक निर्यात हुई! 🎉",
-  "exportFailed": "निर्यात विफल",
   "failedToExportReport": "रिपोर्ट निर्यात करने में विफल: {error}",
   "exporting": "निर्यात हो रहा है...",
   "exportExcel": "एक्सेल निर्यात करें",
   "saveAnalyticsReport": "एनालिटिक्स रिपोर्ट सहेजें",
   "analyticsReportFileName": "एनालिटिक्स_रिपोर्ट_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "उपयोग विश्लेषण रिपोर्ट",
   "generated": "जेनरेट किया गया:",
   "period": "अवधि:",
-  "dateRange": "तारीख सीमा:",
   "dateRangeValue": "{startDate} से {endDate}",
-  
   "keyMetrics": "मुख्य मेट्रिक्स",
   "metric": "मेट्रिक",
   "value": "मूल्य",
   "change": "परिवर्तन",
   "trend": "रुझान",
-  
-  "totalScreenTime": "कुल स्क्रीन समय",
-  "productiveTime": "उत्पादक समय",
   "productivityRate": "उत्पादकता दर",
-  "focusSessions": "फोकस सत्र",
-  "mostUsedApp": "सबसे अधिक उपयोग किया गया ऐप",
-  
   "trendUp": "ऊपर",
   "trendDown": "नीचे",
   "trendExcellent": "उत्कृष्ट",
@@ -1683,71 +1433,47 @@
   "trendActive": "सक्रिय",
   "trendNone": "कोई नहीं",
   "trendTop": "शीर्ष",
-  
-  "categoryBreakdown": "श्रेणी विवरण",
   "category": "श्रेणी",
   "percentage": "प्रतिशत",
   "visual": "दृश्य",
-  
-  "dailyScreenTime": "दैनिक स्क्रीन समय",
   "statistics": "आंकड़े",
   "averageDaily": "दैनिक औसत",
   "highestDay": "सबसे अधिक दिन",
   "lowestDay": "सबसे कम दिन",
-  
-  "date": "तारीख",
   "day": "दिन",
-  "hours": "घंटे",
-  "minutes": "मिनट",
-  
   "applicationUsageDetails": "एप्लिकेशन उपयोग विवरण",
   "totalApps": "कुल ऐप्स:",
   "productiveApps": "उत्पादक ऐप्स:",
-  
   "rank": "रैंक",
   "application": "एप्लिकेशन",
   "time": "समय",
   "percentOfTotal": "कुल का %",
   "type": "प्रकार",
   "usageLevel": "उपयोग स्तर",
-  
-  "productive": "उत्पादक",
   "leisure": "मनोरंजन",
-  
   "usageLevelVeryHigh": "बहुत अधिक ||||||||",
   "usageLevelHigh": "अधिक ||||||",
   "usageLevelMedium": "मध्यम ||||",
   "usageLevelLow": "कम ||",
-  
   "keyInsightsTitle": "मुख्य अंतर्दृष्टि और सिफारिशें",
   "personalizedRecommendations": "व्यक्तिगत सिफारिशें",
-  
   "insightHighDailyUsage": "उच्च दैनिक उपयोग: आप प्रतिदिन औसतन {hours} घंटे स्क्रीन उपयोग कर रहे हैं",
   "insightLowDailyUsage": "कम दैनिक उपयोग: आप प्रतिदिन औसतन {hours} घंटे - बढ़िया संतुलन!",
   "insightModerateUsage": "मध्यम उपयोग: प्रतिदिन औसतन {hours} घंटे स्क्रीन समय",
-  
   "insightExcellentProductivity": "उत्कृष्ट उत्पादकता: आपके स्क्रीन समय का {percentage}% उत्पादक कार्य है!",
   "insightGoodProductivity": "अच्छी उत्पादकता: आपके स्क्रीन समय का {percentage}% उत्पादक है",
   "insightLowProductivity": "कम उत्पादकता चेतावनी: केवल {percentage}% स्क्रीन समय उत्पादक है",
-  
   "insightFocusSessions": "फोकस सत्र: {count} सत्र पूरे किए (औसतन प्रतिदिन {avgPerDay})",
   "insightGreatFocusHabit": "बढ़िया फोकस आदत: आपने {count} पूर्ण सत्रों के साथ एक शानदार फोकस दिनचर्या बनाई है!",
   "insightNoFocusSessions": "कोई फोकस सत्र नहीं: उत्पादकता बढ़ाने के लिए फोकस मोड का उपयोग करने पर विचार करें",
-  
   "insightScreenTimeTrend": "स्क्रीन समय रुझान: पिछली अवधि की तुलना में आपका उपयोग {percentage}% {direction}",
   "insightProductiveTimeTrend": "उत्पादक समय रुझान: पिछली अवधि की तुलना में आपका उत्पादक समय {percentage}% {direction}",
-  
   "directionIncreased": "बढ़ा",
   "directionDecreased": "घटा",
-  
   "insightTopCategory": "शीर्ष श्रेणी: {category} आपके कुल समय का {percentage}% है",
-  
   "insightMostUsedApp": "सबसे अधिक उपयोग किया गया ऐप: {appName} आपके समय का {percentage}% ({duration}) है",
-  
   "insightUsageVaries": "उपयोग में महत्वपूर्ण अंतर: {highDay} का उपयोग {lowDay} से {multiplier}x अधिक था",
-  
   "insightNoInsights": "कोई महत्वपूर्ण अंतर्दृष्टि उपलब्ध नहीं",
-  
   "recScheduleFocusSessions": "उत्पादकता बढ़ाने के लिए पूरे दिन में अधिक फोकस सत्र शेड्यूल करने का प्रयास करें",
   "recSetAppLimits": "मनोरंजन ऐप्स पर सीमाएं लगाने पर विचार करें",
   "recAimForFocusSessions": "निरंतर आदत बनाने के लिए प्रतिदिन कम से कम 1-2 फोकस सत्र का लक्ष्य रखें",
@@ -1758,10 +1484,6 @@
   "recScheduleFocusedWork": "आपका उत्पादक समय कम हो गया है। अपने कैलेंडर में फोकस कार्य ब्लॉक शेड्यूल करने का प्रयास करें",
   "recKeepUpGreatWork": "बढ़िया काम जारी रखें! आपकी स्क्रीन समय आदतें स्वस्थ दिखती हैं",
   "recContinueFocusSessions": "उत्पादकता बनाए रखने के लिए फोकस सत्र का उपयोग जारी रखें",
-  
-  "durationHoursMinutes": "{hours}घं {minutes}मि",
-  "durationMinutesOnly": "{minutes}मि",
-  
   "sheetSummary": "सारांश",
   "sheetDailyBreakdown": "दैनिक विवरण",
   "sheetApps": "ऐप्स",
@@ -1815,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "कुल समय",
   "workPhases": "कार्य चरण",
   "averageLength": "औसत अवधि",
   "mostProductive": "सबसे उत्पादक",
@@ -1863,20 +1584,19 @@
   "noThemeDataFound": "कोई थीम डेटा नहीं मिला",
   "invalidThemeFormat": "अमान्य थीम प्रारूप। कृपया JSON डेटा जांचें।",
   "trackingModeTitle": "ट्रैकिंग मोड",
-"trackingModeDescription": "चुनें कि ऐप उपयोग को कैसे ट्रैक किया जाए",
-"trackingModePolling": "मानक (कम संसाधन)",
-"trackingModePrecise": "सटीक (उच्च सटीकता)",
-"trackingModePollingHint": "हर मिनट जाँच करता है - कम संसाधन उपयोग",
-"trackingModePreciseHint": "रीयल-टाइम ट्रैकिंग - उच्च सटीकता, अधिक संसाधन",
-"trackingModeChangeError": "ट्रैकिंग मोड बदलने में विफल। कृपया पुनः प्रयास करें।",
-"errorTitle": "त्रुटि",
-"monitorKeyboardTitle": "कीबोर्ड की निगरानी करें",
+  "trackingModeDescription": "चुनें कि ऐप उपयोग को कैसे ट्रैक किया जाए",
+  "trackingModePolling": "मानक (कम संसाधन)",
+  "trackingModePrecise": "सटीक (उच्च सटीकता)",
+  "trackingModePollingHint": "हर मिनट जाँच करता है - कम संसाधन उपयोग",
+  "trackingModePreciseHint": "रीयल-टाइम ट्रैकिंग - उच्च सटीकता, अधिक संसाधन",
+  "trackingModeChangeError": "ट्रैकिंग मोड बदलने में विफल। कृपया पुनः प्रयास करें।",
+  "errorTitle": "त्रुटि",
+  "monitorKeyboardTitle": "कीबोर्ड की निगरानी करें",
   "monitorKeyboardDescription": "उपयोगकर्ता की उपस्थिति का पता लगाने के लिए कीबोर्ड गतिविधि ट्रैक करें",
   "changelogWhatsNew": "नया क्या है",
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "{date} को जारी किया गया",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1887,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "इस संस्करण के लिए कोई चेंजलॉग उपलब्ध नहीं है।",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "चेंजलॉग लोड नहीं किया जा सका",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "इस संस्करण का चेंजलॉग प्राप्त नहीं किया जा सका। कृपया अपना इंटरनेट कनेक्शन जांचें या GitHub रिलीज़ पेज पर जाएं।",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "ठीक है",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "जारी रखें",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "सभी ऐप्स",
-  "tracking": "ट्रैक किए गए",
   "notTracking": "ट्रैक नहीं किए गए",
   "allVisibility": "सभी",
   "visible": "दृश्यमान",
   "hidden": "छिपे हुए",
   "todaysLimitUsage": "आज की सीमा उपयोग",
-"thisWeekAtAGlance": "इस सप्ताह की एक झलक",
-"hourlyActivityHeatmap": "प्रति घंटा गतिविधि हीटमैप",
-"sessions": "सत्र",
-"thisWeek": "इस सप्ताह",
-"productivityScore": "उत्पादकता स्कोर",
-"streaks": "लगातार दिन",
-"weekOverWeek": "सप्ताह दर सप्ताह",
-"sameAsLastWeek": "पिछले सप्ताह जैसा ही",
-"moreUsageThanLastWeek": "पिछले सप्ताह से {percent}% अधिक",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "पिछले सप्ताह से {percent}% कम",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "सीमा {duration} से अधिक",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "{duration} शेष",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "कुल सत्र",
-"avgSession": "औसत सत्र",
-"longestSession": "सबसे लंबा सत्र",
-"mostActive": "सबसे सक्रिय",
-"peakUsage": "अधिकतम उपयोग",
-"dailyAverage": "दैनिक औसत",
-"daysUsedInARow": "लगातार उपयोग के दिन",
-"daysSingular": "दिन",
-"daysPlural": "दिन",
-"daysOverLimitInARow": "लगातार सीमा से अधिक दिन",
-"withinLimitAllWeek": "पूरे सप्ताह सीमा के भीतर",
-"productivityScoreGreat": "बढ़िया",
-"productivityScoreModerate": "मध्यम",
-"productivityScoreNeedsAttention": "ध्यान देने की आवश्यकता",
-"productiveAppMotivation": "उत्पादक ऐप — ऐसे ही जारी रखें",
-"nonProductiveAppSuggestion": "अनुत्पादक — कम करने पर विचार करें",
-"legendUsage": "उपयोग",
-"legendAverage": "औसत",
-"legendLimit": "सीमा",
-"chartPeak": "शीर्ष",
-"overLimitBy": "+{duration} सीमा से अधिक",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "कोई डेटा नहीं",
-"yesterday": "कल",
-"changelog": "परिवर्तन लॉग",
-"exportingLabel": "निर्यात किया जा रहा है...",
-"@exportingLabel": {
-  "description": "निर्यात प्रक्रिया के दौरान निर्यात बटन पर दिखाया जाने वाला लेबल"
-},
-"exportExcelLabel": "Excel निर्यात करें",
-"@exportExcelLabel": {
-  "description": "निर्यात बटन पर दिखाया जाने वाला लेबल"
-},
+  "thisWeekAtAGlance": "इस सप्ताह की एक झलक",
+  "hourlyActivityHeatmap": "प्रति घंटा गतिविधि हीटमैप",
+  "productivityScore": "उत्पादकता स्कोर",
+  "streaks": "लगातार दिन",
+  "weekOverWeek": "सप्ताह दर सप्ताह",
+  "sameAsLastWeek": "पिछले सप्ताह जैसा ही",
+  "moreUsageThanLastWeek": "पिछले सप्ताह से {percent}% अधिक",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "पिछले सप्ताह से {percent}% कम",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "सीमा {duration} से अधिक",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "{duration} शेष",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "कुल सत्र",
+  "avgSession": "औसत सत्र",
+  "mostActive": "सबसे सक्रिय",
+  "peakUsage": "अधिकतम उपयोग",
+  "dailyAverage": "दैनिक औसत",
+  "daysUsedInARow": "लगातार उपयोग के दिन",
+  "daysSingular": "दिन",
+  "daysPlural": "दिन",
+  "daysOverLimitInARow": "लगातार सीमा से अधिक दिन",
+  "withinLimitAllWeek": "पूरे सप्ताह सीमा के भीतर",
+  "productivityScoreGreat": "बढ़िया",
+  "productivityScoreModerate": "मध्यम",
+  "productivityScoreNeedsAttention": "ध्यान देने की आवश्यकता",
+  "productiveAppMotivation": "उत्पादक ऐप — ऐसे ही जारी रखें",
+  "nonProductiveAppSuggestion": "अनुत्पादक — कम करने पर विचार करें",
+  "legendUsage": "उपयोग",
+  "legendAverage": "औसत",
+  "legendLimit": "सीमा",
+  "chartPeak": "शीर्ष",
+  "overLimitBy": "+{duration} सीमा से अधिक",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "कोई डेटा नहीं",
+  "yesterday": "कल",
+  "changelog": "परिवर्तन लॉग",
+  "exportingLabel": "निर्यात किया जा रहा है...",
+  "@exportingLabel": {
+    "description": "निर्यात प्रक्रिया के दौरान निर्यात बटन पर दिखाया जाने वाला लेबल"
+  },
+  "exportExcelLabel": "Excel निर्यात करें",
+  "@exportExcelLabel": {
+    "description": "निर्यात बटन पर दिखाया जाने वाला लेबल"
+  },
   "dailyResetTimeTitle": "दैनिक रीसेट समय",
   "dailyResetTimeDescription": "वह समय निर्धारित करें जब आपका स्क्रीन टाइम काउंटर एक नए दिन के लिए रीसेट हो जाएगा।",
   "crashReportingTitle": "क्रैश रिपोर्टिंग",
-  "crashReportingDescription": "Scolect को बेहतर बनाने में मदद करने के लिए अनाम क्रैश रिपोर्ट भेजें। इसमें कोई व्यक्तिगत डेटा या उपयोग इतिहास शामिल नहीं है।"
+  "crashReportingDescription": "Scolect को बेहतर बनाने में मदद करने के लिए अनाम क्रैश रिपोर्ट भेजें। इसमें कोई व्यक्तिगत डेटा या उपयोग इतिहास शामिल नहीं है।",
+  "narrativeTodaySpent": "आज आपने अपने कंप्यूटर पर {timeStr} बिताए।",
+  "narrativeMostFocused": "आपका सबसे अधिक ध्यान केंद्रित समय {start} – {end} था।",
+  "narrativeFocusSessions": "आपने कुल {fsMinutes}m में {focusSessions} फोकस {focusSessionsCount, plural, =1{सत्र} other{सत्र}} पूरे किए।",
+  "narrativeCheckedAppShort": "आपने {topAppName} को {topAppOpenCount} बार देखा लेकिन हर विज़िट को छोटा रखा।",
+  "narrativeCheckedAppLong": "आपका अधिकांश समय {topAppName} पर केवल {topAppOpenCount} {topAppOpenCountPlural, plural, =1{सत्र} other{सत्रों}} में बीता।",
+  "narrativeToneSolid": "ठोस दिन।",
+  "narrativeToneDecent": "सभ्य प्रगति।",
+  "narrativeToneLight": "हल्का दिन — इसमें कुछ भी गलत नहीं है।",
+  "narrativeToneImprove": "कल सुधार की गुंजाइश है।",
+  "habitDnaTitle": "आपका हैबिट DNA",
+  "habitDnaAnalyzed": "{daysAnalyzed}d विश्लेषण किया गया",
+  "habitDnaChronotype": "क्रोनोटाइप",
+  "habitDnaWorkStyle": "कार्य शैली",
+  "habitDnaPeakFocus": "पीक फोकस",
+  "habitDnaAvgSession": "औसत सत्र",
+  "habitDnaBestDay": "सबसे अच्छा दिन",
+  "habitDnaRoughDay": "कठिन दिन",
+  "habitDnaKryptonite": "शीर्ष व्याकुलता: {appName}",
+  "chronotypeMorning": "सुबह का व्यक्ति",
+  "chronotypeAfternoon": "दोपहर का शिखर",
+  "chronotypeNight": "रात का उल्लू",
+  "chronotypeMixed": "मिश्रित",
+  "workStyleDeep": "गहरा फोकस",
+  "workStyleSwitcher": "टास्क स्विचर",
+  "workStyleBalanced": "संतुलित",
+  "timeFormatAm": "{hour} AM",
+  "timeFormatPm": "{hour} PM",
+  "timeFormatMidnight": "मध्यरात्रि",
+  "timeFormatNoon": "दोपहर",
+  "weeklyStoryTitle": "इस सप्ताह",
+  "weeklyStoryWeekNumber": "सप्ताह {weekNumber}",
+  "weeklyStoryHeadline": "सप्ताह {weekNumber} — अब तक स्क्रीन पर {timeStr}।",
+  "weeklyStoryReclaimed": "आपने सप्ताह 1 की तुलना में {diff} वापस पा लिया है।",
+  "weeklyStoryUp": "सप्ताह 1 से स्क्रीन समय {diff} बढ़ गया है।",
+  "weeklyStoryImprovementArea": "अभी भी काम कर रहा है: {worstCat} में {timeLabel}।",
+  "weekdayNameMonday": "सोमवार",
+  "weekdayNameTuesday": "मंगलवार",
+  "weekdayNameWednesday": "बुधवार",
+  "weekdayNameThursday": "गुरुवार",
+  "weekdayNameFriday": "शुक्रवार",
+  "weekdayNameSaturday": "शनिवार",
+  "weekdayNameSunday": "रविवार",
+  "weekdayNameUnknown": "उस दिन",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -3054,4 +3054,175 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get dailyResetTimeDescription =>
       'আপনার স্ক্রীন টাইম কাউন্টারটি নতুন দিনে রিসেট হওয়ার সময় সেট করুন।';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return 'আজ আপনি আপনার কম্পিউটারে $timeStr ব্যয় করেছেন।';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return 'আপনার সর্বাধিক মনোযোগের সময় ছিল $start – $end।';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: 'সেশন',
+      one: 'সেশন',
+    );
+    return 'আপনি মোট ${fsMinutes}m এ $focusSessions ফোকাস $_temp0 সম্পন্ন করেছেন।';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return 'আপনি $topAppName $topAppOpenCount বার দেখেছেন কিন্তু প্রতিটি ভিজিট ছোট রেখেছেন।';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: 'সেশনে',
+      one: 'সেশনে',
+    );
+    return 'আপনার বেশিরভাগ সময় $topAppName এ মাত্র $topAppOpenCount $_temp0 কেটেছে।';
+  }
+
+  @override
+  String get narrativeToneSolid => 'কঠিন দিন।';
+
+  @override
+  String get narrativeToneDecent => 'ভাল অগ্রগতি।';
+
+  @override
+  String get narrativeToneLight => 'হালকা দিন — এতে কোনো ভুল নেই।';
+
+  @override
+  String get narrativeToneImprove => 'আগামীকাল উন্নতির জায়গা আছে।';
+
+  @override
+  String get habitDnaTitle => 'আপনার অভ্যাস DNA';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '${daysAnalyzed}d বিশ্লেষণ করা হয়েছে';
+  }
+
+  @override
+  String get habitDnaChronotype => 'ক্রোনোটাইপ';
+
+  @override
+  String get habitDnaWorkStyle => 'কাজের স্টাইল';
+
+  @override
+  String get habitDnaPeakFocus => 'শীর্ষ ফোকাস';
+
+  @override
+  String get habitDnaAvgSession => 'গড় সেশন';
+
+  @override
+  String get habitDnaBestDay => 'সেরা দিন';
+
+  @override
+  String get habitDnaRoughDay => 'কঠিন দিন';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return 'শীর্ষ বিভ্রান্তি: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => 'সকালের মানুষ';
+
+  @override
+  String get chronotypeAfternoon => 'বিকেলের শীর্ষ';
+
+  @override
+  String get chronotypeNight => 'রাতের পেঁচা';
+
+  @override
+  String get chronotypeMixed => 'মিশ্র';
+
+  @override
+  String get workStyleDeep => 'গভীর ফোকাস';
+
+  @override
+  String get workStyleSwitcher => 'টাস্ক সুইচার';
+
+  @override
+  String get workStyleBalanced => 'ভারসাম্যপূর্ণ';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '$hour AM';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '$hour PM';
+  }
+
+  @override
+  String get timeFormatMidnight => 'মধ্যরাত';
+
+  @override
+  String get timeFormatNoon => 'দুপুর';
+
+  @override
+  String get weeklyStoryTitle => 'এই সপ্তাহ';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return 'সপ্তাহ $weekNumber';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return 'সপ্তাহ $weekNumber — এ পর্যন্ত স্ক্রিনে $timeStr।';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return 'আপনি সপ্তাহ 1 এর তুলনায় $diff ফিরে পেয়েছেন।';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return 'সপ্তাহ 1 থেকে স্ক্রীন সময় $diff বেড়েছে।';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return 'এখনও কাজ করা হচ্ছে: $worstCat এ $timeLabel।';
+  }
+
+  @override
+  String get weekdayNameMonday => 'সোমবার';
+
+  @override
+  String get weekdayNameTuesday => 'মঙ্গলবার';
+
+  @override
+  String get weekdayNameWednesday => 'বুধবার';
+
+  @override
+  String get weekdayNameThursday => 'বৃহস্পতিবার';
+
+  @override
+  String get weekdayNameFriday => 'শুক্রবার';
+
+  @override
+  String get weekdayNameSaturday => 'শনিবার';
+
+  @override
+  String get weekdayNameSunday => 'রবিবার';
+
+  @override
+  String get weekdayNameUnknown => 'সেই দিন';
 }

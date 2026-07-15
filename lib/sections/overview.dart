@@ -2,10 +2,18 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart' as mn;
 import './controller/data_controllers/overview_data_controller.dart';
+import './controller/data_controllers/personalization/insight_models.dart';
+import './controller/data_controllers/personalization/habit_profile_models.dart';
+import './controller/data_controllers/personalization/personalization_engine.dart';
+import './controller/data_controllers/personalization/personalization_store.dart';
 import 'UI sections/Overview/bottom.dart';
 import 'UI sections/Overview/statCards.dart';
 import 'UI sections/Overview/main_app.dart';
 import 'UI Sections/overview/changelog.dart';
+import 'UI sections/Overview/personalization/narrative_card.dart';
+import 'UI sections/Overview/personalization/insight_card.dart';
+import 'UI sections/Overview/personalization/habit_dna_card.dart';
+import 'UI sections/Overview/personalization/weekly_story_card.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -35,6 +43,12 @@ class _OverviewSnapshot {
   final double productiveScore;
   final bool hasData;
 
+  // Personalization fields — null until async load completes
+  final DailyNarrative? narrative;
+  final List<Insight> insights;
+  final HabitProfile? habitProfile;
+  final WeeklyStory? weeklyStory;
+
   const _OverviewSnapshot({
     required this.totalScreenTime,
     required this.totalProductiveTime,
@@ -46,7 +60,35 @@ class _OverviewSnapshot {
     required this.screenTime,
     required this.productiveScore,
     required this.hasData,
+    this.narrative,
+    this.insights = const [],
+    this.habitProfile,
+    this.weeklyStory,
   });
+
+  _OverviewSnapshot copyWith({
+    DailyNarrative? narrative,
+    List<Insight>? insights,
+    HabitProfile? habitProfile,
+    WeeklyStory? weeklyStory,
+  }) {
+    return _OverviewSnapshot(
+      totalScreenTime: totalScreenTime,
+      totalProductiveTime: totalProductiveTime,
+      mostUsedApp: mostUsedApp,
+      focusSessions: focusSessions,
+      topApplications: topApplications,
+      categoryApplications: categoryApplications,
+      applicationLimits: applicationLimits,
+      screenTime: screenTime,
+      productiveScore: productiveScore,
+      hasData: hasData,
+      narrative: narrative ?? this.narrative,
+      insights: insights ?? this.insights,
+      habitProfile: habitProfile ?? this.habitProfile,
+      weeklyStory: weeklyStory ?? this.weeklyStory,
+    );
+  }
 
   static const empty = _OverviewSnapshot(
     totalScreenTime: _kDefaultTime,
@@ -70,6 +112,8 @@ class _OverviewSnapshot {
               'screenTime': app.formattedScreenTime,
               'percentageOfTotalTime': app.percentageOfTotalTime,
               'isVisible': app.isVisible,
+              'isProductive': app.isProductive,
+              'duration': app.screenTime,
             })
         .toList(growable: false);
 
@@ -131,6 +175,9 @@ class _OverviewState extends State<Overview>
   _ViewState _viewState = _ViewState.loading;
   String _errorMessage = '';
 
+  // Stash raw data for personalization engine
+  OverviewData? _lastOverviewData;
+
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
 
@@ -168,6 +215,7 @@ class _OverviewState extends State<Overview>
     try {
       final data = await DailyOverviewData().fetchTodayOverview();
       final snapshot = _OverviewSnapshot.fromOverviewData(data);
+      _lastOverviewData = data;
 
       if (!mounted) return;
 
@@ -177,6 +225,9 @@ class _OverviewState extends State<Overview>
       });
 
       _fadeController.forward(from: 0);
+
+      // Load personalization layer after main data is shown
+      if (snapshot.hasData) _loadPersonalization(data);
     } catch (e) {
       debugPrint('Error loading overview data: $e');
       if (!mounted) return;
@@ -189,22 +240,82 @@ class _OverviewState extends State<Overview>
     }
   }
 
+  Future<void> _loadPersonalization(OverviewData data) async {
+    try {
+      // Init store lazily here — avoids blocking app startup in main()
+      await PersonalizationStore().init();
+      final engine = PersonalizationEngine();
+
+      // Determine top app open count from top app
+      final topApp =
+          data.topApplications.isNotEmpty ? data.topApplications.first : null;
+
+      final l10n = AppLocalizations.of(context)!;
+      final narrative = engine.buildDailyNarrative(
+        l10n: l10n,
+        totalScreenTime: data.totalScreenTime,
+        topAppName: data.mostUsedApp,
+        topAppOpenCount: topApp != null ? 0 : 0, // fallback; enriched below
+        topAppTimeSpent: topApp?.screenTime ?? Duration.zero,
+        focusSessions: data.focusSessions,
+        totalFocusTime: data.totalFocusTime,
+        productivityScore: data.productivityScore,
+      );
+
+      final insights = await engine.getActiveInsights();
+      final profile = await engine.getHabitProfile();
+      final weekly = await engine.buildWeeklyStory(l10n: l10n);
+
+      if (!mounted) return;
+
+      setState(() {
+        _snapshot = _snapshot.copyWith(
+          narrative: narrative,
+          insights: insights,
+          habitProfile: profile,
+          weeklyStory: weekly,
+        );
+      });
+    } catch (e) {
+      debugPrint('Error loading personalization: $e');
+    }
+  }
+
+  void _dismissInsight(String id) {
+    PersonalizationEngine().dismissInsight(id);
+    setState(() {
+      _snapshot = _snapshot.copyWith(
+        insights: _snapshot.insights.where((i) => i.id != id).toList(),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    if (_viewState == _ViewState.ready) {
+      return ScaffoldPage.scrollable(
+        padding: EdgeInsets.zero,
+        children: [
+          FadeTransition(
+            opacity: _fadeAnimation,
+            child: _ResponsiveOverviewContent(
+              snapshot: _snapshot,
+              refreshData: _loadData,
+              onDismissInsight: _dismissInsight,
+            ),
+          ),
+        ],
+      );
+    }
 
     final Widget content = switch (_viewState) {
       _ViewState.loading => _LoadingState(l10n: l10n),
       _ViewState.error =>
         _ErrorState(l10n: l10n, message: _errorMessage, onRetry: _loadData),
       _ViewState.empty => _EmptyState(l10n: l10n, onRefresh: _loadData),
-      _ViewState.ready => FadeTransition(
-          opacity: _fadeAnimation,
-          child: _ResponsiveOverviewContent(
-            snapshot: _snapshot,
-            refreshData: _loadData,
-          ),
-        ),
+      _ViewState.ready => const SizedBox.shrink(),
     };
 
     return ScaffoldPage(
@@ -385,10 +496,12 @@ class _ActionButton extends StatelessWidget {
 class _ResponsiveOverviewContent extends StatelessWidget {
   final _OverviewSnapshot snapshot;
   final VoidCallback refreshData;
+  final void Function(String id) onDismissInsight;
 
   const _ResponsiveOverviewContent({
     required this.snapshot,
     required this.refreshData,
+    required this.onDismissInsight,
   });
 
   @override
@@ -418,8 +531,14 @@ class _ResponsiveOverviewContent extends StatelessWidget {
 
         final header = _Header(refresh: refreshData);
 
+        // ── Personalization widgets (shown only when data is ready) ──
+        final hasNarrative = snapshot.narrative != null;
+        final hasInsights = snapshot.insights.isNotEmpty;
+        final hasProfile = snapshot.habitProfile != null;
+        final hasWeekly = snapshot.weeklyStory != null;
+
         if (isCompact) {
-          return SingleChildScrollView(
+          return Padding(
             padding: edgePadding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -427,6 +546,17 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                 header,
                 SizedBox(height: vSpace),
                 statsCards,
+                if (hasNarrative) ...[
+                  SizedBox(height: vSpace * 0.75),
+                  NarrativeCard(narrative: snapshot.narrative!),
+                ],
+                if (hasInsights) ...[
+                  SizedBox(height: vSpace * 0.75),
+                  InsightCarousel(
+                    insights: snapshot.insights,
+                    onDismiss: onDismissInsight,
+                  ),
+                ],
                 SizedBox(height: vSpace),
                 _MainContent(
                   topApps: snapshot.topApplications,
@@ -434,11 +564,42 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                   isCompact: true,
                 ),
                 SizedBox(height: vSpace),
-                _BottomSection(
-                  snapshot: snapshot,
-                  isCompact: true,
-                  isMedium: false,
+                SizedBox(
+                  height: 140,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ProgressCard(
+                          title: AppLocalizations.of(context)!.screenTimeProgress,
+                          value: snapshot.screenTime,
+                          color: _kPurple,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ProgressCard(
+                          title: AppLocalizations.of(context)!.productiveScoreProgress,
+                          value: snapshot.productiveScore,
+                          color: _kGreen,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                SizedBox(height: 12),
+                SizedBox(
+                  height: 220,
+                  child: _ContentCard(
+                    child:
+                        ApplicationLimitsList(data: snapshot.applicationLimits),
+                  ),
+                ),
+                if (hasProfile || hasWeekly) ...[
+                  SizedBox(height: vSpace),
+                  if (hasProfile) HabitDNACard(profile: snapshot.habitProfile!),
+                  if (hasProfile && hasWeekly) SizedBox(height: vSpace * 0.75),
+                  if (hasWeekly) WeeklyStoryCard(story: snapshot.weeklyStory!),
+                ],
               ],
             ),
           );
@@ -447,13 +608,25 @@ class _ResponsiveOverviewContent extends StatelessWidget {
         return Padding(
           padding: edgePadding,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               header,
               SizedBox(height: vSpace),
               statsCards,
+              if (hasNarrative) ...[
+                SizedBox(height: vSpace * 0.75),
+                NarrativeCard(narrative: snapshot.narrative!),
+              ],
+              if (hasInsights) ...[
+                SizedBox(height: vSpace * 0.75),
+                InsightCarousel(
+                  insights: snapshot.insights,
+                  onDismiss: onDismissInsight,
+                ),
+              ],
               SizedBox(height: vSpace),
-              Expanded(
-                flex: 5,
+              SizedBox(
+                height: 380,
                 child: _MainContent(
                   topApps: snapshot.topApplications,
                   categories: snapshot.categoryApplications,
@@ -461,12 +634,59 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                 ),
               ),
               SizedBox(height: vSpace),
-              Expanded(
-                flex: 3,
-                child: _BottomSection(
-                  snapshot: snapshot,
-                  isCompact: false,
-                  isMedium: isMedium,
+              SizedBox(
+                height: 240,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: isMedium ? 4 : 5,
+                      child: _ContentCard(
+                        child: ApplicationLimitsList(
+                            data: snapshot.applicationLimits),
+                      ),
+                    ),
+                    if (hasProfile) ...[
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 4,
+                        child: HabitDNACard(profile: snapshot.habitProfile!),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              SizedBox(height: vSpace),
+              SizedBox(
+                height: 200,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (hasWeekly) ...[
+                      Expanded(
+                        flex: isMedium ? 4 : 5,
+                        child: WeeklyStoryCard(story: snapshot.weeklyStory!),
+                      ),
+                      const SizedBox(width: 16),
+                    ],
+                    Expanded(
+                      flex: 2,
+                      child: ProgressCard(
+                        title: AppLocalizations.of(context)!.screenTimeProgress,
+                        value: snapshot.screenTime,
+                        color: _kPurple,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 2,
+                      child: ProgressCard(
+                        title: AppLocalizations.of(context)!.productiveScoreProgress,
+                        value: snapshot.productiveScore,
+                        color: _kGreen,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -649,73 +869,6 @@ class _ContentCard extends StatelessWidget {
         ),
       ),
       child: child,
-    );
-  }
-}
-
-// ─── Bottom Section ─────────────────────────────────────────────────────────
-
-class _BottomSection extends StatelessWidget {
-  final _OverviewSnapshot snapshot;
-  final bool isCompact;
-  final bool isMedium;
-
-  const _BottomSection({
-    required this.snapshot,
-    required this.isCompact,
-    required this.isMedium,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final limitsCard = _ContentCard(
-      child: ApplicationLimitsList(data: snapshot.applicationLimits),
-    );
-
-    // Build the actual progress cards with live data
-    final stProgress = ProgressCard(
-      title: 'Screen\nTime',
-      value: snapshot.screenTime,
-      color: _kPurple,
-    );
-    final psProgress = ProgressCard(
-      title: 'Productive\nScore',
-      value: snapshot.productiveScore,
-      color: _kGreen,
-    );
-
-    if (isCompact) {
-      return Column(
-        children: [
-          SizedBox(
-            height: 140,
-            child: Row(
-              children: [
-                Expanded(child: stProgress),
-                const SizedBox(width: 12),
-                Expanded(child: psProgress),
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          SizedBox(height: 220, child: limitsCard),
-        ],
-      );
-    }
-
-    // Medium and expanded share the same structure, different flex
-    final limitsFlex = isMedium ? 4 : 5;
-    const progressFlex = 2;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(flex: limitsFlex, child: limitsCard),
-        const SizedBox(width: 16),
-        Expanded(flex: progressFlex, child: stProgress),
-        const SizedBox(width: 16),
-        Expanded(flex: progressFlex, child: psProgress),
-      ],
     );
   }
 }

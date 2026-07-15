@@ -1,76 +1,61 @@
 {
   "@@locale": "bn",
-  
   "appWindowTitle": "টাইমমার্ক - স্ক্রিন টাইম এবং অ্যাপ ব্যবহার ট্র্যাক করুন",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "টাইমমার্ক",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "উৎপাদনশীল স্ক্রিনটাইম",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "স্ক্রিনটাইম",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "ওপেন সোর্স",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "উইন্ডো দেখান",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "ফোকাস মোড শুরু করুন",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "ফোকাস মোড বন্ধ করুন",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "রিপোর্ট",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "সতর্কতা এবং সীমা",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "অ্যাপ্লিকেশন",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "বিজ্ঞপ্তি বন্ধ করুন",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "বিজ্ঞপ্তি চালু করুন",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "সংস্করণ: ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "সংস্করণ: {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "বের হন",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "সারসংক্ষেপ",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "অ্যাপ্লিকেশন",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "সতর্কতা এবং সীমা",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "রিপোর্ট",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "ফোকাস মোড",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "সেটিংস",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "সাহায্য",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "সাহায্য",
-  
   "faqCategoryGeneral": "সাধারণ প্রশ্ন",
   "faqCategoryApplications": "অ্যাপ্লিকেশন ব্যবস্থাপনা",
   "faqCategoryReports": "ব্যবহার বিশ্লেষণ এবং রিপোর্ট",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "ফোকাস মোড এবং পোমোডোরো টাইমার",
   "faqCategorySettings": "সেটিংস এবং কাস্টমাইজেশন",
   "faqCategoryTroubleshooting": "সমস্যা সমাধান",
-  
   "faqGeneralQ1": "এই অ্যাপ কীভাবে স্ক্রিন টাইম ট্র্যাক করে?",
   "faqGeneralA1": "অ্যাপটি আপনার ডিভাইসের ব্যবহার রিয়েল-টাইমে পর্যবেক্ষণ করে, বিভিন্ন অ্যাপ্লিকেশনে ব্যয় করা সময় ট্র্যাক করে। এটি আপনার ডিজিটাল অভ্যাসের ব্যাপক অন্তর্দৃষ্টি প্রদান করে, যার মধ্যে মোট স্ক্রিন টাইম, উৎপাদনশীল সময় এবং অ্যাপ্লিকেশন-নির্দিষ্ট ব্যবহার অন্তর্ভুক্ত।",
-  
   "faqGeneralQ2": "কোন অ্যাপকে 'উৎপাদনশীল' করে তোলে?",
   "faqGeneralA2": "আপনি 'অ্যাপ্লিকেশন' বিভাগে ম্যানুয়ালি অ্যাপগুলিকে উৎপাদনশীল হিসাবে চিহ্নিত করতে পারেন। উৎপাদনশীল অ্যাপগুলি আপনার উৎপাদনশীলতা স্কোরে অবদান রাখে, যা কাজ-সম্পর্কিত বা উপকারী অ্যাপ্লিকেশনে ব্যয় করা স্ক্রিন টাইমের শতাংশ গণনা করে।",
-  
   "faqGeneralQ3": "স্ক্রিন টাইম ট্র্যাকিং কতটা সঠিক?",
   "faqGeneralA3": "অ্যাপটি আপনার ডিভাইস ব্যবহারের সুনির্দিষ্ট পরিমাপ প্রদান করতে সিস্টেম-স্তরের ট্র্যাকিং ব্যবহার করে। এটি ন্যূনতম ব্যাটারি প্রভাবে প্রতিটি অ্যাপ্লিকেশনের ফোরগ্রাউন্ড সময় ক্যাপচার করে।",
-  
   "faqGeneralQ4": "আমি কি আমার অ্যাপ শ্রেণীবিভাগ কাস্টমাইজ করতে পারি?",
   "faqGeneralA4": "অবশ্যই! আপনি কাস্টম ক্যাটাগরি তৈরি করতে পারেন, নির্দিষ্ট ক্যাটাগরিতে অ্যাপ বরাদ্দ করতে পারেন এবং 'অ্যাপ্লিকেশন' বিভাগে এই বরাদ্দগুলি সহজেই পরিবর্তন করতে পারেন। এটি আরও অর্থপূর্ণ ব্যবহার বিশ্লেষণ তৈরি করতে সাহায্য করে।",
-  
   "faqGeneralQ5": "এই অ্যাপ থেকে আমি কী অন্তর্দৃষ্টি পেতে পারি?",
   "faqGeneralA5": "অ্যাপটি ব্যাপক অন্তর্দৃষ্টি প্রদান করে যার মধ্যে উৎপাদনশীলতা স্কোর, দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, ফোকাস সেশন ট্র্যাকিং এবং গ্রাফ এবং পাই চার্টের মতো ভিজ্যুয়াল বিশ্লেষণ অন্তর্ভুক্ত যা আপনাকে আপনার ডিজিটাল অভ্যাস বুঝতে এবং উন্নত করতে সাহায্য করে।",
-  
   "faqAppsQ1": "আমি কীভাবে নির্দিষ্ট অ্যাপ ট্র্যাকিং থেকে লুকাতে পারি?",
   "faqAppsA1": "'অ্যাপ্লিকেশন' বিভাগে, আপনি অ্যাপগুলির দৃশ্যমানতা টগল করতে পারেন।",
-  
   "faqAppsQ2": "আমি কি আমার অ্যাপ্লিকেশনগুলি অনুসন্ধান এবং ফিল্টার করতে পারি?",
   "faqAppsA2": "হ্যাঁ, অ্যাপ্লিকেশন বিভাগে একটি অনুসন্ধান কার্যকারিতা এবং ফিল্টারিং বিকল্প অন্তর্ভুক্ত রয়েছে। আপনি ক্যাটাগরি, উৎপাদনশীলতার স্থিতি, ট্র্যাকিং স্থিতি এবং দৃশ্যমানতা অনুযায়ী অ্যাপ ফিল্টার করতে পারেন।",
-  
   "faqAppsQ3": "অ্যাপ্লিকেশনের জন্য কোন সম্পাদনা বিকল্প উপলব্ধ?",
   "faqAppsA3": "প্রতিটি অ্যাপ্লিকেশনের জন্য, আপনি সম্পাদনা করতে পারেন: ক্যাটাগরি বরাদ্দ, উৎপাদনশীলতার স্থিতি, ব্যবহার ট্র্যাকিং, রিপোর্টে দৃশ্যমানতা এবং পৃথক দৈনিক সময়সীমা সেট করুন।",
-  
   "faqAppsQ4": "অ্যাপ্লিকেশন ক্যাটাগরি কীভাবে নির্ধারণ করা হয়?",
   "faqAppsA4": "প্রাথমিক ক্যাটাগরিগুলি সিস্টেম-প্রস্তাবিত, কিন্তু আপনার কর্মপ্রবাহ এবং পছন্দ অনুযায়ী কাস্টম ক্যাটাগরি তৈরি, পরিবর্তন এবং বরাদ্দ করার সম্পূর্ণ নিয়ন্ত্রণ আপনার কাছে রয়েছে।",
-  
   "faqReportsQ1": "কোন ধরনের রিপোর্ট উপলব্ধ?",
   "faqReportsA1": "রিপোর্টে অন্তর্ভুক্ত: মোট স্ক্রিন টাইম, উৎপাদনশীল সময়, সবচেয়ে ব্যবহৃত অ্যাপ, ফোকাস সেশন, দৈনিক স্ক্রিন টাইম গ্রাফ, ক্যাটাগরি ব্রেকডাউন পাই চার্ট, বিস্তারিত অ্যাপ্লিকেশন ব্যবহার, সাপ্তাহিক ব্যবহারের প্রবণতা এবং দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন বিশ্লেষণ।",
-  
   "faqReportsQ2": "অ্যাপ্লিকেশন ব্যবহারের রিপোর্ট কতটা বিস্তারিত?",
   "faqReportsA2": "বিস্তারিত অ্যাপ্লিকেশন ব্যবহারের রিপোর্টে দেখানো হয়: অ্যাপের নাম, ক্যাটাগরি, মোট ব্যয় করা সময়, উৎপাদনশীলতার স্থিতি এবং ব্যবহারের সারাংশ, দৈনিক সীমা, ব্যবহারের প্রবণতা এবং উৎপাদনশীলতা মেট্রিক্সের মতো গভীর অন্তর্দৃষ্টি সহ একটি 'অ্যাকশন' বিভাগ অফার করে।",
-  
   "faqReportsQ3": "আমি কি সময়ের সাথে আমার ব্যবহারের প্রবণতা বিশ্লেষণ করতে পারি?",
   "faqReportsA3": "হ্যাঁ! অ্যাপটি সপ্তাহ-থেকে-সপ্তাহ তুলনা প্রদান করে, গত সপ্তাহগুলিতে ব্যবহারের গ্রাফ, গড় দৈনিক ব্যবহার, দীর্ঘতম সেশন এবং সাপ্তাহিক মোট দেখায় যা আপনাকে আপনার ডিজিটাল অভ্যাস ট্র্যাক করতে সাহায্য করে।",
-  
   "faqReportsQ4": "'ব্যবহারের প্যাটার্ন' বিশ্লেষণ কী?",
   "faqReportsA4": "ব্যবহারের প্যাটার্ন আপনার স্ক্রিন টাইমকে সকাল, বিকেল, সন্ধ্যা এবং রাতের অংশে ভাগ করে। এটি আপনাকে বুঝতে সাহায্য করে যে আপনি কখন আপনার ডিভাইসে সবচেয়ে বেশি সক্রিয় এবং উন্নতির সম্ভাব্য ক্ষেত্রগুলি চিহ্নিত করতে।",
-  
   "faqAlertsQ1": "স্ক্রিন টাইম সীমা কতটা সূক্ষ্ম?",
   "faqAlertsA1": "আপনি সামগ্রিক দৈনিক স্ক্রিন টাইম সীমা এবং পৃথক অ্যাপ সীমা সেট করতে পারেন। সীমাগুলি ঘন্টা এবং মিনিটে কনফিগার করা যেতে পারে, প্রয়োজনমতো রিসেট বা সামঞ্জস্য করার বিকল্প সহ।",
-  
   "faqAlertsQ2": "কোন বিজ্ঞপ্তি বিকল্প উপলব্ধ?",
   "faqAlertsA2": "অ্যাপটি একাধিক বিজ্ঞপ্তি প্রকার অফার করে: স্ক্রিন টাইম অতিক্রম করলে সিস্টেম সতর্কতা, কাস্টমাইজযোগ্য বিরতিতে ঘন ঘন সতর্কতা (১, ৫, ১৫, ৩০, বা ৬০ মিনিট) এবং ফোকাস মোড, স্ক্রিন টাইম এবং অ্যাপ্লিকেশন-নির্দিষ্ট বিজ্ঞপ্তির জন্য টগল।",
-  
   "faqAlertsQ3": "আমি কি সীমা সতর্কতা কাস্টমাইজ করতে পারি?",
   "faqAlertsA3": "হ্যাঁ, আপনি সতর্কতার ফ্রিকোয়েন্সি কাস্টমাইজ করতে পারেন, নির্দিষ্ট ধরনের সতর্কতা সক্ষম/অক্ষম করতে পারেন এবং সামগ্রিক স্ক্রিন টাইম এবং পৃথক অ্যাপ্লিকেশনের জন্য বিভিন্ন সীমা সেট করতে পারেন।",
-  
   "faqFocusQ1": "কোন ধরনের ফোকাস মোড উপলব্ধ?",
   "faqFocusA1": "উপলব্ধ মোডগুলির মধ্যে রয়েছে ডিপ ওয়ার্ক (দীর্ঘ ফোকাসড সেশন), কুইক টাস্ক (কাজের সংক্ষিপ্ত বিস্ফোরণ) এবং রিডিং মোড। প্রতিটি মোড আপনাকে আপনার কাজ এবং বিরতির সময় কার্যকরভাবে গঠন করতে সাহায্য করে।",
-  
   "faqFocusQ2": "পোমোডোরো টাইমার কতটা নমনীয়?",
   "faqFocusA2": "টাইমারটি অত্যন্ত কাস্টমাইজযোগ্য। আপনি কাজের সময়কাল, সংক্ষিপ্ত বিরতির দৈর্ঘ্য এবং দীর্ঘ বিরতির সময়কাল সামঞ্জস্য করতে পারেন। অতিরিক্ত বিকল্পগুলির মধ্যে পরবর্তী সেশনের জন্য অটো-স্টার্ট এবং বিজ্ঞপ্তি সেটিংস অন্তর্ভুক্ত।",
-  
   "faqFocusQ3": "ফোকাস মোড ইতিহাস কী দেখায়?",
   "faqFocusA3": "ফোকাস মোড ইতিহাস দৈনিক ফোকাস সেশন ট্র্যাক করে, প্রতিদিন সেশনের সংখ্যা, প্রবণতা গ্রাফ, গড় সেশনের সময়কাল, মোট ফোকাস সময় এবং কাজের সেশন, সংক্ষিপ্ত বিরতি এবং দীর্ঘ বিরতির ব্রেকডাউন সহ একটি সময় বিতরণ পাই চার্ট দেখায়।",
-  
   "faqFocusQ4": "আমি কি আমার ফোকাস সেশনের অগ্রগতি ট্র্যাক করতে পারি?",
   "faqFocusA4": "অ্যাপটিতে প্লে/পজ, রিলোড এবং সেটিংস বোতাম সহ একটি বৃত্তাকার টাইমার UI রয়েছে। আপনি সহজাত নিয়ন্ত্রণগুলির সাথে সহজেই আপনার ফোকাস সেশনগুলি ট্র্যাক এবং পরিচালনা করতে পারেন।",
-  
   "faqSettingsQ1": "কোন কাস্টমাইজেশন বিকল্প উপলব্ধ?",
   "faqSettingsA1": "কাস্টমাইজেশনে অন্তর্ভুক্ত থিম নির্বাচন (সিস্টেম, লাইট, ডার্ক), ভাষা সেটিংস, স্টার্টআপ আচরণ, ব্যাপক বিজ্ঞপ্তি নিয়ন্ত্রণ এবং ডেটা মুছে ফেলা বা সেটিংস রিসেট করার মতো ডেটা ব্যবস্থাপনা বিকল্প।",
-  
   "faqSettingsQ2": "আমি কীভাবে প্রতিক্রিয়া প্রদান করতে বা সমস্যা রিপোর্ট করতে পারি?",
   "faqSettingsA2": "সেটিংস বিভাগের নীচে, আপনি বাগ রিপোর্ট, প্রতিক্রিয়া জমা দিন বা সাপোর্টে যোগাযোগ করার বোতাম পাবেন। এগুলি আপনাকে উপযুক্ত সাপোর্ট চ্যানেলে পুনঃনির্দেশ করবে।",
-  
   "faqSettingsQ3": "আমি যখন আমার ডেটা মুছে ফেলি তখন কী হয়?",
   "faqSettingsA3": "ডেটা মুছে ফেলা আপনার সমস্ত ব্যবহারের পরিসংখ্যান, ফোকাস সেশন ইতিহাস এবং কাস্টম সেটিংস রিসেট করবে। এটি নতুন করে শুরু করতে বা সমস্যা সমাধানের জন্য দরকারী।",
-  
   "faqTroubleQ1": "ডেটা দেখা যাচ্ছে না, হাইভ খুলছে না ত্রুটি",
   "faqTroubleA1": "সমস্যাটি জানা আছে, অস্থায়ী সমাধান হল সেটিংসের মাধ্যমে ডেটা মুছে ফেলা এবং যদি এটি কাজ না করে তবে ডকুমেন্টসে যান এবং নিম্নলিখিত ফাইলগুলি মুছে ফেলুন যদি সেগুলি বিদ্যমান থাকে - harman_screentime_app_usage_box.hive এবং harman_screentime_app_usage.lock, আপনাকে অ্যাপটি সর্বশেষ সংস্করণে আপডেট করার পরামর্শ দেওয়া হচ্ছে।",
-  
   "faqTroubleQ2": "অ্যাপ প্রতিটি স্টার্টআপে খোলে, কী করব?",
   "faqTroubleA2": "এটি একটি জানা সমস্যা যা Windows 10-এ ঘটে, অস্থায়ী সমাধান হল সেটিংসে মিনিমাইজড হিসাবে লঞ্চ সক্ষম করা যাতে এটি মিনিমাইজড হিসাবে চালু হয়।",
-  
   "usageAnalytics": "ব্যবহার বিশ্লেষণ",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "গত ৭ দিন",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "গত মাস",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "গত ৩ মাস",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "সারাজীবন",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "কাস্টম",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "বিশ্লেষণ ডেটা লোড হচ্ছে...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "আবার চেষ্টা করুন",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "বিশ্লেষণ শুরু করতে ব্যর্থ। অনুগ্রহ করে অ্যাপ্লিকেশনটি পুনরায় চালু করুন।",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: {error}। অনুগ্রহ করে পরে আবার চেষ্টা করুন।",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "বিশ্লেষণ ডেটা লোড করতে ত্রুটি: {error}। অনুগ্রহ করে আপনার সংযোগ পরীক্ষা করুন এবং আবার চেষ্টা করুন।",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "কাস্টম",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "তারিখ পরিসীমা",
+  "dateRange": "তারিখ পরিসর:",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "নির্দিষ্ট তারিখ",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "শুরুর তারিখ: ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "শেষ তারিখ: ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "তারিখ: ",
+  "date": "তারিখ",
   "@date": {
     "description": "Label for single date picker"
   },
-  
-  "cancel": "বাতিল",
+  "cancel": "বাতিল করুন",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "প্রয়োগ করুন",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "ঠিক আছে",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "অবৈধ তারিখ পরিসীমা",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "শুরুর তারিখ শেষ তারিখের আগে বা সমান হতে হবে।",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
-  "totalScreenTime": "মোট স্ক্রিন টাইম",
+  "totalScreenTime": "মোট স্ক্রিন সময়",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
   "productiveTime": "উৎপাদনশীল সময়",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
-  "mostUsedApp": "সবচেয়ে ব্যবহৃত অ্যাপ",
+  "mostUsedApp": "সবচেয়ে বেশি ব্যবহৃত অ্যাপ",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
   "focusSessions": "ফোকাস সেশন",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% বনাম পূর্ববর্তী সময়কাল",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% বনাম পূর্ববর্তী সময়কাল",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "{title} আইকন",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "দৈনিক স্ক্রিন টাইম",
+  "dailyScreenTime": "দৈনিক স্ক্রিন সময়",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "ক্যাটাগরি ব্রেকডাউন",
+  "categoryBreakdown": "বিভাগ বিশ্লেষণ",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "কোন ডেটা উপলব্ধ নেই",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
   "sectionLabel": "{title} বিভাগ",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "বিস্তারিত অ্যাপ্লিকেশন ব্যবহার",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "অ্যাপ্লিকেশন অনুসন্ধান করুন",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "নাম",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "ক্যাটাগরি",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "মোট সময়",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "উৎপাদনশীলতা",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "অ্যাকশন",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "সাজান: {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "নাম",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "ক্যাটাগরি",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "ব্যবহার",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "উৎপাদনশীল",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "অ-উৎপাদনশীল",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "আপনার অনুসন্ধান মানদণ্ডের সাথে কোন অ্যাপ্লিকেশন মেলেনি",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "বিস্তারিত দেখুন",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "ব্যবহারের সারাংশ",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "গত সপ্তাহের ব্যবহার",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "দিনের সময় অনুযায়ী ব্যবহারের প্যাটার্ন",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "প্যাটার্ন বিশ্লেষণ",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "আজ",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "দৈনিক সীমা",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "কোন সীমা নেই",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "ব্যবহারের প্রবণতা",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "উৎপাদনশীলতা",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "বৃদ্ধি পাচ্ছে",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "হ্রাস পাচ্ছে",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "স্থিতিশীল",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "গড় দৈনিক ব্যবহার",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
   "longestSession": "দীর্ঘতম সেশন",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "সাপ্তাহিক মোট",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "কোন ঐতিহাসিক ডেটা উপলব্ধ নেই",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "সকাল (৬-১২)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "বিকেল (১২-৫)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "সন্ধ্যা (৫-৯)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "রাত (৯-৬)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "ব্যবহারের অন্তর্দৃষ্টি",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "সীমার স্থিতি",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "বন্ধ করুন",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "আপনি প্রধানত {timeOfDay}-এ {appName} ব্যবহার করেন।",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার উল্লেখযোগ্যভাবে বেড়েছে ({percentage}%)।",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার ঊর্ধ্বমুখী।",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার উল্লেখযোগ্যভাবে কমেছে ({percentage}%)।",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার নিম্নমুখী।",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "পূর্ববর্তী সময়কালের তুলনায় আপনার ব্যবহার সামঞ্জস্যপূর্ণ রয়েছে।",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "এটি আপনার সেটিংসে একটি উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "এটি আপনার সেটিংসে একটি অ-উৎপাদনশীল অ্যাপ হিসাবে চিহ্নিত।",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "আপনার সবচেয়ে সক্রিয় সময় প্রায় {time}।",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "এই অ্যাপ্লিকেশনের জন্য কোন ব্যবহার সীমা সেট করা হয়নি।",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "আপনি এই অ্যাপ্লিকেশনের দৈনিক সীমায় পৌঁছে গেছেন।",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "আপনি আপনার দৈনিক সীমায় প্রায় পৌঁছে যাচ্ছেন, মাত্র {remainingTime} বাকি।",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "আপনি আপনার দৈনিক সীমার {percent}% ব্যবহার করেছেন, {remainingTime} বাকি।",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "আপনার দৈনিক সীমা থেকে {time} বাকি।",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "আজ",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "{hour} AM",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "{hour} PM",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,7 +610,6 @@
       }
     }
   },
-  
   "durationHoursMinutes": "{hours}ঘ {minutes}মি",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
@@ -765,7 +624,6 @@
       }
     }
   },
-  
   "durationMinutesOnly": "{minutes}মি",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
@@ -776,120 +634,104 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "সতর্কতা এবং সীমা",
   "notificationsSettings": "বিজ্ঞপ্তি সেটিংস",
   "overallScreenTimeLimit": "সামগ্রিক স্ক্রিন টাইম সীমা",
   "applicationLimits": "অ্যাপ্লিকেশন সীমা",
-  
   "popupAlerts": "পপ-আপ সতর্কতা",
   "frequentAlerts": "ঘন ঘন সতর্কতা",
   "soundAlerts": "শব্দ সতর্কতা",
   "systemAlerts": "সিস্টেম সতর্কতা",
-  
   "dailyTotalLimit": "দৈনিক মোট সীমা: ",
-  "hours": "ঘন্টা: ",
-  "minutes": "মিনিট: ",
+  "hours": "ঘন্টা",
+  "minutes": "মিনিট",
   "currentUsage": "বর্তমান ব্যবহার: ",
-  
   "tableName": "নাম",
   "tableCategory": "ক্যাটাগরি",
   "tableDailyLimit": "দৈনিক সীমা",
   "tableCurrentUsage": "বর্তমান ব্যবহার",
   "tableStatus": "স্থিতি",
   "tableActions": "অ্যাকশন",
-  
   "addLimit": "সীমা যোগ করুন",
   "noApplicationsToDisplay": "প্রদর্শন করার জন্য কোন অ্যাপ্লিকেশন নেই",
-  
   "statusActive": "সক্রিয়",
   "statusOff": "বন্ধ",
   "durationNone": "কোনটি নয়",
-  
   "addApplicationLimit": "অ্যাপ্লিকেশন সীমা যোগ করুন",
   "selectApplication": "অ্যাপ্লিকেশন নির্বাচন করুন",
   "selectApplicationPlaceholder": "একটি অ্যাপ্লিকেশন নির্বাচন করুন",
   "enableLimit": "সীমা সক্ষম করুন: ",
-  
   "editLimitTitle": "সীমা সম্পাদনা: {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "ডেটা লোড করতে ব্যর্থ: {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "সেটিংস রিসেট করবেন?",
   "resetSettingsContent": "আপনি যদি সেটিংস রিসেট করেন, আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এটি রিসেট করতে চান?",
   "resetAll": "সব রিসেট করুন",
-  "refresh": "রিফ্রেশ",
+  "refresh": "রিফ্রেশ করুন",
   "save": "সংরক্ষণ করুন",
   "add": "যোগ করুন",
   "error": "ত্রুটি",
   "retry": "পুনরায় চেষ্টা করুন",
-  
   "applicationsTitle": "অ্যাপ্লিকেশন",
   "searchApplication": "অ্যাপ্লিকেশন অনুসন্ধান করুন",
-  
-  "tracking": "ট্র্যাকিং",
+  "tracking": "ট্র্যাক করা",
   "hiddenVisible": "লুকানো/দৃশ্যমান",
   "selectCategory": "একটি ক্যাটাগরি নির্বাচন করুন",
   "allCategories": "সব",
-  
   "tableScreenTime": "স্ক্রিন টাইম",
   "tableTracking": "ট্র্যাকিং",
   "tableHidden": "লুকানো",
   "tableEdit": "সম্পাদনা",
-  
   "editAppTitle": "{appName} সম্পাদনা করুন",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "ক্যাটাগরি",
   "customCategory": "কাস্টম",
   "customCategoryPlaceholder": "কাস্টম ক্যাটাগরির নাম লিখুন",
   "uncategorized": "শ্রেণীবিহীন",
-  
   "isProductive": "উৎপাদনশীল",
   "trackUsage": "ব্যবহার ট্র্যাক করুন",
   "visibleInReports": "রিপোর্টে দৃশ্যমান",
-  
   "timeLimitsSection": "সময় সীমা",
   "enableDailyLimit": "দৈনিক সীমা সক্ষম করুন",
   "setDailyTimeLimit": "দৈনিক সময় সীমা সেট করুন:",
-  
   "saveChanges": "পরিবর্তন সংরক্ষণ করুন",
-  
   "errorLoadingData": "ওভারভিউ ডেটা লোড করতে ত্রুটি: {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "ফোকাস মোড",
-  
   "historySection": "ইতিহাস",
   "trendsSection": "প্রবণতা",
   "timeDistributionSection": "সময় বিতরণ",
   "sessionHistorySection": "সেশন ইতিহাস",
-  
   "workSession": "কাজের সেশন",
   "shortBreak": "সংক্ষিপ্ত বিরতি",
   "longBreak": "দীর্ঘ বিরতি",
-  
   "dateHeader": "তারিখ",
   "durationHeader": "সময়কাল",
-  
   "monday": "সোমবার",
   "tuesday": "মঙ্গলবার",
   "wednesday": "বুধবার",
@@ -897,416 +739,365 @@
   "friday": "শুক্রবার",
   "saturday": "শনিবার",
   "sunday": "রবিবার",
-  
   "focusModeSettingsTitle": "ফোকাস মোড সেটিংস",
-  
   "modeCustom": "কাস্টম",
   "modeDeepWork": "ডিপ ওয়ার্ক (৬০ মিনিট)",
   "modeQuickTasks": "কুইক টাস্ক (২৫ মিনিট)",
   "modeReading": "রিডিং (৪৫ মিনিট)",
-  
   "workDurationLabel": "কাজের সময়কাল: {minutes} মিনিট",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "সংক্ষিপ্ত বিরতি: {minutes} মিনিট",
+  "shortBreakLabel": "সংক্ষিপ্ত বিরতি",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "দীর্ঘ বিরতি: {minutes} মিনিট",
+  "longBreakLabel": "দীর্ঘ বিরতি",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "পরবর্তী সেশন অটো-স্টার্ট করুন",
   "blockDistractions": "ফোকাস মোডের সময় বিভ্রান্তি ব্লক করুন",
   "enableNotifications": "বিজ্ঞপ্তি সক্ষম করুন",
-  
   "saved": "সংরক্ষিত",
-  
   "errorLoadingFocusModeData": "ফোকাস মোড ডেটা লোড করতে ত্রুটি: {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "আজকের সারসংক্ষেপ",
   "startFocusMode": "ফোকাস মোড শুরু করুন",
-  
   "loadingProductivityData": "আপনার উৎপাদনশীলতা ডেটা লোড হচ্ছে...",
   "noActivityDataAvailable": "এখনও কোন কার্যকলাপ ডেটা উপলব্ধ নেই",
   "startUsingApplications": "স্ক্রিন টাইম এবং উৎপাদনশীলতা ট্র্যাক করতে আপনার অ্যাপ্লিকেশনগুলি ব্যবহার শুরু করুন।",
   "refreshData": "ডেটা রিফ্রেশ করুন",
-  
   "topApplications": "শীর্ষ অ্যাপ্লিকেশন",
-  
   "noAppUsageDataAvailable": "এখনও কোন অ্যাপ্লিকেশন ব্যবহারের ডেটা উপলব্ধ নেই",
   "noApplicationDataAvailable": "কোন অ্যাপ্লিকেশন ডেটা উপলব্ধ নেই",
   "noCategoryDataAvailable": "কোন ক্যাটাগরি ডেটা উপলব্ধ নেই",
   "noApplicationLimitsSet": "কোন অ্যাপ্লিকেশন সীমা সেট করা নেই",
-  
   "screenLabel": "স্ক্রিন",
   "timeLabel": "সময়",
   "productiveLabel": "উৎপাদনশীল",
   "scoreLabel": "স্কোর",
-  
   "defaultNone": "কোনটি নয়",
   "defaultTime": "০ঘ ০মি",
   "defaultCount": "০",
   "unknownApp": "অজানা",
-
-"settingsTitle": "সেটিংস",
-
-"generalSection": "সাধারণ",
-"notificationsSection": "বিজ্ঞপ্তি",
-"dataSection": "ডেটা",
-"versionSection": "সংস্করণ",
-
-"themeTitle": "থিম",
-"themeDescription": "অ্যাপ্লিকেশনের রঙের থিম (পরিবর্তনের জন্য পুনরায় চালু করা প্রয়োজন)",
-
-"languageTitle": "ভাষা",
-"languageDescription": "অ্যাপ্লিকেশনের ভাষা",
-
-"startupBehaviourTitle": "স্টার্টআপ আচরণ",
-"startupBehaviourDescription": "OS স্টার্টআপে লঞ্চ করুন",
-
-"launchMinimizedTitle": "মিনিমাইজড হিসাবে লঞ্চ করুন",
-"launchMinimizedDescription": "সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)",
-
-"notificationsTitle": "বিজ্ঞপ্তি",
-"notificationsAllDescription": "অ্যাপ্লিকেশনের সমস্ত বিজ্ঞপ্তি",
-
-"focusModeNotificationsTitle": "ফোকাস মোড",
-"focusModeNotificationsDescription": "ফোকাস মোডের জন্য সমস্ত বিজ্ঞপ্তি",
-
-"screenTimeNotificationsTitle": "স্ক্রিন টাইম",
-"screenTimeNotificationsDescription": "স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি",
-
-"appScreenTimeNotificationsTitle": "অ্যাপ্লিকেশন স্ক্রিন টাইম",
-"appScreenTimeNotificationsDescription": "অ্যাপ্লিকেশন স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি",
-
-"frequentAlertsTitle": "ঘন ঘন সতর্কতার বিরতি",
-"frequentAlertsDescription": "ঘন ঘন বিজ্ঞপ্তির জন্য বিরতি সেট করুন (মিনিট)",
-
-"clearDataTitle": "ডেটা মুছে ফেলুন",
-"clearDataDescription": "সমস্ত ইতিহাস এবং অন্যান্য সম্পর্কিত ডেটা মুছে ফেলুন",
-
-"resetSettingsTitle2": "সেটিংস রিসেট করুন",
-"resetSettingsDescription": "সমস্ত সেটিংস রিসেট করুন",
-
-"versionTitle": "সংস্করণ",
-"versionDescription": "অ্যাপের বর্তমান সংস্করণ",
-
-"contactButton": "যোগাযোগ",
-"reportBugButton": "বাগ রিপোর্ট করুন",
-"submitFeedbackButton": "প্রতিক্রিয়া জমা দিন",
-"githubButton": "গিটহাব",
-
-"clearDataDialogTitle": "ডেটা মুছে ফেলবেন?",
-"clearDataDialogContent": "এটি সমস্ত ইতিহাস এবং সম্পর্কিত ডেটা মুছে ফেলবে। আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?",
-"clearDataButtonLabel": "ডেটা মুছে ফেলুন",
-
-"resetSettingsDialogTitle": "সেটিংস রিসেট করবেন?",
-"resetSettingsDialogContent": "এটি সমস্ত সেটিংস তাদের ডিফল্ট মানে রিসেট করবে। আপনি কি এগিয়ে যেতে চান?",
-"resetButtonLabel": "রিসেট",
-
-"cancelButton": "বাতিল",
-
-"couldNotLaunchUrl": "{url} লঞ্চ করা যায়নি",
-"@couldNotLaunchUrl": {
-"placeholders": {
-"url": {"type": "String"}
-}
-},
-
-"errorMessage": "ত্রুটি: {message}",
-"@errorMessage": {
-"placeholders": {
-"message": {"type": "String"}
-}
-},
-
-"chart_focusTrends": "ফোকাস প্রবণতা",
-"@chart_focusTrends": {
-"description": "Title for focus trends chart"
-},
-
-"chart_sessionCount": "সেশন সংখ্যা",
-"@chart_sessionCount": {
-"description": "Label for session count metric"
-},
-
-"chart_avgDuration": "গড় সময়কাল",
-"@chart_avgDuration": {
-"description": "Label for average duration metric"
-},
-
-"chart_totalFocus": "মোট ফোকাস",
-"@chart_totalFocus": {
-"description": "Label for total focus time metric"
-},
-
-"chart_yAxis_sessions": "সেশন",
-"@chart_yAxis_sessions": {
-"description": "Y-axis label for session count"
-},
-
-"chart_yAxis_minutes": "মিনিট",
-"@chart_yAxis_minutes": {
-"description": "Y-axis label for time in minutes"
-},
-
-"chart_yAxis_value": "মান",
-"@chart_yAxis_value": {
-"description": "Generic y-axis label"
-},
-
-"chart_monthOverMonthChange": "মাস-থেকে-মাস পরিবর্তন: ",
-"@chart_monthOverMonthChange": {
-"description": "Label for percentage change display"
-},
-
-"chart_customRange": "কাস্টম পরিসীমা",
-"@chart_customRange": {
-"description": "Label for custom date range"
-},
-
-"day_monday": "সোমবার",
-"day_mondayShort": "সোম",
-"day_mondayAbbr": "সো",
-
-"day_tuesday": "মঙ্গলবার",
-"day_tuesdayShort": "মঙ্গল",
-"day_tuesdayAbbr": "মং",
-
-"day_wednesday": "বুধবার",
-"day_wednesdayShort": "বুধ",
-"day_wednesdayAbbr": "বু",
-
-"day_thursday": "বৃহস্পতিবার",
-"day_thursdayShort": "বৃহ",
-"day_thursdayAbbr": "বৃ",
-
-"day_friday": "শুক্রবার",
-"day_fridayShort": "শুক্র",
-"day_fridayAbbr": "শু",
-
-"day_saturday": "শনিবার",
-"day_saturdayShort": "শনি",
-"day_saturdayAbbr": "শ",
-
-"day_sunday": "রবিবার",
-"day_sundayShort": "রবি",
-"day_sundayAbbr": "র",
-
-"time_hours": "{count}ঘ",
-"@time_hours": {
-"description": "Hours format",
-"placeholders": {
-"count": {
-"type": "int"
-}
-}
-},
-
-"time_hoursMinutes": "{hours}ঘ {minutes}মি",
-"@time_hoursMinutes": {
-"description": "Hours and minutes format",
-"placeholders": {
-"hours": {
-"type": "int"
-},
-"minutes": {
-"type": "int"
-}
-}
-},
-
-"time_minutesFormat": "{count} মিনিট",
-"@time_minutesFormat": {
-"description": "Minutes format for tooltips",
-"placeholders": {
-"count": {
-"type": "String"
-}
-}
-},
-
-"tooltip_dateScreenTime": "{date}: {hours}ঘ {minutes}মি",
-"@tooltip_dateScreenTime": {
-"description": "Tooltip showing date and screen time",
-"placeholders": {
-"date": {
-"type": "String"
-},
-"hours": {
-"type": "int"
-},
-"minutes": {
-"type": "int"
-}
-}
-},
-
-"tooltip_hoursFormat": "{count} ঘন্টা",
-"@tooltip_hoursFormat": {
-"description": "Hours format for tooltip fallback",
-"placeholders": {
-"count": {
-"type": "String"
-}
-}
-},
-
-"month_january": "জানুয়ারি",
-"month_januaryShort": "জানু",
-"month_february": "ফেব্রুয়ারি",
-"month_februaryShort": "ফেব্রু",
-"month_march": "মার্চ",
-"month_marchShort": "মার্চ",
-"month_april": "এপ্রিল",
-"month_aprilShort": "এপ্রি",
-"month_may": "মে",
-"month_mayShort": "মে",
-"month_june": "জুন",
-"month_juneShort": "জুন",
-"month_july": "জুলাই",
-"month_julyShort": "জুলা",
-"month_august": "আগস্ট",
-"month_augustShort": "আগ",
-"month_september": "সেপ্টেম্বর",
-"month_septemberShort": "সেপ্টে",
-"month_october": "অক্টোবর",
-"month_octoberShort": "অক্টো",
-"month_november": "নভেম্বর",
-"month_novemberShort": "নভে",
-"month_december": "ডিসেম্বর",
-"month_decemberShort": "ডিসে",
-
-"categoryAll": "সব",
-"@categoryAll": {
-"description": "Category filter for all applications"
-},
-"categoryProductivity": "উৎপাদনশীলতা",
-"categoryDevelopment": "ডেভেলপমেন্ট",
-"categorySocialMedia": "সোশ্যাল মিডিয়া",
-"categoryEntertainment": "বিনোদন",
-"categoryGaming": "গেমিং",
-"categoryCommunication": "যোগাযোগ",
-"categoryWebBrowsing": "ওয়েব ব্রাউজিং",
-"categoryCreative": "সৃজনশীল",
-"categoryEducation": "শিক্ষা",
-"categoryUtility": "ইউটিলিটি",
-"categoryUncategorized": "শ্রেণীবিহীন",
-
-"appMicrosoftWord": "মাইক্রোসফট ওয়ার্ড",
-"appExcel": "এক্সেল",
-"appPowerPoint": "পাওয়ারপয়েন্ট",
-"appGoogleDocs": "গুগল ডক্স",
-"appNotion": "নোশন",
-"appEvernote": "এভারনোট",
-"appTrello": "ট্রেলো",
-"appAsana": "আসানা",
-"appSlack": "স্ল্যাক",
-"appMicrosoftTeams": "মাইক্রোসফট টিমস",
-"appZoom": "জুম",
-"appGoogleCalendar": "গুগল ক্যালেন্ডার",
-"appAppleCalendar": "ক্যালেন্ডার",
-"appVisualStudioCode": "ভিজ্যুয়াল স্টুডিও কোড",
-"appTerminal": "টার্মিনাল",
-"appCommandPrompt": "কমান্ড প্রম্পট",
-"appChrome": "ক্রোম",
-"appFirefox": "ফায়ারফক্স",
-"appSafari": "সাফারি",
-"appEdge": "এজ",
-"appOpera": "অপেরা",
-"appBrave": "ব্রেভ",
-"appNetflix": "নেটফ্লিক্স",
-"appYouTube": "ইউটিউব",
-"appSpotify": "স্পটিফাই",
-"appAppleMusic": "অ্যাপল মিউজিক",
-"appCalculator": "ক্যালকুলেটর",
-"appNotes": "নোটস",
-"appSystemPreferences": "সিস্টেম প্রেফারেন্স",
-"appTaskManager": "টাস্ক ম্যানেজার",
-"appFileExplorer": "ফাইল এক্সপ্লোরার",
-"appDropbox": "ড্রপবক্স",
-"appGoogleDrive": "গুগল ড্রাইভ",
-
-"loadingApplication": "অ্যাপ্লিকেশন লোড হচ্ছে...",
-"@loadingApplication": {
-"description": "Message shown when the application is loading"
-},
-"loadingData": "ডেটা লোড হচ্ছে...",
-"@loadingData": {
-"description": "Message shown when data is being loaded"
-},
-"reportsError": "ত্রুটি",
-"@reportsError": {
-"description": "Label for error messages"
-},
-"reportsRetry": "পুনরায় চেষ্টা করুন",
-"@reportsRetry": {
-"description": "Button text to retry an operation"
-},
-
-"backupRestoreSection": "ব্যাকআপ এবং পুনরুদ্ধার",
-"backupRestoreTitle": "ব্যাকআপ এবং পুনরুদ্ধার",
-"exportDataTitle": "ডেটা রপ্তানি করুন",
-"exportDataDescription": "আপনার সমস্ত ডেটার একটি ব্যাকআপ তৈরি করুন",
-"importDataTitle": "ডেটা আমদানি করুন",
-"importDataDescription": "একটি ব্যাকআপ ফাইল থেকে পুনরুদ্ধার করুন",
-"exportButton": "রপ্তানি",
-"importButton": "আমদানি",
-"closeButton": "বন্ধ করুন",
-"noButton": "না",
-"shareButton": "শেয়ার করুন",
-"exportStarting": "রপ্তানি শুরু হচ্ছে...",
-"exportSuccessful": "রপ্তানি সফল! ফাইল Documents/Scolect-Backups-এ সংরক্ষিত হয়েছে",
-"exportFailed": "রপ্তানি ব্যর্থ হয়েছে",
-"exportComplete": "রপ্তানি সম্পন্ন",
-"shareBackupQuestion": "আপনি কি ব্যাকআপ ফাইল শেয়ার করতে চান?",
-"importStarting": "আমদানি শুরু হচ্ছে...",
-"importSuccessful": "আমদানি সফল!",
-"importFailed": "আমদানি ব্যর্থ হয়েছে",
-"importOptionsTitle": "আমদানি বিকল্প",
-"importOptionsQuestion": "আপনি কীভাবে ডেটা আমদানি করতে চান?",
-"replaceModeTitle": "প্রতিস্থাপন",
-"replaceModeDescription": "সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করুন",
-"mergeModeTitle": "মার্জ",
-"mergeModeDescription": "বিদ্যমান ডেটার সাথে একত্রিত করুন",
-"appendModeTitle": "সংযুক্ত",
-"appendModeDescription": "শুধুমাত্র নতুন রেকর্ড যোগ করুন",
-"warningTitle": "⚠️ সতর্কতা",
-"replaceWarningMessage": "এটি আপনার সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করবে। আপনি কি নিশ্চিতভাবে এগিয়ে যেতে চান?",
-"replaceAllButton": "সব প্রতিস্থাপন করুন",
-"fileLabel": "ফাইল",
-"sizeLabel": "আকার",
-"recordsLabel": "রেকর্ড",
-"usageRecordsLabel": "ব্যবহারের রেকর্ড",
-"focusSessionsLabel": "ফোকাস সেশন",
-"appMetadataLabel": "অ্যাপ মেটাডেটা",
-"updatedLabel": "আপডেট হয়েছে",
-"skippedLabel": "এড়িয়ে গেছে",
-
-"faqSettingsQ4": "আমি কীভাবে আমার ডেটা পুনরুদ্ধার বা রপ্তানি করতে পারি?",
-"faqSettingsA4": "আপনি সেটিংসে যেতে পারেন, এবং সেখানে আপনি ব্যাকআপ এবং পুনরুদ্ধার বিভাগ পাবেন। আপনি এখান থেকে ডেটা রপ্তানি বা আমদানি করতে পারেন, মনে রাখবেন যে রপ্তানি করা ডেটা ফাইল Documents-এ Scolect-Backups ফোল্ডারে সংরক্ষিত হয় এবং শুধুমাত্র এই ফাইলটি ডেটা পুনরুদ্ধার করতে ব্যবহার করা যেতে পারে, অন্য কোন ফাইল নয়।",
-
-"faqGeneralQ6": "আমি কীভাবে ভাষা পরিবর্তন করতে পারি এবং কোন ভাষাগুলি উপলব্ধ, এছাড়াও অনুবাদ ভুল হলে কী করব?",
-"faqGeneralA6": "ভাষা সেটিংস সাধারণ বিভাগের মাধ্যমে পরিবর্তন করা যেতে পারে, সমস্ত উপলব্ধ ভাষা সেখানে তালিকাভুক্ত আছে, আপনি যোগাযোগে ক্লিক করে এবং প্রদত্ত ভাষা সহ আপনার অনুরোধ পাঠিয়ে অনুবাদের অনুরোধ করতে পারেন। শুধু জানবেন যে অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!",
-
-"faqGeneralQ7": "অনুবাদ ভুল হলে কী করব?",
-"faqGeneralA7": "অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!",
+  "settingsTitle": "সেটিংস",
+  "generalSection": "সাধারণ",
+  "notificationsSection": "বিজ্ঞপ্তি",
+  "dataSection": "ডেটা",
+  "versionSection": "সংস্করণ",
+  "themeTitle": "থিম",
+  "themeDescription": "অ্যাপ্লিকেশনের রঙের থিম",
+  "languageTitle": "ভাষা",
+  "languageDescription": "অ্যাপ্লিকেশনের ভাষা",
+  "startupBehaviourTitle": "স্টার্টআপ আচরণ",
+  "startupBehaviourDescription": "OS স্টার্টআপে লঞ্চ করুন",
+  "launchMinimizedTitle": "মিনিমাইজড হিসাবে লঞ্চ করুন",
+  "launchMinimizedDescription": "সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)",
+  "notificationsTitle": "বিজ্ঞপ্তি",
+  "notificationsAllDescription": "অ্যাপ্লিকেশনের সমস্ত বিজ্ঞপ্তি",
+  "focusModeNotificationsTitle": "ফোকাস মোড",
+  "focusModeNotificationsDescription": "ফোকাস মোডের জন্য সমস্ত বিজ্ঞপ্তি",
+  "screenTimeNotificationsTitle": "স্ক্রিন টাইম",
+  "screenTimeNotificationsDescription": "স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি",
+  "appScreenTimeNotificationsTitle": "অ্যাপ্লিকেশন স্ক্রিন টাইম",
+  "appScreenTimeNotificationsDescription": "অ্যাপ্লিকেশন স্ক্রিন টাইম সীমাবদ্ধতার জন্য সমস্ত বিজ্ঞপ্তি",
+  "frequentAlertsTitle": "ঘন ঘন সতর্কতার বিরতি",
+  "frequentAlertsDescription": "ঘন ঘন বিজ্ঞপ্তির জন্য বিরতি সেট করুন (মিনিট)",
+  "clearDataTitle": "ডেটা মুছে ফেলুন",
+  "clearDataDescription": "সমস্ত ইতিহাস এবং অন্যান্য সম্পর্কিত ডেটা মুছে ফেলুন",
+  "resetSettingsTitle2": "সেটিংস রিসেট করুন",
+  "resetSettingsDescription": "সমস্ত সেটিংস রিসেট করুন",
+  "versionTitle": "সংস্করণ",
+  "versionDescription": "অ্যাপের বর্তমান সংস্করণ",
+  "contactButton": "যোগাযোগ",
+  "reportBugButton": "বাগ রিপোর্ট করুন",
+  "submitFeedbackButton": "প্রতিক্রিয়া জমা দিন",
+  "githubButton": "গিটহাব",
+  "clearDataDialogTitle": "ডেটা মুছে ফেলবেন?",
+  "clearDataDialogContent": "এটি সমস্ত ইতিহাস এবং সম্পর্কিত ডেটা মুছে ফেলবে। আপনি এটি পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?",
+  "clearDataButtonLabel": "ডেটা মুছে ফেলুন",
+  "resetSettingsDialogTitle": "সেটিংস রিসেট করবেন?",
+  "resetSettingsDialogContent": "এটি সমস্ত সেটিংস তাদের ডিফল্ট মানে রিসেট করবে। আপনি কি এগিয়ে যেতে চান?",
+  "resetButtonLabel": "রিসেট",
+  "cancelButton": "বাতিল",
+  "couldNotLaunchUrl": "{url} লঞ্চ করা যায়নি",
+  "@couldNotLaunchUrl": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "errorMessage": "ত্রুটি: {message}",
+  "@errorMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "chart_focusTrends": "ফোকাস প্রবণতা",
+  "@chart_focusTrends": {
+    "description": "Title for focus trends chart"
+  },
+  "chart_sessionCount": "সেশন সংখ্যা",
+  "@chart_sessionCount": {
+    "description": "Label for session count metric"
+  },
+  "chart_avgDuration": "গড় সময়কাল",
+  "@chart_avgDuration": {
+    "description": "Label for average duration metric"
+  },
+  "chart_totalFocus": "মোট ফোকাস",
+  "@chart_totalFocus": {
+    "description": "Label for total focus time metric"
+  },
+  "chart_yAxis_sessions": "সেশন",
+  "@chart_yAxis_sessions": {
+    "description": "Y-axis label for session count"
+  },
+  "chart_yAxis_minutes": "মিনিট",
+  "@chart_yAxis_minutes": {
+    "description": "Y-axis label for time in minutes"
+  },
+  "chart_yAxis_value": "মান",
+  "@chart_yAxis_value": {
+    "description": "Generic y-axis label"
+  },
+  "chart_monthOverMonthChange": "মাস-থেকে-মাস পরিবর্তন: ",
+  "@chart_monthOverMonthChange": {
+    "description": "Label for percentage change display"
+  },
+  "chart_customRange": "কাস্টম পরিসীমা",
+  "@chart_customRange": {
+    "description": "Label for custom date range"
+  },
+  "day_monday": "সোমবার",
+  "day_mondayShort": "সোম",
+  "day_mondayAbbr": "সো",
+  "day_tuesday": "মঙ্গলবার",
+  "day_tuesdayShort": "মঙ্গল",
+  "day_tuesdayAbbr": "মং",
+  "day_wednesday": "বুধবার",
+  "day_wednesdayShort": "বুধ",
+  "day_wednesdayAbbr": "বু",
+  "day_thursday": "বৃহস্পতিবার",
+  "day_thursdayShort": "বৃহ",
+  "day_thursdayAbbr": "বৃ",
+  "day_friday": "শুক্রবার",
+  "day_fridayShort": "শুক্র",
+  "day_fridayAbbr": "শু",
+  "day_saturday": "শনিবার",
+  "day_saturdayShort": "শনি",
+  "day_saturdayAbbr": "শ",
+  "day_sunday": "রবিবার",
+  "day_sundayShort": "রবি",
+  "day_sundayAbbr": "র",
+  "time_hours": "{count}ঘ",
+  "@time_hours": {
+    "description": "Hours format",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "time_hoursMinutes": "{hours}ঘ {minutes}মি",
+  "@time_hoursMinutes": {
+    "description": "Hours and minutes format",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "time_minutesFormat": "{count} মিনিট",
+  "@time_minutesFormat": {
+    "description": "Minutes format for tooltips",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "tooltip_dateScreenTime": "{date}: {hours}ঘ {minutes}মি",
+  "@tooltip_dateScreenTime": {
+    "description": "Tooltip showing date and screen time",
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltip_hoursFormat": "{count} ঘন্টা",
+  "@tooltip_hoursFormat": {
+    "description": "Hours format for tooltip fallback",
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "month_january": "জানুয়ারি",
+  "month_januaryShort": "জানু",
+  "month_february": "ফেব্রুয়ারি",
+  "month_februaryShort": "ফেব্রু",
+  "month_march": "মার্চ",
+  "month_marchShort": "মার্চ",
+  "month_april": "এপ্রিল",
+  "month_aprilShort": "এপ্রি",
+  "month_may": "মে",
+  "month_mayShort": "মে",
+  "month_june": "জুন",
+  "month_juneShort": "জুন",
+  "month_july": "জুলাই",
+  "month_julyShort": "জুলা",
+  "month_august": "আগস্ট",
+  "month_augustShort": "আগ",
+  "month_september": "সেপ্টেম্বর",
+  "month_septemberShort": "সেপ্টে",
+  "month_october": "অক্টোবর",
+  "month_octoberShort": "অক্টো",
+  "month_november": "নভেম্বর",
+  "month_novemberShort": "নভে",
+  "month_december": "ডিসেম্বর",
+  "month_decemberShort": "ডিসে",
+  "categoryAll": "সব",
+  "@categoryAll": {
+    "description": "Category filter for all applications"
+  },
+  "categoryProductivity": "উৎপাদনশীলতা",
+  "categoryDevelopment": "ডেভেলপমেন্ট",
+  "categorySocialMedia": "সোশ্যাল মিডিয়া",
+  "categoryEntertainment": "বিনোদন",
+  "categoryGaming": "গেমিং",
+  "categoryCommunication": "যোগাযোগ",
+  "categoryWebBrowsing": "ওয়েব ব্রাউজিং",
+  "categoryCreative": "সৃজনশীল",
+  "categoryEducation": "শিক্ষা",
+  "categoryUtility": "ইউটিলিটি",
+  "categoryUncategorized": "শ্রেণীবিহীন",
+  "appMicrosoftWord": "মাইক্রোসফট ওয়ার্ড",
+  "appExcel": "এক্সেল",
+  "appPowerPoint": "পাওয়ারপয়েন্ট",
+  "appGoogleDocs": "গুগল ডক্স",
+  "appNotion": "নোশন",
+  "appEvernote": "এভারনোট",
+  "appTrello": "ট্রেলো",
+  "appAsana": "আসানা",
+  "appSlack": "স্ল্যাক",
+  "appMicrosoftTeams": "মাইক্রোসফট টিমস",
+  "appZoom": "জুম",
+  "appGoogleCalendar": "গুগল ক্যালেন্ডার",
+  "appAppleCalendar": "ক্যালেন্ডার",
+  "appVisualStudioCode": "ভিজ্যুয়াল স্টুডিও কোড",
+  "appTerminal": "টার্মিনাল",
+  "appCommandPrompt": "কমান্ড প্রম্পট",
+  "appChrome": "ক্রোম",
+  "appFirefox": "ফায়ারফক্স",
+  "appSafari": "সাফারি",
+  "appEdge": "এজ",
+  "appOpera": "অপেরা",
+  "appBrave": "ব্রেভ",
+  "appNetflix": "নেটফ্লিক্স",
+  "appYouTube": "ইউটিউব",
+  "appSpotify": "স্পটিফাই",
+  "appAppleMusic": "অ্যাপল মিউজিক",
+  "appCalculator": "ক্যালকুলেটর",
+  "appNotes": "নোটস",
+  "appSystemPreferences": "সিস্টেম প্রেফারেন্স",
+  "appTaskManager": "টাস্ক ম্যানেজার",
+  "appFileExplorer": "ফাইল এক্সপ্লোরার",
+  "appDropbox": "ড্রপবক্স",
+  "appGoogleDrive": "গুগল ড্রাইভ",
+  "loadingApplication": "অ্যাপ্লিকেশন লোড হচ্ছে...",
+  "@loadingApplication": {
+    "description": "Message shown when the application is loading"
+  },
+  "loadingData": "ডেটা লোড হচ্ছে...",
+  "@loadingData": {
+    "description": "Message shown when data is being loaded"
+  },
+  "reportsError": "ত্রুটি",
+  "@reportsError": {
+    "description": "Label for error messages"
+  },
+  "reportsRetry": "পুনরায় চেষ্টা করুন",
+  "@reportsRetry": {
+    "description": "Button text to retry an operation"
+  },
+  "backupRestoreSection": "ব্যাকআপ এবং পুনরুদ্ধার",
+  "backupRestoreTitle": "ব্যাকআপ এবং পুনরুদ্ধার",
+  "exportDataTitle": "ডেটা রপ্তানি করুন",
+  "exportDataDescription": "আপনার সমস্ত ডেটার একটি ব্যাকআপ তৈরি করুন",
+  "importDataTitle": "ডেটা আমদানি করুন",
+  "importDataDescription": "একটি ব্যাকআপ ফাইল থেকে পুনরুদ্ধার করুন",
+  "exportButton": "রপ্তানি",
+  "importButton": "আমদানি",
+  "closeButton": "বন্ধ করুন",
+  "noButton": "না",
+  "shareButton": "শেয়ার করুন",
+  "exportStarting": "রপ্তানি শুরু হচ্ছে...",
+  "exportSuccessful": "রপ্তানি সফল",
+  "exportFailed": "রপ্তানি ব্যর্থ",
+  "exportComplete": "রপ্তানি সম্পন্ন",
+  "shareBackupQuestion": "আপনি কি ব্যাকআপ ফাইল শেয়ার করতে চান?",
+  "importStarting": "আমদানি শুরু হচ্ছে...",
+  "importSuccessful": "আমদানি সফল!",
+  "importFailed": "আমদানি ব্যর্থ হয়েছে",
+  "importOptionsTitle": "আমদানি বিকল্প",
+  "importOptionsQuestion": "আপনি কীভাবে ডেটা আমদানি করতে চান?",
+  "replaceModeTitle": "প্রতিস্থাপন",
+  "replaceModeDescription": "সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করুন",
+  "mergeModeTitle": "মার্জ",
+  "mergeModeDescription": "বিদ্যমান ডেটার সাথে একত্রিত করুন",
+  "appendModeTitle": "সংযুক্ত",
+  "appendModeDescription": "শুধুমাত্র নতুন রেকর্ড যোগ করুন",
+  "warningTitle": "⚠️ সতর্কতা",
+  "replaceWarningMessage": "এটি আপনার সমস্ত বিদ্যমান ডেটা প্রতিস্থাপন করবে। আপনি কি নিশ্চিতভাবে এগিয়ে যেতে চান?",
+  "replaceAllButton": "সব প্রতিস্থাপন করুন",
+  "fileLabel": "ফাইল",
+  "sizeLabel": "আকার",
+  "recordsLabel": "রেকর্ড",
+  "usageRecordsLabel": "ব্যবহারের রেকর্ড",
+  "focusSessionsLabel": "ফোকাস সেশন",
+  "appMetadataLabel": "অ্যাপ মেটাডেটা",
+  "updatedLabel": "আপডেট হয়েছে",
+  "skippedLabel": "এড়িয়ে গেছে",
+  "faqSettingsQ4": "আমি কীভাবে আমার ডেটা পুনরুদ্ধার বা রপ্তানি করতে পারি?",
+  "faqSettingsA4": "আপনি সেটিংসে যেতে পারেন, এবং সেখানে আপনি ব্যাকআপ এবং পুনরুদ্ধার বিভাগ পাবেন। আপনি এখান থেকে ডেটা রপ্তানি বা আমদানি করতে পারেন, মনে রাখবেন যে রপ্তানি করা ডেটা ফাইল Documents-এ Scolect-Backups ফোল্ডারে সংরক্ষিত হয় এবং শুধুমাত্র এই ফাইলটি ডেটা পুনরুদ্ধার করতে ব্যবহার করা যেতে পারে, অন্য কোন ফাইল নয়।",
+  "faqGeneralQ6": "আমি কীভাবে ভাষা পরিবর্তন করতে পারি এবং কোন ভাষাগুলি উপলব্ধ, এছাড়াও অনুবাদ ভুল হলে কী করব?",
+  "faqGeneralA6": "ভাষা সেটিংস সাধারণ বিভাগের মাধ্যমে পরিবর্তন করা যেতে পারে, সমস্ত উপলব্ধ ভাষা সেখানে তালিকাভুক্ত আছে, আপনি যোগাযোগে ক্লিক করে এবং প্রদত্ত ভাষা সহ আপনার অনুরোধ পাঠিয়ে অনুবাদের অনুরোধ করতে পারেন। শুধু জানবেন যে অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!",
+  "faqGeneralQ7": "অনুবাদ ভুল হলে কী করব?",
+  "faqGeneralA7": "অনুবাদ ভুল হতে পারে কারণ এটি ইংরেজি থেকে AI দ্বারা তৈরি করা হয়েছে এবং আপনি যদি রিপোর্ট করতে চান তবে আপনি বাগ রিপোর্ট, বা যোগাযোগের মাধ্যমে রিপোর্ট করতে পারেন, অথবা আপনি যদি একজন ডেভেলপার হন তবে গিটহাবে ইস্যু খুলুন। ভাষা সম্পর্কিত অবদানও স্বাগত!",
   "activityTrackingSection": "কার্যকলাপ ট্র্যাকিং",
   "idleDetectionTitle": "নিষ্ক্রিয় সনাক্তকরণ",
   "idleDetectionDescription": "নিষ্ক্রিয় থাকলে ট্র্যাকিং বন্ধ করুন",
@@ -1343,19 +1134,14 @@
   "timeFormatMinute": "1 মিনিট",
   "timeFormatMinutes": "{minutes} মিনিট",
   "timeFormatMinutesSeconds": "{minutes} মি {seconds}সে",
-
   "themeLight": "হালকা",
   "themeDark": "গাঢ়",
   "themeSystem": "সিস্টেম",
-  "themeTitle": "থিম",
-  "themeDescription": "অ্যাপ্লিকেশনের রঙের থিম",
   "voiceGenderTitle": "ভয়েস লিঙ্গ",
   "voiceGenderDescription": "টাইমার বিজ্ঞপ্তির জন্য ভয়েসের লিঙ্গ নির্বাচন করুন",
   "voiceGenderMale": "পুরুষ",
   "voiceGenderFemale": "মহিলা",
-
   "alertsLimitsSubtitle": "আপনার স্ক্রিন টাইম সীমা এবং বিজ্ঞপ্তিগুলি পরিচালনা করুন",
-  
   "applicationsSubtitle": "আপনার ট্র্যাক করা অ্যাপ্লিকেশনগুলি পরিচালনা করুন",
   "applicationCount": "{count, plural, =1{1টি অ্যাপ্লিকেশন} other{{count}টি অ্যাপ্লিকেশন}}",
   "@applicationCount": {
@@ -1365,12 +1151,10 @@
       }
     }
   },
-  "refresh": "রিফ্রেশ করুন",
   "noApplicationsFound": "কোনো অ্যাপ্লিকেশন পাওয়া যায়নি",
   "tryAdjustingFilters": "আপনার ফিল্টার সামঞ্জস্য করার চেষ্টা করুন",
   "configureAppSettings": "অ্যাপ্লিকেশন সেটিংস কনফিগার করুন",
   "behaviorSection": "আচরণ",
-  
   "helpSubtitle": "{count, plural, =1{7টি বিভাগে 1টি প্রশ্ন} other{7টি বিভাগে {count}টি প্রশ্ন}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1387,22 +1171,11 @@
   "noResultsFound": "কোনো ফলাফল পাওয়া যায়নি",
   "tryDifferentKeywords": "বিভিন্ন কীওয়ার্ড দিয়ে খোঁজার চেষ্টা করুন",
   "clearSearch": "অনুসন্ধান সাফ করুন",
-  
   "greetingMorning": "সুপ্রভাত! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।",
   "greetingAfternoon": "শুভ বিকাল! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।",
   "greetingEvening": "শুভ সন্ধ্যা! এখানে আপনার কার্যকলাপের সারাংশ রয়েছে।",
   "screenTimeProgress": "স্ক্রীন\nসময়",
   "productiveScoreProgress": "উৎপাদনশীল\nস্কোর",
-  
-  "sectionLabel": "{title} বিভাগ",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "মনোযোগী থাকুন, উৎপাদনশীল হন",
   "thisWeek": "এই সপ্তাহ",
   "sessions": "সেশন",
@@ -1414,8 +1187,6 @@
   "longBreakStatus": "দীর্ঘ বিরতি",
   "readyToFocus": "ফোকাস করার জন্য প্রস্তুত",
   "focus": "ফোকাস",
-  "shortBreakLabel": "সংক্ষিপ্ত বিরতি",
-  "longBreakLabel": "দীর্ঘ বিরতি",
   "restartSession": "সেশন পুনরায় শুরু করুন",
   "skipToNext": "পরবর্তীতে যান",
   "settings": "সেটিংস",
@@ -1452,7 +1223,6 @@
   "notification_permission_denied_hint": "ScreenTime এর জন্য বিজ্ঞপ্তি সক্ষম করতে সিস্টেম সেটিংস খুলুন।",
   "notification_permission_required": "বিজ্ঞপ্তি অনুমতি প্রয়োজন",
   "notification_permission_required_message": "ScreenTime আপনাকে বিজ্ঞপ্তি পাঠাতে অনুমতির প্রয়োজন।",
-  "cancel": "বাতিল করুন",
   "open_settings": "সেটিংস খুলুন",
   "allow_notifications": "বিজ্ঞপ্তি অনুমতি দিন",
   "permission_allowed": "অনুমোদিত",
@@ -1469,8 +1239,7 @@
   "disabled": "নিষ্ক্রিয়",
   "advanced_options": "উন্নত বিকল্পসমূহ",
   "sync_ready": "সিঙ্ক প্রস্তুত",
-  "success": "সফল!",
-  "error": "ত্রুটি",
+  "success": "সফলতা",
   "destructive_badge": "ধ্বংসাত্মক",
   "recommended_badge": "প্রস্তাবিত",
   "safe_badge": "নিরাপদ",
@@ -1479,9 +1248,7 @@
   "apps": "অ্যাপ্স",
   "sortAscending": "ঊর্ধ্বক্রমে সাজান",
   "sortDescending": "অবরোহক্রমে সাজান",
-  "clearSearch": "অনুসন্ধান সাফ করুন",
   "applicationsShowing": "{count}টি অ্যাপ্লিকেশন দেখানো হচ্ছে",
-  "totalTime": "মোট সময়",
   "valueLabel": "মান: {value}",
   "appsCount": "{count}টি অ্যাপ",
   "categoriesCount": "{count}টি বিভাগ",
@@ -1528,7 +1295,6 @@
   "colorPickerHexColor": "হেক্স রং",
   "colorPickerHexPlaceholder": "RRGGBB",
   "colorPickerRGB": "RGB",
-  "cancel": "বাতিল",
   "select": "নির্বাচন করুন",
   "themeCustomization": "থিম কাস্টমাইজেশন",
   "chooseThemePreset": "একটি থিম প্রিসেট চয়ন করুন",
@@ -1545,7 +1311,6 @@
       }
     }
   },
-  "edit": "সম্পাদনা করুন",
   "customThemeNumber": "কাস্টম থিম {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1618,8 +1383,6 @@
   "sampleCardTitle": "নমুনা কার্ড শিরোনাম",
   "sampleSecondaryText": "এটি নীচে প্রদর্শিত গৌণ টেক্সট।",
   "primary": "প্রাথমিক",
-  "success": "সফলতা",
-  "error": "ত্রুটি",
   "secondary": "গৌণ",
   "warning": "সতর্কতা",
   "launchAtStartupTitle": "স্টার্টআপে চালু করুন",
@@ -1637,8 +1400,6 @@
   "restartLater": "পরে পুনরায় চালু করুন",
   "restartFailedTitle": "পুনরায় চালু ব্যর্থ",
   "restartFailedMessage": "অ্যাপটি স্বয়ংক্রিয়ভাবে পুনরায় চালু করা যায়নি। অনুগ্রহ করে বের হয়ে (Cmd+Q) ম্যানুয়ালি আবার চালু করুন।",
-  "ok": "ঠিক আছে",
-  "error": "ত্রুটি",
   "exportAnalyticsReport": "বিশ্লেষণ প্রতিবেদন রপ্তানি করুন",
   "chooseExportFormat": "রপ্তানি ফর্ম্যাট নির্বাচন করুন:",
   "beautifulExcelReport": "সুন্দর এক্সেল প্রতিবেদন",
@@ -1648,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 দৈনিক বিশ্লেষণ - ভিজ্যুয়াল ব্যবহার প্যাটার্ন",
   "appsSheetDescription": "📱 অ্যাপস শীট - বিস্তারিত অ্যাপ র‍্যাংকিং",
   "insightsDescription": "💡 অন্তর্দৃষ্টি - স্মার্ট সুপারিশ",
-  "cancel": "বাতিল করুন",
-  "exportSuccessful": "রপ্তানি সফল",
   "beautifulExcelExportSuccess": "সুন্দর এক্সেল প্রতিবেদন সফলভাবে রপ্তানি হয়েছে! 🎉",
-  "exportFailed": "রপ্তানি ব্যর্থ",
   "failedToExportReport": "প্রতিবেদন রপ্তানি করতে ব্যর্থ: {error}",
   "exporting": "রপ্তানি হচ্ছে...",
   "exportExcel": "এক্সেল রপ্তানি করুন",
   "saveAnalyticsReport": "বিশ্লেষণ প্রতিবেদন সংরক্ষণ করুন",
   "analyticsReportFileName": "বিশ্লেষণ_প্রতিবেদন_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "ব্যবহার বিশ্লেষণ প্রতিবেদন",
   "generated": "তৈরি করা হয়েছে:",
   "period": "সময়কাল:",
-  "dateRange": "তারিখ পরিসর:",
   "dateRangeValue": "{startDate} থেকে {endDate}",
-  
   "keyMetrics": "মূল মেট্রিক্স",
   "metric": "মেট্রিক",
   "value": "মান",
   "change": "পরিবর্তন",
   "trend": "প্রবণতা",
-  
-  "totalScreenTime": "মোট স্ক্রিন সময়",
-  "productiveTime": "উৎপাদনশীল সময়",
   "productivityRate": "উৎপাদনশীলতা হার",
-  "focusSessions": "ফোকাস সেশন",
-  "mostUsedApp": "সবচেয়ে বেশি ব্যবহৃত অ্যাপ",
-  
   "trendUp": "বৃদ্ধি",
   "trendDown": "হ্রাস",
   "trendExcellent": "চমৎকার",
@@ -1684,71 +1433,47 @@
   "trendActive": "সক্রিয়",
   "trendNone": "কিছু নেই",
   "trendTop": "শীর্ষ",
-  
-  "categoryBreakdown": "বিভাগ বিশ্লেষণ",
   "category": "বিভাগ",
   "percentage": "শতাংশ",
   "visual": "ভিজ্যুয়াল",
-  
-  "dailyScreenTime": "দৈনিক স্ক্রিন সময়",
   "statistics": "পরিসংখ্যান",
   "averageDaily": "দৈনিক গড়",
   "highestDay": "সর্বোচ্চ দিন",
   "lowestDay": "সর্বনিম্ন দিন",
-  
-  "date": "তারিখ",
   "day": "দিন",
-  "hours": "ঘন্টা",
-  "minutes": "মিনিট",
-  
   "applicationUsageDetails": "অ্যাপ্লিকেশন ব্যবহারের বিবরণ",
   "totalApps": "মোট অ্যাপ:",
   "productiveApps": "উৎপাদনশীল অ্যাপ:",
-  
   "rank": "র‍্যাংক",
   "application": "অ্যাপ্লিকেশন",
   "time": "সময়",
   "percentOfTotal": "মোটের %",
   "type": "ধরন",
   "usageLevel": "ব্যবহার স্তর",
-  
-  "productive": "উৎপাদনশীল",
   "leisure": "বিনোদন",
-  
   "usageLevelVeryHigh": "অত্যন্ত বেশি ||||||||",
   "usageLevelHigh": "বেশি ||||||",
   "usageLevelMedium": "মাঝারি ||||",
   "usageLevelLow": "কম ||",
-  
   "keyInsightsTitle": "মূল অন্তর্দৃষ্টি ও সুপারিশ",
   "personalizedRecommendations": "ব্যক্তিগত সুপারিশ",
-  
   "insightHighDailyUsage": "উচ্চ দৈনিক ব্যবহার: আপনি প্রতিদিন গড়ে {hours} ঘন্টা স্ক্রিন সময় ব্যবহার করছেন",
   "insightLowDailyUsage": "কম দৈনিক ব্যবহার: আপনি প্রতিদিন গড়ে {hours} ঘন্টা - দারুণ ভারসাম্য!",
   "insightModerateUsage": "মাঝারি ব্যবহার: প্রতিদিন গড়ে {hours} ঘন্টা স্ক্রিন সময়",
-  
   "insightExcellentProductivity": "চমৎকার উৎপাদনশীলতা: আপনার স্ক্রিন সময়ের {percentage}% উৎপাদনশীল কাজ!",
   "insightGoodProductivity": "ভালো উৎপাদনশীলতা: আপনার স্ক্রিন সময়ের {percentage}% উৎপাদনশীল",
   "insightLowProductivity": "কম উৎপাদনশীলতা সতর্কতা: শুধুমাত্র {percentage}% স্ক্রিন সময় উৎপাদনশীল",
-  
   "insightFocusSessions": "ফোকাস সেশন: {count}টি সেশন সম্পন্ন (গড়ে প্রতিদিন {avgPerDay}টি)",
   "insightGreatFocusHabit": "দারুণ ফোকাস অভ্যাস: আপনি {count}টি সম্পন্ন সেশনের সাথে একটি দুর্দান্ত ফোকাস রুটিন তৈরি করেছেন!",
   "insightNoFocusSessions": "কোনো ফোকাস সেশন নেই: উৎপাদনশীলতা বাড়াতে ফোকাস মোড ব্যবহার করার কথা ভাবুন",
-  
   "insightScreenTimeTrend": "স্ক্রিন সময় প্রবণতা: আগের সময়কালের তুলনায় আপনার ব্যবহার {percentage}% {direction}",
   "insightProductiveTimeTrend": "উৎপাদনশীল সময় প্রবণতা: আগের সময়কালের তুলনায় আপনার উৎপাদনশীল সময় {percentage}% {direction}",
-  
   "directionIncreased": "বেড়েছে",
   "directionDecreased": "কমেছে",
-  
   "insightTopCategory": "শীর্ষ বিভাগ: {category} আপনার মোট সময়ের {percentage}% দখল করে",
-  
   "insightMostUsedApp": "সবচেয়ে বেশি ব্যবহৃত অ্যাপ: {appName} আপনার সময়ের {percentage}% ({duration})",
-  
   "insightUsageVaries": "ব্যবহার উল্লেখযোগ্যভাবে ভিন্ন: {highDay}-এ {lowDay}-এর চেয়ে {multiplier}x বেশি ব্যবহার ছিল",
-  
   "insightNoInsights": "কোনো উল্লেখযোগ্য অন্তর্দৃষ্টি নেই",
-  
   "recScheduleFocusSessions": "উৎপাদনশীলতা বাড়াতে সারাদিনে আরও ফোকাস সেশন সময়সূচী করার চেষ্টা করুন",
   "recSetAppLimits": "বিনোদন অ্যাপ্লিকেশনগুলিতে সীমা নির্ধারণ করার কথা ভাবুন",
   "recAimForFocusSessions": "ধারাবাহিক অভ্যাস গড়ে তুলতে প্রতিদিন অন্তত ১-২টি ফোকাস সেশনের লক্ষ্য রাখুন",
@@ -1759,10 +1484,6 @@
   "recScheduleFocusedWork": "আপনার উৎপাদনশীল সময় কমেছে। আপনার ক্যালেন্ডারে ফোকাসড কাজের ব্লক সময়সূচী করার চেষ্টা করুন",
   "recKeepUpGreatWork": "দুর্দান্ত কাজ চালিয়ে যান! আপনার স্ক্রিন সময় অভ্যাস স্বাস্থ্যকর দেখাচ্ছে",
   "recContinueFocusSessions": "উৎপাদনশীলতা বজায় রাখতে ফোকাস সেশন ব্যবহার চালিয়ে যান",
-  
-  "durationHoursMinutes": "{hours}ঘ {minutes}মি",
-  "durationMinutesOnly": "{minutes}মি",
-  
   "sheetSummary": "সারাংশ",
   "sheetDailyBreakdown": "দৈনিক বিশ্লেষণ",
   "sheetApps": "অ্যাপস",
@@ -1816,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "মোট সময়",
   "workPhases": "কাজের ধাপ",
   "averageLength": "গড় সময়কাল",
   "mostProductive": "সবচেয়ে উৎপাদনশীল",
@@ -1864,20 +1584,19 @@
   "noThemeDataFound": "কোনো থিম ডেটা পাওয়া যায়নি",
   "invalidThemeFormat": "অবৈধ থিম ফরম্যাট। অনুগ্রহ করে JSON ডেটা পরীক্ষা করুন।",
   "trackingModeTitle": "ট্র্যাকিং মোড",
-"trackingModeDescription": "অ্যাপ ব্যবহার কীভাবে ট্র্যাক করা হবে তা বেছে নিন",
-"trackingModePolling": "স্ট্যান্ডার্ড (কম রিসোর্স)",
-"trackingModePrecise": "সুনির্দিষ্ট (উচ্চ নির্ভুলতা)",
-"trackingModePollingHint": "প্রতি মিনিটে পরীক্ষা করে - কম রিসোর্স ব্যবহার",
-"trackingModePreciseHint": "রিয়েল-টাইম ট্র্যাকিং - উচ্চ নির্ভুলতা, বেশি রিসোর্স",
-"trackingModeChangeError": "ট্র্যাকিং মোড পরিবর্তন করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
-"errorTitle": "ত্রুটি",
-"monitorKeyboardTitle": "কীবোর্ড পর্যবেক্ষণ",
-"monitorKeyboardDescription": "ব্যবহারকারীর উপস্থিতি শনাক্ত করতে কীবোর্ডের কার্যকলাপ ট্র্যাক করুন",
-"changelogWhatsNew": "নতুন কী আছে",
+  "trackingModeDescription": "অ্যাপ ব্যবহার কীভাবে ট্র্যাক করা হবে তা বেছে নিন",
+  "trackingModePolling": "স্ট্যান্ডার্ড (কম রিসোর্স)",
+  "trackingModePrecise": "সুনির্দিষ্ট (উচ্চ নির্ভুলতা)",
+  "trackingModePollingHint": "প্রতি মিনিটে পরীক্ষা করে - কম রিসোর্স ব্যবহার",
+  "trackingModePreciseHint": "রিয়েল-টাইম ট্র্যাকিং - উচ্চ নির্ভুলতা, বেশি রিসোর্স",
+  "trackingModeChangeError": "ট্র্যাকিং মোড পরিবর্তন করতে ব্যর্থ। অনুগ্রহ করে আবার চেষ্টা করুন।",
+  "errorTitle": "ত্রুটি",
+  "monitorKeyboardTitle": "কীবোর্ড পর্যবেক্ষণ",
+  "monitorKeyboardDescription": "ব্যবহারকারীর উপস্থিতি শনাক্ত করতে কীবোর্ডের কার্যকলাপ ট্র্যাক করুন",
+  "changelogWhatsNew": "নতুন কী আছে",
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "{date} তারিখে প্রকাশিত",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1888,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "এই সংস্করণের জন্য কোনো চেঞ্জলগ উপলব্ধ নেই।",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "চেঞ্জলগ লোড করা যায়নি",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "এই সংস্করণের চেঞ্জলগ পুনরুদ্ধার করা যায়নি। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন অথবা GitHub রিলিজ পেজ দেখুন।",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "ঠিক আছে",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "চালিয়ে যান",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "সব অ্যাপ",
-  "tracking": "ট্র্যাক করা",
   "notTracking": "ট্র্যাক করা নয়",
   "allVisibility": "সব",
   "visible": "দৃশ্যমান",
   "hidden": "লুকানো",
   "todaysLimitUsage": "আজকের সীমা ব্যবহার",
-"thisWeekAtAGlance": "এই সপ্তাহের সংক্ষিপ্ত বিবরণ",
-"hourlyActivityHeatmap": "ঘণ্টাভিত্তিক কার্যকলাপ হিটম্যাপ",
-"sessions": "সেশন",
-"thisWeek": "এই সপ্তাহ",
-"productivityScore": "উৎপাদনশীলতা স্কোর",
-"streaks": "ধারাবাহিকতা",
-"weekOverWeek": "সপ্তাহ তুলনা",
-"sameAsLastWeek": "গত সপ্তাহের মতো",
-"moreUsageThanLastWeek": "গত সপ্তাহের চেয়ে {percent}% বেশি",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "গত সপ্তাহের চেয়ে {percent}% কম",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "সীমা {duration} অতিক্রম করেছে",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "{duration} বাকি আছে",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "মোট সেশন",
-"avgSession": "গড় সেশন",
-"longestSession": "দীর্ঘতম সেশন",
-"mostActive": "সবচেয়ে সক্রিয়",
-"peakUsage": "সর্বোচ্চ ব্যবহার",
-"dailyAverage": "দৈনিক গড়",
-"daysUsedInARow": "পরপর ব্যবহারের দিন",
-"daysSingular": "দিন",
-"daysPlural": "দিন",
-"daysOverLimitInARow": "পরপর সীমা অতিক্রমের দিন",
-"withinLimitAllWeek": "সারা সপ্তাহ সীমার মধ্যে",
-"productivityScoreGreat": "দারুণ",
-"productivityScoreModerate": "মাঝামাঝি",
-"productivityScoreNeedsAttention": "মনোযোগ প্রয়োজন",
-"productiveAppMotivation": "উৎপাদনশীল অ্যাপ — চালিয়ে যান",
-"nonProductiveAppSuggestion": "অনুৎপাদনশীল — কমানোর কথা ভাবুন",
-"legendUsage": "ব্যবহার",
-"legendAverage": "গড়",
-"legendLimit": "সীমা",
-"chartPeak": "শীর্ষ",
-"overLimitBy": "+{duration} সীমা অতিক্রম",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "কোনো তথ্য নেই",
-"yesterday": "গতকাল",
-"changelog": "পরিবর্তনের তালিকা",
-"exportingLabel": "রপ্তানি করা হচ্ছে...",
-"@exportingLabel": {
-  "description": "রপ্তানি প্রক্রিয়া চলাকালীন রপ্তানি বোতামে প্রদর্শিত লেবেল"
-},
-"exportExcelLabel": "Excel রপ্তানি করুন",
-"@exportExcelLabel": {
-  "description": "রপ্তানি বোতামে প্রদর্শিত লেবেল"
-},
+  "thisWeekAtAGlance": "এই সপ্তাহের সংক্ষিপ্ত বিবরণ",
+  "hourlyActivityHeatmap": "ঘণ্টাভিত্তিক কার্যকলাপ হিটম্যাপ",
+  "productivityScore": "উৎপাদনশীলতা স্কোর",
+  "streaks": "ধারাবাহিকতা",
+  "weekOverWeek": "সপ্তাহ তুলনা",
+  "sameAsLastWeek": "গত সপ্তাহের মতো",
+  "moreUsageThanLastWeek": "গত সপ্তাহের চেয়ে {percent}% বেশি",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "গত সপ্তাহের চেয়ে {percent}% কম",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "সীমা {duration} অতিক্রম করেছে",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "{duration} বাকি আছে",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "মোট সেশন",
+  "avgSession": "গড় সেশন",
+  "mostActive": "সবচেয়ে সক্রিয়",
+  "peakUsage": "সর্বোচ্চ ব্যবহার",
+  "dailyAverage": "দৈনিক গড়",
+  "daysUsedInARow": "পরপর ব্যবহারের দিন",
+  "daysSingular": "দিন",
+  "daysPlural": "দিন",
+  "daysOverLimitInARow": "পরপর সীমা অতিক্রমের দিন",
+  "withinLimitAllWeek": "সারা সপ্তাহ সীমার মধ্যে",
+  "productivityScoreGreat": "দারুণ",
+  "productivityScoreModerate": "মাঝামাঝি",
+  "productivityScoreNeedsAttention": "মনোযোগ প্রয়োজন",
+  "productiveAppMotivation": "উৎপাদনশীল অ্যাপ — চালিয়ে যান",
+  "nonProductiveAppSuggestion": "অনুৎপাদনশীল — কমানোর কথা ভাবুন",
+  "legendUsage": "ব্যবহার",
+  "legendAverage": "গড়",
+  "legendLimit": "সীমা",
+  "chartPeak": "শীর্ষ",
+  "overLimitBy": "+{duration} সীমা অতিক্রম",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "কোনো তথ্য নেই",
+  "yesterday": "গতকাল",
+  "changelog": "পরিবর্তনের তালিকা",
+  "exportingLabel": "রপ্তানি করা হচ্ছে...",
+  "@exportingLabel": {
+    "description": "রপ্তানি প্রক্রিয়া চলাকালীন রপ্তানি বোতামে প্রদর্শিত লেবেল"
+  },
+  "exportExcelLabel": "Excel রপ্তানি করুন",
+  "@exportExcelLabel": {
+    "description": "রপ্তানি বোতামে প্রদর্শিত লেবেল"
+  },
   "dailyResetTimeTitle": "দৈনিক রিসেট সময়",
   "dailyResetTimeDescription": "আপনার স্ক্রীন টাইম কাউন্টারটি নতুন দিনে রিসেট হওয়ার সময় সেট করুন।",
   "crashReportingTitle": "ক্র্যাশ রিপোর্টিং",
-  "crashReportingDescription": "Scolect উন্নত করতে সাহায্য করার জন্য বেনামী ক্র্যাশ রিপোর্ট পাঠান। এতে কোনো ব্যক্তিগত ডেটা বা ব্যবহারের ইতিহাস অন্তর্ভুক্ত নেই।"
+  "crashReportingDescription": "Scolect উন্নত করতে সাহায্য করার জন্য বেনামী ক্র্যাশ রিপোর্ট পাঠান। এতে কোনো ব্যক্তিগত ডেটা বা ব্যবহারের ইতিহাস অন্তর্ভুক্ত নেই।",
+  "narrativeTodaySpent": "আজ আপনি আপনার কম্পিউটারে {timeStr} ব্যয় করেছেন।",
+  "narrativeMostFocused": "আপনার সর্বাধিক মনোযোগের সময় ছিল {start} – {end}।",
+  "narrativeFocusSessions": "আপনি মোট {fsMinutes}m এ {focusSessions} ফোকাস {focusSessionsCount, plural, =1{সেশন} other{সেশন}} সম্পন্ন করেছেন।",
+  "narrativeCheckedAppShort": "আপনি {topAppName} {topAppOpenCount} বার দেখেছেন কিন্তু প্রতিটি ভিজিট ছোট রেখেছেন।",
+  "narrativeCheckedAppLong": "আপনার বেশিরভাগ সময় {topAppName} এ মাত্র {topAppOpenCount} {topAppOpenCountPlural, plural, =1{সেশনে} other{সেশনে}} কেটেছে।",
+  "narrativeToneSolid": "কঠিন দিন।",
+  "narrativeToneDecent": "ভাল অগ্রগতি।",
+  "narrativeToneLight": "হালকা দিন — এতে কোনো ভুল নেই।",
+  "narrativeToneImprove": "আগামীকাল উন্নতির জায়গা আছে।",
+  "habitDnaTitle": "আপনার অভ্যাস DNA",
+  "habitDnaAnalyzed": "{daysAnalyzed}d বিশ্লেষণ করা হয়েছে",
+  "habitDnaChronotype": "ক্রোনোটাইপ",
+  "habitDnaWorkStyle": "কাজের স্টাইল",
+  "habitDnaPeakFocus": "শীর্ষ ফোকাস",
+  "habitDnaAvgSession": "গড় সেশন",
+  "habitDnaBestDay": "সেরা দিন",
+  "habitDnaRoughDay": "কঠিন দিন",
+  "habitDnaKryptonite": "শীর্ষ বিভ্রান্তি: {appName}",
+  "chronotypeMorning": "সকালের মানুষ",
+  "chronotypeAfternoon": "বিকেলের শীর্ষ",
+  "chronotypeNight": "রাতের পেঁচা",
+  "chronotypeMixed": "মিশ্র",
+  "workStyleDeep": "গভীর ফোকাস",
+  "workStyleSwitcher": "টাস্ক সুইচার",
+  "workStyleBalanced": "ভারসাম্যপূর্ণ",
+  "timeFormatAm": "{hour} AM",
+  "timeFormatPm": "{hour} PM",
+  "timeFormatMidnight": "মধ্যরাত",
+  "timeFormatNoon": "দুপুর",
+  "weeklyStoryTitle": "এই সপ্তাহ",
+  "weeklyStoryWeekNumber": "সপ্তাহ {weekNumber}",
+  "weeklyStoryHeadline": "সপ্তাহ {weekNumber} — এ পর্যন্ত স্ক্রিনে {timeStr}।",
+  "weeklyStoryReclaimed": "আপনি সপ্তাহ 1 এর তুলনায় {diff} ফিরে পেয়েছেন।",
+  "weeklyStoryUp": "সপ্তাহ 1 থেকে স্ক্রীন সময় {diff} বেড়েছে।",
+  "weeklyStoryImprovementArea": "এখনও কাজ করা হচ্ছে: {worstCat} এ {timeLabel}।",
+  "weekdayNameMonday": "সোমবার",
+  "weekdayNameTuesday": "মঙ্গলবার",
+  "weekdayNameWednesday": "বুধবার",
+  "weekdayNameThursday": "বৃহস্পতিবার",
+  "weekdayNameFriday": "শুক্রবার",
+  "weekdayNameSaturday": "শনিবার",
+  "weekdayNameSunday": "রবিবার",
+  "weekdayNameUnknown": "সেই দিন",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

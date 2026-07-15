@@ -1,76 +1,61 @@
 {
   "@@locale": "id",
-  
   "appWindowTitle": "Scolect - Lacak Waktu Layar & Penggunaan Aplikasi",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "Scolect",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "Waktu Layar Produktif",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "Waktu Layar",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "Sumber Terbuka",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "Tampilkan Jendela",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "Mulai Mode Fokus",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "Hentikan Mode Fokus",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "Laporan",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "Peringatan & Batasan",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "Aplikasi",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "Nonaktifkan Notifikasi",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "Aktifkan Notifikasi",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "Versi: ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "Versi: {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "Keluar",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "Ringkasan",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "Aplikasi",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "Peringatan & Batasan",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "Laporan",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "Mode Fokus",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "Pengaturan",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "Bantuan",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "Bantuan",
-  
   "faqCategoryGeneral": "Pertanyaan Umum",
   "faqCategoryApplications": "Manajemen Aplikasi",
   "faqCategoryReports": "Analitik Penggunaan & Laporan",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "Mode Fokus & Timer Pomodoro",
   "faqCategorySettings": "Pengaturan & Kustomisasi",
   "faqCategoryTroubleshooting": "Pemecahan Masalah",
-  
   "faqGeneralQ1": "Bagaimana aplikasi ini melacak waktu layar?",
   "faqGeneralA1": "Aplikasi memantau penggunaan perangkat Anda secara real-time, melacak waktu yang dihabiskan pada berbagai aplikasi. Ini memberikan wawasan komprehensif tentang kebiasaan digital Anda, termasuk total waktu layar, waktu produktif, dan penggunaan aplikasi spesifik.",
-  
   "faqGeneralQ2": "Apa yang membuat aplikasi 'Produktif'?",
   "faqGeneralA2": "Anda dapat menandai aplikasi sebagai produktif secara manual di bagian 'Aplikasi'. Aplikasi produktif berkontribusi pada Skor Produktif Anda, yang menghitung persentase waktu layar yang dihabiskan untuk aplikasi terkait pekerjaan atau bermanfaat.",
-  
   "faqGeneralQ3": "Seberapa akurat pelacakan waktu layar?",
   "faqGeneralA3": "Aplikasi menggunakan pelacakan tingkat sistem untuk memberikan pengukuran yang tepat dari penggunaan perangkat Anda. Ini menangkap waktu foreground untuk setiap aplikasi dengan dampak baterai minimal.",
-  
   "faqGeneralQ4": "Bisakah saya menyesuaikan kategorisasi aplikasi saya?",
   "faqGeneralA4": "Tentu saja! Anda dapat membuat kategori khusus, menetapkan aplikasi ke kategori tertentu, dan dengan mudah memodifikasi penetapan ini di bagian 'Aplikasi'. Ini membantu menciptakan analitik penggunaan yang lebih bermakna.",
-  
   "faqGeneralQ5": "Wawasan apa yang bisa saya dapatkan dari aplikasi ini?",
   "faqGeneralA5": "Aplikasi menawarkan wawasan komprehensif termasuk Skor Produktif, pola penggunaan berdasarkan waktu, penggunaan aplikasi terperinci, pelacakan sesi fokus, dan analitik visual seperti grafik dan diagram lingkaran untuk membantu Anda memahami dan meningkatkan kebiasaan digital Anda.",
-  
   "faqAppsQ1": "Bagaimana cara menyembunyikan aplikasi tertentu dari pelacakan?",
   "faqAppsA1": "Di bagian 'Aplikasi', Anda dapat mengaktifkan/menonaktifkan visibilitas aplikasi.",
-  
   "faqAppsQ2": "Bisakah saya mencari dan memfilter aplikasi saya?",
   "faqAppsA2": "Ya, bagian Aplikasi mencakup fungsi pencarian dan opsi filter. Anda dapat memfilter aplikasi berdasarkan kategori, status produktivitas, status pelacakan, dan visibilitas.",
-  
   "faqAppsQ3": "Opsi pengeditan apa yang tersedia untuk aplikasi?",
   "faqAppsA3": "Untuk setiap aplikasi, Anda dapat mengedit: penetapan kategori, status produktivitas, pelacakan penggunaan, visibilitas dalam laporan, dan menetapkan batasan waktu harian individual.",
-  
   "faqAppsQ4": "Bagaimana kategori aplikasi ditentukan?",
   "faqAppsA4": "Kategori awal disarankan oleh sistem, tetapi Anda memiliki kontrol penuh untuk membuat, memodifikasi, dan menetapkan kategori khusus berdasarkan alur kerja dan preferensi Anda.",
-  
   "faqReportsQ1": "Jenis laporan apa yang tersedia?",
   "faqReportsA1": "Laporan mencakup: Total waktu layar, Waktu produktif, Aplikasi paling sering digunakan, Sesi fokus, Grafik waktu layar harian, Diagram lingkaran pembagian kategori, Penggunaan aplikasi terperinci, Tren penggunaan mingguan, dan Analisis pola penggunaan berdasarkan waktu.",
-  
   "faqReportsQ2": "Seberapa detail laporan penggunaan aplikasi?",
   "faqReportsA2": "Laporan penggunaan aplikasi terperinci menunjukkan: Nama aplikasi, Kategori, Total waktu yang dihabiskan, Status produktivitas, dan menawarkan bagian 'Tindakan' dengan wawasan lebih dalam seperti ringkasan penggunaan, batasan harian, tren penggunaan, dan metrik produktivitas.",
-  
   "faqReportsQ3": "Bisakah saya menganalisis tren penggunaan saya dari waktu ke waktu?",
   "faqReportsA3": "Ya! Aplikasi menyediakan perbandingan minggu-ke-minggu, menampilkan grafik penggunaan selama beberapa minggu terakhir, penggunaan harian rata-rata, sesi terpanjang, dan total mingguan untuk membantu Anda melacak kebiasaan digital Anda.",
-  
   "faqReportsQ4": "Apa itu analisis 'Pola Penggunaan'?",
   "faqReportsA4": "Pola Penggunaan memecah waktu layar Anda menjadi segmen pagi, siang, sore, dan malam. Ini membantu Anda memahami kapan Anda paling aktif di perangkat dan mengidentifikasi area potensial untuk perbaikan.",
-  
   "faqAlertsQ1": "Seberapa detail batasan waktu layar?",
   "faqAlertsA1": "Anda dapat menetapkan batasan waktu layar harian keseluruhan dan batasan aplikasi individual. Batasan dapat dikonfigurasi dalam jam dan menit, dengan opsi untuk mengatur ulang atau menyesuaikan sesuai kebutuhan.",
-  
   "faqAlertsQ2": "Opsi notifikasi apa yang tersedia?",
   "faqAlertsA2": "Aplikasi menawarkan beberapa jenis notifikasi: Peringatan sistem saat Anda melebihi waktu layar, Peringatan sering pada interval yang dapat disesuaikan (1, 5, 15, 30, atau 60 menit), dan tombol untuk mode fokus, waktu layar, dan notifikasi khusus aplikasi.",
-  
   "faqAlertsQ3": "Bisakah saya menyesuaikan peringatan batasan?",
   "faqAlertsA3": "Ya, Anda dapat menyesuaikan frekuensi peringatan, mengaktifkan/menonaktifkan jenis peringatan tertentu, dan menetapkan batasan berbeda untuk waktu layar keseluruhan dan aplikasi individual.",
-  
   "faqFocusQ1": "Jenis Mode Fokus apa yang tersedia?",
   "faqFocusA1": "Mode yang tersedia termasuk Deep Work (sesi fokus lebih lama), Quick Tasks (pekerjaan singkat), dan Mode Membaca. Setiap mode membantu Anda menyusun waktu kerja dan istirahat secara efektif.",
-  
   "faqFocusQ2": "Seberapa fleksibel Timer Pomodoro?",
   "faqFocusA2": "Timer sangat dapat disesuaikan. Anda dapat menyesuaikan durasi kerja, lama istirahat pendek, dan durasi istirahat panjang. Opsi tambahan termasuk mulai otomatis untuk sesi berikutnya dan pengaturan notifikasi.",
-  
   "faqFocusQ3": "Apa yang ditampilkan riwayat Mode Fokus?",
   "faqFocusA3": "Riwayat Mode Fokus melacak sesi fokus harian, menampilkan jumlah sesi per hari, grafik tren, durasi sesi rata-rata, total waktu fokus, dan diagram lingkaran distribusi waktu yang memecah sesi kerja, istirahat pendek, dan istirahat panjang.",
-  
   "faqFocusQ4": "Bisakah saya melacak kemajuan sesi fokus saya?",
   "faqFocusA4": "Aplikasi menampilkan UI timer melingkar dengan tombol putar/jeda, muat ulang, dan pengaturan. Anda dapat dengan mudah melacak dan mengelola sesi fokus Anda dengan kontrol intuitif.",
-  
   "faqSettingsQ1": "Opsi kustomisasi apa yang tersedia?",
   "faqSettingsA1": "Kustomisasi mencakup pemilihan tema (Sistem, Terang, Gelap), pengaturan bahasa, perilaku startup, kontrol notifikasi komprehensif, dan opsi manajemen data seperti menghapus data atau mengatur ulang pengaturan.",
-  
   "faqSettingsQ2": "Bagaimana cara memberikan umpan balik atau melaporkan masalah?",
   "faqSettingsA2": "Di bagian bawah bagian Pengaturan, Anda akan menemukan tombol untuk Laporkan Bug, Kirim Umpan Balik, atau Hubungi Dukungan. Ini akan mengarahkan Anda ke saluran dukungan yang sesuai.",
-  
   "faqSettingsQ3": "Apa yang terjadi ketika saya menghapus data saya?",
   "faqSettingsA3": "Menghapus data akan mengatur ulang semua statistik penggunaan Anda, riwayat sesi fokus, dan pengaturan khusus. Ini berguna untuk memulai dari awal atau pemecahan masalah.",
-  
   "faqTroubleQ1": "Data tidak muncul, kesalahan hive tidak terbuka",
   "faqTroubleA1": "Masalah ini diketahui, perbaikan sementara adalah menghapus data melalui pengaturan dan jika tidak berhasil maka pergi ke Dokumen dan hapus file berikut jika ada - harman_screentime_app_usage_box.hive dan harman_screentime_app_usage.lock, Anda juga disarankan untuk memperbarui aplikasi ke versi terbaru.",
-  
   "faqTroubleQ2": "Aplikasi terbuka setiap startup, apa yang harus dilakukan?",
   "faqTroubleA2": "Ini adalah masalah yang diketahui yang terjadi pada Windows 10, perbaikan sementara adalah mengaktifkan Luncurkan sebagai Diminimalkan di pengaturan sehingga diluncurkan sebagai Diminimalkan.",
-  
   "usageAnalytics": "Analitik Penggunaan",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "7 Hari Terakhir",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "Bulan Lalu",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "3 Bulan Terakhir",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "Selamanya",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "Kustom",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "Memuat data analitik...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "Coba Lagi",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "Gagal menginisialisasi analitik. Silakan mulai ulang aplikasi.",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "Terjadi kesalahan tak terduga: {error}. Silakan coba lagi nanti.",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "Kesalahan memuat data analitik: {error}. Silakan periksa koneksi Anda dan coba lagi.",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "Kustom",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "Rentang Tanggal",
+  "dateRange": "Rentang Tanggal:",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "Tanggal Spesifik",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "Tanggal Mulai: ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "Tanggal Akhir: ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "Tanggal: ",
+  "date": "Tanggal",
   "@date": {
     "description": "Label for single date picker"
   },
-  
   "cancel": "Batal",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "Terapkan",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "OK",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "Rentang Tanggal Tidak Valid",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "Tanggal mulai harus sebelum atau sama dengan tanggal akhir.",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
   "totalScreenTime": "Total Waktu Layar",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
   "productiveTime": "Waktu Produktif",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
   "mostUsedApp": "Aplikasi Paling Sering Digunakan",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
   "focusSessions": "Sesi Fokus",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% vs periode sebelumnya",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% vs periode sebelumnya",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "Ikon {title}",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "Waktu Layar Harian",
+  "dailyScreenTime": "WAKTU LAYAR HARIAN",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "Pembagian Kategori",
+  "categoryBreakdown": "RINCIAN KATEGORI",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "Tidak ada data tersedia",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
   "sectionLabel": "Bagian {title}",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "Penggunaan Aplikasi Terperinci",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "Cari aplikasi",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "Nama",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "Kategori",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "Total Waktu",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "Produktivitas",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "Tindakan",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "Urutkan berdasarkan: {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "Nama",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "Kategori",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "Penggunaan",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "Produktif",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "Non-Produktif",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "Tidak ada aplikasi yang cocok dengan kriteria pencarian Anda",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "Lihat detail",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "Ringkasan Penggunaan",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "Penggunaan Selama Seminggu Terakhir",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "Pola Penggunaan Berdasarkan Waktu",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "Analisis Pola",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "Hari Ini",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "Batasan Harian",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "Tidak ada batasan",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "Tren Penggunaan",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "Produktivitas",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "Meningkat",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "Menurun",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "Stabil",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "Rata-rata Penggunaan Harian",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
-  "longestSession": "Sesi Terpanjang",
+  "longestSession": "Sesi terlama",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "Total Mingguan",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "Tidak ada data historis tersedia",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "Pagi (6-12)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "Siang (12-5)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "Sore (5-9)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "Malam (9-6)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "Wawasan Penggunaan",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "Status Batasan",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "Tutup",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "Anda terutama menggunakan {appName} selama {timeOfDay}.",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "Penggunaan Anda telah meningkat secara signifikan ({percentage}%) dibandingkan periode sebelumnya.",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "Penggunaan Anda cenderung meningkat dibandingkan periode sebelumnya.",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "Penggunaan Anda telah menurun secara signifikan ({percentage}%) dibandingkan periode sebelumnya.",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "Penggunaan Anda cenderung menurun dibandingkan periode sebelumnya.",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "Penggunaan Anda telah konsisten dibandingkan periode sebelumnya.",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "Ini ditandai sebagai aplikasi produktif dalam pengaturan Anda.",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "Ini ditandai sebagai aplikasi non-produktif dalam pengaturan Anda.",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "Waktu paling aktif Anda adalah sekitar {time}.",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "Tidak ada batasan penggunaan yang ditetapkan untuk aplikasi ini.",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "Anda telah mencapai batasan harian untuk aplikasi ini.",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "Anda hampir mencapai batasan harian dengan hanya {remainingTime} tersisa.",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "Anda telah menggunakan {percent}% dari batasan harian dengan {remainingTime} tersisa.",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "Anda memiliki {time} tersisa dari batasan harian Anda.",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "Hari Ini",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "{hour} Pagi",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "{hour} Sore",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,7 +610,6 @@
       }
     }
   },
-  
   "durationHoursMinutes": "{hours}j {minutes}m",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
@@ -765,7 +624,6 @@
       }
     }
   },
-  
   "durationMinutesOnly": "{minutes}m",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
@@ -776,55 +634,49 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "Peringatan & Batasan",
   "notificationsSettings": "Pengaturan Notifikasi",
   "overallScreenTimeLimit": "Batasan Waktu Layar Keseluruhan",
   "applicationLimits": "Batasan Aplikasi",
-  
   "popupAlerts": "Peringatan Pop-up",
   "frequentAlerts": "Peringatan Sering",
   "soundAlerts": "Peringatan Suara",
   "systemAlerts": "Peringatan Sistem",
-  
   "dailyTotalLimit": "Batasan Total Harian: ",
-  "hours": "Jam: ",
-  "minutes": "Menit: ",
+  "hours": "Jam",
+  "minutes": "Menit",
   "currentUsage": "Penggunaan Saat Ini: ",
-  
   "tableName": "Nama",
   "tableCategory": "Kategori",
   "tableDailyLimit": "Batasan Harian",
   "tableCurrentUsage": "Penggunaan Saat Ini",
   "tableStatus": "Status",
   "tableActions": "Tindakan",
-  
   "addLimit": "Tambah Batasan",
   "noApplicationsToDisplay": "Tidak ada aplikasi untuk ditampilkan",
-  
   "statusActive": "Aktif",
   "statusOff": "Mati",
   "durationNone": "Tidak ada",
-  
   "addApplicationLimit": "Tambah Batasan Aplikasi",
   "selectApplication": "Pilih Aplikasi",
   "selectApplicationPlaceholder": "Pilih sebuah aplikasi",
   "enableLimit": "Aktifkan Batasan: ",
-  
   "editLimitTitle": "Edit Batasan: {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "Gagal memuat data: {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "Atur Ulang Pengaturan?",
   "resetSettingsContent": "Jika Anda mengatur ulang pengaturan, Anda tidak akan dapat memulihkannya. Apakah Anda ingin mengatur ulang?",
   "resetAll": "Atur Ulang Semua",
@@ -833,63 +685,53 @@
   "add": "Tambah",
   "error": "Kesalahan",
   "retry": "Coba Lagi",
-  
   "applicationsTitle": "Aplikasi",
   "searchApplication": "Cari Aplikasi",
-  
-  "tracking": "Pelacakan",
+  "tracking": "Dilacak",
   "hiddenVisible": "Tersembunyi/Terlihat",
   "selectCategory": "Pilih Kategori",
   "allCategories": "Semua",
-  
   "tableScreenTime": "Waktu Layar",
   "tableTracking": "Pelacakan",
   "tableHidden": "Tersembunyi",
   "tableEdit": "Edit",
-  
   "editAppTitle": "Edit {appName}",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "Kategori",
   "customCategory": "Kustom",
   "customCategoryPlaceholder": "Masukkan nama kategori kustom",
   "uncategorized": "Tidak Dikategorikan",
-  
   "isProductive": "Produktif",
   "trackUsage": "Lacak Penggunaan",
   "visibleInReports": "Terlihat dalam Laporan",
-  
   "timeLimitsSection": "Batasan Waktu",
   "enableDailyLimit": "Aktifkan Batasan Harian",
   "setDailyTimeLimit": "Atur batasan waktu harian:",
-  
   "saveChanges": "Simpan Perubahan",
-  
   "errorLoadingData": "Kesalahan memuat data ringkasan: {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "Mode Fokus",
-  
   "historySection": "Riwayat",
   "trendsSection": "Tren",
   "timeDistributionSection": "Distribusi Waktu",
   "sessionHistorySection": "Riwayat Sesi",
-  
   "workSession": "Sesi Kerja",
   "shortBreak": "Istirahat Pendek",
   "longBreak": "Istirahat Panjang",
-  
   "dateHeader": "Tanggal",
   "durationHeader": "Durasi",
-  
   "monday": "Senin",
   "tuesday": "Selasa",
   "wednesday": "Rabu",
@@ -897,218 +739,179 @@
   "friday": "Jumat",
   "saturday": "Sabtu",
   "sunday": "Minggu",
-  
   "focusModeSettingsTitle": "Pengaturan Mode Fokus",
-  
   "modeCustom": "Kustom",
   "modeDeepWork": "Deep Work (60 menit)",
   "modeQuickTasks": "Tugas Cepat (25 menit)",
   "modeReading": "Membaca (45 menit)",
-  
   "workDurationLabel": "Durasi Kerja: {minutes} menit",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "Istirahat Pendek: {minutes} menit",
+  "shortBreakLabel": "Istirahat Pendek",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "Istirahat Panjang: {minutes} menit",
+  "longBreakLabel": "Istirahat Panjang",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "Mulai otomatis sesi berikutnya",
   "blockDistractions": "Blokir gangguan selama mode fokus",
   "enableNotifications": "Aktifkan notifikasi",
-  
   "saved": "Tersimpan",
-  
   "errorLoadingFocusModeData": "Kesalahan memuat data mode fokus: {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "Ringkasan Hari Ini",
   "startFocusMode": "Mulai Mode Fokus",
-  
   "loadingProductivityData": "Memuat data produktivitas Anda...",
   "noActivityDataAvailable": "Belum ada data aktivitas tersedia",
   "startUsingApplications": "Mulai gunakan aplikasi Anda untuk melacak waktu layar dan produktivitas.",
   "refreshData": "Segarkan Data",
-  
   "topApplications": "Aplikasi Teratas",
-  
   "noAppUsageDataAvailable": "Belum ada data penggunaan aplikasi tersedia",
   "noApplicationDataAvailable": "Tidak ada data aplikasi tersedia",
   "noCategoryDataAvailable": "Tidak ada data kategori tersedia",
   "noApplicationLimitsSet": "Tidak ada batasan aplikasi yang ditetapkan",
-  
   "screenLabel": "Layar",
   "timeLabel": "Waktu",
   "productiveLabel": "Produktif",
   "scoreLabel": "Skor",
-  
   "defaultNone": "Tidak ada",
   "defaultTime": "0j 0m",
   "defaultCount": "0",
   "unknownApp": "Tidak dikenal",
-  
   "settingsTitle": "Pengaturan",
-  
   "generalSection": "Umum",
   "notificationsSection": "Notifikasi",
   "dataSection": "Data",
   "versionSection": "Versi",
-  
   "themeTitle": "Tema",
-  "themeDescription": "Tema warna aplikasi (Perubahan Memerlukan Mulai Ulang)",
-  
+  "themeDescription": "Tema warna aplikasi",
   "languageTitle": "Bahasa",
   "languageDescription": "Bahasa aplikasi",
-  
   "startupBehaviourTitle": "Perilaku Startup",
   "startupBehaviourDescription": "Luncurkan saat startup OS",
-  
   "launchMinimizedTitle": "Luncurkan sebagai Diminimalkan",
   "launchMinimizedDescription": "Mulai aplikasi di System Tray (Direkomendasikan untuk Windows 10)",
-  
   "notificationsTitle": "Notifikasi",
   "notificationsAllDescription": "Semua notifikasi aplikasi",
-  
   "focusModeNotificationsTitle": "Mode Fokus",
   "focusModeNotificationsDescription": "Semua Notifikasi untuk mode fokus",
-  
   "screenTimeNotificationsTitle": "Waktu Layar",
   "screenTimeNotificationsDescription": "Semua Notifikasi untuk pembatasan waktu layar",
-  
   "appScreenTimeNotificationsTitle": "Waktu Layar Aplikasi",
   "appScreenTimeNotificationsDescription": "Semua Notifikasi untuk pembatasan waktu layar aplikasi",
-  
   "frequentAlertsTitle": "Interval Peringatan Sering",
   "frequentAlertsDescription": "Atur interval untuk notifikasi sering (menit)",
-  
   "clearDataTitle": "Hapus Data",
   "clearDataDescription": "Hapus semua riwayat dan data terkait lainnya",
-  
   "resetSettingsTitle2": "Atur Ulang Pengaturan",
   "resetSettingsDescription": "Atur ulang semua pengaturan",
-  
   "versionTitle": "Versi",
   "versionDescription": "Versi aplikasi saat ini",
-  
   "contactButton": "Kontak",
   "reportBugButton": "Laporkan Bug",
   "submitFeedbackButton": "Kirim Umpan Balik",
   "githubButton": "Github",
-  
   "clearDataDialogTitle": "Hapus Data?",
   "clearDataDialogContent": "Ini akan menghapus semua riwayat dan data terkait. Anda tidak akan dapat memulihkannya. Apakah Anda ingin melanjutkan?",
   "clearDataButtonLabel": "Hapus Data",
-  
   "resetSettingsDialogTitle": "Atur Ulang Pengaturan?",
   "resetSettingsDialogContent": "Ini akan mengatur ulang semua pengaturan ke nilai default. Apakah Anda ingin melanjutkan?",
   "resetButtonLabel": "Atur Ulang",
-  
   "cancelButton": "Batal",
-  
   "couldNotLaunchUrl": "Tidak dapat membuka {url}",
   "@couldNotLaunchUrl": {
     "placeholders": {
-      "url": {"type": "String"}
+      "url": {
+        "type": "String"
+      }
     }
   },
-  
   "errorMessage": "Kesalahan: {message}",
   "@errorMessage": {
     "placeholders": {
-      "message": {"type": "String"}
+      "message": {
+        "type": "String"
+      }
     }
   },
-
   "chart_focusTrends": "Tren Fokus",
   "@chart_focusTrends": {
     "description": "Title for focus trends chart"
   },
-  
   "chart_sessionCount": "Jumlah Sesi",
   "@chart_sessionCount": {
     "description": "Label for session count metric"
   },
-  
   "chart_avgDuration": "Rata-rata Durasi",
   "@chart_avgDuration": {
     "description": "Label for average duration metric"
   },
-  
   "chart_totalFocus": "Total Fokus",
   "@chart_totalFocus": {
     "description": "Label for total focus time metric"
   },
-  
   "chart_yAxis_sessions": "Sesi",
   "@chart_yAxis_sessions": {
     "description": "Y-axis label for session count"
   },
-  
   "chart_yAxis_minutes": "Menit",
   "@chart_yAxis_minutes": {
     "description": "Y-axis label for time in minutes"
   },
-  
   "chart_yAxis_value": "Nilai",
   "@chart_yAxis_value": {
     "description": "Generic y-axis label"
   },
-  
   "chart_monthOverMonthChange": "Perubahan bulan ke bulan: ",
   "@chart_monthOverMonthChange": {
     "description": "Label for percentage change display"
   },
-  
   "chart_customRange": "Rentang Kustom",
   "@chart_customRange": {
     "description": "Label for custom date range"
   },
-  
   "day_monday": "Senin",
   "day_mondayShort": "Sen",
   "day_mondayAbbr": "Sn",
-  
   "day_tuesday": "Selasa",
   "day_tuesdayShort": "Sel",
   "day_tuesdayAbbr": "Sl",
-  
   "day_wednesday": "Rabu",
   "day_wednesdayShort": "Rab",
   "day_wednesdayAbbr": "Rb",
-  
   "day_thursday": "Kamis",
   "day_thursdayShort": "Kam",
   "day_thursdayAbbr": "Km",
-  
   "day_friday": "Jumat",
   "day_fridayShort": "Jum",
   "day_fridayAbbr": "Jm",
-  
   "day_saturday": "Sabtu",
   "day_saturdayShort": "Sab",
   "day_saturdayAbbr": "Sb",
-  
   "day_sunday": "Minggu",
   "day_sundayShort": "Min",
   "day_sundayAbbr": "Mg",
-  
   "time_hours": "{count}j",
   "@time_hours": {
     "description": "Hours format",
@@ -1118,7 +921,6 @@
       }
     }
   },
-  
   "time_hoursMinutes": "{hours}j {minutes}m",
   "@time_hoursMinutes": {
     "description": "Hours and minutes format",
@@ -1131,7 +933,6 @@
       }
     }
   },
-  
   "time_minutesFormat": "{count} menit",
   "@time_minutesFormat": {
     "description": "Minutes format for tooltips",
@@ -1141,7 +942,6 @@
       }
     }
   },
-  
   "tooltip_dateScreenTime": "{date}: {hours}j {minutes}m",
   "@tooltip_dateScreenTime": {
     "description": "Tooltip showing date and screen time",
@@ -1157,7 +957,6 @@
       }
     }
   },
-  
   "tooltip_hoursFormat": "{count} jam",
   "@tooltip_hoursFormat": {
     "description": "Hours format for tooltip fallback",
@@ -1206,7 +1005,6 @@
   "categoryEducation": "Pendidikan",
   "categoryUtility": "Utilitas",
   "categoryUncategorized": "Tidak Dikategorikan",
-  
   "appMicrosoftWord": "Microsoft Word",
   "appExcel": "Excel",
   "appPowerPoint": "PowerPoint",
@@ -1268,8 +1066,8 @@
   "noButton": "Tidak",
   "shareButton": "Bagikan",
   "exportStarting": "Memulai ekspor...",
-  "exportSuccessful": "Ekspor berhasil! File disimpan di Dokumen/Scolect-Backups",
-  "exportFailed": "Ekspor gagal",
+  "exportSuccessful": "Ekspor Berhasil",
+  "exportFailed": "Ekspor Gagal",
   "exportComplete": "Ekspor Selesai",
   "shareBackupQuestion": "Apakah Anda ingin membagikan file cadangan?",
   "importStarting": "Memulai impor...",
@@ -1340,13 +1138,10 @@
   "themeLight": "Terang",
   "themeDark": "Gelap",
   "themeSystem": "Sistem",
-  "themeTitle": "Tema",
-  "themeDescription": "Tema warna aplikasi",
   "voiceGenderTitle": "Jenis Kelamin Suara",
   "voiceGenderDescription": "Pilih jenis kelamin suara untuk notifikasi timer",
   "voiceGenderMale": "Pria",
   "voiceGenderFemale": "Wanita",
-
   "applicationsSubtitle": "Kelola aplikasi yang dilacak",
   "applicationCount": "{count, plural, other{{count} aplikasi}}",
   "@applicationCount": {
@@ -1356,12 +1151,10 @@
       }
     }
   },
-  "refresh": "Segarkan",
   "noApplicationsFound": "Tidak ada aplikasi ditemukan",
   "tryAdjustingFilters": "Coba sesuaikan filter Anda",
   "configureAppSettings": "Konfigurasi pengaturan aplikasi",
   "behaviorSection": "Perilaku",
-  
   "helpSubtitle": "{count, plural, other{{count} pertanyaan di 7 kategori}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1377,23 +1170,12 @@
   "quickNavFocus": "Fokus",
   "noResultsFound": "Tidak ada hasil ditemukan",
   "tryDifferentKeywords": "Coba cari dengan kata kunci yang berbeda",
-  "clearSearch": "Hapus pencarian",
-  
+  "clearSearch": "Hapus Pencarian",
   "greetingMorning": "Selamat pagi! Ini ringkasan aktivitas Anda.",
   "greetingAfternoon": "Selamat siang! Ini ringkasan aktivitas Anda.",
   "greetingEvening": "Selamat malam! Ini ringkasan aktivitas Anda.",
   "screenTimeProgress": "Waktu\nLayar",
   "productiveScoreProgress": "Skor\nProduktivitas",
-  
-  "sectionLabel": "Bagian {title}",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "Tetap fokus, jadilah produktif",
   "thisWeek": "Minggu Ini",
   "sessions": "Sesi",
@@ -1405,8 +1187,6 @@
   "longBreakStatus": "Istirahat Panjang",
   "readyToFocus": "Siap untuk Fokus",
   "focus": "Fokus",
-  "shortBreakLabel": "Istirahat Pendek",
-  "longBreakLabel": "Istirahat Panjang",
   "restartSession": "Mulai Ulang Sesi",
   "skipToNext": "Lompat ke Berikutnya",
   "settings": "Pengaturan",
@@ -1443,7 +1223,6 @@
   "notification_permission_denied_hint": "Buka Pengaturan Sistem untuk mengaktifkan notifikasi ScreenTime.",
   "notification_permission_required": "Izin Notifikasi Diperlukan",
   "notification_permission_required_message": "ScreenTime memerlukan izin untuk mengirimkan notifikasi kepada Anda.",
-  "cancel": "Batal",
   "open_settings": "Buka Pengaturan",
   "allow_notifications": "Izinkan Notifikasi",
   "permission_allowed": "Diizinkan",
@@ -1460,8 +1239,7 @@
   "disabled": "Dinonaktifkan",
   "advanced_options": "Opsi Lanjutan",
   "sync_ready": "Sinkronisasi Siap",
-  "success": "Berhasil!",
-  "error": "Kesalahan",
+  "success": "Sukses",
   "destructive_badge": "Destruktif",
   "recommended_badge": "Direkomendasikan",
   "safe_badge": "Aman",
@@ -1470,9 +1248,7 @@
   "apps": "Aplikasi",
   "sortAscending": "Urutkan Naik",
   "sortDescending": "Urutkan Turun",
-  "clearSearch": "Hapus Pencarian",
   "applicationsShowing": "{count} aplikasi ditampilkan",
-  "totalTime": "Total Waktu",
   "valueLabel": "Nilai: {value}",
   "appsCount": "{count} aplikasi",
   "categoriesCount": "{count} kategori",
@@ -1519,7 +1295,6 @@
   "colorPickerHexColor": "Warna Heksadesimal",
   "colorPickerHexPlaceholder": "RRGGBB",
   "colorPickerRGB": "RGB",
-  "cancel": "Batal",
   "select": "Pilih",
   "themeCustomization": "Kustomisasi Tema",
   "chooseThemePreset": "Pilih Preset Tema",
@@ -1536,7 +1311,6 @@
       }
     }
   },
-  "edit": "Edit",
   "customThemeNumber": "Tema Kustom {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1592,7 +1366,7 @@
   "textColors": "Warna Teks",
   "textColorsLightDesc": "Warna tipografi untuk mode terang",
   "textColorsDarkDesc": "Warna tipografi untuk mode gelap",
-    "textPrimary": "Teks Utama",
+  "textPrimary": "Teks Utama",
   "textPrimaryDesc": "Judul, teks penting",
   "textSecondary": "Teks Sekunder",
   "textSecondaryDesc": "Deskripsi, keterangan",
@@ -1609,8 +1383,6 @@
   "sampleCardTitle": "Judul Kartu Contoh",
   "sampleSecondaryText": "Ini adalah teks sekunder yang muncul di bawah.",
   "primary": "Utama",
-  "success": "Sukses",
-  "error": "Error",
   "secondary": "Sekunder",
   "warning": "Peringatan",
   "launchAtStartupTitle": "Jalankan saat startup",
@@ -1628,8 +1400,6 @@
   "restartLater": "Mulai ulang nanti",
   "restartFailedTitle": "Gagal memulai ulang",
   "restartFailedMessage": "Aplikasi tidak dapat dimulai ulang secara otomatis. Silakan keluar (Cmd+Q) dan buka kembali secara manual.",
-  "ok": "OK",
-  "error": "Kesalahan",
   "exportAnalyticsReport": "Ekspor Laporan Analitik",
   "chooseExportFormat": "Pilih format ekspor:",
   "beautifulExcelReport": "Laporan Excel yang Indah",
@@ -1639,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 Rincian Harian - Pola penggunaan visual",
   "appsSheetDescription": "📱 Lembar Aplikasi - Peringkat aplikasi terperinci",
   "insightsDescription": "💡 Wawasan - Rekomendasi cerdas",
-  "cancel": "Batal",
-  "exportSuccessful": "Ekspor Berhasil",
   "beautifulExcelExportSuccess": "Laporan Excel yang indah berhasil diekspor! 🎉",
-  "exportFailed": "Ekspor Gagal",
   "failedToExportReport": "Gagal mengekspor laporan: {error}",
   "exporting": "Mengekspor...",
   "exportExcel": "Ekspor Excel",
   "saveAnalyticsReport": "Simpan Laporan Analitik",
   "analyticsReportFileName": "laporan_analitik_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "LAPORAN ANALISIS PENGGUNAAN",
   "generated": "Dibuat:",
   "period": "Periode:",
-  "dateRange": "Rentang Tanggal:",
   "dateRangeValue": "{startDate} sampai {endDate}",
-  
   "keyMetrics": "METRIK UTAMA",
   "metric": "Metrik",
   "value": "Nilai",
   "change": "Perubahan",
   "trend": "Tren",
-  
-  "totalScreenTime": "Total Waktu Layar",
-  "productiveTime": "Waktu Produktif",
   "productivityRate": "Tingkat Produktivitas",
-  "focusSessions": "Sesi Fokus",
-  "mostUsedApp": "Aplikasi Paling Sering Digunakan",
-  
   "trendUp": "Naik",
   "trendDown": "Turun",
   "trendExcellent": "Sangat Baik",
@@ -1675,71 +1433,47 @@
   "trendActive": "Aktif",
   "trendNone": "Tidak Ada",
   "trendTop": "Teratas",
-  
-  "categoryBreakdown": "RINCIAN KATEGORI",
   "category": "Kategori",
   "percentage": "Persentase",
   "visual": "Visual",
-  
-  "dailyScreenTime": "WAKTU LAYAR HARIAN",
   "statistics": "STATISTIK",
   "averageDaily": "Rata-rata Harian",
   "highestDay": "Hari Tertinggi",
   "lowestDay": "Hari Terendah",
-  
-  "date": "Tanggal",
   "day": "Hari",
-  "hours": "Jam",
-  "minutes": "Menit",
-  
   "applicationUsageDetails": "DETAIL PENGGUNAAN APLIKASI",
   "totalApps": "Total Aplikasi:",
   "productiveApps": "Aplikasi Produktif:",
-  
   "rank": "Peringkat",
   "application": "Aplikasi",
   "time": "Waktu",
   "percentOfTotal": "% dari Total",
   "type": "Tipe",
   "usageLevel": "Tingkat Penggunaan",
-  
-  "productive": "Produktif",
   "leisure": "Hiburan",
-  
   "usageLevelVeryHigh": "Sangat Tinggi ||||||||",
   "usageLevelHigh": "Tinggi ||||||",
   "usageLevelMedium": "Sedang ||||",
   "usageLevelLow": "Rendah ||",
-  
   "keyInsightsTitle": "WAWASAN DAN REKOMENDASI UTAMA",
   "personalizedRecommendations": "REKOMENDASI PERSONAL",
-  
   "insightHighDailyUsage": "Penggunaan Harian Tinggi: Anda rata-rata menggunakan {hours} jam waktu layar per hari",
   "insightLowDailyUsage": "Penggunaan Harian Rendah: Anda rata-rata {hours} jam per hari - keseimbangan yang bagus!",
   "insightModerateUsage": "Penggunaan Sedang: Rata-rata {hours} jam waktu layar per hari",
-  
   "insightExcellentProductivity": "Produktivitas Sangat Baik: {percentage}% waktu layar Anda adalah kerja produktif!",
   "insightGoodProductivity": "Produktivitas Baik: {percentage}% waktu layar Anda produktif",
   "insightLowProductivity": "Peringatan Produktivitas Rendah: Hanya {percentage}% waktu layar yang produktif",
-  
   "insightFocusSessions": "Sesi Fokus: Menyelesaikan {count} sesi (rata-rata {avgPerDay} per hari)",
   "insightGreatFocusHabit": "Kebiasaan Fokus Hebat: Anda telah membangun rutinitas fokus yang luar biasa dengan {count} sesi selesai!",
   "insightNoFocusSessions": "Tidak Ada Sesi Fokus: Pertimbangkan menggunakan mode fokus untuk meningkatkan produktivitas Anda",
-  
   "insightScreenTimeTrend": "Tren Waktu Layar: Penggunaan Anda {direction} {percentage}% dibandingkan periode sebelumnya",
   "insightProductiveTimeTrend": "Tren Waktu Produktif: Waktu produktif Anda {direction} {percentage}% dibandingkan periode sebelumnya",
-  
   "directionIncreased": "meningkat",
   "directionDecreased": "menurun",
-  
   "insightTopCategory": "Kategori Teratas: {category} mendominasi dengan {percentage}% dari total waktu Anda",
-  
   "insightMostUsedApp": "Aplikasi Paling Sering Digunakan: {appName} menyumbang {percentage}% dari waktu Anda ({duration})",
-  
   "insightUsageVaries": "Penggunaan Bervariasi Signifikan: {highDay} memiliki penggunaan {multiplier}x lebih banyak dari {lowDay}",
-  
   "insightNoInsights": "Tidak ada wawasan signifikan tersedia",
-  
   "recScheduleFocusSessions": "Coba jadwalkan lebih banyak sesi fokus sepanjang hari untuk meningkatkan produktivitas",
   "recSetAppLimits": "Pertimbangkan untuk menetapkan batas pada aplikasi hiburan",
   "recAimForFocusSessions": "Targetkan setidaknya 1-2 sesi fokus per hari untuk membangun kebiasaan konsisten",
@@ -1750,10 +1484,6 @@
   "recScheduleFocusedWork": "Waktu produktif Anda menurun. Coba jadwalkan blok kerja fokus di kalender Anda",
   "recKeepUpGreatWork": "Terus pertahankan! Kebiasaan waktu layar Anda terlihat sehat",
   "recContinueFocusSessions": "Terus gunakan sesi fokus untuk mempertahankan produktivitas",
-  
-  "durationHoursMinutes": "{hours}j {minutes}m",
-  "durationMinutesOnly": "{minutes}m",
-  
   "sheetSummary": "Ringkasan",
   "sheetDailyBreakdown": "Rincian Harian",
   "sheetApps": "Aplikasi",
@@ -1807,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "Total Waktu",
   "workPhases": "Fase Kerja",
   "averageLength": "Rata-rata Durasi",
   "mostProductive": "Paling Produktif",
@@ -1855,20 +1584,19 @@
   "noThemeDataFound": "Tidak ada data tema ditemukan",
   "invalidThemeFormat": "Format tema tidak valid. Silakan periksa data JSON.",
   "trackingModeTitle": "Mode Pelacakan",
-"trackingModeDescription": "Pilih cara penggunaan aplikasi dilacak",
-"trackingModePolling": "Standar (Sumber Daya Rendah)",
-"trackingModePrecise": "Presisi (Akurasi Tinggi)",
-"trackingModePollingHint": "Memeriksa setiap menit - penggunaan sumber daya lebih rendah",
-"trackingModePreciseHint": "Pelacakan real-time - akurasi lebih tinggi, lebih banyak sumber daya",
-"trackingModeChangeError": "Gagal mengubah mode pelacakan. Silakan coba lagi.",
-"errorTitle": "Kesalahan",
-"monitorKeyboardTitle": "Pantau Keyboard",
+  "trackingModeDescription": "Pilih cara penggunaan aplikasi dilacak",
+  "trackingModePolling": "Standar (Sumber Daya Rendah)",
+  "trackingModePrecise": "Presisi (Akurasi Tinggi)",
+  "trackingModePollingHint": "Memeriksa setiap menit - penggunaan sumber daya lebih rendah",
+  "trackingModePreciseHint": "Pelacakan real-time - akurasi lebih tinggi, lebih banyak sumber daya",
+  "trackingModeChangeError": "Gagal mengubah mode pelacakan. Silakan coba lagi.",
+  "errorTitle": "Kesalahan",
+  "monitorKeyboardTitle": "Pantau Keyboard",
   "monitorKeyboardDescription": "Lacak aktivitas keyboard untuk mendeteksi kehadiran pengguna",
   "changelogWhatsNew": "Yang Baru",
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "Dirilis pada {date}",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1879,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "Tidak ada catatan perubahan untuk versi ini.",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "Tidak Dapat Memuat Catatan Perubahan",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "Tidak dapat mengambil catatan perubahan untuk versi ini. Silakan periksa koneksi internet Anda atau kunjungi halaman rilis GitHub.",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "OK",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "Lanjutkan",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "Semua Aplikasi",
-  "tracking": "Dilacak",
   "notTracking": "Tidak Dilacak",
   "allVisibility": "Semua",
   "visible": "Terlihat",
   "hidden": "Tersembunyi",
   "todaysLimitUsage": "Penggunaan Batas Hari Ini",
-"thisWeekAtAGlance": "Sekilas Minggu Ini",
-"hourlyActivityHeatmap": "Peta Panas Aktivitas Per Jam",
-"sessions": "Sesi",
-"thisWeek": "Minggu Ini",
-"productivityScore": "Skor Produktivitas",
-"streaks": "Hari Berturut-turut",
-"weekOverWeek": "Minggu ke Minggu",
-"sameAsLastWeek": "Sama seperti minggu lalu",
-"moreUsageThanLastWeek": "{percent}% lebih banyak dari minggu lalu",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "{percent}% lebih sedikit dari minggu lalu",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "Batas terlampaui sebesar {duration}",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "{duration} tersisa",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "Total sesi",
-"avgSession": "Rata-rata sesi",
-"longestSession": "Sesi terlama",
-"mostActive": "Paling aktif",
-"peakUsage": "Penggunaan tertinggi",
-"dailyAverage": "Rata-rata harian",
-"daysUsedInARow": "Hari penggunaan berturut-turut",
-"daysSingular": "hari",
-"daysPlural": "hari",
-"daysOverLimitInARow": "Hari berturut-turut melebihi batas",
-"withinLimitAllWeek": "Dalam batas sepanjang minggu",
-"productivityScoreGreat": "Hebat",
-"productivityScoreModerate": "Sedang",
-"productivityScoreNeedsAttention": "Perlu Perhatian",
-"productiveAppMotivation": "Aplikasi produktif — pertahankan",
-"nonProductiveAppSuggestion": "Tidak produktif — pertimbangkan untuk mengurangi",
-"legendUsage": "Penggunaan",
-"legendAverage": "Rata-rata",
-"legendLimit": "Batas",
-"chartPeak": "Puncak",
-"overLimitBy": "+{duration} melebihi batas",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "Tidak ada data",
-"yesterday": "Kemarin",
-"changelog": "Catatan perubahan",
-"exportingLabel": "Sedang mengekspor...",
-"@exportingLabel": {
-  "description": "Label yang ditampilkan pada tombol ekspor saat proses ekspor berlangsung"
-},
-"exportExcelLabel": "Ekspor Excel",
-"@exportExcelLabel": {
-  "description": "Label yang ditampilkan pada tombol ekspor"
-},
+  "thisWeekAtAGlance": "Sekilas Minggu Ini",
+  "hourlyActivityHeatmap": "Peta Panas Aktivitas Per Jam",
+  "productivityScore": "Skor Produktivitas",
+  "streaks": "Hari Berturut-turut",
+  "weekOverWeek": "Minggu ke Minggu",
+  "sameAsLastWeek": "Sama seperti minggu lalu",
+  "moreUsageThanLastWeek": "{percent}% lebih banyak dari minggu lalu",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "{percent}% lebih sedikit dari minggu lalu",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "Batas terlampaui sebesar {duration}",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "{duration} tersisa",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "Total sesi",
+  "avgSession": "Rata-rata sesi",
+  "mostActive": "Paling aktif",
+  "peakUsage": "Penggunaan tertinggi",
+  "dailyAverage": "Rata-rata harian",
+  "daysUsedInARow": "Hari penggunaan berturut-turut",
+  "daysSingular": "hari",
+  "daysPlural": "hari",
+  "daysOverLimitInARow": "Hari berturut-turut melebihi batas",
+  "withinLimitAllWeek": "Dalam batas sepanjang minggu",
+  "productivityScoreGreat": "Hebat",
+  "productivityScoreModerate": "Sedang",
+  "productivityScoreNeedsAttention": "Perlu Perhatian",
+  "productiveAppMotivation": "Aplikasi produktif — pertahankan",
+  "nonProductiveAppSuggestion": "Tidak produktif — pertimbangkan untuk mengurangi",
+  "legendUsage": "Penggunaan",
+  "legendAverage": "Rata-rata",
+  "legendLimit": "Batas",
+  "chartPeak": "Puncak",
+  "overLimitBy": "+{duration} melebihi batas",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "Tidak ada data",
+  "yesterday": "Kemarin",
+  "changelog": "Catatan perubahan",
+  "exportingLabel": "Sedang mengekspor...",
+  "@exportingLabel": {
+    "description": "Label yang ditampilkan pada tombol ekspor saat proses ekspor berlangsung"
+  },
+  "exportExcelLabel": "Ekspor Excel",
+  "@exportExcelLabel": {
+    "description": "Label yang ditampilkan pada tombol ekspor"
+  },
   "dailyResetTimeTitle": "Waktu Reset Harian",
   "dailyResetTimeDescription": "Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru.",
   "crashReportingTitle": "Pelaporan Kerusakan",
-  "crashReportingDescription": "Kirim laporan kerusakan anonim untuk membantu meningkatkan Scolect. Tidak termasuk data pribadi atau riwayat penggunaan."
+  "crashReportingDescription": "Kirim laporan kerusakan anonim untuk membantu meningkatkan Scolect. Tidak termasuk data pribadi atau riwayat penggunaan.",
+  "narrativeTodaySpent": "Hari ini Anda menghabiskan {timeStr} di depan komputer.",
+  "narrativeMostFocused": "Waktu paling fokus Anda adalah {start} – {end}.",
+  "narrativeFocusSessions": "Anda menyelesaikan {focusSessions} {focusSessionsCount, plural, =1{sesi} other{sesi}} fokus dengan total {fsMinutes} menit.",
+  "narrativeCheckedAppShort": "Anda memeriksa {topAppName} {topAppOpenCount} kali tetapi kunjungannya singkat.",
+  "narrativeCheckedAppLong": "Sebagian besar waktu Anda habis untuk {topAppName} hanya dalam {topAppOpenCount} {topAppOpenCountPlural, plural, =1{sesi} other{sesi}}.",
+  "narrativeToneSolid": "Hari yang solid.",
+  "narrativeToneDecent": "Kemajuan yang lumayan.",
+  "narrativeToneLight": "Hari yang ringan — tidak ada salahnya.",
+  "narrativeToneImprove": "Ada ruang untuk perbaikan besok.",
+  "habitDnaTitle": "DNA Kebiasaan Anda",
+  "habitDnaAnalyzed": "{daysAnalyzed}h dianalisis",
+  "habitDnaChronotype": "Kronotipe",
+  "habitDnaWorkStyle": "Gaya Kerja",
+  "habitDnaPeakFocus": "Fokus Puncak",
+  "habitDnaAvgSession": "Rata-rata Sesi",
+  "habitDnaBestDay": "Hari Terbaik",
+  "habitDnaRoughDay": "Hari yang Berat",
+  "habitDnaKryptonite": "Gangguan utama: {appName}",
+  "chronotypeMorning": "Orang Pagi",
+  "chronotypeAfternoon": "Puncak Siang",
+  "chronotypeNight": "Burung Hantu Malam",
+  "chronotypeMixed": "Campuran",
+  "workStyleDeep": "Fokus Mendalam",
+  "workStyleSwitcher": "Pindah Tugas",
+  "workStyleBalanced": "Seimbang",
+  "timeFormatAm": "{hour} AM",
+  "timeFormatPm": "{hour} PM",
+  "timeFormatMidnight": "Tengah Malam",
+  "timeFormatNoon": "Siang",
+  "weeklyStoryTitle": "Minggu Ini",
+  "weeklyStoryWeekNumber": "Minggu {weekNumber}",
+  "weeklyStoryHeadline": "Minggu {weekNumber} — {timeStr} di layar sejauh ini.",
+  "weeklyStoryReclaimed": "Anda telah menghemat {diff} dibandingkan dengan Minggu 1.",
+  "weeklyStoryUp": "Waktu layar naik {diff} dari Minggu 1.",
+  "weeklyStoryImprovementArea": "Masih perlu ditingkatkan: {timeLabel} di {worstCat}.",
+  "weekdayNameMonday": "Senin",
+  "weekdayNameTuesday": "Selasa",
+  "weekdayNameWednesday": "Rabu",
+  "weekdayNameThursday": "Kamis",
+  "weekdayNameFriday": "Jumat",
+  "weekdayNameSaturday": "Sabtu",
+  "weekdayNameSunday": "Minggu",
+  "weekdayNameUnknown": "hari itu",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -3135,4 +3135,175 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get dailyResetTimeDescription =>
       'Establece la hora a la que el contador de tiempo de pantalla se reinicia para un nuevo día.';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return 'Hoy pasaste $timeStr en tu computadora.';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return 'Tu momento de mayor concentración fue de $start a $end.';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: 'sesiones',
+      one: 'sesión',
+    );
+    return 'Completaste $focusSessions $_temp0 de concentración con un total de ${fsMinutes}m.';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return 'Revisaste $topAppName $topAppOpenCount veces pero mantuviste cada visita corta.';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: 'sesiones',
+      one: 'sesión',
+    );
+    return 'La mayor parte de tu tiempo en $topAppName fue en $topAppOpenCount $_temp0.';
+  }
+
+  @override
+  String get narrativeToneSolid => 'Día sólido.';
+
+  @override
+  String get narrativeToneDecent => 'Progreso decente.';
+
+  @override
+  String get narrativeToneLight => 'Día ligero — nada malo con eso.';
+
+  @override
+  String get narrativeToneImprove => 'Espacio para mejorar mañana.';
+
+  @override
+  String get habitDnaTitle => 'Tu ADN de Hábitos';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '${daysAnalyzed}d analizados';
+  }
+
+  @override
+  String get habitDnaChronotype => 'Cronotipo';
+
+  @override
+  String get habitDnaWorkStyle => 'Estilo de Trabajo';
+
+  @override
+  String get habitDnaPeakFocus => 'Concentración Máxima';
+
+  @override
+  String get habitDnaAvgSession => 'Sesión Promedio';
+
+  @override
+  String get habitDnaBestDay => 'Mejor Día';
+
+  @override
+  String get habitDnaRoughDay => 'Día Difícil';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return 'Mayor distracción: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => 'Persona Mañanera';
+
+  @override
+  String get chronotypeAfternoon => 'Pico por la Tarde';
+
+  @override
+  String get chronotypeNight => 'Ave Nocturna';
+
+  @override
+  String get chronotypeMixed => 'Mixto';
+
+  @override
+  String get workStyleDeep => 'Enfoque Profundo';
+
+  @override
+  String get workStyleSwitcher => 'Cambio de Tareas';
+
+  @override
+  String get workStyleBalanced => 'Equilibrado';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '$hour AM';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '$hour PM';
+  }
+
+  @override
+  String get timeFormatMidnight => 'Medianoche';
+
+  @override
+  String get timeFormatNoon => 'Mediodía';
+
+  @override
+  String get weeklyStoryTitle => 'Esta Semana';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return 'Semana $weekNumber';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return 'Semana $weekNumber — $timeStr en pantalla hasta ahora.';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return 'Has recuperado $diff en comparación con la Semana 1.';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return 'El tiempo de pantalla aumentó $diff respecto a la Semana 1.';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return 'Aún trabajando en: $timeLabel en $worstCat.';
+  }
+
+  @override
+  String get weekdayNameMonday => 'Lunes';
+
+  @override
+  String get weekdayNameTuesday => 'Martes';
+
+  @override
+  String get weekdayNameWednesday => 'Miércoles';
+
+  @override
+  String get weekdayNameThursday => 'Jueves';
+
+  @override
+  String get weekdayNameFriday => 'Viernes';
+
+  @override
+  String get weekdayNameSaturday => 'Sábado';
+
+  @override
+  String get weekdayNameSunday => 'Domingo';
+
+  @override
+  String get weekdayNameUnknown => 'ese día';
 }

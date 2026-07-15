@@ -1,76 +1,61 @@
 {
   "@@locale": "ur",
-  
   "appWindowTitle": "Scolect - اسکرین ٹائم اور ایپ استعمال کی نگرانی",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "Scolect",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "پیداواری اسکرین ٹائم",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "اسکرین ٹائم",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "اوپن سورس",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "ونڈو دکھائیں",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "فوکس موڈ شروع کریں",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "فوکس موڈ بند کریں",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "رپورٹیں",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "الرٹس اور حدود",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "ایپلیکیشنز",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "اطلاعات بند کریں",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "اطلاعات چالو کریں",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "ورژن: ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "ورژن: {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "باہر نکلیں",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "جائزہ",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "ایپلیکیشنز",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "الرٹس اور حدود",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "رپورٹیں",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "فوکس موڈ",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "ترتیبات",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "مدد",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "مدد",
-  
   "faqCategoryGeneral": "عام سوالات",
   "faqCategoryApplications": "ایپلیکیشنز کا انتظام",
   "faqCategoryReports": "استعمال کے تجزیات اور رپورٹیں",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "فوکس موڈ اور پومودورو ٹائمر",
   "faqCategorySettings": "ترتیبات اور حسب ضرورت",
   "faqCategoryTroubleshooting": "مسائل حل کرنا",
-  
   "faqGeneralQ1": "یہ ایپ اسکرین ٹائم کیسے ٹریک کرتی ہے؟",
   "faqGeneralA1": "ایپ آپ کے آلے کے استعمال کو ریئل ٹائم میں مانیٹر کرتی ہے، مختلف ایپلیکیشنز پر گزارے گئے وقت کو ٹریک کرتی ہے۔ یہ آپ کی ڈیجیٹل عادات کے بارے میں جامع بصیرت فراہم کرتی ہے، بشمول کل اسکرین ٹائم، پیداواری وقت، اور ایپلیکیشن کے مخصوص استعمال۔",
-  
   "faqGeneralQ2": "ایپ کو 'پیداواری' کیا بناتا ہے؟",
   "faqGeneralA2": "آپ 'ایپلیکیشنز' سیکشن میں ایپس کو دستی طور پر پیداواری کے طور پر نشان زد کر سکتے ہیں۔ پیداواری ایپس آپ کے پیداواری سکور میں حصہ ڈالتی ہیں، جو کام سے متعلق یا فائدہ مند ایپلیکیشنز پر گزارے گئے اسکرین ٹائم کی فیصد کا حساب لگاتا ہے۔",
-  
   "faqGeneralQ3": "اسکرین ٹائم ٹریکنگ کتنی درست ہے؟",
   "faqGeneralA3": "ایپ آپ کے آلے کے استعمال کی درست پیمائش فراہم کرنے کے لیے سسٹم لیول ٹریکنگ استعمال کرتی ہے۔ یہ کم بیٹری اثر کے ساتھ ہر ایپلیکیشن کے لیے فورگراؤنڈ وقت کیپچر کرتی ہے۔",
-  
   "faqGeneralQ4": "کیا میں اپنی ایپ کی درجہ بندی کو حسب ضرورت بنا سکتا ہوں؟",
   "faqGeneralA4": "بالکل! آپ حسب ضرورت زمرے بنا سکتے ہیں، ایپس کو مخصوص زمروں میں تفویض کر سکتے ہیں، اور 'ایپلیکیشنز' سیکشن میں ان تفویضات کو آسانی سے تبدیل کر سکتے ہیں۔ اس سے زیادہ معنی خیز استعمال کے تجزیات بنانے میں مدد ملتی ہے۔",
-  
   "faqGeneralQ5": "میں اس ایپ سے کیا بصیرت حاصل کر سکتا ہوں؟",
   "faqGeneralA5": "ایپ جامع بصیرت پیش کرتی ہے بشمول پیداواری سکور، دن کے وقت کے حساب سے استعمال کے پیٹرن، تفصیلی ایپلیکیشن استعمال، فوکس سیشن ٹریکنگ، اور بصری تجزیات جیسے گراف اور پائی چارٹس جو آپ کی ڈیجیٹل عادات کو سمجھنے اور بہتر بنانے میں مدد کرتے ہیں۔",
-  
   "faqAppsQ1": "میں مخصوص ایپس کو ٹریکنگ سے کیسے چھپاؤں؟",
   "faqAppsA1": "'ایپلیکیشنز' سیکشن میں، آپ ایپس کی نمائش کو ٹوگل کر سکتے ہیں۔",
-  
   "faqAppsQ2": "کیا میں اپنی ایپلیکیشنز تلاش اور فلٹر کر سکتا ہوں؟",
   "faqAppsA2": "ہاں، ایپلیکیشنز سیکشن میں تلاش کی فعالیت اور فلٹرنگ کے اختیارات شامل ہیں۔ آپ ایپس کو زمرے، پیداواری حیثیت، ٹریکنگ حیثیت، اور نمائش کے حساب سے فلٹر کر سکتے ہیں۔",
-  
   "faqAppsQ3": "ایپلیکیشنز کے لیے کون سے ترمیم کے اختیارات دستیاب ہیں؟",
   "faqAppsA3": "ہر ایپلیکیشن کے لیے، آپ ترمیم کر سکتے ہیں: زمرہ تفویض، پیداواری حیثیت، استعمال کی ٹریکنگ، رپورٹس میں نمائش، اور انفرادی روزانہ وقت کی حدود مقرر کر سکتے ہیں۔",
-  
   "faqAppsQ4": "ایپلیکیشن کے زمرے کیسے طے کیے جاتے ہیں؟",
   "faqAppsA4": "ابتدائی زمرے سسٹم کی تجویز کردہ ہیں، لیکن آپ کو اپنے ورک فلو اور ترجیحات کی بنیاد پر حسب ضرورت زمرے بنانے، ترمیم کرنے، اور تفویض کرنے کا مکمل کنٹرول ہے۔",
-  
   "faqReportsQ1": "کون سی قسم کی رپورٹیں دستیاب ہیں؟",
   "faqReportsA1": "رپورٹس میں شامل ہیں: کل اسکرین ٹائم، پیداواری وقت، سب سے زیادہ استعمال ہونے والی ایپس، فوکس سیشنز، روزانہ اسکرین ٹائم گراف، زمرے کی تقسیم کا پائی چارٹ، تفصیلی ایپلیکیشن استعمال، ہفتہ وار استعمال کے رجحانات، اور دن کے وقت کے حساب سے استعمال کے پیٹرن کا تجزیہ۔",
-  
   "faqReportsQ2": "ایپلیکیشن کے استعمال کی رپورٹیں کتنی تفصیلی ہیں؟",
   "faqReportsA2": "تفصیلی ایپلیکیشن استعمال کی رپورٹس دکھاتی ہیں: ایپ کا نام، زمرہ، کل گزارا ہوا وقت، پیداواری حیثیت، اور ایک 'ایکشنز' سیکشن پیش کرتی ہیں جس میں گہری بصیرت جیسے استعمال کا خلاصہ، روزانہ حدود، استعمال کے رجحانات، اور پیداواری میٹرکس شامل ہیں۔",
-  
   "faqReportsQ3": "کیا میں وقت کے ساتھ اپنے استعمال کے رجحانات کا تجزیہ کر سکتا ہوں؟",
   "faqReportsA3": "ہاں! ایپ ہفتہ بہ ہفتہ موازنے فراہم کرتی ہے، پچھلے ہفتوں کے استعمال کے گراف، اوسط روزانہ استعمال، طویل ترین سیشنز، اور ہفتہ وار کل دکھاتی ہے تاکہ آپ اپنی ڈیجیٹل عادات کو ٹریک کر سکیں۔",
-  
   "faqReportsQ4": "'استعمال کا پیٹرن' تجزیہ کیا ہے؟",
   "faqReportsA4": "استعمال کا پیٹرن آپ کے اسکرین ٹائم کو صبح، دوپہر، شام، اور رات کے حصوں میں تقسیم کرتا ہے۔ اس سے آپ کو سمجھنے میں مدد ملتی ہے کہ آپ اپنے آلے پر کب سب سے زیادہ فعال ہیں اور بہتری کے ممکنہ شعبوں کی نشاندہی کرتے ہیں۔",
-  
   "faqAlertsQ1": "اسکرین ٹائم کی حدود کتنی تفصیلی ہیں؟",
   "faqAlertsA1": "آپ مجموعی روزانہ اسکرین ٹائم کی حدود اور انفرادی ایپ کی حدود مقرر کر سکتے ہیں۔ حدود گھنٹوں اور منٹوں میں ترتیب دی جا سکتی ہیں، ضرورت کے مطابق ری سیٹ یا ایڈجسٹ کرنے کے اختیارات کے ساتھ۔",
-  
   "faqAlertsQ2": "کون سے اطلاع کے اختیارات دستیاب ہیں؟",
   "faqAlertsA2": "ایپ متعدد اقسام کی اطلاعات پیش کرتی ہے: جب آپ اسکرین ٹائم سے تجاوز کریں تو سسٹم الرٹس، حسب ضرورت وقفوں پر بار بار الرٹس (1، 5، 15، 30، یا 60 منٹ)، اور فوکس موڈ، اسکرین ٹائم، اور ایپلیکیشن کے مخصوص اطلاعات کے لیے ٹوگلز۔",
-  
   "faqAlertsQ3": "کیا میں حد کے الرٹس کو حسب ضرورت بنا سکتا ہوں؟",
   "faqAlertsA3": "ہاں، آپ الرٹ کی تعدد کو حسب ضرورت بنا سکتے ہیں، مخصوص قسم کے الرٹس کو فعال/غیر فعال کر سکتے ہیں، اور مجموعی اسکرین ٹائم اور انفرادی ایپلیکیشنز کے لیے مختلف حدود مقرر کر سکتے ہیں۔",
-  
   "faqFocusQ1": "کون سی قسم کے فوکس موڈز دستیاب ہیں؟",
   "faqFocusA1": "دستیاب موڈز میں ڈیپ ورک (طویل توجہ مرکوز سیشنز)، کوئک ٹاسکس (کام کے مختصر دورانیے)، اور ریڈنگ موڈ شامل ہیں۔ ہر موڈ آپ کو اپنے کام اور وقفے کے اوقات کو مؤثر طریقے سے منظم کرنے میں مدد کرتا ہے۔",
-  
   "faqFocusQ2": "پومودورو ٹائمر کتنا لچکدار ہے؟",
   "faqFocusA2": "ٹائمر انتہائی حسب ضرورت ہے۔ آپ کام کی مدت، مختصر وقفے کی لمبائی، اور طویل وقفے کی مدت کو ایڈجسٹ کر سکتے ہیں۔ اضافی اختیارات میں اگلے سیشنز کے لیے آٹو سٹارٹ اور اطلاع کی ترتیبات شامل ہیں۔",
-  
   "faqFocusQ3": "فوکس موڈ کی تاریخ کیا دکھاتی ہے؟",
   "faqFocusA3": "فوکس موڈ کی تاریخ روزانہ فوکس سیشنز کو ٹریک کرتی ہے، روزانہ سیشنز کی تعداد، رجحانات کا گراف، اوسط سیشن کی مدت، کل فوکس وقت، اور ایک وقت کی تقسیم کا پائی چارٹ دکھاتی ہے جو کام کے سیشنز، مختصر وقفوں، اور طویل وقفوں کو تقسیم کرتا ہے۔",
-  
   "faqFocusQ4": "کیا میں اپنے فوکس سیشن کی پیشرفت کو ٹریک کر سکتا ہوں؟",
   "faqFocusA4": "ایپ میں پلے/پاز، ری لوڈ، اور سیٹنگز بٹنز کے ساتھ ایک سرکلر ٹائمر UI ہے۔ آپ بدیہی کنٹرولز کے ساتھ اپنے فوکس سیشنز کو آسانی سے ٹریک اور منظم کر سکتے ہیں۔",
-  
   "faqSettingsQ1": "کون سے حسب ضرورت اختیارات دستیاب ہیں؟",
   "faqSettingsA1": "حسب ضرورت میں تھیم کا انتخاب (سسٹم، لائٹ، ڈارک)، زبان کی ترتیبات، سٹارٹ اپ رویہ، جامع اطلاع کے کنٹرولز، اور ڈیٹا مینجمنٹ کے اختیارات جیسے ڈیٹا صاف کرنا یا ترتیبات کو ری سیٹ کرنا شامل ہیں۔",
-  
   "faqSettingsQ2": "میں رائے کیسے دوں یا مسائل کی رپورٹ کیسے کروں؟",
   "faqSettingsA2": "ترتیبات سیکشن کے نیچے، آپ کو بگ رپورٹ کرنے، رائے جمع کرانے، یا سپورٹ سے رابطہ کرنے کے بٹن ملیں گے۔ یہ آپ کو مناسب سپورٹ چینلز پر ری ڈائریکٹ کریں گے۔",
-  
   "faqSettingsQ3": "جب میں اپنا ڈیٹا صاف کرتا ہوں تو کیا ہوتا ہے؟",
   "faqSettingsA3": "ڈیٹا صاف کرنے سے آپ کے تمام استعمال کے اعدادوشمار، فوکس سیشن کی تاریخ، اور حسب ضرورت ترتیبات ری سیٹ ہو جائیں گی۔ یہ نئے سرے سے شروع کرنے یا مسائل حل کرنے کے لیے مفید ہے۔",
-  
   "faqTroubleQ1": "ڈیٹا نہیں دکھ رہا، hive نہیں کھل رہا کی خرابی",
   "faqTroubleA1": "یہ مسئلہ معلوم ہے، عارضی حل یہ ہے کہ ترتیبات کے ذریعے ڈیٹا صاف کریں اور اگر یہ کام نہ کرے تو Documents میں جائیں اور درج ذیل فائلیں اگر موجود ہوں تو حذف کریں - harman_screentime_app_usage_box.hive اور harman_screentime_app_usage.lock، آپ کو ایپ کو تازہ ترین ورژن میں اپڈیٹ کرنے کا بھی مشورہ دیا جاتا ہے۔",
-  
   "faqTroubleQ2": "ایپ ہر سٹارٹ اپ پر کھلتی ہے، کیا کروں؟",
   "faqTroubleA2": "یہ ایک معلوم مسئلہ ہے جو ونڈوز 10 پر ہوتا ہے، عارضی حل یہ ہے کہ ترتیبات میں Launch as Minimized فعال کریں تاکہ یہ Minimized کے طور پر لانچ ہو۔",
-  
   "usageAnalytics": "استعمال کے تجزیات",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "پچھلے 7 دن",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "پچھلا مہینہ",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "پچھلے 3 مہینے",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "ہمیشہ",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "حسب ضرورت",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "تجزیات کا ڈیٹا لوڈ ہو رہا ہے...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "دوبارہ کوشش کریں",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "تجزیات کو شروع کرنے میں ناکام۔ براہ کرم ایپلیکیشن دوبارہ شروع کریں۔",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "ایک غیر متوقع خرابی پیش آئی: {error}۔ براہ کرم بعد میں دوبارہ کوشش کریں۔",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "تجزیات کا ڈیٹا لوڈ کرنے میں خرابی: {error}۔ براہ کرم اپنا کنکشن چیک کریں اور دوبارہ کوشش کریں۔",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "حسب ضرورت",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "تاریخ کی حد",
+  "dateRange": "تاریخ کی حد:",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "مخصوص تاریخ",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "شروع کی تاریخ: ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "اختتام کی تاریخ: ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "تاریخ: ",
+  "date": "تاریخ",
   "@date": {
     "description": "Label for single date picker"
   },
-  
   "cancel": "منسوخ کریں",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "لاگو کریں",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "ٹھیک ہے",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "غلط تاریخ کی حد",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "شروع کی تاریخ اختتام کی تاریخ سے پہلے یا برابر ہونی چاہیے۔",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
-  "totalScreenTime": "کل اسکرین ٹائم",
+  "totalScreenTime": "کل سکرین وقت",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
   "productiveTime": "پیداواری وقت",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
-  "mostUsedApp": "سب سے زیادہ استعمال ہونے والی ایپ",
+  "mostUsedApp": "سب سے زیادہ استعمال شدہ ایپ",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
   "focusSessions": "فوکس سیشنز",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% پچھلے عرصے کے مقابلے",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% پچھلے عرصے کے مقابلے",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "{title} آئیکن",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "روزانہ اسکرین ٹائم",
+  "dailyScreenTime": "روزانہ سکرین وقت",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "زمرے کی تقسیم",
+  "categoryBreakdown": "زمرہ تقسیم",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "کوئی ڈیٹا دستیاب نہیں",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
   "sectionLabel": "{title} سیکشن",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "تفصیلی ایپلیکیشن استعمال",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "ایپلیکیشنز تلاش کریں",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "نام",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "زمرہ",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "کل وقت",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "پیداواریت",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "اعمال",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "ترتیب بلحاظ: {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "نام",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "زمرہ",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "استعمال",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "پیداواری",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "غیر پیداواری",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "آپ کے تلاش کے معیار سے کوئی ایپلیکیشن میل نہیں کھاتی",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "تفصیلات دیکھیں",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "استعمال کا خلاصہ",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "پچھلے ہفتے کا استعمال",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "دن کے وقت کے حساب سے استعمال کا پیٹرن",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "پیٹرن تجزیہ",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "آج",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "روزانہ حد",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "کوئی حد نہیں",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "استعمال کا رجحان",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "پیداواریت",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "بڑھ رہا ہے",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "کم ہو رہا ہے",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "مستحکم",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "اوسط روزانہ استعمال",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
   "longestSession": "طویل ترین سیشن",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "ہفتہ وار کل",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "کوئی تاریخی ڈیٹا دستیاب نہیں",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "صبح (6-12)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "دوپہر (12-5)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "شام (5-9)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "رات (9-6)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "استعمال کی بصیرت",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "حد کی حیثیت",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "بند کریں",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "آپ بنیادی طور پر {appName} کو {timeOfDay} میں استعمال کرتے ہیں۔",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "آپ کا استعمال پچھلے عرصے کے مقابلے میں نمایاں طور پر ({percentage}%) بڑھ گیا ہے۔",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "آپ کا استعمال پچھلے عرصے کے مقابلے میں بڑھ رہا ہے۔",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "آپ کا استعمال پچھلے عرصے کے مقابلے میں نمایاں طور پر ({percentage}%) کم ہو گیا ہے۔",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "آپ کا استعمال پچھلے عرصے کے مقابلے میں کم ہو رہا ہے۔",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "آپ کا استعمال پچھلے عرصے کے مقابلے میں مستقل رہا ہے۔",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "یہ آپ کی ترتیبات میں پیداواری ایپ کے طور پر نشان زد ہے۔",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "یہ آپ کی ترتیبات میں غیر پیداواری ایپ کے طور پر نشان زد ہے۔",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "آپ کا سب سے فعال وقت {time} کے قریب ہے۔",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "اس ایپلیکیشن کے لیے کوئی استعمال کی حد مقرر نہیں کی گئی ہے۔",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "آپ نے اس ایپلیکیشن کے لیے اپنی روزانہ حد تک پہنچ لیا ہے۔",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "آپ اپنی روزانہ حد تک پہنچنے والے ہیں صرف {remainingTime} باقی ہے۔",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "آپ نے اپنی روزانہ حد کا {percent}% استعمال کیا ہے {remainingTime} باقی ہے۔",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "آپ کی روزانہ حد میں سے {time} باقی ہے۔",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "آج",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "{hour} صبح",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "{hour} شام",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,8 +610,7 @@
       }
     }
   },
-  
-  "durationHoursMinutes": "{hours} گھنٹے {minutes} منٹ",
+  "durationHoursMinutes": "{hours}گھ {minutes}م",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
     "placeholders": {
@@ -765,8 +624,7 @@
       }
     }
   },
-  
-  "durationMinutesOnly": "{minutes} منٹ",
+  "durationMinutesOnly": "{minutes}م",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
     "placeholders": {
@@ -776,120 +634,104 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "الرٹس اور حدود",
   "notificationsSettings": "اطلاعات کی ترتیبات",
   "overallScreenTimeLimit": "مجموعی اسکرین ٹائم کی حد",
   "applicationLimits": "ایپلیکیشن کی حدود",
-  
   "popupAlerts": "پاپ اپ الرٹس",
   "frequentAlerts": "بار بار الرٹس",
   "soundAlerts": "آواز کے الرٹس",
   "systemAlerts": "سسٹم الرٹس",
-  
   "dailyTotalLimit": "روزانہ کل حد: ",
-  "hours": "گھنٹے: ",
-  "minutes": "منٹ: ",
+  "hours": "گھنٹے",
+  "minutes": "منٹ",
   "currentUsage": "موجودہ استعمال: ",
-  
   "tableName": "نام",
   "tableCategory": "زمرہ",
   "tableDailyLimit": "روزانہ حد",
   "tableCurrentUsage": "موجودہ استعمال",
   "tableStatus": "حیثیت",
   "tableActions": "اعمال",
-  
   "addLimit": "حد شامل کریں",
   "noApplicationsToDisplay": "دکھانے کے لیے کوئی ایپلیکیشنز نہیں",
-  
   "statusActive": "فعال",
   "statusOff": "بند",
   "durationNone": "کوئی نہیں",
-  
   "addApplicationLimit": "ایپلیکیشن کی حد شامل کریں",
   "selectApplication": "ایپلیکیشن منتخب کریں",
   "selectApplicationPlaceholder": "ایک ایپلیکیشن منتخب کریں",
   "enableLimit": "حد فعال کریں: ",
-  
   "editLimitTitle": "حد میں ترمیم کریں: {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "ڈیٹا لوڈ کرنے میں ناکام: {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "ترتیبات ری سیٹ کریں؟",
   "resetSettingsContent": "اگر آپ ترتیبات ری سیٹ کرتے ہیں، تو آپ اسے بازیاب نہیں کر سکیں گے۔ کیا آپ اسے ری سیٹ کرنا چاہتے ہیں؟",
   "resetAll": "سب ری سیٹ کریں",
-  "refresh": "تازہ کریں",
+  "refresh": "ریفریش کریں",
   "save": "محفوظ کریں",
   "add": "شامل کریں",
   "error": "خرابی",
   "retry": "دوبارہ کوشش کریں",
-  
   "applicationsTitle": "ایپلیکیشنز",
   "searchApplication": "ایپلیکیشن تلاش کریں",
-  
-  "tracking": "ٹریکنگ",
+  "tracking": "ٹریک شدہ",
   "hiddenVisible": "پوشیدہ/نظر آنے والا",
   "selectCategory": "زمرہ منتخب کریں",
   "allCategories": "سب",
-  
   "tableScreenTime": "اسکرین ٹائم",
   "tableTracking": "ٹریکنگ",
   "tableHidden": "پوشیدہ",
   "tableEdit": "ترمیم",
-  
   "editAppTitle": "{appName} میں ترمیم کریں",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "زمرہ",
   "customCategory": "حسب ضرورت",
   "customCategoryPlaceholder": "حسب ضرورت زمرے کا نام درج کریں",
   "uncategorized": "غیر درجہ بند",
-  
   "isProductive": "پیداواری ہے",
   "trackUsage": "استعمال ٹریک کریں",
   "visibleInReports": "رپورٹس میں نظر آنے والا",
-  
   "timeLimitsSection": "وقت کی حدود",
   "enableDailyLimit": "روزانہ حد فعال کریں",
   "setDailyTimeLimit": "روزانہ وقت کی حد مقرر کریں:",
-  
   "saveChanges": "تبدیلیاں محفوظ کریں",
-  
   "errorLoadingData": "جائزہ ڈیٹا لوڈ کرنے میں خرابی: {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "فوکس موڈ",
-  
   "historySection": "تاریخ",
   "trendsSection": "رجحانات",
   "timeDistributionSection": "وقت کی تقسیم",
   "sessionHistorySection": "سیشن کی تاریخ",
-  
   "workSession": "کام کا سیشن",
   "shortBreak": "مختصر وقفہ",
   "longBreak": "طویل وقفہ",
-  
   "dateHeader": "تاریخ",
   "durationHeader": "دورانیہ",
-  
   "monday": "پیر",
   "tuesday": "منگل",
   "wednesday": "بدھ",
@@ -897,218 +739,179 @@
   "friday": "جمعہ",
   "saturday": "ہفتہ",
   "sunday": "اتوار",
-  
   "focusModeSettingsTitle": "فوکس موڈ کی ترتیبات",
-  
   "modeCustom": "حسب ضرورت",
   "modeDeepWork": "ڈیپ ورک (60 منٹ)",
   "modeQuickTasks": "کوئک ٹاسکس (25 منٹ)",
   "modeReading": "ریڈنگ (45 منٹ)",
-  
   "workDurationLabel": "کام کی مدت: {minutes} منٹ",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "مختصر وقفہ: {minutes} منٹ",
+  "shortBreakLabel": "مختصر وقفہ",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "طویل وقفہ: {minutes} منٹ",
+  "longBreakLabel": "طویل وقفہ",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "اگلا سیشن خود بخود شروع کریں",
   "blockDistractions": "فوکس موڈ کے دوران خلل کو روکیں",
   "enableNotifications": "اطلاعات فعال کریں",
-  
   "saved": "محفوظ ہو گیا",
-  
   "errorLoadingFocusModeData": "فوکس موڈ ڈیٹا لوڈ کرنے میں خرابی: {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "آج کا جائزہ",
   "startFocusMode": "فوکس موڈ شروع کریں",
-  
   "loadingProductivityData": "آپ کا پیداواری ڈیٹا لوڈ ہو رہا ہے...",
   "noActivityDataAvailable": "ابھی تک کوئی سرگرمی کا ڈیٹا دستیاب نہیں",
   "startUsingApplications": "اسکرین ٹائم اور پیداواریت کو ٹریک کرنے کے لیے اپنی ایپلیکیشنز استعمال کرنا شروع کریں۔",
   "refreshData": "ڈیٹا تازہ کریں",
-  
   "topApplications": "سرفہرست ایپلیکیشنز",
-  
   "noAppUsageDataAvailable": "ابھی تک ایپلیکیشن کے استعمال کا کوئی ڈیٹا دستیاب نہیں",
   "noApplicationDataAvailable": "کوئی ایپلیکیشن ڈیٹا دستیاب نہیں",
   "noCategoryDataAvailable": "کوئی زمرہ ڈیٹا دستیاب نہیں",
   "noApplicationLimitsSet": "کوئی ایپلیکیشن کی حدود مقرر نہیں",
-  
   "screenLabel": "اسکرین",
   "timeLabel": "وقت",
   "productiveLabel": "پیداواری",
   "scoreLabel": "سکور",
-  
   "defaultNone": "کوئی نہیں",
   "defaultTime": "0 گھنٹے 0 منٹ",
   "defaultCount": "0",
   "unknownApp": "نامعلوم",
-  
   "settingsTitle": "ترتیبات",
-  
   "generalSection": "عام",
   "notificationsSection": "اطلاعات",
   "dataSection": "ڈیٹا",
   "versionSection": "ورژن",
-  
   "themeTitle": "تھیم",
-  "themeDescription": "ایپلیکیشن کی رنگ سکیم (تبدیلی کے لیے دوبارہ شروع کرنا ضروری ہے)",
-  
+  "themeDescription": "ایپلیکیشن کا رنگین تھیم",
   "languageTitle": "زبان",
   "languageDescription": "ایپلیکیشن کی زبان",
-  
   "startupBehaviourTitle": "سٹارٹ اپ رویہ",
   "startupBehaviourDescription": "OS سٹارٹ اپ پر لانچ کریں",
-  
   "launchMinimizedTitle": "Minimized کے طور پر لانچ کریں",
   "launchMinimizedDescription": "ایپلیکیشن کو سسٹم ٹرے میں شروع کریں (ونڈوز 10 کے لیے تجویز کردہ)",
-  
   "notificationsTitle": "اطلاعات",
   "notificationsAllDescription": "ایپلیکیشن کی تمام اطلاعات",
-  
   "focusModeNotificationsTitle": "فوکس موڈ",
   "focusModeNotificationsDescription": "فوکس موڈ کی تمام اطلاعات",
-  
   "screenTimeNotificationsTitle": "اسکرین ٹائم",
   "screenTimeNotificationsDescription": "اسکرین ٹائم پابندی کی تمام اطلاعات",
-  
   "appScreenTimeNotificationsTitle": "ایپلیکیشن اسکرین ٹائم",
   "appScreenTimeNotificationsDescription": "ایپلیکیشن اسکرین ٹائم پابندی کی تمام اطلاعات",
-  
   "frequentAlertsTitle": "بار بار الرٹس کا وقفہ",
   "frequentAlertsDescription": "بار بار اطلاعات کے لیے وقفہ مقرر کریں (منٹ)",
-  
   "clearDataTitle": "ڈیٹا صاف کریں",
   "clearDataDescription": "تمام تاریخ اور متعلقہ ڈیٹا صاف کریں",
-  
   "resetSettingsTitle2": "ترتیبات ری سیٹ کریں",
   "resetSettingsDescription": "تمام ترتیبات ری سیٹ کریں",
-  
   "versionTitle": "ورژن",
   "versionDescription": "ایپ کا موجودہ ورژن",
-  
   "contactButton": "رابطہ",
   "reportBugButton": "بگ رپورٹ کریں",
   "submitFeedbackButton": "رائے جمع کرائیں",
   "githubButton": "گٹ ہب",
-  
   "clearDataDialogTitle": "ڈیٹا صاف کریں؟",
   "clearDataDialogContent": "یہ تمام تاریخ اور متعلقہ ڈیٹا صاف کر دے گا۔ آپ اسے بازیاب نہیں کر سکیں گے۔ کیا آپ آگے بڑھنا چاہتے ہیں؟",
   "clearDataButtonLabel": "ڈیٹا صاف کریں",
-  
   "resetSettingsDialogTitle": "ترتیبات ری سیٹ کریں؟",
   "resetSettingsDialogContent": "یہ تمام ترتیبات کو ان کی ڈیفالٹ اقدار پر ری سیٹ کر دے گا۔ کیا آپ آگے بڑھنا چاہتے ہیں؟",
   "resetButtonLabel": "ری سیٹ",
-  
   "cancelButton": "منسوخ کریں",
-  
   "couldNotLaunchUrl": "{url} لانچ نہیں ہو سکا",
   "@couldNotLaunchUrl": {
     "placeholders": {
-      "url": {"type": "String"}
+      "url": {
+        "type": "String"
+      }
     }
   },
-  
   "errorMessage": "خرابی: {message}",
   "@errorMessage": {
     "placeholders": {
-      "message": {"type": "String"}
+      "message": {
+        "type": "String"
+      }
     }
   },
-
   "chart_focusTrends": "فوکس کے رجحانات",
   "@chart_focusTrends": {
     "description": "Title for focus trends chart"
   },
-  
-    "chart_sessionCount": "سیشن کی تعداد",
+  "chart_sessionCount": "سیشن کی تعداد",
   "@chart_sessionCount": {
     "description": "Label for session count metric"
   },
-  
   "chart_avgDuration": "اوسط دورانیہ",
   "@chart_avgDuration": {
     "description": "Label for average duration metric"
   },
-  
   "chart_totalFocus": "کل فوکس",
   "@chart_totalFocus": {
     "description": "Label for total focus time metric"
   },
-  
   "chart_yAxis_sessions": "سیشنز",
   "@chart_yAxis_sessions": {
     "description": "Y-axis label for session count"
   },
-  
   "chart_yAxis_minutes": "منٹ",
   "@chart_yAxis_minutes": {
     "description": "Y-axis label for time in minutes"
   },
-  
   "chart_yAxis_value": "قدر",
   "@chart_yAxis_value": {
     "description": "Generic y-axis label"
   },
-  
   "chart_monthOverMonthChange": "ماہانہ تبدیلی: ",
   "@chart_monthOverMonthChange": {
     "description": "Label for percentage change display"
   },
-  
   "chart_customRange": "حسب ضرورت رینج",
   "@chart_customRange": {
     "description": "Label for custom date range"
   },
-  
   "day_monday": "پیر",
   "day_mondayShort": "پیر",
   "day_mondayAbbr": "پ",
-  
   "day_tuesday": "منگل",
   "day_tuesdayShort": "منگل",
   "day_tuesdayAbbr": "م",
-  
   "day_wednesday": "بدھ",
   "day_wednesdayShort": "بدھ",
   "day_wednesdayAbbr": "ب",
-  
   "day_thursday": "جمعرات",
   "day_thursdayShort": "جمعرات",
   "day_thursdayAbbr": "ج",
-  
   "day_friday": "جمعہ",
   "day_fridayShort": "جمعہ",
   "day_fridayAbbr": "جم",
-  
   "day_saturday": "ہفتہ",
   "day_saturdayShort": "ہفتہ",
   "day_saturdayAbbr": "ہ",
-  
   "day_sunday": "اتوار",
   "day_sundayShort": "اتوار",
   "day_sundayAbbr": "ا",
-  
   "time_hours": "{count} گھنٹے",
   "@time_hours": {
     "description": "Hours format",
@@ -1118,7 +921,6 @@
       }
     }
   },
-  
   "time_hoursMinutes": "{hours} گھنٹے {minutes} منٹ",
   "@time_hoursMinutes": {
     "description": "Hours and minutes format",
@@ -1131,7 +933,6 @@
       }
     }
   },
-  
   "time_minutesFormat": "{count} منٹ",
   "@time_minutesFormat": {
     "description": "Minutes format for tooltips",
@@ -1141,7 +942,6 @@
       }
     }
   },
-  
   "tooltip_dateScreenTime": "{date}: {hours} گھنٹے {minutes} منٹ",
   "@tooltip_dateScreenTime": {
     "description": "Tooltip showing date and screen time",
@@ -1157,7 +957,6 @@
       }
     }
   },
-  
   "tooltip_hoursFormat": "{count} گھنٹے",
   "@tooltip_hoursFormat": {
     "description": "Hours format for tooltip fallback",
@@ -1167,7 +966,6 @@
       }
     }
   },
-  
   "month_january": "جنوری",
   "month_januaryShort": "جنوری",
   "month_february": "فروری",
@@ -1192,7 +990,6 @@
   "month_novemberShort": "نومبر",
   "month_december": "دسمبر",
   "month_decemberShort": "دسمبر",
-  
   "categoryAll": "سب",
   "@categoryAll": {
     "description": "Category filter for all applications"
@@ -1208,7 +1005,6 @@
   "categoryEducation": "تعلیم",
   "categoryUtility": "یوٹیلیٹی",
   "categoryUncategorized": "غیر درجہ بند",
-  
   "appMicrosoftWord": "مائیکروسافٹ ورڈ",
   "appExcel": "ایکسل",
   "appPowerPoint": "پاورپوائنٹ",
@@ -1242,27 +1038,22 @@
   "appFileExplorer": "فائل ایکسپلورر",
   "appDropbox": "ڈراپ باکس",
   "appGoogleDrive": "گوگل ڈرائیو",
-  
   "loadingApplication": "ایپلیکیشن لوڈ ہو رہی ہے...",
   "@loadingApplication": {
     "description": "Message shown when the application is loading"
   },
-  
   "loadingData": "ڈیٹا لوڈ ہو رہا ہے...",
   "@loadingData": {
     "description": "Message shown when data is being loaded"
   },
-  
   "reportsError": "خرابی",
   "@reportsError": {
     "description": "Label for error messages"
   },
-  
   "reportsRetry": "دوبارہ کوشش کریں",
   "@reportsRetry": {
     "description": "Button text to retry an operation"
   },
-  
   "backupRestoreSection": "بیک اپ اور بحالی",
   "backupRestoreTitle": "بیک اپ اور بحالی",
   "exportDataTitle": "ڈیٹا برآمد کریں",
@@ -1275,7 +1066,7 @@
   "noButton": "نہیں",
   "shareButton": "شیئر کریں",
   "exportStarting": "برآمد شروع ہو رہی ہے...",
-  "exportSuccessful": "برآمد کامیاب! فائل Documents/Scolect-Backups میں محفوظ ہو گئی",
+  "exportSuccessful": "برآمد کامیاب",
   "exportFailed": "برآمد ناکام",
   "exportComplete": "برآمد مکمل",
   "shareBackupQuestion": "کیا آپ بیک اپ فائل شیئر کرنا چاہیں گے؟",
@@ -1301,13 +1092,10 @@
   "appMetadataLabel": "ایپ میٹا ڈیٹا",
   "updatedLabel": "اپڈیٹ شدہ",
   "skippedLabel": "چھوڑ دیا گیا",
-  
   "faqSettingsQ4": "میں اپنا ڈیٹا کیسے بحال یا برآمد کر سکتا ہوں؟",
   "faqSettingsA4": "آپ ترتیبات میں جا سکتے ہیں، اور وہاں آپ کو بیک اپ اور بحالی سیکشن ملے گا۔ آپ یہاں سے ڈیٹا برآمد یا درآمد کر سکتے ہیں، نوٹ کریں کہ برآمد شدہ ڈیٹا فائل Documents میں Scolect-Backups فولڈر میں محفوظ ہے اور صرف یہ فائل ڈیٹا بحال کرنے کے لیے استعمال کی جا سکتی ہے، کوئی اور فائل نہیں۔",
-  
   "faqGeneralQ6": "میں زبان کیسے تبدیل کر سکتا ہوں اور کون سی زبانیں دستیاب ہیں، اگر مجھے لگے کہ ترجمہ غلط ہے تو کیا کروں؟",
   "faqGeneralA6": "زبان ترتیبات کے عام سیکشن سے تبدیل کی جا سکتی ہے، تمام دستیاب زبانیں وہاں درج ہیں، آپ رابطہ پر کلک کر کے اور دی گئی زبان کے ساتھ اپنی درخواست بھیج کر ترجمے کی درخواست کر سکتے ہیں۔ بس جان لیں کہ ترجمہ غلط ہو سکتا ہے کیونکہ یہ انگریزی سے AI کے ذریعے تیار کیا گیا ہے اور اگر آپ رپورٹ کرنا چاہتے ہیں تو یا تو بگ رپورٹ کر سکتے ہیں، یا رابطہ کر سکتے ہیں، یا اگر آپ ڈیولپر ہیں تو گٹ ہب پر مسئلہ کھولیں۔ زبان سے متعلق تعاون کا بھی خیرمقدم ہے!",
-  
   "faqGeneralQ7": "اگر مجھے لگے کہ ترجمہ غلط ہے تو کیا کروں؟",
   "faqGeneralA7": "ترجمہ غلط ہو سکتا ہے کیونکہ یہ انگریزی سے AI کے ذریعے تیار کیا گیا ہے اور اگر آپ رپورٹ کرنا چاہتے ہیں تو یا تو بگ رپورٹ کر سکتے ہیں، یا رابطہ کر سکتے ہیں، یا اگر آپ ڈیولپر ہیں تو گٹ ہب پر مسئلہ کھولیں۔ زبان سے متعلق تعاون کا بھی خیرمقدم ہے!",
   "activityTrackingSection": "سرگرمی کی ٹریکنگ",
@@ -1350,13 +1138,10 @@
   "themeLight": "ہلکا",
   "themeDark": "گہرا",
   "themeSystem": "سسٹم",
-  "themeTitle": "تھیم",
-  "themeDescription": "ایپلیکیشن کا رنگین تھیم",
   "voiceGenderTitle": "آواز کی جنس",
   "voiceGenderDescription": "ٹائمر اطلاعات کے لیے آواز کی جنس منتخب کریں",
   "voiceGenderMale": "مرد",
   "voiceGenderFemale": "عورت",
-
   "applicationsSubtitle": "اپنی ٹریک کردہ ایپلیکیشنز کا نظم کریں",
   "applicationCount": "{count, plural, other{{count} ایپلیکیشنز}}",
   "@applicationCount": {
@@ -1366,12 +1151,10 @@
       }
     }
   },
-  "refresh": "ریفریش کریں",
   "noApplicationsFound": "کوئی ایپلیکیشن نہیں ملی",
   "tryAdjustingFilters": "اپنے فلٹرز کو ایڈجسٹ کرنے کی کوشش کریں",
   "configureAppSettings": "ایپلیکیشن کی ترتیبات کو تشکیل دیں",
   "behaviorSection": "رویہ",
-  
   "helpSubtitle": "{count, plural, other{7 زمروں میں {count} سوالات}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1388,22 +1171,11 @@
   "noResultsFound": "کوئی نتیجہ نہیں ملا",
   "tryDifferentKeywords": "مختلف مطلوبہ الفاظ کے ساتھ تلاش کرنے کی کوشش کریں",
   "clearSearch": "تلاش صاف کریں",
-  
   "greetingMorning": "صبح بخیر! یہ آپ کی سرگرمی کا خلاصہ ہے۔",
   "greetingAfternoon": "سہ پہر بخیر! یہ آپ کی سرگرمی کا خلاصہ ہے۔",
   "greetingEvening": "شام بخیر! یہ آپ کی سرگرمی کا خلاصہ ہے۔",
   "screenTimeProgress": "اسکرین\nٹائم",
   "productiveScoreProgress": "پیداواری\nسکور",
-  
-  "sectionLabel": "{title} سیکشن",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "توجہ مرکوز رکھیں، پیداواری بنیں",
   "thisWeek": "اس ہفتے",
   "sessions": "سیشنز",
@@ -1415,8 +1187,6 @@
   "longBreakStatus": "طویل وقفہ",
   "readyToFocus": "فوکس کے لیے تیار",
   "focus": "فوکس",
-  "shortBreakLabel": "مختصر وقفہ",
-  "longBreakLabel": "طویل وقفہ",
   "restartSession": "سیشن دوبارہ شروع کریں",
   "skipToNext": "اگلے پر جائیں",
   "settings": "ترتیبات",
@@ -1453,7 +1223,6 @@
   "notification_permission_denied_hint": "ScreenTime کے لیے اطلاعات کو فعال کرنے کے لیے سسٹم کی ترتیبات کھولیں۔",
   "notification_permission_required": "اطلاع کی اجازت درکار",
   "notification_permission_required_message": "ScreenTime کو آپ کو اطلاعات بھیجنے کے لیے اجازت درکار ہے۔",
-  "cancel": "منسوخ کریں",
   "open_settings": "ترتیبات کھولیں",
   "allow_notifications": "اطلاعات کی اجازت دیں",
   "permission_allowed": "اجازت دی گئی",
@@ -1470,8 +1239,7 @@
   "disabled": "غیر فعال",
   "advanced_options": "اعلی درجے کے اختیارات",
   "sync_ready": "سنک تیار",
-  "success": "کامیاب!",
-  "error": "خرابی",
+  "success": "کامیابی",
   "destructive_badge": "تباہ کن",
   "recommended_badge": "تجویز کردہ",
   "safe_badge": "محفوظ",
@@ -1480,9 +1248,7 @@
   "apps": "ایپس",
   "sortAscending": "چڑھتی ترتیب",
   "sortDescending": "اترتی ترتیب",
-  "clearSearch": "تلاش صاف کریں",
   "applicationsShowing": "{count} ایپلیکیشنز دکھائی جا رہی ہیں",
-  "totalTime": "کل وقت",
   "valueLabel": "قدر: {value}",
   "appsCount": "{count} ایپس",
   "categoriesCount": "{count} زمرے",
@@ -1506,7 +1272,7 @@
   "applicationHeader": "ایپلیکیشن",
   "currentUsageHeader": "موجودہ استعمال",
   "dailyLimitHeader": "روزانہ کی حد",
-  "edit": "ترمیم",
+  "edit": "ترمیم کریں",
   "showPopupNotifications": "پاپ اپ نوٹیفکیشنز دکھائیں",
   "moreFrequentReminders": "زیادہ بار یاد دہانیاں",
   "playSoundWithAlerts": "الرٹس کے ساتھ آواز چلائیں",
@@ -1529,7 +1295,6 @@
   "colorPickerHexColor": "ہیکس رنگ",
   "colorPickerHexPlaceholder": "RRGGBB",
   "colorPickerRGB": "RGB",
-  "cancel": "منسوخ کریں",
   "select": "منتخب کریں",
   "themeCustomization": "تھیم کی تخصیص",
   "chooseThemePreset": "تھیم پری سیٹ منتخب کریں",
@@ -1546,7 +1311,6 @@
       }
     }
   },
-  "edit": "ترمیم کریں",
   "customThemeNumber": "کسٹم تھیم {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1619,8 +1383,6 @@
   "sampleCardTitle": "نمونہ کارڈ کا عنوان",
   "sampleSecondaryText": "یہ ثانوی متن ہے جو نیچے ظاہر ہوتا ہے۔",
   "primary": "بنیادی",
-  "success": "کامیابی",
-  "error": "خرابی",
   "secondary": "ثانوی",
   "warning": "انتباہ",
   "launchAtStartupTitle": "اسٹارٹ اپ پر شروع کریں",
@@ -1638,8 +1400,6 @@
   "restartLater": "بعد میں دوبارہ شروع کریں",
   "restartFailedTitle": "دوبارہ شروع ناکام",
   "restartFailedMessage": "ایپ خود بخود دوبارہ شروع نہیں ہو سکی۔ براہ کرم بند کریں (Cmd+Q) اور دستی طور پر دوبارہ کھولیں۔",
-  "ok": "ٹھیک ہے",
-  "error": "خرابی",
   "exportAnalyticsReport": "تجزیاتی رپورٹ برآمد کریں",
   "chooseExportFormat": "برآمد فارمیٹ منتخب کریں:",
   "beautifulExcelReport": "خوبصورت ایکسل رپورٹ",
@@ -1649,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 روزانہ تفصیل - بصری استعمال کے پیٹرن",
   "appsSheetDescription": "📱 ایپس شیٹ - تفصیلی ایپ رینکنگ",
   "insightsDescription": "💡 بصیرت - ہوشیار سفارشات",
-  "cancel": "منسوخ کریں",
-  "exportSuccessful": "برآمد کامیاب",
   "beautifulExcelExportSuccess": "خوبصورت ایکسل رپورٹ کامیابی سے برآمد ہوگئی! 🎉",
-  "exportFailed": "برآمد ناکام",
   "failedToExportReport": "رپورٹ برآمد کرنے میں ناکام: {error}",
   "exporting": "برآمد ہو رہا ہے...",
   "exportExcel": "ایکسل برآمد کریں",
   "saveAnalyticsReport": "تجزیاتی رپورٹ محفوظ کریں",
   "analyticsReportFileName": "تجزیاتی_رپورٹ_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "استعمال کی تجزیاتی رپورٹ",
   "generated": "تیار کیا گیا:",
   "period": "مدت:",
-  "dateRange": "تاریخ کی حد:",
   "dateRangeValue": "{startDate} سے {endDate}",
-  
   "keyMetrics": "اہم میٹرکس",
   "metric": "میٹرک",
   "value": "قدر",
   "change": "تبدیلی",
   "trend": "رجحان",
-  
-  "totalScreenTime": "کل سکرین وقت",
-  "productiveTime": "پیداواری وقت",
   "productivityRate": "پیداواری شرح",
-  "focusSessions": "فوکس سیشنز",
-  "mostUsedApp": "سب سے زیادہ استعمال شدہ ایپ",
-  
   "trendUp": "اوپر",
   "trendDown": "نیچے",
   "trendExcellent": "بہترین",
@@ -1685,71 +1433,47 @@
   "trendActive": "فعال",
   "trendNone": "کوئی نہیں",
   "trendTop": "سب سے اوپر",
-  
-  "categoryBreakdown": "زمرہ تقسیم",
   "category": "زمرہ",
   "percentage": "فیصد",
   "visual": "بصری",
-  
-  "dailyScreenTime": "روزانہ سکرین وقت",
   "statistics": "اعدادوشمار",
   "averageDaily": "روزانہ اوسط",
   "highestDay": "سب سے زیادہ دن",
   "lowestDay": "سب سے کم دن",
-  
-  "date": "تاریخ",
   "day": "دن",
-  "hours": "گھنٹے",
-  "minutes": "منٹ",
-  
   "applicationUsageDetails": "ایپلیکیشن استعمال کی تفصیلات",
   "totalApps": "کل ایپس:",
   "productiveApps": "پیداواری ایپس:",
-  
   "rank": "درجہ",
   "application": "ایپلیکیشن",
   "time": "وقت",
   "percentOfTotal": "کل کا %",
   "type": "قسم",
   "usageLevel": "استعمال کی سطح",
-  
-  "productive": "پیداواری",
   "leisure": "تفریح",
-  
   "usageLevelVeryHigh": "بہت زیادہ ||||||||",
   "usageLevelHigh": "زیادہ ||||||",
   "usageLevelMedium": "درمیانی ||||",
   "usageLevelLow": "کم ||",
-  
   "keyInsightsTitle": "اہم بصیرت اور سفارشات",
   "personalizedRecommendations": "ذاتی سفارشات",
-  
   "insightHighDailyUsage": "زیادہ روزانہ استعمال: آپ اوسطاً روزانہ {hours} گھنٹے سکرین وقت استعمال کر رہے ہیں",
   "insightLowDailyUsage": "کم روزانہ استعمال: آپ اوسطاً روزانہ {hours} گھنٹے - بہترین توازن!",
   "insightModerateUsage": "معتدل استعمال: اوسطاً روزانہ {hours} گھنٹے سکرین وقت",
-  
   "insightExcellentProductivity": "بہترین پیداواریت: آپ کے سکرین وقت کا {percentage}% پیداواری کام ہے!",
   "insightGoodProductivity": "اچھی پیداواریت: آپ کے سکرین وقت کا {percentage}% پیداواری ہے",
   "insightLowProductivity": "کم پیداواریت کا انتباہ: صرف {percentage}% سکرین وقت پیداواری ہے",
-  
   "insightFocusSessions": "فوکس سیشنز: {count} سیشنز مکمل کیے (اوسطاً روزانہ {avgPerDay})",
   "insightGreatFocusHabit": "بہترین فوکس عادت: آپ نے {count} مکمل سیشنز کے ساتھ ایک شاندار فوکس روٹین بنایا ہے!",
   "insightNoFocusSessions": "کوئی فوکس سیشنز نہیں: پیداواریت بڑھانے کے لیے فوکس موڈ استعمال کرنے پر غور کریں",
-  
   "insightScreenTimeTrend": "سکرین وقت کا رجحان: پچھلی مدت کے مقابلے میں آپ کا استعمال {percentage}% {direction}",
   "insightProductiveTimeTrend": "پیداواری وقت کا رجحان: پچھلی مدت کے مقابلے میں آپ کا پیداواری وقت {percentage}% {direction}",
-  
   "directionIncreased": "بڑھا",
   "directionDecreased": "گھٹا",
-  
   "insightTopCategory": "سب سے اوپر زمرہ: {category} آپ کے کل وقت کا {percentage}% ہے",
-  
   "insightMostUsedApp": "سب سے زیادہ استعمال شدہ ایپ: {appName} آپ کے وقت کا {percentage}% ({duration}) ہے",
-  
   "insightUsageVaries": "استعمال میں نمایاں فرق: {highDay} میں {lowDay} سے {multiplier}x زیادہ استعمال تھا",
-  
   "insightNoInsights": "کوئی اہم بصیرت دستیاب نہیں",
-  
   "recScheduleFocusSessions": "پیداواریت بڑھانے کے لیے دن بھر میں مزید فوکس سیشنز شیڈول کرنے کی کوشش کریں",
   "recSetAppLimits": "تفریحی ایپلیکیشنز پر حدود مقرر کرنے پر غور کریں",
   "recAimForFocusSessions": "مستقل عادت بنانے کے لیے روزانہ کم از کم 1-2 فوکس سیشنز کا ہدف رکھیں",
@@ -1760,10 +1484,6 @@
   "recScheduleFocusedWork": "آپ کا پیداواری وقت کم ہوا ہے۔ اپنے کیلنڈر میں فوکسڈ کام کے بلاکس شیڈول کرنے کی کوشش کریں",
   "recKeepUpGreatWork": "بہترین کام جاری رکھیں! آپ کی سکرین وقت کی عادات صحت مند نظر آتی ہیں",
   "recContinueFocusSessions": "پیداواریت برقرار رکھنے کے لیے فوکس سیشنز کا استعمال جاری رکھیں",
-  
-  "durationHoursMinutes": "{hours}گھ {minutes}م",
-  "durationMinutesOnly": "{minutes}م",
-  
   "sheetSummary": "خلاصہ",
   "sheetDailyBreakdown": "روزانہ تفصیل",
   "sheetApps": "ایپس",
@@ -1817,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "کل وقت",
   "workPhases": "کام کے مراحل",
   "averageLength": "اوسط مدت",
   "mostProductive": "سب سے زیادہ پیداواری",
@@ -1865,20 +1584,19 @@
   "noThemeDataFound": "کوئی تھیم ڈیٹا نہیں ملا",
   "invalidThemeFormat": "غلط تھیم فارمیٹ۔ براہ کرم JSON ڈیٹا چیک کریں۔",
   "trackingModeTitle": "ٹریکنگ موڈ",
-"trackingModeDescription": "منتخب کریں کہ ایپ کا استعمال کیسے ٹریک کیا جائے",
-"trackingModePolling": "معیاری (کم وسائل)",
-"trackingModePrecise": "درست (اعلیٰ درستگی)",
-"trackingModePollingHint": "ہر منٹ چیک کرتا ہے - کم وسائل کا استعمال",
-"trackingModePreciseHint": "ریئل ٹائم ٹریکنگ - زیادہ درستگی، زیادہ وسائل",
-"trackingModeChangeError": "ٹریکنگ موڈ تبدیل کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
-"errorTitle": "خرابی",
-"monitorKeyboardTitle": "کی بورڈ کی نگرانی",
-"monitorKeyboardDescription": "صارف کی موجودگی کا پتہ لگانے کے لیے کی بورڈ کی سرگرمی کو ٹریک کریں",
-"changelogWhatsNew": "نیا کیا ہے",
+  "trackingModeDescription": "منتخب کریں کہ ایپ کا استعمال کیسے ٹریک کیا جائے",
+  "trackingModePolling": "معیاری (کم وسائل)",
+  "trackingModePrecise": "درست (اعلیٰ درستگی)",
+  "trackingModePollingHint": "ہر منٹ چیک کرتا ہے - کم وسائل کا استعمال",
+  "trackingModePreciseHint": "ریئل ٹائم ٹریکنگ - زیادہ درستگی، زیادہ وسائل",
+  "trackingModeChangeError": "ٹریکنگ موڈ تبدیل کرنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
+  "errorTitle": "خرابی",
+  "monitorKeyboardTitle": "کی بورڈ کی نگرانی",
+  "monitorKeyboardDescription": "صارف کی موجودگی کا پتہ لگانے کے لیے کی بورڈ کی سرگرمی کو ٹریک کریں",
+  "changelogWhatsNew": "نیا کیا ہے",
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "{date} کو جاری کیا گیا",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1889,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "اس ورژن کے لیے کوئی تبدیلی کا ریکارڈ دستیاب نہیں ہے۔",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "تبدیلی کا ریکارڈ لوڈ نہیں ہو سکا",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "اس ورژن کے لیے تبدیلی کا ریکارڈ حاصل نہیں کیا جا سکا۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں یا GitHub کے ریلیز صفحہ پر جائیں۔",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "ٹھیک ہے",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "جاری رکھیں",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "تمام ایپس",
-  "tracking": "ٹریک شدہ",
   "notTracking": "غیر ٹریک شدہ",
   "allVisibility": "تمام",
   "visible": "نمایاں",
   "hidden": "چھپے ہوئے",
   "todaysLimitUsage": "آج کی حد کا استعمال",
-"thisWeekAtAGlance": "اس ہفتے کا خلاصہ",
-"hourlyActivityHeatmap": "فی گھنٹہ سرگرمی ہیٹ میپ",
-"sessions": "سیشنز",
-"thisWeek": "اس ہفتے",
-"productivityScore": "پیداواری اسکور",
-"streaks": "مسلسل دن",
-"weekOverWeek": "ہفتہ بہ ہفتہ",
-"sameAsLastWeek": "پچھلے ہفتے جیسا",
-"moreUsageThanLastWeek": "پچھلے ہفتے سے {percent}% زیادہ",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "پچھلے ہفتے سے {percent}% کم",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "حد {duration} سے تجاوز کر گئی",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "{duration} باقی",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "کل سیشنز",
-"avgSession": "اوسط سیشن",
-"longestSession": "طویل ترین سیشن",
-"mostActive": "سب سے زیادہ فعال",
-"peakUsage": "زیادہ سے زیادہ استعمال",
-"dailyAverage": "روزانہ اوسط",
-"daysUsedInARow": "مسلسل استعمال کے دن",
-"daysSingular": "دن",
-"daysPlural": "دن",
-"daysOverLimitInARow": "مسلسل حد سے تجاوز کے دن",
-"withinLimitAllWeek": "پورے ہفتے حد کے اندر",
-"productivityScoreGreat": "بہترین",
-"productivityScoreModerate": "معتدل",
-"productivityScoreNeedsAttention": "توجہ کی ضرورت ہے",
-"productiveAppMotivation": "پیداواری ایپ — جاری رکھیں",
-"nonProductiveAppSuggestion": "غیر پیداواری — کم کرنے پر غور کریں",
-"legendUsage": "استعمال",
-"legendAverage": "اوسط",
-"legendLimit": "حد",
-"chartPeak": "چوٹی",
-"overLimitBy": "+{duration} حد سے زیادہ",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "کوئی ڈیٹا نہیں",
-"yesterday": "کل",
-"changelog": "تبدیلیوں کا ریکارڈ",
-"exportingLabel": "برآمد کیا جا رہا ہے...",
-"@exportingLabel": {
-  "description": "برآمد کے دوران برآمد بٹن پر دکھایا جانے والا لیبل"
-},
-"exportExcelLabel": "Excel برآمد کریں",
-"@exportExcelLabel": {
-  "description": "برآمد بٹن پر دکھایا جانے والا لیبل"
-},
+  "thisWeekAtAGlance": "اس ہفتے کا خلاصہ",
+  "hourlyActivityHeatmap": "فی گھنٹہ سرگرمی ہیٹ میپ",
+  "productivityScore": "پیداواری اسکور",
+  "streaks": "مسلسل دن",
+  "weekOverWeek": "ہفتہ بہ ہفتہ",
+  "sameAsLastWeek": "پچھلے ہفتے جیسا",
+  "moreUsageThanLastWeek": "پچھلے ہفتے سے {percent}% زیادہ",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "پچھلے ہفتے سے {percent}% کم",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "حد {duration} سے تجاوز کر گئی",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "{duration} باقی",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "کل سیشنز",
+  "avgSession": "اوسط سیشن",
+  "mostActive": "سب سے زیادہ فعال",
+  "peakUsage": "زیادہ سے زیادہ استعمال",
+  "dailyAverage": "روزانہ اوسط",
+  "daysUsedInARow": "مسلسل استعمال کے دن",
+  "daysSingular": "دن",
+  "daysPlural": "دن",
+  "daysOverLimitInARow": "مسلسل حد سے تجاوز کے دن",
+  "withinLimitAllWeek": "پورے ہفتے حد کے اندر",
+  "productivityScoreGreat": "بہترین",
+  "productivityScoreModerate": "معتدل",
+  "productivityScoreNeedsAttention": "توجہ کی ضرورت ہے",
+  "productiveAppMotivation": "پیداواری ایپ — جاری رکھیں",
+  "nonProductiveAppSuggestion": "غیر پیداواری — کم کرنے پر غور کریں",
+  "legendUsage": "استعمال",
+  "legendAverage": "اوسط",
+  "legendLimit": "حد",
+  "chartPeak": "چوٹی",
+  "overLimitBy": "+{duration} حد سے زیادہ",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "کوئی ڈیٹا نہیں",
+  "yesterday": "کل",
+  "changelog": "تبدیلیوں کا ریکارڈ",
+  "exportingLabel": "برآمد کیا جا رہا ہے...",
+  "@exportingLabel": {
+    "description": "برآمد کے دوران برآمد بٹن پر دکھایا جانے والا لیبل"
+  },
+  "exportExcelLabel": "Excel برآمد کریں",
+  "@exportExcelLabel": {
+    "description": "برآمد بٹن پر دکھایا جانے والا لیبل"
+  },
   "dailyResetTimeTitle": "روزانہ ری سیٹ کا وقت",
   "dailyResetTimeDescription": "وہ وقت متعین کریں جب آپ کے اسکرین ٹائم کاؤنٹر نئے دن کے لیے دوبارہ شروع ہوگا۔",
   "crashReportingTitle": "کریش رپورٹنگ",
-  "crashReportingDescription": "Scolect کو بہتر بنانے میں مدد کے لیے غیر فعال کریش رپورٹس بھیجیں۔ اس میں کوئی ذاتی ڈیٹا یا استعمال کی تاریخ شامل نہیں ہے۔"
+  "crashReportingDescription": "Scolect کو بہتر بنانے میں مدد کے لیے غیر فعال کریش رپورٹس بھیجیں۔ اس میں کوئی ذاتی ڈیٹا یا استعمال کی تاریخ شامل نہیں ہے۔",
+  "narrativeTodaySpent": "آج آپ نے اپنے کمپیوٹر پر {timeStr} گزارے۔",
+  "narrativeMostFocused": "آپ کا سب سے زیادہ توجہ کا وقت {start} – {end} تھا۔",
+  "narrativeFocusSessions": "آپ نے کل {fsMinutes}m میں {focusSessions} فوکس {focusSessionsCount, plural, =1{سیشن} other{سیشنز}} مکمل کیے۔",
+  "narrativeCheckedAppShort": "آپ نے {topAppName} کو {topAppOpenCount} بار چیک کیا لیکن ہر وزٹ کو مختصر رکھا۔",
+  "narrativeCheckedAppLong": "آپ کا زیادہ تر وقت {topAppName} پر صرف {topAppOpenCount} {topAppOpenCountPlural, plural, =1{سیشن} other{سیشنز}} میں گزرا۔",
+  "narrativeToneSolid": "ٹھوس دن۔",
+  "narrativeToneDecent": "اچھی پیش رفت۔",
+  "narrativeToneLight": "ہلکا دن — اس میں کوئی حرج نہیں۔",
+  "narrativeToneImprove": "کل بہتری کی گنجائش ہے۔",
+  "habitDnaTitle": "آپ کا عادت DNA",
+  "habitDnaAnalyzed": "{daysAnalyzed}d تجزیہ کیا گیا",
+  "habitDnaChronotype": "کرونوٹائپ",
+  "habitDnaWorkStyle": "کام کا انداز",
+  "habitDnaPeakFocus": "پیک فوکس",
+  "habitDnaAvgSession": "اوسط سیشن",
+  "habitDnaBestDay": "بہترین دن",
+  "habitDnaRoughDay": "مشکل دن",
+  "habitDnaKryptonite": "سب سے بڑی خلفشار: {appName}",
+  "chronotypeMorning": "صبح کا شخص",
+  "chronotypeAfternoon": "دوپہر کا عروج",
+  "chronotypeNight": "رات کا الو",
+  "chronotypeMixed": "ملا جلا",
+  "workStyleDeep": "گہرا فوکس",
+  "workStyleSwitcher": "ٹاسک سوئچر",
+  "workStyleBalanced": "متوازن",
+  "timeFormatAm": "{hour} AM",
+  "timeFormatPm": "{hour} PM",
+  "timeFormatMidnight": "آدھی رات",
+  "timeFormatNoon": "دوپہر",
+  "weeklyStoryTitle": "اس ہفتے",
+  "weeklyStoryWeekNumber": "ہفتہ {weekNumber}",
+  "weeklyStoryHeadline": "ہفتہ {weekNumber} — اب تک سکرین پر {timeStr}۔",
+  "weeklyStoryReclaimed": "آپ نے ہفتہ 1 کے مقابلے میں {diff} بچایا ہے۔",
+  "weeklyStoryUp": "ہفتہ 1 سے سکرین کا وقت {diff} بڑھ گیا ہے۔",
+  "weeklyStoryImprovementArea": "ابھی بھی کام کر رہے ہیں: {worstCat} میں {timeLabel}۔",
+  "weekdayNameMonday": "پیر",
+  "weekdayNameTuesday": "منگل",
+  "weekdayNameWednesday": "بدھ",
+  "weekdayNameThursday": "جمعرات",
+  "weekdayNameFriday": "جمعہ",
+  "weekdayNameSaturday": "ہفتہ",
+  "weekdayNameSunday": "اتوار",
+  "weekdayNameUnknown": "وہ دن",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

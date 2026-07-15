@@ -2190,5 +2190,82 @@
     "description": "Label shown on export button"
   },
   "dailyResetTimeTitle": "Daily Reset Time",
-  "dailyResetTimeDescription": "Set the time when your screen time counter resets for a new day."
+  "dailyResetTimeDescription": "Set the time when your screen time counter resets for a new day.",
+  "narrativeTodaySpent": "Today you spent {timeStr} at your computer.",
+  "@narrativeTodaySpent": {
+    "placeholders": { "timeStr": { "type": "String" } }
+  },
+  "narrativeMostFocused": "Your most focused stretch was {start} – {end}.",
+  "@narrativeMostFocused": {
+    "placeholders": { "start": { "type": "String" }, "end": { "type": "String" } }
+  },
+  "narrativeFocusSessions": "You completed {focusSessions} focus {focusSessionsCount, plural, =1{session} other{sessions}} totalling {fsMinutes}m.",
+  "@narrativeFocusSessions": {
+    "placeholders": { 
+      "focusSessions": { "type": "int" },
+      "focusSessionsCount": { "type": "int" },
+      "fsMinutes": { "type": "int" }
+    }
+  },
+  "narrativeCheckedAppShort": "You checked {topAppName} {topAppOpenCount} times but kept each visit short.",
+  "@narrativeCheckedAppShort": {
+    "placeholders": { "topAppName": { "type": "String" }, "topAppOpenCount": { "type": "int" } }
+  },
+  "narrativeCheckedAppLong": "Most of your time went to {topAppName} in just {topAppOpenCount} {topAppOpenCountPlural, plural, =1{session} other{sessions}}.",
+  "@narrativeCheckedAppLong": {
+    "placeholders": { "topAppName": { "type": "String" }, "topAppOpenCount": { "type": "int" }, "topAppOpenCountPlural": { "type": "int" } }
+  },
+  "narrativeToneSolid": "Solid day.",
+  "narrativeToneDecent": "Decent progress.",
+  "narrativeToneLight": "Light day — nothing wrong with that.",
+  "narrativeToneImprove": "Room to improve tomorrow.",
+  "habitDnaTitle": "Your Habit DNA",
+  "habitDnaAnalyzed": "{daysAnalyzed}d analyzed",
+  "@habitDnaAnalyzed": {
+    "placeholders": { "daysAnalyzed": { "type": "int" } }
+  },
+  "habitDnaChronotype": "Chronotype",
+  "habitDnaWorkStyle": "Work Style",
+  "habitDnaPeakFocus": "Peak Focus",
+  "habitDnaAvgSession": "Avg Session",
+  "habitDnaBestDay": "Best Day",
+  "habitDnaRoughDay": "Rough Day",
+  "habitDnaKryptonite": "Top distraction: {appName}",
+  "@habitDnaKryptonite": {
+    "placeholders": { "appName": { "type": "String" } }
+  },
+  "chronotypeMorning": "Morning Person",
+  "chronotypeAfternoon": "Afternoon Peak",
+  "chronotypeNight": "Night Owl",
+  "chronotypeMixed": "Mixed",
+  "workStyleDeep": "Deep Focus",
+  "workStyleSwitcher": "Task Switcher",
+  "workStyleBalanced": "Balanced",
+  "timeFormatAm": "{hour} AM",
+  "@timeFormatAm": { "placeholders": { "hour": { "type": "int" } } },
+  "timeFormatPm": "{hour} PM",
+  "@timeFormatPm": { "placeholders": { "hour": { "type": "int" } } },
+  "timeFormatMidnight": "Midnight",
+  "timeFormatNoon": "Noon",
+  "weeklyStoryTitle": "This Week",
+  "weeklyStoryWeekNumber": "Week {weekNumber}",
+  "@weeklyStoryWeekNumber": {
+    "placeholders": { "weekNumber": { "type": "int" } }
+  },
+  "weeklyStoryHeadline": "Week {weekNumber} — {timeStr} on screen so far.",
+  "@weeklyStoryHeadline": { "placeholders": { "weekNumber": { "type": "int" }, "timeStr": { "type": "String" } } },
+  "weeklyStoryReclaimed": "You've reclaimed {diff} compared to Week 1.",
+  "@weeklyStoryReclaimed": { "placeholders": { "diff": { "type": "String" } } },
+  "weeklyStoryUp": "Screen time is up {diff} from Week 1.",
+  "@weeklyStoryUp": { "placeholders": { "diff": { "type": "String" } } },
+  "weeklyStoryImprovementArea": "Still working on: {timeLabel} in {worstCat}.",
+  "@weeklyStoryImprovementArea": { "placeholders": { "timeLabel": { "type": "String" }, "worstCat": { "type": "String" } } },
+  "weekdayNameMonday": "Monday",
+  "weekdayNameTuesday": "Tuesday",
+  "weekdayNameWednesday": "Wednesday",
+  "weekdayNameThursday": "Thursday",
+  "weekdayNameFriday": "Friday",
+  "weekdayNameSaturday": "Saturday",
+  "weekdayNameSunday": "Sunday",
+  "weekdayNameUnknown": "that day"
 }

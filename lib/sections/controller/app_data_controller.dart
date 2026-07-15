@@ -216,9 +216,11 @@ class AppDataStore extends ChangeNotifier {
         // Platform-specific initialization
         String hivePath;
 
+        String? _supportDirPath;
         if (Platform.isMacOS || Platform.isWindows) {
           final docsDir = await getApplicationDocumentsDirectory();
           final supportDir = await getApplicationSupportDirectory();
+          _supportDirPath = supportDir.path;
           final newHivePath = '${docsDir.path}/Scolect';
           final newDir = Directory(newHivePath);
 
@@ -277,20 +279,26 @@ class AppDataStore extends ChangeNotifier {
           }
 
           // On macOS, Documents folder requires user consent (TCC). If the
-          // directory can't be created or written to, fall back to Application
-          // Support which macOS always permits without a permission prompt.
+          // directory can't be opened for read+write (as Hive does), fall back
+          // to Application Support which is always accessible.
           if (Platform.isMacOS) {
+            bool documentsAccessible = false;
             try {
               final dir = Directory(hivePath);
               if (!await dir.exists()) await dir.create(recursive: true);
-              // Probe write access with a temp file before committing to this path.
-              final probe = File('${hivePath}/.write_probe');
-              await probe.writeAsString('');
-              await probe.delete();
+              // Probe using RandomAccessFile (same as Hive's box open) to
+              // accurately detect sandbox permission blocks.
+              final probeFile = File('${hivePath}/.hive_probe');
+              final raf = await probeFile.open(mode: FileMode.append);
+              await raf.close();
+              await probeFile.delete();
+              documentsAccessible = true;
             } catch (e) {
-              final fallback = '${supportDir.path}/Scolect';
               debugPrint('⚠️ Documents folder not accessible ($e), falling back to Application Support');
-              hivePath = fallback;
+            }
+            if (!documentsAccessible) {
+              hivePath = '${supportDir.path}/Scolect';
+              debugPrint('📁 Using Application Support: $hivePath');
             }
           }
 
@@ -314,8 +322,18 @@ class AppDataStore extends ChangeNotifier {
         if (!Hive.isAdapterRegistered(5))
           Hive.registerAdapter(DurationAdapter());
 
-        // Open boxes
+        // Open boxes — on macOS, the probe may pass but Hive's internal file
+        // access can still be blocked by the sandbox (errno = 1). If that
+        // happens, reinitialize Hive to Application Support and retry.
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
+        if (_usageBox == null && Platform.isMacOS && _supportDirPath != null) {
+          final fallbackPath = '$_supportDirPath/Scolect';
+          debugPrint('⚠️ Box open failed on macOS, falling back to Application Support: $fallbackPath');
+          await Hive.close();
+          await Directory(fallbackPath).create(recursive: true);
+          Hive.init(fallbackPath);
+          _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
+        }
         _focusBox = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
         _metadataBox = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
 

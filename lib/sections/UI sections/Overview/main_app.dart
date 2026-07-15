@@ -2,6 +2,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import './reusable.dart';
+import 'package:screentime/sections/UI sections/Reports/appdetails.dialog.dart';
+import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -202,15 +204,29 @@ class TopApplicationsList extends StatelessWidget {
                   itemExtent: 68, // fixed height → O(1) scroll calculations
                   itemBuilder: (context, index) {
                     final app = filteredData[index];
-                    return _ApplicationItemContent(
-                      name: app['name'] ?? l10n.unknownApp,
-                      category: app['category'] ?? l10n.uncategorized,
-                      screenTime: app['screenTime'] ?? l10n.defaultTime,
-                      clampedPercent:
-                          ((app['percentageOfTotalTime'] ?? 0).toDouble() / 100)
-                              .clamp(0.0, 1.0),
-                      color: _kBlue,
-                      animDuration: _kBaseAnimDuration + (index * 100),
+                    return GestureDetector(
+                      onTap: () {
+                        showAppDetailsDialog(
+                          context,
+                          AppUsageSummary(
+                            appName: app['name'] ?? '',
+                            category: app['category'] ?? '',
+                            totalTime: app['duration'] ?? Duration.zero,
+                            isProductive: app['isProductive'] ?? false,
+                            isVisible: app['isVisible'] ?? true,
+                          ),
+                        );
+                      },
+                      child: _ApplicationItemContent(
+                        name: app['name'] ?? l10n.unknownApp,
+                        category: app['category'] ?? l10n.uncategorized,
+                        screenTime: app['screenTime'] ?? l10n.defaultTime,
+                        clampedPercent:
+                            ((app['percentageOfTotalTime'] ?? 0).toDouble() / 100)
+                                .clamp(0.0, 1.0),
+                        color: _kBlue,
+                        animDuration: _kBaseAnimDuration + (index * 100),
+                      ),
                     );
                   },
                 ),

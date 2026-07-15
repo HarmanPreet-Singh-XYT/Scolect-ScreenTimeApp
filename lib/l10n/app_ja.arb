@@ -1,76 +1,61 @@
 {
   "@@locale": "ja",
-  
   "appWindowTitle": "Scolect - スクリーンタイム＆アプリ使用状況追跡",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "Scolect",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "生産的なスクリーンタイム",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "スクリーンタイム",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "オープンソース",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "ウィンドウを表示",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "集中モードを開始",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "集中モードを停止",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "レポート",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "アラート＆制限",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "アプリケーション",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "通知を無効化",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "通知を有効化",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "バージョン: ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "バージョン: {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "終了",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "概要",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "アプリケーション",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "アラート＆制限",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "レポート",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "集中モード",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "設定",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "ヘルプ",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "ヘルプ",
-  
   "faqCategoryGeneral": "一般的な質問",
   "faqCategoryApplications": "アプリケーション管理",
   "faqCategoryReports": "使用状況分析＆レポート",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "集中モード＆ポモドーロタイマー",
   "faqCategorySettings": "設定＆カスタマイズ",
   "faqCategoryTroubleshooting": "トラブルシューティング",
-  
   "faqGeneralQ1": "このアプリはどのようにスクリーンタイムを追跡しますか？",
   "faqGeneralA1": "このアプリは、デバイスの使用状況をリアルタイムで監視し、さまざまなアプリケーションでの使用時間を追跡します。総スクリーンタイム、生産的な時間、アプリケーション固有の使用状況など、デジタル習慣に関する包括的な洞察を提供します。",
-  
   "faqGeneralQ2": "アプリが「生産的」とされる基準は何ですか？",
   "faqGeneralA2": "「アプリケーション」セクションでアプリを手動で生産的としてマークできます。生産的なアプリは、仕事関連または有益なアプリケーションに費やしたスクリーンタイムの割合を計算する生産性スコアに貢献します。",
-  
   "faqGeneralQ3": "スクリーンタイム追跡はどの程度正確ですか？",
   "faqGeneralA3": "このアプリは、システムレベルの追跡を使用して、デバイス使用量を正確に測定します。各アプリケーションのフォアグラウンド時間をバッテリーへの影響を最小限に抑えながらキャプチャします。",
-  
   "faqGeneralQ4": "アプリのカテゴリ分類をカスタマイズできますか？",
   "faqGeneralA4": "もちろんです！「アプリケーション」セクションで、カスタムカテゴリを作成し、アプリを特定のカテゴリに割り当て、これらの割り当てを簡単に変更できます。これにより、より意味のある使用状況分析を作成できます。",
-  
   "faqGeneralQ5": "このアプリからどのような洞察を得られますか？",
   "faqGeneralA5": "このアプリは、生産性スコア、時間帯別の使用パターン、詳細なアプリケーション使用状況、集中セッション追跡、グラフや円グラフなどの視覚的分析を含む包括的な洞察を提供し、デジタル習慣を理解し改善するのに役立ちます。",
-  
   "faqAppsQ1": "特定のアプリを追跡から非表示にするにはどうすればよいですか？",
   "faqAppsA1": "「アプリケーション」セクションで、アプリの表示を切り替えることができます。",
-  
   "faqAppsQ2": "アプリケーションを検索およびフィルタリングできますか？",
   "faqAppsA2": "はい、「アプリケーション」セクションには検索機能とフィルタリングオプションがあります。カテゴリ、生産性ステータス、追跡ステータス、表示状態でアプリをフィルタリングできます。",
-  
   "faqAppsQ3": "アプリケーションにはどのような編集オプションがありますか？",
   "faqAppsA3": "各アプリケーションについて、カテゴリの割り当て、生産性ステータス、使用状況の追跡、レポートでの表示、個別の1日の時間制限を編集できます。",
-  
   "faqAppsQ4": "アプリケーションのカテゴリはどのように決定されますか？",
   "faqAppsA4": "初期のカテゴリはシステムによって提案されますが、ワークフローと好みに基づいてカスタムカテゴリを作成、変更、割り当てることができます。",
-  
   "faqReportsQ1": "どのような種類のレポートが利用できますか？",
   "faqReportsA1": "レポートには以下が含まれます：総スクリーンタイム、生産的な時間、最も使用されているアプリ、集中セッション、1日のスクリーンタイムグラフ、カテゴリ別円グラフ、詳細なアプリケーション使用状況、週間使用傾向、時間帯別使用パターン分析。",
-  
   "faqReportsQ2": "アプリケーション使用レポートはどの程度詳細ですか？",
   "faqReportsA2": "詳細なアプリケーション使用レポートには、アプリ名、カテゴリ、総使用時間、生産性ステータスが表示され、使用状況サマリー、1日の制限、使用傾向、生産性指標などのより深い洞察を持つ「アクション」セクションがあります。",
-  
   "faqReportsQ3": "時間の経過に伴う使用傾向を分析できますか？",
   "faqReportsA3": "はい！このアプリは週ごとの比較を提供し、過去数週間の使用状況グラフ、1日の平均使用時間、最長セッション、週間合計を表示して、デジタル習慣を追跡するのに役立ちます。",
-  
   "faqReportsQ4": "「使用パターン」分析とは何ですか？",
   "faqReportsA4": "使用パターンは、スクリーンタイムを朝、午後、夕方、夜のセグメントに分割します。これにより、デバイスで最もアクティブな時間帯を理解し、改善すべき領域を特定できます。",
-  
   "faqAlertsQ1": "スクリーンタイム制限はどの程度細かく設定できますか？",
   "faqAlertsA1": "全体的な1日のスクリーンタイム制限と個別のアプリ制限を設定できます。制限は時間と分で設定でき、必要に応じてリセットまたは調整するオプションがあります。",
-  
   "faqAlertsQ2": "どのような通知オプションがありますか？",
   "faqAlertsA2": "このアプリは複数の通知タイプを提供します：スクリーンタイムを超えた場合のシステムアラート、カスタマイズ可能な間隔（1、5、15、30、または60分）での頻繁なアラート、集中モード、スクリーンタイム、およびアプリケーション固有の通知の切り替え。",
-  
   "faqAlertsQ3": "制限アラートをカスタマイズできますか？",
   "faqAlertsA3": "はい、アラートの頻度をカスタマイズし、特定のタイプのアラートを有効/無効にし、全体的なスクリーンタイムと個別のアプリケーションに異なる制限を設定できます。",
-  
   "faqFocusQ1": "どのような種類の集中モードがありますか？",
   "faqFocusA1": "利用可能なモードには、ディープワーク（長時間の集中セッション）、クイックタスク（短時間の作業）、リーディングモードがあります。各モードは、作業と休憩時間を効果的に構造化するのに役立ちます。",
-  
   "faqFocusQ2": "ポモドーロタイマーはどの程度柔軟ですか？",
   "faqFocusA2": "タイマーは高度にカスタマイズ可能です。作業時間、短い休憩の長さ、長い休憩の時間を調整できます。追加オプションには、次のセッションの自動開始と通知設定があります。",
-  
   "faqFocusQ3": "集中モード履歴には何が表示されますか？",
   "faqFocusA3": "集中モード履歴は、1日の集中セッションを追跡し、1日あたりのセッション数、傾向グラフ、平均セッション時間、合計集中時間、作業セッション、短い休憩、長い休憩を分類した時間分布円グラフを表示します。",
-  
   "faqFocusQ4": "集中セッションの進捗を追跡できますか？",
   "faqFocusA4": "このアプリは、再生/一時停止、リロード、設定ボタンを備えた円形タイマーUIを特徴としています。直感的なコントロールで集中セッションを簡単に追跡および管理できます。",
-  
   "faqSettingsQ1": "どのようなカスタマイズオプションがありますか？",
   "faqSettingsA1": "カスタマイズには、テーマ選択（システム、ライト、ダーク）、言語設定、起動動作、包括的な通知コントロール、データのクリアや設定のリセットなどのデータ管理オプションが含まれます。",
-  
   "faqSettingsQ2": "フィードバックを送信したり、問題を報告するにはどうすればよいですか？",
   "faqSettingsA2": "設定セクションの下部に、バグを報告、フィードバックを送信、またはサポートに連絡するためのボタンがあります。これらは適切なサポートチャネルにリダイレクトされます。",
-  
   "faqSettingsQ3": "データをクリアするとどうなりますか？",
   "faqSettingsA3": "データをクリアすると、すべての使用統計、集中セッション履歴、カスタム設定がリセットされます。これは、新しく始めたり、トラブルシューティングに役立ちます。",
-  
   "faqTroubleQ1": "データが表示されない、hiveが開かないエラー",
   "faqTroubleA1": "この問題は認識されています。一時的な修正方法は、設定からデータをクリアすることです。それでも機能しない場合は、ドキュメントに移動して、存在する場合は次のファイルを削除してください - harman_screentime_app_usage_box.hiveとharman_screentime_app_usage.lock。アプリを最新バージョンに更新することもお勧めします。",
-  
   "faqTroubleQ2": "アプリが起動するたびに開く場合、どうすればよいですか？",
   "faqTroubleA2": "これはWindows 10で発生する既知の問題です。一時的な修正方法は、設定で「最小化で起動」を有効にして、最小化で起動するようにすることです。",
-  
   "usageAnalytics": "使用状況分析",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "過去7日間",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "先月",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "過去3ヶ月",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "全期間",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "カスタム",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "分析データを読み込み中...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "再試行",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "分析の初期化に失敗しました。アプリケーションを再起動してください。",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "予期しないエラーが発生しました: {error}。後でもう一度お試しください。",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "分析データの読み込みエラー: {error}。接続を確認して再試行してください。",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "カスタム",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "日付範囲",
+  "dateRange": "日付範囲：",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "特定の日付",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "開始日: ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "終了日: ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "日付: ",
+  "date": "日付",
   "@date": {
     "description": "Label for single date picker"
   },
-  
   "cancel": "キャンセル",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "適用",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "OK",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "無効な日付範囲",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "開始日は終了日以前でなければなりません。",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
-  "totalScreenTime": "総スクリーンタイム",
+  "totalScreenTime": "合計スクリーン時間",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
-  "productiveTime": "生産的な時間",
+  "productiveTime": "生産的時間",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
-  "mostUsedApp": "最も使用されているアプリ",
+  "mostUsedApp": "最も使用されたアプリ",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
   "focusSessions": "集中セッション",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% 前期間比",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% 前期間比",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "{title}アイコン",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "1日のスクリーンタイム",
+  "dailyScreenTime": "日別スクリーン時間",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "カテゴリ別内訳",
+  "categoryBreakdown": "カテゴリ内訳",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "データがありません",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
   "sectionLabel": "{title}セクション",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "詳細なアプリケーション使用状況",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "アプリケーションを検索",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "名前",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "カテゴリ",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "合計時間",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "生産性",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "アクション",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "並べ替え: {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "名前",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "カテゴリ",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "使用状況",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "生産的",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "非生産的",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "検索条件に一致するアプリケーションがありません",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "詳細を表示",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "使用状況サマリー",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "過去1週間の使用状況",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "時間帯別使用パターン",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "パターン分析",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "今日",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "1日の制限",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "制限なし",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "使用傾向",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "生産性",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "増加中",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "減少中",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "安定",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "1日平均使用",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
   "longestSession": "最長セッション",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "週間合計",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "履歴データがありません",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "朝 (6-12)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "午後 (12-5)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "夕方 (5-9)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "夜 (9-6)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "使用状況の洞察",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "制限ステータス",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "閉じる",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "{appName}を主に{timeOfDay}に使用しています。",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "使用量が前期間と比較して大幅に増加しました（{percentage}%）。",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "使用量は前期間と比較して上昇傾向にあります。",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "使用量が前期間と比較して大幅に減少しました（{percentage}%）。",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "使用量は前期間と比較して下降傾向にあります。",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "使用量は前期間と比較して一貫しています。",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "これは設定で生産的なアプリとしてマークされています。",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "これは設定で非生産的なアプリとしてマークされています。",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "最もアクティブな時間は{time}頃です。",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "このアプリケーションには使用制限が設定されていません。",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "このアプリケーションの1日の制限に達しました。",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "残り{remainingTime}で1日の制限に達しようとしています。",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "1日の制限の{percent}%を使用し、残り{remainingTime}です。",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "1日の制限のうち{time}残っています。",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "今日",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "午前{hour}時",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "午後{hour}時",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,7 +610,6 @@
       }
     }
   },
-  
   "durationHoursMinutes": "{hours}時間{minutes}分",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
@@ -765,7 +624,6 @@
       }
     }
   },
-  
   "durationMinutesOnly": "{minutes}分",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
@@ -776,55 +634,49 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "アラート＆制限",
   "notificationsSettings": "通知設定",
   "overallScreenTimeLimit": "全体的なスクリーンタイム制限",
   "applicationLimits": "アプリケーション制限",
-  
   "popupAlerts": "ポップアップアラート",
   "frequentAlerts": "頻繁なアラート",
   "soundAlerts": "サウンドアラート",
   "systemAlerts": "システムアラート",
-  
   "dailyTotalLimit": "1日の合計制限: ",
-  "hours": "時間: ",
-  "minutes": "分: ",
+  "hours": "時間",
+  "minutes": "分",
   "currentUsage": "現在の使用量: ",
-  
   "tableName": "名前",
   "tableCategory": "カテゴリ",
   "tableDailyLimit": "1日の制限",
   "tableCurrentUsage": "現在の使用量",
   "tableStatus": "ステータス",
   "tableActions": "アクション",
-  
   "addLimit": "制限を追加",
   "noApplicationsToDisplay": "表示するアプリケーションがありません",
-  
   "statusActive": "アクティブ",
   "statusOff": "オフ",
   "durationNone": "なし",
-  
   "addApplicationLimit": "アプリケーション制限を追加",
   "selectApplication": "アプリケーションを選択",
   "selectApplicationPlaceholder": "アプリケーションを選択してください",
   "enableLimit": "制限を有効化: ",
-  
   "editLimitTitle": "制限を編集: {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "データの読み込みに失敗しました: {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "設定をリセットしますか？",
   "resetSettingsContent": "設定をリセットすると、復元できません。リセットしますか？",
   "resetAll": "すべてリセット",
@@ -833,63 +685,53 @@
   "add": "追加",
   "error": "エラー",
   "retry": "再試行",
-  
   "applicationsTitle": "アプリケーション",
   "searchApplication": "アプリケーションを検索",
-  
-  "tracking": "追跡",
+  "tracking": "追跡中",
   "hiddenVisible": "非表示/表示",
   "selectCategory": "カテゴリを選択",
   "allCategories": "すべて",
-  
   "tableScreenTime": "スクリーンタイム",
   "tableTracking": "追跡",
   "tableHidden": "非表示",
   "tableEdit": "編集",
-  
   "editAppTitle": "{appName}を編集",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "カテゴリ",
   "customCategory": "カスタム",
   "customCategoryPlaceholder": "カスタムカテゴリ名を入力",
   "uncategorized": "未分類",
-  
   "isProductive": "生産的",
   "trackUsage": "使用状況を追跡",
   "visibleInReports": "レポートに表示",
-  
   "timeLimitsSection": "時間制限",
   "enableDailyLimit": "1日の制限を有効化",
   "setDailyTimeLimit": "1日の時間制限を設定:",
-  
   "saveChanges": "変更を保存",
-  
   "errorLoadingData": "概要データの読み込みエラー: {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "集中モード",
-  
   "historySection": "履歴",
   "trendsSection": "傾向",
   "timeDistributionSection": "時間分布",
   "sessionHistorySection": "セッション履歴",
-  
   "workSession": "作業セッション",
   "shortBreak": "短い休憩",
   "longBreak": "長い休憩",
-  
   "dateHeader": "日付",
   "durationHeader": "時間",
-  
   "monday": "月曜日",
   "tuesday": "火曜日",
   "wednesday": "水曜日",
@@ -897,218 +739,179 @@
   "friday": "金曜日",
   "saturday": "土曜日",
   "sunday": "日曜日",
-  
   "focusModeSettingsTitle": "集中モード設定",
-  
   "modeCustom": "カスタム",
   "modeDeepWork": "ディープワーク (60分)",
   "modeQuickTasks": "クイックタスク (25分)",
   "modeReading": "リーディング (45分)",
-  
   "workDurationLabel": "作業時間: {minutes}分",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "短い休憩: {minutes}分",
+  "shortBreakLabel": "短い休憩",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "長い休憩: {minutes}分",
+  "longBreakLabel": "長い休憩",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "次のセッションを自動開始",
   "blockDistractions": "集中モード中に気が散るものをブロック",
   "enableNotifications": "通知を有効化",
-  
   "saved": "保存しました",
-  
   "errorLoadingFocusModeData": "集中モードデータの読み込みエラー: {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "今日の概要",
   "startFocusMode": "集中モードを開始",
-  
   "loadingProductivityData": "生産性データを読み込み中...",
   "noActivityDataAvailable": "アクティビティデータはまだありません",
   "startUsingApplications": "スクリーンタイムと生産性を追跡するには、アプリケーションの使用を開始してください。",
   "refreshData": "データを更新",
-  
   "topApplications": "トップアプリケーション",
-  
   "noAppUsageDataAvailable": "アプリケーション使用データはまだありません",
   "noApplicationDataAvailable": "アプリケーションデータはありません",
   "noCategoryDataAvailable": "カテゴリデータはありません",
   "noApplicationLimitsSet": "アプリケーション制限は設定されていません",
-  
   "screenLabel": "スクリーン",
   "timeLabel": "タイム",
   "productiveLabel": "生産的",
   "scoreLabel": "スコア",
-  
   "defaultNone": "なし",
   "defaultTime": "0時間0分",
   "defaultCount": "0",
   "unknownApp": "不明",
-  
   "settingsTitle": "設定",
-  
   "generalSection": "一般",
   "notificationsSection": "通知",
   "dataSection": "データ",
   "versionSection": "バージョン",
-  
   "themeTitle": "テーマ",
-  "themeDescription": "アプリケーションの配色テーマ（変更には再起動が必要）",
-  
+  "themeDescription": "アプリケーションのカラーテーマ",
   "languageTitle": "言語",
   "languageDescription": "アプリケーションの言語",
-  
   "startupBehaviourTitle": "起動動作",
   "startupBehaviourDescription": "OS起動時に起動",
-  
   "launchMinimizedTitle": "最小化で起動",
   "launchMinimizedDescription": "システムトレイでアプリケーションを起動（Windows 10に推奨）",
-  
   "notificationsTitle": "通知",
   "notificationsAllDescription": "アプリケーションのすべての通知",
-  
   "focusModeNotificationsTitle": "集中モード",
   "focusModeNotificationsDescription": "集中モードのすべての通知",
-  
   "screenTimeNotificationsTitle": "スクリーンタイム",
   "screenTimeNotificationsDescription": "スクリーンタイム制限のすべての通知",
-  
   "appScreenTimeNotificationsTitle": "アプリケーションスクリーンタイム",
   "appScreenTimeNotificationsDescription": "アプリケーションスクリーンタイム制限のすべての通知",
-  
   "frequentAlertsTitle": "頻繁なアラート間隔",
   "frequentAlertsDescription": "頻繁な通知の間隔を設定（分）",
-  
   "clearDataTitle": "データをクリア",
   "clearDataDescription": "すべての履歴および関連データをクリア",
-  
   "resetSettingsTitle2": "設定をリセット",
   "resetSettingsDescription": "すべての設定をリセット",
-  
   "versionTitle": "バージョン",
   "versionDescription": "アプリの現在のバージョン",
-  
   "contactButton": "お問い合わせ",
   "reportBugButton": "バグを報告",
   "submitFeedbackButton": "フィードバックを送信",
   "githubButton": "Github",
-  
   "clearDataDialogTitle": "データをクリアしますか？",
   "clearDataDialogContent": "これにより、すべての履歴と関連データがクリアされます。復元できません。続行しますか？",
   "clearDataButtonLabel": "データをクリア",
-  
   "resetSettingsDialogTitle": "設定をリセットしますか？",
   "resetSettingsDialogContent": "これにより、すべての設定がデフォルト値にリセットされます。続行しますか？",
   "resetButtonLabel": "リセット",
-  
   "cancelButton": "キャンセル",
-  
   "couldNotLaunchUrl": "{url}を開けませんでした",
   "@couldNotLaunchUrl": {
     "placeholders": {
-      "url": {"type": "String"}
+      "url": {
+        "type": "String"
+      }
     }
   },
-  
   "errorMessage": "エラー: {message}",
   "@errorMessage": {
     "placeholders": {
-      "message": {"type": "String"}
+      "message": {
+        "type": "String"
+      }
     }
   },
-
   "chart_focusTrends": "集中傾向",
   "@chart_focusTrends": {
     "description": "Title for focus trends chart"
   },
-  
   "chart_sessionCount": "セッション数",
   "@chart_sessionCount": {
     "description": "Label for session count metric"
   },
-  
   "chart_avgDuration": "平均時間",
   "@chart_avgDuration": {
     "description": "Label for average duration metric"
   },
-  
   "chart_totalFocus": "合計集中",
   "@chart_totalFocus": {
     "description": "Label for total focus time metric"
   },
-  
   "chart_yAxis_sessions": "セッション",
   "@chart_yAxis_sessions": {
     "description": "Y-axis label for session count"
   },
-  
   "chart_yAxis_minutes": "分",
   "@chart_yAxis_minutes": {
     "description": "Y-axis label for time in minutes"
   },
-  
   "chart_yAxis_value": "値",
   "@chart_yAxis_value": {
     "description": "Generic y-axis label"
   },
-  
   "chart_monthOverMonthChange": "前月比変化: ",
   "@chart_monthOverMonthChange": {
     "description": "Label for percentage change display"
   },
-  
   "chart_customRange": "カスタム範囲",
   "@chart_customRange": {
     "description": "Label for custom date range"
   },
-  
   "day_monday": "月曜日",
   "day_mondayShort": "月",
   "day_mondayAbbr": "月",
-  
   "day_tuesday": "火曜日",
   "day_tuesdayShort": "火",
   "day_tuesdayAbbr": "火",
-  
   "day_wednesday": "水曜日",
   "day_wednesdayShort": "水",
   "day_wednesdayAbbr": "水",
-  
   "day_thursday": "木曜日",
   "day_thursdayShort": "木",
   "day_thursdayAbbr": "木",
-  
   "day_friday": "金曜日",
   "day_fridayShort": "金",
   "day_fridayAbbr": "金",
-  
   "day_saturday": "土曜日",
   "day_saturdayShort": "土",
   "day_saturdayAbbr": "土",
-  
   "day_sunday": "日曜日",
   "day_sundayShort": "日",
   "day_sundayAbbr": "日",
-  
   "time_hours": "{count}時間",
   "@time_hours": {
     "description": "Hours format",
@@ -1118,7 +921,6 @@
       }
     }
   },
-  
   "time_hoursMinutes": "{hours}時間{minutes}分",
   "@time_hoursMinutes": {
     "description": "Hours and minutes format",
@@ -1131,7 +933,6 @@
       }
     }
   },
-  
   "time_minutesFormat": "{count}分",
   "@time_minutesFormat": {
     "description": "Minutes format for tooltips",
@@ -1141,7 +942,6 @@
       }
     }
   },
-  
   "tooltip_dateScreenTime": "{date}: {hours}時間{minutes}分",
   "@tooltip_dateScreenTime": {
     "description": "Tooltip showing date and screen time",
@@ -1157,7 +957,6 @@
       }
     }
   },
-  
   "tooltip_hoursFormat": "{count}時間",
   "@tooltip_hoursFormat": {
     "description": "Hours format for tooltip fallback",
@@ -1167,7 +966,6 @@
       }
     }
   },
-  
   "month_january": "1月",
   "month_januaryShort": "1月",
   "month_february": "2月",
@@ -1192,7 +990,6 @@
   "month_novemberShort": "11月",
   "month_december": "12月",
   "month_decemberShort": "12月",
-  
   "categoryAll": "すべて",
   "@categoryAll": {
     "description": "Category filter for all applications"
@@ -1208,7 +1005,6 @@
   "categoryEducation": "教育",
   "categoryUtility": "ユーティリティ",
   "categoryUncategorized": "未分類",
-  
   "appMicrosoftWord": "Microsoft Word",
   "appExcel": "Excel",
   "appPowerPoint": "PowerPoint",
@@ -1242,7 +1038,6 @@
   "appFileExplorer": "エクスプローラー",
   "appDropbox": "Dropbox",
   "appGoogleDrive": "Google ドライブ",
-  
   "loadingApplication": "アプリケーションを読み込み中...",
   "@loadingApplication": {
     "description": "Message shown when the application is loading"
@@ -1259,7 +1054,6 @@
   "@reportsRetry": {
     "description": "Button text to retry an operation"
   },
-  
   "backupRestoreSection": "バックアップ＆復元",
   "backupRestoreTitle": "バックアップ＆復元",
   "exportDataTitle": "データをエクスポート",
@@ -1272,8 +1066,8 @@
   "noButton": "いいえ",
   "shareButton": "共有",
   "exportStarting": "エクスポートを開始しています...",
-  "exportSuccessful": "エクスポート成功！ファイルはドキュメント/Scolect-Backupsに保存されました",
-  "exportFailed": "エクスポートに失敗しました",
+  "exportSuccessful": "エクスポート成功",
+  "exportFailed": "エクスポート失敗",
   "exportComplete": "エクスポート完了",
   "shareBackupQuestion": "バックアップファイルを共有しますか？",
   "importStarting": "インポートを開始しています...",
@@ -1298,13 +1092,10 @@
   "appMetadataLabel": "アプリメタデータ",
   "updatedLabel": "更新済み",
   "skippedLabel": "スキップ済み",
-  
   "faqSettingsQ4": "データを復元またはエクスポートするにはどうすればよいですか？",
   "faqSettingsA4": "設定に移動すると、バックアップ＆復元セクションがあります。ここからデータをエクスポートまたはインポートできます。エクスポートされたデータファイルはドキュメントのScolect-Backupsフォルダに保存され、このファイルのみがデータの復元に使用できます。他のファイルは使用できません。",
-  
   "faqGeneralQ6": "言語を変更するにはどうすればよいですか？また、どの言語が利用可能ですか？翻訳が間違っている場合はどうすればよいですか？",
   "faqGeneralA6": "言語は設定の一般セクションから変更できます。利用可能なすべての言語がそこにリストされています。お問い合わせをクリックして、指定された言語でリクエストを送信することで、翻訳をリクエストできます。翻訳はAIによって英語から生成されるため、間違っている可能性があることにご注意ください。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！",
-  
   "faqGeneralQ7": "翻訳が間違っている場合はどうすればよいですか？",
   "faqGeneralA7": "翻訳はAIによって英語から生成されるため、間違っている可能性があります。報告したい場合は、バグ報告、お問い合わせ、または開発者の場合はGithubでイシューを開くことができます。言語に関する貢献も歓迎します！",
   "activityTrackingSection": "アクティビティ追跡",
@@ -1347,13 +1138,10 @@
   "themeLight": "ライト",
   "themeDark": "ダーク",
   "themeSystem": "システム",
-  "themeTitle": "テーマ",
-  "themeDescription": "アプリケーションのカラーテーマ",
   "voiceGenderTitle": "音声の性別",
   "voiceGenderDescription": "タイマー通知の音声の性別を選択してください",
   "voiceGenderMale": "男性",
   "voiceGenderFemale": "女性",
-
   "applicationsSubtitle": "追跡されたアプリケーションを管理する",
   "applicationCount": "{count, plural, other{{count} 個のアプリケーション}}",
   "@applicationCount": {
@@ -1363,12 +1151,10 @@
       }
     }
   },
-  "refresh": "更新",
   "noApplicationsFound": "アプリケーションが見つかりません",
   "tryAdjustingFilters": "フィルターを調整してみてください",
   "configureAppSettings": "アプリケーション設定を構成する",
   "behaviorSection": "動作",
-  
   "helpSubtitle": "{count, plural, other{7つのカテゴリに{count}個の質問}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1385,22 +1171,11 @@
   "noResultsFound": "結果が見つかりません",
   "tryDifferentKeywords": "別のキーワードで検索してみてください",
   "clearSearch": "検索をクリア",
-  
   "greetingMorning": "おはようございます！アクティビティの概要をご覧ください。",
   "greetingAfternoon": "こんにちは！アクティビティの概要をご覧ください。",
   "greetingEvening": "こんばんは！アクティビティの概要をご覧ください。",
   "screenTimeProgress": "スクリーン\nタイム",
   "productiveScoreProgress": "生産性\nスコア",
-  
-  "sectionLabel": "{title}セクション",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "集中して、生産的に",
   "thisWeek": "今週",
   "sessions": "セッション",
@@ -1412,8 +1187,6 @@
   "longBreakStatus": "長い休憩",
   "readyToFocus": "集中する準備完了",
   "focus": "集中",
-  "shortBreakLabel": "短い休憩",
-  "longBreakLabel": "長い休憩",
   "restartSession": "セッションを再開",
   "skipToNext": "次へスキップ",
   "settings": "設定",
@@ -1450,7 +1223,6 @@
   "notification_permission_denied_hint": "ScreenTimeの通知を有効にするには、システム設定を開いてください。",
   "notification_permission_required": "通知の許可が必要です",
   "notification_permission_required_message": "ScreenTimeは通知を送信するために許可が必要です。",
-  "cancel": "キャンセル",
   "open_settings": "設定を開く",
   "allow_notifications": "通知を許可",
   "permission_allowed": "許可済み",
@@ -1467,8 +1239,7 @@
   "disabled": "無効",
   "advanced_options": "詳細オプション",
   "sync_ready": "同期準備完了",
-  "success": "成功！",
-  "error": "エラー",
+  "success": "成功",
   "destructive_badge": "破壊的",
   "recommended_badge": "推奨",
   "safe_badge": "安全",
@@ -1477,9 +1248,7 @@
   "apps": "アプリ",
   "sortAscending": "昇順で並べ替え",
   "sortDescending": "降順で並べ替え",
-  "clearSearch": "検索をクリア",
   "applicationsShowing": "{count}個のアプリケーションを表示中",
-  "totalTime": "合計時間",
   "valueLabel": "値：{value}",
   "appsCount": "{count}個のアプリ",
   "categoriesCount": "{count}個のカテゴリ",
@@ -1526,7 +1295,6 @@
   "colorPickerHexColor": "16進数カラー",
   "colorPickerHexPlaceholder": "RRGGBB",
   "colorPickerRGB": "RGB",
-  "cancel": "キャンセル",
   "select": "選択",
   "themeCustomization": "テーマのカスタマイズ",
   "chooseThemePreset": "テーマプリセットを選択",
@@ -1543,7 +1311,6 @@
       }
     }
   },
-  "edit": "編集",
   "customThemeNumber": "カスタムテーマ {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1616,8 +1383,6 @@
   "sampleCardTitle": "サンプルカードタイトル",
   "sampleSecondaryText": "これは下に表示されるセカンダリテキストです。",
   "primary": "プライマリ",
-  "success": "成功",
-  "error": "エラー",
   "secondary": "セカンダリ",
   "warning": "警告",
   "launchAtStartupTitle": "スタートアップ時に起動",
@@ -1627,7 +1392,7 @@
   "openSettings": "設定を開く",
   "permissionGrantedTitle": "許可が付与されました",
   "permissionGrantedDescription": "入力監視を有効にするには、アプリを再起動する必要があります。",
-  "continueButton": "続行",
+  "continueButton": "続ける",
   "restartRequiredTitle": "再起動が必要です",
   "restartRequiredDescription": "キーボード監視を有効にするには、アプリを再起動する必要があります。これは macOS の仕様です。",
   "restartNote": "再起動後、アプリは自動的に再起動します。",
@@ -1635,8 +1400,6 @@
   "restartLater": "後で再起動",
   "restartFailedTitle": "再起動に失敗しました",
   "restartFailedMessage": "アプリを自動的に再起動できませんでした。終了（Cmd+Q）して手動で再起動してください。",
-  "ok": "OK",
-  "error": "エラー",
   "exportAnalyticsReport": "分析レポートをエクスポート",
   "chooseExportFormat": "エクスポート形式を選択：",
   "beautifulExcelReport": "美しいExcelレポート",
@@ -1646,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 日別内訳 - 視覚的な使用パターン",
   "appsSheetDescription": "📱 アプリシート - 詳細なアプリランキング",
   "insightsDescription": "💡 インサイト - スマートな推奨事項",
-  "cancel": "キャンセル",
-  "exportSuccessful": "エクスポート成功",
   "beautifulExcelExportSuccess": "美しいExcelレポートが正常にエクスポートされました！🎉",
-  "exportFailed": "エクスポート失敗",
   "failedToExportReport": "レポートのエクスポートに失敗しました：{error}",
   "exporting": "エクスポート中...",
   "exportExcel": "Excelエクスポート",
   "saveAnalyticsReport": "分析レポートを保存",
   "analyticsReportFileName": "分析レポート_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "使用状況分析レポート",
   "generated": "作成日時：",
   "period": "期間：",
-  "dateRange": "日付範囲：",
   "dateRangeValue": "{startDate} ～ {endDate}",
-  
   "keyMetrics": "主要指標",
   "metric": "指標",
   "value": "値",
   "change": "変化",
   "trend": "傾向",
-  
-  "totalScreenTime": "合計スクリーン時間",
-  "productiveTime": "生産的時間",
   "productivityRate": "生産性率",
-  "focusSessions": "集中セッション",
-  "mostUsedApp": "最も使用されたアプリ",
-  
   "trendUp": "上昇",
   "trendDown": "下降",
   "trendExcellent": "優秀",
@@ -1682,71 +1433,47 @@
   "trendActive": "アクティブ",
   "trendNone": "なし",
   "trendTop": "トップ",
-  
-  "categoryBreakdown": "カテゴリ内訳",
   "category": "カテゴリ",
   "percentage": "パーセント",
   "visual": "ビジュアル",
-  
-  "dailyScreenTime": "日別スクリーン時間",
   "statistics": "統計",
   "averageDaily": "日平均",
   "highestDay": "最高の日",
   "lowestDay": "最低の日",
-  
-  "date": "日付",
   "day": "曜日",
-  "hours": "時間",
-  "minutes": "分",
-  
   "applicationUsageDetails": "アプリケーション使用詳細",
   "totalApps": "アプリ合計：",
   "productiveApps": "生産的アプリ：",
-  
   "rank": "順位",
   "application": "アプリケーション",
   "time": "時間",
   "percentOfTotal": "合計の%",
   "type": "タイプ",
   "usageLevel": "使用レベル",
-  
-  "productive": "生産的",
   "leisure": "娯楽",
-  
   "usageLevelVeryHigh": "非常に高い ||||||||",
   "usageLevelHigh": "高い ||||||",
   "usageLevelMedium": "中程度 ||||",
   "usageLevelLow": "低い ||",
-  
   "keyInsightsTitle": "主要なインサイトと推奨事項",
   "personalizedRecommendations": "パーソナライズされた推奨事項",
-  
   "insightHighDailyUsage": "高い日次使用量：1日平均{hours}時間のスクリーン時間を使用しています",
   "insightLowDailyUsage": "低い日次使用量：1日平均{hours}時間 - 素晴らしいバランスです！",
   "insightModerateUsage": "適度な使用量：1日平均{hours}時間のスクリーン時間",
-  
   "insightExcellentProductivity": "優れた生産性：スクリーン時間の{percentage}%が生産的な作業です！",
   "insightGoodProductivity": "良好な生産性：スクリーン時間の{percentage}%が生産的です",
   "insightLowProductivity": "低生産性アラート：スクリーン時間のわずか{percentage}%が生産的です",
-  
   "insightFocusSessions": "集中セッション：{count}セッション完了（1日平均{avgPerDay}）",
   "insightGreatFocusHabit": "素晴らしい集中習慣：{count}回の完了セッションで素晴らしい集中ルーティンを構築しました！",
   "insightNoFocusSessions": "集中セッションなし：生産性を向上させるために集中モードの使用を検討してください",
-  
   "insightScreenTimeTrend": "スクリーン時間の傾向：前期間と比較して使用量が{percentage}%{direction}",
   "insightProductiveTimeTrend": "生産的時間の傾向：前期間と比較して生産的時間が{percentage}%{direction}",
-  
   "directionIncreased": "増加しました",
   "directionDecreased": "減少しました",
-  
   "insightTopCategory": "トップカテゴリ：{category}が合計時間の{percentage}%を占めています",
-  
   "insightMostUsedApp": "最も使用されたアプリ：{appName}が時間の{percentage}%（{duration}）を占めています",
-  
   "insightUsageVaries": "使用量に大きな差：{highDay}は{lowDay}より{multiplier}倍多い使用量でした",
-  
   "insightNoInsights": "重要なインサイトはありません",
-  
   "recScheduleFocusSessions": "生産性を向上させるために、1日を通してより多くの集中セッションをスケジュールしてみてください",
   "recSetAppLimits": "娯楽アプリに制限を設定することを検討してください",
   "recAimForFocusSessions": "一貫した習慣を構築するために、1日あたり少なくとも1〜2回の集中セッションを目指してください",
@@ -1757,10 +1484,6 @@
   "recScheduleFocusedWork": "生産的時間が減少しました。カレンダーに集中作業ブロックをスケジュールしてみてください",
   "recKeepUpGreatWork": "その調子です！スクリーン時間の習慣は健康的に見えます",
   "recContinueFocusSessions": "生産性を維持するために集中セッションを引き続き使用してください",
-  
-  "durationHoursMinutes": "{hours}時間{minutes}分",
-  "durationMinutesOnly": "{minutes}分",
-  
   "sheetSummary": "サマリー",
   "sheetDailyBreakdown": "日別内訳",
   "sheetApps": "アプリ",
@@ -1814,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "合計時間",
   "workPhases": "作業フェーズ",
   "averageLength": "平均時間",
   "mostProductive": "最も生産的",
@@ -1875,7 +1597,6 @@
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "{date}にリリース",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1886,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "このバージョンの変更履歴はありません。",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "変更履歴を読み込めません",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "このバージョンの変更履歴を取得できませんでした。インターネット接続を確認するか、GitHubのリリースページをご覧ください。",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "OK",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "続ける",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "すべてのアプリ",
-  "tracking": "追跡中",
   "notTracking": "未追跡",
   "allVisibility": "すべて",
   "visible": "表示",
   "hidden": "非表示",
   "todaysLimitUsage": "今日の制限使用状況",
-"thisWeekAtAGlance": "今週の概要",
-"hourlyActivityHeatmap": "時間別アクティビティヒートマップ",
-"sessions": "セッション",
-"thisWeek": "今週",
-"productivityScore": "生産性スコア",
-"streaks": "連続記録",
-"weekOverWeek": "前週比",
-"sameAsLastWeek": "先週と同じ",
-"moreUsageThanLastWeek": "先週より{percent}%多い",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "先週より{percent}%少ない",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "制限を{duration}超過",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "残り{duration}",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "合計セッション数",
-"avgSession": "平均セッション",
-"longestSession": "最長セッション",
-"mostActive": "最もアクティブ",
-"peakUsage": "ピーク使用量",
-"dailyAverage": "日次平均",
-"daysUsedInARow": "連続使用日数",
-"daysSingular": "日",
-"daysPlural": "日",
-"daysOverLimitInARow": "連続制限超過日数",
-"withinLimitAllWeek": "今週はすべて制限内",
-"productivityScoreGreat": "素晴らしい",
-"productivityScoreModerate": "普通",
-"productivityScoreNeedsAttention": "注意が必要",
-"productiveAppMotivation": "生産的なアプリ — この調子で",
-"nonProductiveAppSuggestion": "非生産的 — 使用を減らすことを検討",
-"legendUsage": "使用量",
-"legendAverage": "平均",
-"legendLimit": "制限",
-"chartPeak": "ピーク",
-"overLimitBy": "+{duration} 制限超過",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "データなし",
-"yesterday": "昨日",
-"changelog": "変更履歴",
-"exportingLabel": "エクスポート中...",
-"@exportingLabel": {
-  "description": "エクスポート処理中にエクスポートボタンに表示されるラベル"
-},
-"exportExcelLabel": "Excelをエクスポート",
-"@exportExcelLabel": {
-  "description": "エクスポートボタンに表示されるラベル"
-},
+  "thisWeekAtAGlance": "今週の概要",
+  "hourlyActivityHeatmap": "時間別アクティビティヒートマップ",
+  "productivityScore": "生産性スコア",
+  "streaks": "連続記録",
+  "weekOverWeek": "前週比",
+  "sameAsLastWeek": "先週と同じ",
+  "moreUsageThanLastWeek": "先週より{percent}%多い",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "先週より{percent}%少ない",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "制限を{duration}超過",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "残り{duration}",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "合計セッション数",
+  "avgSession": "平均セッション",
+  "mostActive": "最もアクティブ",
+  "peakUsage": "ピーク使用量",
+  "dailyAverage": "日次平均",
+  "daysUsedInARow": "連続使用日数",
+  "daysSingular": "日",
+  "daysPlural": "日",
+  "daysOverLimitInARow": "連続制限超過日数",
+  "withinLimitAllWeek": "今週はすべて制限内",
+  "productivityScoreGreat": "素晴らしい",
+  "productivityScoreModerate": "普通",
+  "productivityScoreNeedsAttention": "注意が必要",
+  "productiveAppMotivation": "生産的なアプリ — この調子で",
+  "nonProductiveAppSuggestion": "非生産的 — 使用を減らすことを検討",
+  "legendUsage": "使用量",
+  "legendAverage": "平均",
+  "legendLimit": "制限",
+  "chartPeak": "ピーク",
+  "overLimitBy": "+{duration} 制限超過",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "データなし",
+  "yesterday": "昨日",
+  "changelog": "変更履歴",
+  "exportingLabel": "エクスポート中...",
+  "@exportingLabel": {
+    "description": "エクスポート処理中にエクスポートボタンに表示されるラベル"
+  },
+  "exportExcelLabel": "Excelをエクスポート",
+  "@exportExcelLabel": {
+    "description": "エクスポートボタンに表示されるラベル"
+  },
   "dailyResetTimeTitle": "デイリーリセット時間",
   "dailyResetTimeDescription": "スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。",
   "crashReportingTitle": "クラッシュレポート",
-  "crashReportingDescription": "Scolectの改善に役立つ匿名クラッシュレポートを送信します。個人データや使用履歴は含まれません。"
+  "crashReportingDescription": "Scolectの改善に役立つ匿名クラッシュレポートを送信します。個人データや使用履歴は含まれません。",
+  "narrativeTodaySpent": "今日はパソコンで{timeStr}を過ごしました。",
+  "narrativeMostFocused": "最も集中した時間は{start} – {end}でした。",
+  "narrativeFocusSessions": "合計{fsMinutes}分のフォーカス{focusSessionsCount, plural, =1{セッション} other{セッション}}を{focusSessions}回完了しました。",
+  "narrativeCheckedAppShort": "{topAppName}を{topAppOpenCount}回チェックしましたが、どれも短時間でした。",
+  "narrativeCheckedAppLong": "{topAppName}での時間のほとんどは、わずか{topAppOpenCount}回の{topAppOpenCountPlural, plural, =1{セッション} other{セッション}}に費やされました。",
+  "narrativeToneSolid": "充実した1日でした。",
+  "narrativeToneDecent": "まずまずの進歩です。",
+  "narrativeToneLight": "軽い1日 — それも良いでしょう。",
+  "narrativeToneImprove": "明日はもっと良くなる余地があります。",
+  "habitDnaTitle": "あなたの習慣DNA",
+  "habitDnaAnalyzed": "{daysAnalyzed}日間分析",
+  "habitDnaChronotype": "クロノタイプ",
+  "habitDnaWorkStyle": "ワークスタイル",
+  "habitDnaPeakFocus": "ピークフォーカス",
+  "habitDnaAvgSession": "平均セッション",
+  "habitDnaBestDay": "最高の日",
+  "habitDnaRoughDay": "大変な日",
+  "habitDnaKryptonite": "最大の気晴らし: {appName}",
+  "chronotypeMorning": "朝型",
+  "chronotypeAfternoon": "午後ピーク",
+  "chronotypeNight": "夜型",
+  "chronotypeMixed": "混合型",
+  "workStyleDeep": "深い集中",
+  "workStyleSwitcher": "タスクスイッチャー",
+  "workStyleBalanced": "バランス型",
+  "timeFormatAm": "午前{hour}時",
+  "timeFormatPm": "午後{hour}時",
+  "timeFormatMidnight": "深夜",
+  "timeFormatNoon": "正午",
+  "weeklyStoryTitle": "今週",
+  "weeklyStoryWeekNumber": "第{weekNumber}週",
+  "weeklyStoryHeadline": "第{weekNumber}週 — これまで画面に{timeStr}。",
+  "weeklyStoryReclaimed": "第1週と比べて{diff}を取り戻しました。",
+  "weeklyStoryUp": "第1週よりスクリーンタイムが{diff}増加しました。",
+  "weeklyStoryImprovementArea": "まだ改善中: {worstCat}に{timeLabel}。",
+  "weekdayNameMonday": "月曜日",
+  "weekdayNameTuesday": "火曜日",
+  "weekdayNameWednesday": "水曜日",
+  "weekdayNameThursday": "木曜日",
+  "weekdayNameFriday": "金曜日",
+  "weekdayNameSaturday": "土曜日",
+  "weekdayNameSunday": "日曜日",
+  "weekdayNameUnknown": "その日",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

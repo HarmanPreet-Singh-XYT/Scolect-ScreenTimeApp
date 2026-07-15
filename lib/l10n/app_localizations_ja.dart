@@ -2985,4 +2985,175 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dailyResetTimeDescription => 'スクリーンタイムカウンターが新しい日にリセットされる時間を設定します。';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return '今日はパソコンで$timeStrを過ごしました。';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return '最も集中した時間は$start – $endでした。';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: 'セッション',
+      one: 'セッション',
+    );
+    return '合計$fsMinutes分のフォーカス$_temp0を$focusSessions回完了しました。';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return '$topAppNameを$topAppOpenCount回チェックしましたが、どれも短時間でした。';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: 'セッション',
+      one: 'セッション',
+    );
+    return '$topAppNameでの時間のほとんどは、わずか$topAppOpenCount回の$_temp0に費やされました。';
+  }
+
+  @override
+  String get narrativeToneSolid => '充実した1日でした。';
+
+  @override
+  String get narrativeToneDecent => 'まずまずの進歩です。';
+
+  @override
+  String get narrativeToneLight => '軽い1日 — それも良いでしょう。';
+
+  @override
+  String get narrativeToneImprove => '明日はもっと良くなる余地があります。';
+
+  @override
+  String get habitDnaTitle => 'あなたの習慣DNA';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '$daysAnalyzed日間分析';
+  }
+
+  @override
+  String get habitDnaChronotype => 'クロノタイプ';
+
+  @override
+  String get habitDnaWorkStyle => 'ワークスタイル';
+
+  @override
+  String get habitDnaPeakFocus => 'ピークフォーカス';
+
+  @override
+  String get habitDnaAvgSession => '平均セッション';
+
+  @override
+  String get habitDnaBestDay => '最高の日';
+
+  @override
+  String get habitDnaRoughDay => '大変な日';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return '最大の気晴らし: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => '朝型';
+
+  @override
+  String get chronotypeAfternoon => '午後ピーク';
+
+  @override
+  String get chronotypeNight => '夜型';
+
+  @override
+  String get chronotypeMixed => '混合型';
+
+  @override
+  String get workStyleDeep => '深い集中';
+
+  @override
+  String get workStyleSwitcher => 'タスクスイッチャー';
+
+  @override
+  String get workStyleBalanced => 'バランス型';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '午前$hour時';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '午後$hour時';
+  }
+
+  @override
+  String get timeFormatMidnight => '深夜';
+
+  @override
+  String get timeFormatNoon => '正午';
+
+  @override
+  String get weeklyStoryTitle => '今週';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return '第$weekNumber週';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return '第$weekNumber週 — これまで画面に$timeStr。';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return '第1週と比べて$diffを取り戻しました。';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return '第1週よりスクリーンタイムが$diff増加しました。';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return 'まだ改善中: $worstCatに$timeLabel。';
+  }
+
+  @override
+  String get weekdayNameMonday => '月曜日';
+
+  @override
+  String get weekdayNameTuesday => '火曜日';
+
+  @override
+  String get weekdayNameWednesday => '水曜日';
+
+  @override
+  String get weekdayNameThursday => '木曜日';
+
+  @override
+  String get weekdayNameFriday => '金曜日';
+
+  @override
+  String get weekdayNameSaturday => '土曜日';
+
+  @override
+  String get weekdayNameSunday => '日曜日';
+
+  @override
+  String get weekdayNameUnknown => 'その日';
 }

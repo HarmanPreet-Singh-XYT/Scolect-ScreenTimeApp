@@ -1,76 +1,61 @@
 {
   "@@locale": "fr",
-  
   "appWindowTitle": "Scolect - Suivi du Temps d'Écran et de l'Utilisation des Applications",
   "@appWindowTitle": {
     "description": "The title shown in the window title bar"
   },
-  
   "appName": "Scolect",
   "@appName": {
     "description": "The name of the application"
   },
-  
   "appTitle": "Temps d'Écran Productif",
   "@appTitle": {
     "description": "The app title/tagline"
   },
-  
   "sidebarTitle": "Temps d'Écran",
   "@sidebarTitle": {
     "description": "Title shown in the sidebar"
   },
-  
   "sidebarSubtitle": "Open Source",
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
-  
   "trayShowWindow": "Afficher la Fenêtre",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"
   },
-  
   "trayStartFocusMode": "Démarrer le Mode Concentration",
   "@trayStartFocusMode": {
     "description": "Tray menu item to start focus mode"
   },
-  
   "trayStopFocusMode": "Arrêter le Mode Concentration",
   "@trayStopFocusMode": {
     "description": "Tray menu item to stop focus mode"
   },
-  
   "trayReports": "Rapports",
   "@trayReports": {
     "description": "Tray menu item for reports"
   },
-  
   "trayAlertsLimits": "Alertes et Limites",
   "@trayAlertsLimits": {
     "description": "Tray menu item for alerts and limits"
   },
-  
   "trayApplications": "Applications",
   "@trayApplications": {
     "description": "Tray menu item for applications"
   },
-  
   "trayDisableNotifications": "Désactiver les Notifications",
   "@trayDisableNotifications": {
     "description": "Tray menu item to disable notifications"
   },
-  
   "trayEnableNotifications": "Activer les Notifications",
   "@trayEnableNotifications": {
     "description": "Tray menu item to enable notifications"
   },
-  
   "trayVersionPrefix": "Version : ",
   "@trayVersionPrefix": {
     "description": "Prefix text for version display in tray"
   },
-  
   "trayVersion": "Version : {version}",
   "@trayVersion": {
     "description": "Version display with placeholder",
@@ -81,49 +66,39 @@
       }
     }
   },
-  
   "trayExit": "Quitter",
   "@trayExit": {
     "description": "Tray menu item to exit the application"
   },
-  
   "navOverview": "Aperçu",
   "@navOverview": {
     "description": "Navigation item for overview page"
   },
-  
   "navApplications": "Applications",
   "@navApplications": {
     "description": "Navigation item for applications page"
   },
-  
   "navAlertsLimits": "Alertes et Limites",
   "@navAlertsLimits": {
     "description": "Navigation item for alerts and limits page"
   },
-  
   "navReports": "Rapports",
   "@navReports": {
     "description": "Navigation item for reports page"
   },
-  
   "navFocusMode": "Mode Concentration",
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
   "navSettings": "Paramètres",
   "@navSettings": {
     "description": "Navigation item for settings page"
   },
-  
   "navHelp": "Aide",
   "@navHelp": {
     "description": "Navigation item for help page"
   },
-  
   "helpTitle": "Aide",
-  
   "faqCategoryGeneral": "Questions Générales",
   "faqCategoryApplications": "Gestion des Applications",
   "faqCategoryReports": "Analyses et Rapports d'Utilisation",
@@ -131,127 +106,92 @@
   "faqCategoryFocusMode": "Mode Concentration et Minuteur Pomodoro",
   "faqCategorySettings": "Paramètres et Personnalisation",
   "faqCategoryTroubleshooting": "Dépannage",
-  
   "faqGeneralQ1": "Comment cette application suit-elle le temps d'écran ?",
   "faqGeneralA1": "L'application surveille l'utilisation de votre appareil en temps réel, en suivant le temps passé sur différentes applications. Elle fournit des informations complètes sur vos habitudes numériques, y compris le temps d'écran total, le temps productif et l'utilisation spécifique des applications.",
-  
   "faqGeneralQ2": "Qu'est-ce qui rend une application 'Productive' ?",
   "faqGeneralA2": "Vous pouvez marquer manuellement les applications comme productives dans la section 'Applications'. Les applications productives contribuent à votre Score de Productivité, qui calcule le pourcentage de temps d'écran consacré aux applications liées au travail ou bénéfiques.",
-  
   "faqGeneralQ3": "Quelle est la précision du suivi du temps d'écran ?",
   "faqGeneralA3": "L'application utilise un suivi au niveau du système pour fournir une mesure précise de l'utilisation de votre appareil. Elle capture le temps au premier plan pour chaque application avec un impact minimal sur la batterie.",
-  
   "faqGeneralQ4": "Puis-je personnaliser la catégorisation de mes applications ?",
   "faqGeneralA4": "Absolument ! Vous pouvez créer des catégories personnalisées, attribuer des applications à des catégories spécifiques et modifier facilement ces attributions dans la section 'Applications'. Cela aide à créer des analyses d'utilisation plus significatives.",
-  
   "faqGeneralQ5": "Quelles informations puis-je obtenir de cette application ?",
   "faqGeneralA5": "L'application offre des informations complètes, notamment le Score de Productivité, les modèles d'utilisation par moment de la journée, l'utilisation détaillée des applications, le suivi des sessions de concentration, et des analyses visuelles comme des graphiques et des diagrammes circulaires pour vous aider à comprendre et améliorer vos habitudes numériques.",
-  
   "faqAppsQ1": "Comment masquer des applications spécifiques du suivi ?",
   "faqAppsA1": "Dans la section 'Applications', vous pouvez basculer la visibilité des applications.",
-  
   "faqAppsQ2": "Puis-je rechercher et filtrer mes applications ?",
   "faqAppsA2": "Oui, la section Applications comprend une fonctionnalité de recherche et des options de filtrage. Vous pouvez filtrer les applications par catégorie, statut de productivité, statut de suivi et visibilité.",
-  
   "faqAppsQ3": "Quelles options d'édition sont disponibles pour les applications ?",
   "faqAppsA3": "Pour chaque application, vous pouvez modifier : l'attribution de catégorie, le statut de productivité, le suivi d'utilisation, la visibilité dans les rapports et définir des limites de temps quotidiennes individuelles.",
-  
   "faqAppsQ4": "Comment les catégories d'applications sont-elles déterminées ?",
   "faqAppsA4": "Les catégories initiales sont suggérées par le système, mais vous avez un contrôle total pour créer, modifier et attribuer des catégories personnalisées selon votre flux de travail et vos préférences.",
-  
   "faqReportsQ1": "Quels types de rapports sont disponibles ?",
   "faqReportsA1": "Les rapports incluent : Temps d'écran total, Temps productif, Applications les plus utilisées, Sessions de concentration, Graphique du temps d'écran quotidien, Diagramme circulaire de répartition par catégorie, Utilisation détaillée des applications, Tendances d'utilisation hebdomadaires et Analyse des modèles d'utilisation par moment de la journée.",
-  
   "faqReportsQ2": "Quelle est la précision des rapports d'utilisation des applications ?",
   "faqReportsA2": "Les rapports d'utilisation détaillés des applications montrent : Nom de l'application, Catégorie, Temps total passé, Statut de productivité, et offrent une section 'Actions' avec des informations plus approfondies comme le résumé d'utilisation, les limites quotidiennes, les tendances d'utilisation et les métriques de productivité.",
-  
   "faqReportsQ3": "Puis-je analyser mes tendances d'utilisation au fil du temps ?",
   "faqReportsA3": "Oui ! L'application fournit des comparaisons semaine après semaine, montrant des graphiques d'utilisation sur les semaines passées, l'utilisation quotidienne moyenne, les sessions les plus longues et les totaux hebdomadaires pour vous aider à suivre vos habitudes numériques.",
-  
   "faqReportsQ4": "Qu'est-ce que l'analyse du 'Modèle d'Utilisation' ?",
   "faqReportsA4": "Le Modèle d'Utilisation décompose votre temps d'écran en segments matin, après-midi, soir et nuit. Cela vous aide à comprendre quand vous êtes le plus actif sur votre appareil et à identifier les domaines potentiels d'amélioration.",
-  
   "faqAlertsQ1": "Quelle est la granularité des limites de temps d'écran ?",
   "faqAlertsA1": "Vous pouvez définir des limites globales de temps d'écran quotidien et des limites individuelles par application. Les limites peuvent être configurées en heures et minutes, avec des options pour réinitialiser ou ajuster selon les besoins.",
-  
   "faqAlertsQ2": "Quelles options de notification sont disponibles ?",
   "faqAlertsA2": "L'application offre plusieurs types de notifications : Alertes système lorsque vous dépassez le temps d'écran, Alertes fréquentes à intervalles personnalisables (1, 5, 15, 30 ou 60 minutes), et des bascules pour le mode concentration, le temps d'écran et les notifications spécifiques aux applications.",
-  
   "faqAlertsQ3": "Puis-je personnaliser les alertes de limite ?",
   "faqAlertsA3": "Oui, vous pouvez personnaliser la fréquence des alertes, activer/désactiver des types spécifiques d'alertes et définir différentes limites pour le temps d'écran global et les applications individuelles.",
-  
   "faqFocusQ1": "Quels types de Modes Concentration sont disponibles ?",
   "faqFocusA1": "Les modes disponibles incluent Travail Approfondi (sessions de concentration plus longues), Tâches Rapides (courtes périodes de travail) et Mode Lecture. Chaque mode vous aide à structurer efficacement votre travail et vos temps de pause.",
-  
   "faqFocusQ2": "Quelle est la flexibilité du Minuteur Pomodoro ?",
   "faqFocusA2": "Le minuteur est hautement personnalisable. Vous pouvez ajuster la durée de travail, la durée de la pause courte et la durée de la pause longue. Des options supplémentaires incluent le démarrage automatique des sessions suivantes et les paramètres de notification.",
-  
   "faqFocusQ3": "Que montre l'historique du Mode Concentration ?",
   "faqFocusA3": "L'historique du Mode Concentration suit les sessions de concentration quotidiennes, montrant le nombre de sessions par jour, le graphique des tendances, la durée moyenne des sessions, le temps total de concentration et un diagramme circulaire de distribution du temps décomposant les sessions de travail, les pauses courtes et les pauses longues.",
-  
   "faqFocusQ4": "Puis-je suivre la progression de mes sessions de concentration ?",
   "faqFocusA4": "L'application dispose d'une interface de minuteur circulaire avec des boutons lecture/pause, recharger et paramètres. Vous pouvez facilement suivre et gérer vos sessions de concentration avec des contrôles intuitifs.",
-  
   "faqSettingsQ1": "Quelles options de personnalisation sont disponibles ?",
   "faqSettingsA1": "La personnalisation comprend la sélection du thème (Système, Clair, Sombre), les paramètres de langue, le comportement au démarrage, des contrôles de notification complets et des options de gestion des données comme effacer les données ou réinitialiser les paramètres.",
-  
   "faqSettingsQ2": "Comment puis-je donner mon avis ou signaler des problèmes ?",
   "faqSettingsA2": "En bas de la section Paramètres, vous trouverez des boutons pour Signaler un Bug, Soumettre un Commentaire ou Contacter le Support. Ceux-ci vous redirigeront vers les canaux de support appropriés.",
-  
   "faqSettingsQ3": "Que se passe-t-il lorsque j'efface mes données ?",
   "faqSettingsA3": "Effacer les données réinitialisera toutes vos statistiques d'utilisation, l'historique des sessions de concentration et les paramètres personnalisés. C'est utile pour repartir de zéro ou pour le dépannage.",
-  
   "faqTroubleQ1": "Les données ne s'affichent pas, erreur d'ouverture de hive",
   "faqTroubleA1": "Le problème est connu, la solution temporaire est d'effacer les données via les paramètres et si cela ne fonctionne pas, allez dans Documents et supprimez les fichiers suivants s'ils existent - harman_screentime_app_usage_box.hive et harman_screentime_app_usage.lock, il est également suggéré de mettre à jour l'application vers la dernière version.",
-  
   "faqTroubleQ2": "L'application s'ouvre à chaque démarrage, que faire ?",
   "faqTroubleA2": "C'est un problème connu qui se produit sur Windows 10, la solution temporaire est d'activer Lancer en Minimisé dans les paramètres pour qu'elle se lance en minimisé.",
-  
   "usageAnalytics": "Analyses d'Utilisation",
   "@usageAnalytics": {
     "description": "Main page title for the analytics/reports section"
   },
-  
   "last7Days": "7 Derniers Jours",
   "@last7Days": {
     "description": "Time period option - last 7 days"
   },
-  
   "lastMonth": "Dernier Mois",
   "@lastMonth": {
     "description": "Time period option - last month"
   },
-  
   "last3Months": "3 Derniers Mois",
   "@last3Months": {
     "description": "Time period option - last 3 months"
   },
-  
   "lifetime": "Depuis le Début",
   "@lifetime": {
     "description": "Time period option - all available data"
   },
-  
   "custom": "Personnalisé",
   "@custom": {
     "description": "Time period option - custom date range"
   },
-  
   "loadingAnalyticsData": "Chargement des données d'analyse...",
   "@loadingAnalyticsData": {
     "description": "Loading message while fetching analytics"
   },
-  
   "tryAgain": "Réessayer",
   "@tryAgain": {
     "description": "Button to retry after an error"
   },
-  
   "failedToInitialize": "Échec de l'initialisation des analyses. Veuillez redémarrer l'application.",
   "@failedToInitialize": {
     "description": "Error message when analytics system fails to start"
   },
-  
   "unexpectedError": "Une erreur inattendue s'est produite : {error}. Veuillez réessayer plus tard.",
   "@unexpectedError": {
     "description": "Generic error message with error details",
@@ -262,7 +202,6 @@
       }
     }
   },
-  
   "errorLoadingAnalytics": "Erreur lors du chargement des données d'analyse : {error}. Veuillez vérifier votre connexion et réessayer.",
   "@errorLoadingAnalytics": {
     "description": "Error message when loading analytics data fails",
@@ -273,82 +212,66 @@
       }
     }
   },
-  
   "customDialogTitle": "Personnalisé",
   "@customDialogTitle": {
     "description": "Title for custom date selection dialog"
   },
-  
-  "dateRange": "Plage de Dates",
+  "dateRange": "Plage de Dates :",
   "@dateRange": {
     "description": "Label for date range selection mode"
   },
-  
   "specificDate": "Date Spécifique",
   "@specificDate": {
     "description": "Label for single date selection mode"
   },
-  
   "startDate": "Date de Début : ",
   "@startDate": {
     "description": "Label for start date picker"
   },
-  
   "endDate": "Date de Fin : ",
   "@endDate": {
     "description": "Label for end date picker"
   },
-  
-  "date": "Date : ",
+  "date": "Date",
   "@date": {
     "description": "Label for single date picker"
   },
-  
   "cancel": "Annuler",
   "@cancel": {
     "description": "Cancel button text"
   },
-  
   "apply": "Appliquer",
   "@apply": {
     "description": "Apply/Confirm button text"
   },
-  
   "ok": "OK",
   "@ok": {
-    "description": "OK button text"
+    "description": "Generic OK button label"
   },
-  
   "invalidDateRange": "Plage de Dates Invalide",
   "@invalidDateRange": {
     "description": "Error dialog title for invalid date selection"
   },
-  
   "startDateBeforeEndDate": "La date de début doit être antérieure ou égale à la date de fin.",
   "@startDateBeforeEndDate": {
     "description": "Validation message for date range"
   },
-  
   "totalScreenTime": "Temps d'Écran Total",
   "@totalScreenTime": {
     "description": "Analytics box title for total screen time"
   },
-  
   "productiveTime": "Temps Productif",
   "@productiveTime": {
     "description": "Analytics box title for productive time"
   },
-  
-  "mostUsedApp": "Application la Plus Utilisée",
+  "mostUsedApp": "App la Plus Utilisée",
   "@mostUsedApp": {
     "description": "Analytics box title for most used application"
   },
-  
   "focusSessions": "Sessions de Concentration",
   "@focusSessions": {
     "description": "Analytics box title for focus sessions count"
   },
-  
   "positiveComparison": "+{percent}% vs période précédente",
   "@positiveComparison": {
     "description": "Comparison text for positive change",
@@ -359,7 +282,6 @@
       }
     }
   },
-  
   "negativeComparison": "{percent}% vs période précédente",
   "@negativeComparison": {
     "description": "Comparison text for negative change",
@@ -370,7 +292,6 @@
       }
     }
   },
-  
   "iconLabel": "Icône {title}",
   "@iconLabel": {
     "description": "Accessibility label for icons",
@@ -381,68 +302,54 @@
       }
     }
   },
-  
-  "dailyScreenTime": "Temps d'Écran Quotidien",
+  "dailyScreenTime": "TEMPS D'ÉCRAN QUOTIDIEN",
   "@dailyScreenTime": {
     "description": "Title for daily screen time chart"
   },
-  
-  "categoryBreakdown": "Répartition par Catégorie",
+  "categoryBreakdown": "RÉPARTITION PAR CATÉGORIE",
   "@categoryBreakdown": {
     "description": "Title for category breakdown pie chart"
   },
-  
   "noDataAvailable": "Aucune donnée disponible",
   "@noDataAvailable": {
     "description": "Empty state message when no data exists"
   },
-  
   "sectionLabel": "Section {title}",
   "@sectionLabel": {
-    "description": "Accessibility label for sections",
     "placeholders": {
       "title": {
-        "type": "String",
-        "example": "Category Breakdown"
+        "type": "String"
       }
     }
   },
-  
   "detailedApplicationUsage": "Utilisation Détaillée des Applications",
   "@detailedApplicationUsage": {
     "description": "Title for detailed application usage table"
   },
-  
   "searchApplications": "Rechercher des applications",
   "@searchApplications": {
     "description": "Placeholder text for search box"
   },
-  
   "nameHeader": "Nom",
   "@nameHeader": {
     "description": "Table column header for app name"
   },
-  
   "categoryHeader": "Catégorie",
   "@categoryHeader": {
     "description": "Table column header for category"
   },
-  
   "totalTimeHeader": "Temps Total",
   "@totalTimeHeader": {
     "description": "Table column header for total time"
   },
-  
   "productivityHeader": "Productivité",
   "@productivityHeader": {
     "description": "Table column header for productivity status"
   },
-  
   "actionsHeader": "Actions",
   "@actionsHeader": {
     "description": "Table column header for action buttons"
   },
-  
   "sortByOption": "Trier par : {option}",
   "@sortByOption": {
     "description": "Sort dropdown option text",
@@ -453,157 +360,126 @@
       }
     }
   },
-  
   "sortByName": "Nom",
   "@sortByName": {
     "description": "Sort option - by name"
   },
-  
   "sortByCategory": "Catégorie",
   "@sortByCategory": {
     "description": "Sort option - by category"
   },
-  
   "sortByUsage": "Utilisation",
   "@sortByUsage": {
     "description": "Sort option - by usage time"
   },
-  
   "productive": "Productif",
   "@productive": {
     "description": "Label for productive apps"
   },
-  
   "nonProductive": "Non-Productif",
   "@nonProductive": {
     "description": "Label for non-productive apps"
   },
-  
   "noApplicationsMatch": "Aucune application ne correspond à vos critères de recherche",
   "@noApplicationsMatch": {
     "description": "Empty state when search returns no results"
   },
-  
   "viewDetails": "Voir les détails",
   "@viewDetails": {
     "description": "Tooltip for view details button"
   },
-  
   "usageSummary": "Résumé d'Utilisation",
   "@usageSummary": {
     "description": "Section title in app details dialog"
   },
-  
   "usageOverPastWeek": "Utilisation de la Semaine Passée",
   "@usageOverPastWeek": {
     "description": "Section title for weekly usage chart"
   },
-  
   "usagePatternByTimeOfDay": "Modèle d'Utilisation par Moment de la Journée",
   "@usagePatternByTimeOfDay": {
     "description": "Section title for time of day breakdown"
   },
-  
   "patternAnalysis": "Analyse des Modèles",
   "@patternAnalysis": {
     "description": "Section title for usage pattern insights"
   },
-  
   "today": "Aujourd'hui",
   "@today": {
     "description": "Label for today's usage"
   },
-  
   "dailyLimit": "Limite Quotidienne",
   "@dailyLimit": {
     "description": "Label for daily usage limit"
   },
-  
   "noLimit": "Aucune limite",
   "@noLimit": {
     "description": "Text shown when no limit is set"
   },
-  
   "usageTrend": "Tendance d'Utilisation",
   "@usageTrend": {
     "description": "Label for usage trend indicator"
   },
-  
   "productivity": "Productivité",
   "@productivity": {
     "description": "Label for productivity status"
   },
-  
   "increasing": "En Hausse",
   "@increasing": {
     "description": "Trend label - usage increasing"
   },
-  
   "decreasing": "En Baisse",
   "@decreasing": {
     "description": "Trend label - usage decreasing"
   },
-  
   "stable": "Stable",
   "@stable": {
     "description": "Trend label - usage stable"
   },
-  
   "avgDailyUsage": "Utilisation Quotidienne Moy.",
   "@avgDailyUsage": {
     "description": "Stat card label for average daily usage"
   },
-  
-  "longestSession": "Session la Plus Longue",
+  "longestSession": "Session la plus longue",
   "@longestSession": {
     "description": "Stat card label for longest session"
   },
-  
   "weeklyTotal": "Total Hebdomadaire",
   "@weeklyTotal": {
     "description": "Stat card label for weekly total"
   },
-  
   "noHistoricalData": "Aucune donnée historique disponible",
   "@noHistoricalData": {
     "description": "Empty state for chart with no data"
   },
-  
   "morning": "Matin (6h-12h)",
   "@morning": {
     "description": "Time of day label - morning hours"
   },
-  
   "afternoon": "Après-midi (12h-17h)",
   "@afternoon": {
     "description": "Time of day label - afternoon hours"
   },
-  
   "evening": "Soir (17h-21h)",
   "@evening": {
     "description": "Time of day label - evening hours"
   },
-  
   "night": "Nuit (21h-6h)",
   "@night": {
     "description": "Time of day label - night hours"
   },
-  
   "usageInsights": "Aperçus d'Utilisation",
   "@usageInsights": {
     "description": "Section title for usage insights"
   },
-  
   "limitStatus": "Statut de la Limite",
   "@limitStatus": {
     "description": "Section title for limit status"
   },
-  
   "close": "Fermer",
   "@close": {
     "description": "Close button text"
   },
-  
   "primaryUsageTime": "Vous utilisez principalement {appName} pendant {timeOfDay}.",
   "@primaryUsageTime": {
     "description": "Insight about primary usage time",
@@ -618,7 +494,6 @@
       }
     }
   },
-  
   "significantIncrease": "Votre utilisation a augmenté de manière significative ({percentage}%) par rapport à la période précédente.",
   "@significantIncrease": {
     "description": "Insight about significant usage increase",
@@ -629,12 +504,10 @@
       }
     }
   },
-  
   "trendingUpward": "Votre utilisation est en hausse par rapport à la période précédente.",
   "@trendingUpward": {
     "description": "Insight about upward usage trend"
   },
-  
   "significantDecrease": "Votre utilisation a diminué de manière significative ({percentage}%) par rapport à la période précédente.",
   "@significantDecrease": {
     "description": "Insight about significant usage decrease",
@@ -645,27 +518,22 @@
       }
     }
   },
-  
   "trendingDownward": "Votre utilisation est en baisse par rapport à la période précédente.",
   "@trendingDownward": {
     "description": "Insight about downward usage trend"
   },
-  
   "consistentUsage": "Votre utilisation est restée constante par rapport à la période précédente.",
   "@consistentUsage": {
     "description": "Insight about consistent usage"
   },
-  
   "markedAsProductive": "Cette application est marquée comme productive dans vos paramètres.",
   "@markedAsProductive": {
     "description": "Insight about productive app status"
   },
-  
   "markedAsNonProductive": "Cette application est marquée comme non-productive dans vos paramètres.",
   "@markedAsNonProductive": {
     "description": "Insight about non-productive app status"
   },
-  
   "mostActiveTime": "Votre moment le plus actif est autour de {time}.",
   "@mostActiveTime": {
     "description": "Insight about most active hour",
@@ -676,17 +544,14 @@
       }
     }
   },
-  
   "noLimitSet": "Aucune limite d'utilisation n'a été définie pour cette application.",
   "@noLimitSet": {
     "description": "Message when no limit is configured"
   },
-  
   "limitReached": "Vous avez atteint votre limite quotidienne pour cette application.",
   "@limitReached": {
     "description": "Message when limit is reached"
   },
-  
   "aboutToReachLimit": "Vous êtes sur le point d'atteindre votre limite quotidienne avec seulement {remainingTime} restant.",
   "@aboutToReachLimit": {
     "description": "Warning message when approaching limit",
@@ -697,7 +562,6 @@
       }
     }
   },
-  
   "percentOfLimitUsed": "Vous avez utilisé {percent}% de votre limite quotidienne avec {remainingTime} restant.",
   "@percentOfLimitUsed": {
     "description": "Message showing percentage used",
@@ -712,7 +576,6 @@
       }
     }
   },
-  
   "remainingTime": "Il vous reste {time} sur votre limite quotidienne.",
   "@remainingTime": {
     "description": "Message showing remaining time",
@@ -723,12 +586,10 @@
       }
     }
   },
-  
   "todayChart": "Aujourd'hui",
   "@todayChart": {
     "description": "Label for today on charts"
   },
-  
   "hourPeriodAM": "{hour}h",
   "@hourPeriodAM": {
     "description": "Time format - AM hours",
@@ -739,7 +600,6 @@
       }
     }
   },
-  
   "hourPeriodPM": "{hour}h",
   "@hourPeriodPM": {
     "description": "Time format - PM hours",
@@ -750,7 +610,6 @@
       }
     }
   },
-  
   "durationHoursMinutes": "{hours}h {minutes}m",
   "@durationHoursMinutes": {
     "description": "Duration format with hours and minutes",
@@ -765,7 +624,6 @@
       }
     }
   },
-  
   "durationMinutesOnly": "{minutes}m",
   "@durationMinutesOnly": {
     "description": "Duration format with minutes only",
@@ -776,55 +634,49 @@
       }
     }
   },
-  
   "alertsLimitsTitle": "Alertes et Limites",
   "notificationsSettings": "Paramètres de Notifications",
   "overallScreenTimeLimit": "Limite Globale de Temps d'Écran",
   "applicationLimits": "Limites des Applications",
-  
   "popupAlerts": "Alertes Pop-up",
   "frequentAlerts": "Alertes Fréquentes",
   "soundAlerts": "Alertes Sonores",
   "systemAlerts": "Alertes Système",
-  
   "dailyTotalLimit": "Limite Quotidienne Totale : ",
-  "hours": "Heures : ",
-  "minutes": "Minutes : ",
+  "hours": "Heures",
+  "minutes": "Minutes",
   "currentUsage": "Utilisation Actuelle : ",
-  
   "tableName": "Nom",
   "tableCategory": "Catégorie",
   "tableDailyLimit": "Limite Quotidienne",
   "tableCurrentUsage": "Utilisation Actuelle",
   "tableStatus": "Statut",
   "tableActions": "Actions",
-  
   "addLimit": "Ajouter une Limite",
   "noApplicationsToDisplay": "Aucune application à afficher",
-  
   "statusActive": "Actif",
   "statusOff": "Désactivé",
   "durationNone": "Aucune",
-  
   "addApplicationLimit": "Ajouter une Limite d'Application",
   "selectApplication": "Sélectionner une Application",
   "selectApplicationPlaceholder": "Sélectionnez une application",
   "enableLimit": "Activer la Limite : ",
-  
   "editLimitTitle": "Modifier la Limite : {appName}",
   "@editLimitTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "failedToLoadData": "Échec du chargement des données : {error}",
   "@failedToLoadData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "resetSettingsTitle": "Réinitialiser les Paramètres ?",
   "resetSettingsContent": "Si vous réinitialisez les paramètres, vous ne pourrez pas les récupérer. Voulez-vous les réinitialiser ?",
   "resetAll": "Tout Réinitialiser",
@@ -833,63 +685,53 @@
   "add": "Ajouter",
   "error": "Erreur",
   "retry": "Réessayer",
-  
   "applicationsTitle": "Applications",
   "searchApplication": "Rechercher une Application",
-  
-  "tracking": "Suivi",
+  "tracking": "Suivies",
   "hiddenVisible": "Masqué/Visible",
   "selectCategory": "Sélectionner une Catégorie",
   "allCategories": "Toutes",
-  
   "tableScreenTime": "Temps d'Écran",
   "tableTracking": "Suivi",
   "tableHidden": "Masqué",
   "tableEdit": "Modifier",
-  
   "editAppTitle": "Modifier {appName}",
   "@editAppTitle": {
     "placeholders": {
-      "appName": {"type": "String"}
+      "appName": {
+        "type": "String"
+      }
     }
   },
-  
   "categorySection": "Catégorie",
   "customCategory": "Personnalisée",
   "customCategoryPlaceholder": "Entrez le nom de la catégorie personnalisée",
   "uncategorized": "Non catégorisé",
-  
   "isProductive": "Est Productif",
   "trackUsage": "Suivre l'Utilisation",
   "visibleInReports": "Visible dans les Rapports",
-  
   "timeLimitsSection": "Limites de Temps",
   "enableDailyLimit": "Activer la Limite Quotidienne",
   "setDailyTimeLimit": "Définir la limite de temps quotidienne :",
-  
   "saveChanges": "Enregistrer les Modifications",
-  
   "errorLoadingData": "Erreur lors du chargement des données d'aperçu : {error}",
   "@errorLoadingData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "focusModeTitle": "Mode Concentration",
-  
   "historySection": "Historique",
   "trendsSection": "Tendances",
   "timeDistributionSection": "Répartition du Temps",
   "sessionHistorySection": "Historique des Sessions",
-  
   "workSession": "Session de Travail",
   "shortBreak": "Pause Courte",
   "longBreak": "Pause Longue",
-  
   "dateHeader": "Date",
   "durationHeader": "Durée",
-  
   "monday": "Lundi",
   "tuesday": "Mardi",
   "wednesday": "Mercredi",
@@ -897,218 +739,179 @@
   "friday": "Vendredi",
   "saturday": "Samedi",
   "sunday": "Dimanche",
-  
   "focusModeSettingsTitle": "Paramètres du Mode Concentration",
-  
   "modeCustom": "Personnalisé",
   "modeDeepWork": "Travail Approfondi (60 min)",
   "modeQuickTasks": "Tâches Rapides (25 min)",
   "modeReading": "Lecture (45 min)",
-  
   "workDurationLabel": "Durée de Travail : {minutes} min",
   "@workDurationLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "shortBreakLabel": "Pause Courte : {minutes} min",
+  "shortBreakLabel": "Courte Pause",
   "@shortBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
-  "longBreakLabel": "Pause Longue : {minutes} min",
+  "longBreakLabel": "Longue Pause",
   "@longBreakLabel": {
     "placeholders": {
-      "minutes": {"type": "int"}
+      "minutes": {
+        "type": "int"
+      }
     }
   },
-  
   "autoStartNextSession": "Démarrer automatiquement la session suivante",
   "blockDistractions": "Bloquer les distractions pendant le mode concentration",
   "enableNotifications": "Activer les notifications",
-  
   "saved": "Enregistré",
-  
   "errorLoadingFocusModeData": "Erreur lors du chargement des données du mode concentration : {error}",
   "@errorLoadingFocusModeData": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
-  
   "overviewTitle": "Aperçu d'Aujourd'hui",
   "startFocusMode": "Démarrer le Mode Concentration",
-  
   "loadingProductivityData": "Chargement de vos données de productivité...",
   "noActivityDataAvailable": "Aucune donnée d'activité disponible",
   "startUsingApplications": "Commencez à utiliser vos applications pour suivre le temps d'écran et la productivité.",
   "refreshData": "Actualiser les Données",
-  
   "topApplications": "Applications Principales",
-  
   "noAppUsageDataAvailable": "Aucune donnée d'utilisation d'application disponible",
   "noApplicationDataAvailable": "Aucune donnée d'application disponible",
   "noCategoryDataAvailable": "Aucune donnée de catégorie disponible",
   "noApplicationLimitsSet": "Aucune limite d'application définie",
-  
   "screenLabel": "Temps",
   "timeLabel": "d'Écran",
   "productiveLabel": "Score",
   "scoreLabel": "Productif",
-  
   "defaultNone": "Aucun",
   "defaultTime": "0h 0m",
   "defaultCount": "0",
   "unknownApp": "Inconnu",
-  
   "settingsTitle": "Paramètres",
-  
   "generalSection": "Général",
   "notificationsSection": "Notifications",
   "dataSection": "Données",
   "versionSection": "Version",
-  
   "themeTitle": "Thème",
-  "themeDescription": "Thème de couleur de l'application (Redémarrage Requis)",
-  
+  "themeDescription": "Thème de couleur de l'application",
   "languageTitle": "Langue",
   "languageDescription": "Langue de l'application",
-  
   "startupBehaviourTitle": "Comportement au Démarrage",
   "startupBehaviourDescription": "Lancer au démarrage du système",
-  
   "launchMinimizedTitle": "Lancer en Minimisé",
   "launchMinimizedDescription": "Démarrer l'application dans la barre système (Recommandé pour Windows 10)",
-  
   "notificationsTitle": "Notifications",
   "notificationsAllDescription": "Toutes les notifications de l'application",
-  
   "focusModeNotificationsTitle": "Mode Concentration",
   "focusModeNotificationsDescription": "Toutes les notifications du mode concentration",
-  
   "screenTimeNotificationsTitle": "Temps d'Écran",
   "screenTimeNotificationsDescription": "Toutes les notifications de restriction du temps d'écran",
-  
   "appScreenTimeNotificationsTitle": "Temps d'Écran des Applications",
   "appScreenTimeNotificationsDescription": "Toutes les notifications de restriction du temps d'écran des applications",
-  
   "frequentAlertsTitle": "Intervalle des Alertes Fréquentes",
   "frequentAlertsDescription": "Définir l'intervalle pour les notifications fréquentes (minutes)",
-  
   "clearDataTitle": "Effacer les Données",
   "clearDataDescription": "Effacer tout l'historique et les données associées",
-  
   "resetSettingsTitle2": "Réinitialiser les Paramètres",
   "resetSettingsDescription": "Réinitialiser tous les paramètres",
-  
   "versionTitle": "Version",
   "versionDescription": "Version actuelle de l'application",
-  
   "contactButton": "Contact",
   "reportBugButton": "Signaler un Bug",
   "submitFeedbackButton": "Soumettre un Commentaire",
   "githubButton": "Github",
-  
   "clearDataDialogTitle": "Effacer les Données ?",
   "clearDataDialogContent": "Cela effacera tout l'historique et les données associées. Vous ne pourrez pas les récupérer. Voulez-vous continuer ?",
   "clearDataButtonLabel": "Effacer les Données",
-  
   "resetSettingsDialogTitle": "Réinitialiser les Paramètres ?",
   "resetSettingsDialogContent": "Cela réinitialisera tous les paramètres à leurs valeurs par défaut. Voulez-vous continuer ?",
   "resetButtonLabel": "Réinitialiser",
-  
   "cancelButton": "Annuler",
-  
   "couldNotLaunchUrl": "Impossible d'ouvrir {url}",
   "@couldNotLaunchUrl": {
     "placeholders": {
-      "url": {"type": "String"}
+      "url": {
+        "type": "String"
+      }
     }
   },
-  
   "errorMessage": "Erreur : {message}",
   "@errorMessage": {
     "placeholders": {
-      "message": {"type": "String"}
+      "message": {
+        "type": "String"
+      }
     }
   },
-
   "chart_focusTrends": "Tendances de Concentration",
   "@chart_focusTrends": {
     "description": "Title for focus trends chart"
   },
-  
   "chart_sessionCount": "Nombre de Sessions",
   "@chart_sessionCount": {
     "description": "Label for session count metric"
   },
-  
   "chart_avgDuration": "Durée Moyenne",
   "@chart_avgDuration": {
     "description": "Label for average duration metric"
   },
-  
   "chart_totalFocus": "Concentration Totale",
   "@chart_totalFocus": {
     "description": "Label for total focus time metric"
   },
-  
   "chart_yAxis_sessions": "Sessions",
   "@chart_yAxis_sessions": {
     "description": "Y-axis label for session count"
   },
-  
   "chart_yAxis_minutes": "Minutes",
   "@chart_yAxis_minutes": {
     "description": "Y-axis label for time in minutes"
   },
-  
   "chart_yAxis_value": "Valeur",
   "@chart_yAxis_value": {
     "description": "Generic y-axis label"
   },
-  
   "chart_monthOverMonthChange": "Variation mensuelle : ",
   "@chart_monthOverMonthChange": {
     "description": "Label for percentage change display"
   },
-  
   "chart_customRange": "Plage Personnalisée",
   "@chart_customRange": {
     "description": "Label for custom date range"
   },
-  
   "day_monday": "Lundi",
   "day_mondayShort": "Lun",
   "day_mondayAbbr": "Lu",
-  
   "day_tuesday": "Mardi",
   "day_tuesdayShort": "Mar",
   "day_tuesdayAbbr": "Ma",
-  
   "day_wednesday": "Mercredi",
   "day_wednesdayShort": "Mer",
   "day_wednesdayAbbr": "Me",
-  
   "day_thursday": "Jeudi",
   "day_thursdayShort": "Jeu",
   "day_thursdayAbbr": "Je",
-  
   "day_friday": "Vendredi",
   "day_fridayShort": "Ven",
   "day_fridayAbbr": "Ve",
-  
   "day_saturday": "Samedi",
   "day_saturdayShort": "Sam",
   "day_saturdayAbbr": "Sa",
-  
   "day_sunday": "Dimanche",
   "day_sundayShort": "Dim",
   "day_sundayAbbr": "Di",
-  
   "time_hours": "{count}h",
   "@time_hours": {
     "description": "Hours format",
@@ -1118,7 +921,6 @@
       }
     }
   },
-  
   "time_hoursMinutes": "{hours}h {minutes}m",
   "@time_hoursMinutes": {
     "description": "Hours and minutes format",
@@ -1131,7 +933,6 @@
       }
     }
   },
-  
   "time_minutesFormat": "{count} min",
   "@time_minutesFormat": {
     "description": "Minutes format for tooltips",
@@ -1141,7 +942,6 @@
       }
     }
   },
-  
   "tooltip_dateScreenTime": "{date} : {hours}h {minutes}m",
   "@tooltip_dateScreenTime": {
     "description": "Tooltip showing date and screen time",
@@ -1157,7 +957,6 @@
       }
     }
   },
-  
   "tooltip_hoursFormat": "{count} heures",
   "@tooltip_hoursFormat": {
     "description": "Hours format for tooltip fallback",
@@ -1167,7 +966,6 @@
       }
     }
   },
-  
   "month_january": "Janvier",
   "month_januaryShort": "Jan",
   "month_february": "Février",
@@ -1192,7 +990,6 @@
   "month_novemberShort": "Nov",
   "month_december": "Décembre",
   "month_decemberShort": "Déc",
-  
   "categoryAll": "Toutes",
   "@categoryAll": {
     "description": "Category filter for all applications"
@@ -1208,7 +1005,6 @@
   "categoryEducation": "Éducation",
   "categoryUtility": "Utilitaire",
   "categoryUncategorized": "Non catégorisé",
-  
   "appMicrosoftWord": "Microsoft Word",
   "appExcel": "Excel",
   "appPowerPoint": "PowerPoint",
@@ -1270,8 +1066,8 @@
   "noButton": "Non",
   "shareButton": "Partager",
   "exportStarting": "Démarrage de l'exportation...",
-  "exportSuccessful": "Exportation réussie ! Fichier enregistré dans Documents/Scolect-Backups",
-  "exportFailed": "Échec de l'exportation",
+  "exportSuccessful": "Exportation Réussie",
+  "exportFailed": "Exportation Échouée",
   "exportComplete": "Exportation terminée",
   "shareBackupQuestion": "Souhaitez-vous partager le fichier de sauvegarde ?",
   "importStarting": "Démarrage de l'importation...",
@@ -1338,18 +1134,14 @@
   "timeFormatMinute": "1 min",
   "timeFormatMinutes": "{minutes} min",
   "timeFormatMinutesSeconds": "{minutes} min {seconds}s",
-
   "alertsLimitsSubtitle": "Gérez vos limites de temps d'écran et vos notifications",
   "themeLight": "Clair",
   "themeDark": "Sombre",
   "themeSystem": "Système",
-  "themeTitle": "Thème",
-  "themeDescription": "Thème de couleur de l'application",
   "voiceGenderTitle": "Genre de la voix",
   "voiceGenderDescription": "Choisissez le genre de la voix pour les notifications du minuteur",
   "voiceGenderMale": "Homme",
   "voiceGenderFemale": "Femme",
-
   "applicationsSubtitle": "Gérez vos applications suivies",
   "applicationCount": "{count, plural, =1{1 application} other{{count} applications}}",
   "@applicationCount": {
@@ -1359,12 +1151,10 @@
       }
     }
   },
-  "refresh": "Actualiser",
   "noApplicationsFound": "Aucune application trouvée",
   "tryAdjustingFilters": "Essayez d'ajuster vos filtres",
   "configureAppSettings": "Configurer les paramètres de l'application",
   "behaviorSection": "Comportement",
-  
   "helpSubtitle": "{count, plural, =1{1 question dans 7 catégories} other{{count} questions dans 7 catégories}}",
   "@helpSubtitle": {
     "placeholders": {
@@ -1380,27 +1170,16 @@
   "quickNavFocus": "Focus",
   "noResultsFound": "Aucun résultat trouvé",
   "tryDifferentKeywords": "Essayez de rechercher avec différents mots-clés",
-  "clearSearch": "Effacer la recherche",
-  
+  "clearSearch": "Effacer la Recherche",
   "greetingMorning": "Bonjour ! Voici votre résumé d'activité.",
   "greetingAfternoon": "Bon après-midi ! Voici votre résumé d'activité.",
   "greetingEvening": "Bonsoir ! Voici votre résumé d'activité.",
   "screenTimeProgress": "Temps\nd'Écran",
   "productiveScoreProgress": "Score de\nProductivité",
-  
-  "sectionLabel": "Section {title}",
-  "@sectionLabel": {
-    "placeholders": {
-      "title": {
-        "type": "String"
-      }
-    }
-  },
-  
   "focusModeSubtitle": "Restez concentré, soyez productif",
-  "thisWeek": "Cette Semaine",
+  "thisWeek": "Cette semaine",
   "sessions": "Sessions",
-  "totalTime": "Temps Total",
+  "totalTime": "Temps total",
   "avgLength": "Durée Moyenne",
   "focusTime": "Temps de Concentration",
   "paused": "En Pause",
@@ -1408,8 +1187,6 @@
   "longBreakStatus": "Longue Pause",
   "readyToFocus": "Prêt à se Concentrer",
   "focus": "Concentration",
-  "shortBreakLabel": "Courte Pause",
-  "longBreakLabel": "Longue Pause",
   "restartSession": "Redémarrer la Session",
   "skipToNext": "Passer au Suivant",
   "settings": "Paramètres",
@@ -1446,7 +1223,6 @@
   "notification_permission_denied_hint": "Ouvrez les Paramètres Système pour activer les notifications de ScreenTime.",
   "notification_permission_required": "Autorisation de Notification Requise",
   "notification_permission_required_message": "ScreenTime a besoin de l'autorisation pour vous envoyer des notifications.",
-  "cancel": "Annuler",
   "open_settings": "Ouvrir les Paramètres",
   "allow_notifications": "Autoriser les Notifications",
   "permission_allowed": "Autorisé",
@@ -1463,8 +1239,7 @@
   "disabled": "Désactivé",
   "advanced_options": "Options Avancées",
   "sync_ready": "Synchronisation Prête",
-  "success": "Succès !",
-  "error": "Erreur",
+  "success": "Succès",
   "destructive_badge": "Destructif",
   "recommended_badge": "Recommandé",
   "safe_badge": "Sûr",
@@ -1473,9 +1248,7 @@
   "apps": "Applications",
   "sortAscending": "Trier Croissant",
   "sortDescending": "Trier Décroissant",
-  "clearSearch": "Effacer la Recherche",
   "applicationsShowing": "{count, plural, =0{0 application affichée} =1{1 application affichée} other{{count} applications affichées}}",
-  "totalTime": "Temps Total",
   "valueLabel": "Valeur : {value}",
   "appsCount": "{count, plural, =0{0 application} =1{1 application} other{{count} applications}}",
   "categoriesCount": "{count, plural, =0{0 catégorie} =1{1 catégorie} other{{count} catégories}}",
@@ -1522,7 +1295,6 @@
   "colorPickerHexColor": "Couleur Hexadécimale",
   "colorPickerHexPlaceholder": "RRVVBB",
   "colorPickerRGB": "RVB",
-  "cancel": "Annuler",
   "select": "Sélectionner",
   "themeCustomization": "Personnalisation du Thème",
   "chooseThemePreset": "Choisir un Thème Prédéfini",
@@ -1539,7 +1311,6 @@
       }
     }
   },
-  "edit": "Modifier",
   "customThemeNumber": "Thème Personnalisé {number}",
   "@customThemeNumber": {
     "placeholders": {
@@ -1612,8 +1383,6 @@
   "sampleCardTitle": "Titre de Carte Exemple",
   "sampleSecondaryText": "Ceci est un texte secondaire qui apparaît en dessous.",
   "primary": "Principal",
-  "success": "Succès",
-  "error": "Erreur",
   "secondary": "Secondaire",
   "warning": "Avertissement",
   "launchAtStartupTitle": "Lancer au démarrage",
@@ -1631,8 +1400,6 @@
   "restartLater": "Redémarrer plus tard",
   "restartFailedTitle": "Échec du redémarrage",
   "restartFailedMessage": "Impossible de redémarrer automatiquement l’application. Quittez-la (Cmd+Q) et relancez-la manuellement.",
-  "ok": "OK",
-  "error": "Erreur",
   "exportAnalyticsReport": "Exporter le Rapport d'Analyse",
   "chooseExportFormat": "Choisissez le format d'exportation :",
   "beautifulExcelReport": "Magnifique Rapport Excel",
@@ -1642,34 +1409,22 @@
   "dailyBreakdownDescription": "📅 Détail Quotidien - Modèles d'utilisation visuels",
   "appsSheetDescription": "📱 Feuille Apps - Classements détaillés des applications",
   "insightsDescription": "💡 Insights - Recommandations intelligentes",
-  "cancel": "Annuler",
-  "exportSuccessful": "Exportation Réussie",
   "beautifulExcelExportSuccess": "Magnifique rapport Excel exporté avec succès ! 🎉",
-  "exportFailed": "Exportation Échouée",
   "failedToExportReport": "Échec de l'exportation du rapport : {error}",
   "exporting": "Exportation...",
   "exportExcel": "Exporter Excel",
   "saveAnalyticsReport": "Enregistrer le Rapport d'Analyse",
   "analyticsReportFileName": "rapport_analytique_{timestamp}.xlsx",
-  
   "usageAnalyticsReportTitle": "RAPPORT D'ANALYSE D'UTILISATION",
   "generated": "Généré :",
   "period": "Période :",
-  "dateRange": "Plage de Dates :",
   "dateRangeValue": "{startDate} au {endDate}",
-  
   "keyMetrics": "MÉTRIQUES CLÉS",
   "metric": "Métrique",
   "value": "Valeur",
   "change": "Changement",
   "trend": "Tendance",
-  
-  "totalScreenTime": "Temps d'Écran Total",
-  "productiveTime": "Temps Productif",
   "productivityRate": "Taux de Productivité",
-  "focusSessions": "Sessions de Concentration",
-  "mostUsedApp": "App la Plus Utilisée",
-  
   "trendUp": "Hausse",
   "trendDown": "Baisse",
   "trendExcellent": "Excellent",
@@ -1678,71 +1433,47 @@
   "trendActive": "Actif",
   "trendNone": "Aucun",
   "trendTop": "Top",
-  
-  "categoryBreakdown": "RÉPARTITION PAR CATÉGORIE",
   "category": "Catégorie",
   "percentage": "Pourcentage",
   "visual": "Visuel",
-  
-  "dailyScreenTime": "TEMPS D'ÉCRAN QUOTIDIEN",
   "statistics": "STATISTIQUES",
   "averageDaily": "Moyenne Quotidienne",
   "highestDay": "Jour le Plus Élevé",
   "lowestDay": "Jour le Plus Bas",
-  
-  "date": "Date",
   "day": "Jour",
-  "hours": "Heures",
-  "minutes": "Minutes",
-  
   "applicationUsageDetails": "DÉTAILS D'UTILISATION DES APPLICATIONS",
   "totalApps": "Total des Apps :",
   "productiveApps": "Apps Productives :",
-  
   "rank": "Rang",
   "application": "Application",
   "time": "Temps",
   "percentOfTotal": "% du Total",
   "type": "Type",
   "usageLevel": "Niveau d'Utilisation",
-  
-  "productive": "Productif",
   "leisure": "Loisir",
-  
   "usageLevelVeryHigh": "Très Élevé ||||||||",
   "usageLevelHigh": "Élevé ||||||",
   "usageLevelMedium": "Moyen ||||",
   "usageLevelLow": "Faible ||",
-  
   "keyInsightsTitle": "PERSPECTIVES ET RECOMMANDATIONS CLÉS",
   "personalizedRecommendations": "RECOMMANDATIONS PERSONNALISÉES",
-  
   "insightHighDailyUsage": "Utilisation Quotidienne Élevée : Vous utilisez en moyenne {hours} heures par jour",
   "insightLowDailyUsage": "Faible Utilisation Quotidienne : En moyenne {hours} heures par jour - excellent équilibre !",
   "insightModerateUsage": "Utilisation Modérée : En moyenne {hours} heures de temps d'écran par jour",
-  
   "insightExcellentProductivity": "Excellente Productivité : {percentage}% de votre temps d'écran est du travail productif !",
   "insightGoodProductivity": "Bonne Productivité : {percentage}% de votre temps d'écran est productif",
   "insightLowProductivity": "Alerte Faible Productivité : Seulement {percentage}% du temps d'écran est productif",
-  
   "insightFocusSessions": "Sessions de Concentration : {count} sessions complétées ({avgPerDay} par jour en moyenne)",
   "insightGreatFocusHabit": "Excellente Habitude de Concentration : Vous avez construit une routine incroyable avec {count} sessions complétées !",
   "insightNoFocusSessions": "Aucune Session de Concentration : Pensez à utiliser le mode concentration pour augmenter votre productivité",
-  
   "insightScreenTimeTrend": "Tendance Temps d'Écran : Votre utilisation a {direction} de {percentage}% par rapport à la période précédente",
   "insightProductiveTimeTrend": "Tendance Temps Productif : Votre temps productif a {direction} de {percentage}% par rapport à la période précédente",
-  
   "directionIncreased": "augmenté",
   "directionDecreased": "diminué",
-  
   "insightTopCategory": "Catégorie Principale : {category} domine avec {percentage}% de votre temps total",
-  
   "insightMostUsedApp": "App la Plus Utilisée : {appName} représente {percentage}% de votre temps ({duration})",
-  
   "insightUsageVaries": "L'Utilisation Varie Significativement : {highDay} avait {multiplier}x plus d'utilisation que {lowDay}",
-  
   "insightNoInsights": "Aucune perspective significative disponible",
-  
   "recScheduleFocusSessions": "Essayez de planifier plus de sessions de concentration tout au long de la journée pour augmenter la productivité",
   "recSetAppLimits": "Envisagez de définir des limites sur les applications de loisir",
   "recAimForFocusSessions": "Visez au moins 1-2 sessions de concentration par jour pour créer une habitude constante",
@@ -1753,10 +1484,6 @@
   "recScheduleFocusedWork": "Votre temps productif a diminué. Essayez de planifier des blocs de travail concentré dans votre calendrier",
   "recKeepUpGreatWork": "Continuez comme ça ! Vos habitudes de temps d'écran semblent saines",
   "recContinueFocusSessions": "Continuez à utiliser les sessions de concentration pour maintenir la productivité",
-  
-  "durationHoursMinutes": "{hours}h {minutes}m",
-  "durationMinutesOnly": "{minutes}m",
-  
   "sheetSummary": "Résumé",
   "sheetDailyBreakdown": "Détail Quotidien",
   "sheetApps": "Apps",
@@ -1810,7 +1537,6 @@
       }
     }
   },
-  "totalTime": "Temps total",
   "workPhases": "Phases de travail",
   "averageLength": "Durée moyenne",
   "mostProductive": "Plus productif",
@@ -1871,7 +1597,6 @@
   "@changelogWhatsNew": {
     "description": "Title for the changelog dialog"
   },
-
   "changelogReleasedOn": "Publié le {date}",
   "@changelogReleasedOn": {
     "description": "Release date label in changelog",
@@ -1882,99 +1607,270 @@
       }
     }
   },
-
   "changelogNoContent": "Aucun journal des modifications disponible pour cette version.",
   "@changelogNoContent": {
     "description": "Shown when the changelog body is empty"
   },
-
   "changelogUnableToLoad": "Impossible de charger le journal des modifications",
   "@changelogUnableToLoad": {
     "description": "Error dialog title when changelog fetch fails"
   },
-
   "changelogErrorDescription": "Impossible de récupérer le journal des modifications pour cette version. Veuillez vérifier votre connexion internet ou consulter la page des versions GitHub.",
   "@changelogErrorDescription": {
     "description": "Error dialog body when changelog fetch fails"
   },
-
-  "ok": "OK",
-  "@ok": {
-    "description": "Generic OK button label"
-  },
-
-  "continueButton": "Continuer",
   "@continueButton": {
     "description": "Continue button label"
   },
   "allTracking": "Toutes les apps",
-  "tracking": "Suivies",
   "notTracking": "Non suivies",
   "allVisibility": "Toutes",
   "visible": "Visibles",
   "hidden": "Masquées",
   "todaysLimitUsage": "Utilisation de la limite du jour",
-"thisWeekAtAGlance": "Cette semaine en un coup d'œil",
-"hourlyActivityHeatmap": "Carte thermique d'activité horaire",
-"sessions": "Sessions",
-"thisWeek": "Cette semaine",
-"productivityScore": "Score de productivité",
-"streaks": "Séries",
-"weekOverWeek": "Semaine après semaine",
-"sameAsLastWeek": "Identique à la semaine dernière",
-"moreUsageThanLastWeek": "{percent}% de plus que la semaine dernière",
-"@moreUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"lessUsageThanLastWeek": "{percent}% de moins que la semaine dernière",
-"@lessUsageThanLastWeek": {
-  "placeholders": { "percent": { "type": "String" } }
-},
-"limitExceededBy": "Limite dépassée de {duration}",
-"@limitExceededBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"timeRemaining": "{duration} restant",
-"@timeRemaining": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"totalSessions": "Sessions totales",
-"avgSession": "Session moyenne",
-"longestSession": "Session la plus longue",
-"mostActive": "Le plus actif",
-"peakUsage": "Utilisation maximale",
-"dailyAverage": "Moyenne quotidienne",
-"daysUsedInARow": "Jours d'utilisation consécutifs",
-"daysSingular": "jour",
-"daysPlural": "jours",
-"daysOverLimitInARow": "Jours consécutifs au-dessus de la limite",
-"withinLimitAllWeek": "Dans la limite toute la semaine",
-"productivityScoreGreat": "Excellent",
-"productivityScoreModerate": "Modéré",
-"productivityScoreNeedsAttention": "Attention requise",
-"productiveAppMotivation": "Application productive — continuez ainsi",
-"nonProductiveAppSuggestion": "Non productive — envisagez de réduire",
-"legendUsage": "Utilisation",
-"legendAverage": "Moyenne",
-"legendLimit": "Limite",
-"chartPeak": "Maximum",
-"overLimitBy": "+{duration} au-dessus de la limite",
-"@overLimitBy": {
-  "placeholders": { "duration": { "type": "String" } }
-},
-"noData": "Aucune donnée",
-"yesterday": "Hier",
-"changelog": "Journal des modifications",
-"exportingLabel": "Exportation en cours...",
-"@exportingLabel": {
-  "description": "Libellé affiché sur le bouton d’exportation pendant le processus d’exportation"
-},
-"exportExcelLabel": "Exporter Excel",
-"@exportExcelLabel": {
-  "description": "Libellé affiché sur le bouton d’exportation"
-},
+  "thisWeekAtAGlance": "Cette semaine en un coup d'œil",
+  "hourlyActivityHeatmap": "Carte thermique d'activité horaire",
+  "productivityScore": "Score de productivité",
+  "streaks": "Séries",
+  "weekOverWeek": "Semaine après semaine",
+  "sameAsLastWeek": "Identique à la semaine dernière",
+  "moreUsageThanLastWeek": "{percent}% de plus que la semaine dernière",
+  "@moreUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "lessUsageThanLastWeek": "{percent}% de moins que la semaine dernière",
+  "@lessUsageThanLastWeek": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "limitExceededBy": "Limite dépassée de {duration}",
+  "@limitExceededBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "timeRemaining": "{duration} restant",
+  "@timeRemaining": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "totalSessions": "Sessions totales",
+  "avgSession": "Session moyenne",
+  "mostActive": "Le plus actif",
+  "peakUsage": "Utilisation maximale",
+  "dailyAverage": "Moyenne quotidienne",
+  "daysUsedInARow": "Jours d'utilisation consécutifs",
+  "daysSingular": "jour",
+  "daysPlural": "jours",
+  "daysOverLimitInARow": "Jours consécutifs au-dessus de la limite",
+  "withinLimitAllWeek": "Dans la limite toute la semaine",
+  "productivityScoreGreat": "Excellent",
+  "productivityScoreModerate": "Modéré",
+  "productivityScoreNeedsAttention": "Attention requise",
+  "productiveAppMotivation": "Application productive — continuez ainsi",
+  "nonProductiveAppSuggestion": "Non productive — envisagez de réduire",
+  "legendUsage": "Utilisation",
+  "legendAverage": "Moyenne",
+  "legendLimit": "Limite",
+  "chartPeak": "Maximum",
+  "overLimitBy": "+{duration} au-dessus de la limite",
+  "@overLimitBy": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "noData": "Aucune donnée",
+  "yesterday": "Hier",
+  "changelog": "Journal des modifications",
+  "exportingLabel": "Exportation en cours...",
+  "@exportingLabel": {
+    "description": "Libellé affiché sur le bouton d’exportation pendant le processus d’exportation"
+  },
+  "exportExcelLabel": "Exporter Excel",
+  "@exportExcelLabel": {
+    "description": "Libellé affiché sur le bouton d’exportation"
+  },
   "dailyResetTimeTitle": "Heure de réinitialisation quotidienne",
   "dailyResetTimeDescription": "Définissez l'heure à laquelle le compteur de temps d'écran se réinitialise pour une nouvelle journée.",
   "crashReportingTitle": "Rapports de plantage",
-  "crashReportingDescription": "Envoyez des rapports de plantage anonymes pour aider à améliorer Scolect. Aucune donnée personnelle ni historique d'utilisation n'est inclus."
+  "crashReportingDescription": "Envoyez des rapports de plantage anonymes pour aider à améliorer Scolect. Aucune donnée personnelle ni historique d'utilisation n'est inclus.",
+  "narrativeTodaySpent": "Aujourd'hui, vous avez passé {timeStr} sur votre ordinateur.",
+  "narrativeMostFocused": "Votre période la plus concentrée était de {start} à {end}.",
+  "narrativeFocusSessions": "Vous avez terminé {focusSessions} {focusSessionsCount, plural, =1{session} other{sessions}} de concentration pour un total de {fsMinutes}m.",
+  "narrativeCheckedAppShort": "Vous avez consulté {topAppName} {topAppOpenCount} fois mais avec des visites courtes.",
+  "narrativeCheckedAppLong": "La majeure partie de votre temps sur {topAppName} s'est déroulée en {topAppOpenCount} {topAppOpenCountPlural, plural, =1{session} other{sessions}}.",
+  "narrativeToneSolid": "Journée solide.",
+  "narrativeToneDecent": "Progrès correct.",
+  "narrativeToneLight": "Journée légère — rien de mal à cela.",
+  "narrativeToneImprove": "Place à l'amélioration demain.",
+  "habitDnaTitle": "Votre ADN d'habitudes",
+  "habitDnaAnalyzed": "{daysAnalyzed}j analysés",
+  "habitDnaChronotype": "Chronotype",
+  "habitDnaWorkStyle": "Style de Travail",
+  "habitDnaPeakFocus": "Concentration Maximale",
+  "habitDnaAvgSession": "Session Moyenne",
+  "habitDnaBestDay": "Meilleur Jour",
+  "habitDnaRoughDay": "Journée Difficile",
+  "habitDnaKryptonite": "Distraction principale: {appName}",
+  "chronotypeMorning": "Lève-tôt",
+  "chronotypeAfternoon": "Pic de l'après-midi",
+  "chronotypeNight": "Couche-tard",
+  "chronotypeMixed": "Mixte",
+  "workStyleDeep": "Concentration Profonde",
+  "workStyleSwitcher": "Multitâche",
+  "workStyleBalanced": "Équilibré",
+  "timeFormatAm": "{hour} AM",
+  "timeFormatPm": "{hour} PM",
+  "timeFormatMidnight": "Minuit",
+  "timeFormatNoon": "Midi",
+  "weeklyStoryTitle": "Cette Semaine",
+  "weeklyStoryWeekNumber": "Semaine {weekNumber}",
+  "weeklyStoryHeadline": "Semaine {weekNumber} — {timeStr} d'écran jusqu'à présent.",
+  "weeklyStoryReclaimed": "Vous avez récupéré {diff} par rapport à la Semaine 1.",
+  "weeklyStoryUp": "Le temps d'écran a augmenté de {diff} par rapport à la Semaine 1.",
+  "weeklyStoryImprovementArea": "Encore à travailler : {timeLabel} dans {worstCat}.",
+  "weekdayNameMonday": "Lundi",
+  "weekdayNameTuesday": "Mardi",
+  "weekdayNameWednesday": "Mercredi",
+  "weekdayNameThursday": "Jeudi",
+  "weekdayNameFriday": "Vendredi",
+  "weekdayNameSaturday": "Samedi",
+  "weekdayNameSunday": "Dimanche",
+  "weekdayNameUnknown": "ce jour-là",
+  "@narrativeTodaySpent": {
+    "placeholders": {
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeMostFocused": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "@narrativeFocusSessions": {
+    "placeholders": {
+      "focusSessions": {
+        "type": "int"
+      },
+      "focusSessionsCount": {
+        "type": "int"
+      },
+      "fsMinutes": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppShort": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      }
+    }
+  },
+  "@narrativeCheckedAppLong": {
+    "placeholders": {
+      "topAppName": {
+        "type": "String"
+      },
+      "topAppOpenCount": {
+        "type": "int"
+      },
+      "topAppOpenCountPlural": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaAnalyzed": {
+    "placeholders": {
+      "daysAnalyzed": {
+        "type": "int"
+      }
+    }
+  },
+  "@habitDnaKryptonite": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
+  "@timeFormatAm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@timeFormatPm": {
+    "placeholders": {
+      "hour": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryWeekNumber": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      }
+    }
+  },
+  "@weeklyStoryHeadline": {
+    "placeholders": {
+      "weekNumber": {
+        "type": "int"
+      },
+      "timeStr": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryReclaimed": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryUp": {
+    "placeholders": {
+      "diff": {
+        "type": "String"
+      }
+    }
+  },
+  "@weeklyStoryImprovementArea": {
+    "placeholders": {
+      "timeLabel": {
+        "type": "String"
+      },
+      "worstCat": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -3053,4 +3053,175 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get dailyResetTimeDescription =>
       'Atur waktu ketika penghitung waktu layar Anda disetel ulang untuk hari baru.';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return 'Hari ini Anda menghabiskan $timeStr di depan komputer.';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return 'Waktu paling fokus Anda adalah $start – $end.';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: 'sesi',
+      one: 'sesi',
+    );
+    return 'Anda menyelesaikan $focusSessions $_temp0 fokus dengan total $fsMinutes menit.';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return 'Anda memeriksa $topAppName $topAppOpenCount kali tetapi kunjungannya singkat.';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: 'sesi',
+      one: 'sesi',
+    );
+    return 'Sebagian besar waktu Anda habis untuk $topAppName hanya dalam $topAppOpenCount $_temp0.';
+  }
+
+  @override
+  String get narrativeToneSolid => 'Hari yang solid.';
+
+  @override
+  String get narrativeToneDecent => 'Kemajuan yang lumayan.';
+
+  @override
+  String get narrativeToneLight => 'Hari yang ringan — tidak ada salahnya.';
+
+  @override
+  String get narrativeToneImprove => 'Ada ruang untuk perbaikan besok.';
+
+  @override
+  String get habitDnaTitle => 'DNA Kebiasaan Anda';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '${daysAnalyzed}h dianalisis';
+  }
+
+  @override
+  String get habitDnaChronotype => 'Kronotipe';
+
+  @override
+  String get habitDnaWorkStyle => 'Gaya Kerja';
+
+  @override
+  String get habitDnaPeakFocus => 'Fokus Puncak';
+
+  @override
+  String get habitDnaAvgSession => 'Rata-rata Sesi';
+
+  @override
+  String get habitDnaBestDay => 'Hari Terbaik';
+
+  @override
+  String get habitDnaRoughDay => 'Hari yang Berat';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return 'Gangguan utama: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => 'Orang Pagi';
+
+  @override
+  String get chronotypeAfternoon => 'Puncak Siang';
+
+  @override
+  String get chronotypeNight => 'Burung Hantu Malam';
+
+  @override
+  String get chronotypeMixed => 'Campuran';
+
+  @override
+  String get workStyleDeep => 'Fokus Mendalam';
+
+  @override
+  String get workStyleSwitcher => 'Pindah Tugas';
+
+  @override
+  String get workStyleBalanced => 'Seimbang';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '$hour AM';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '$hour PM';
+  }
+
+  @override
+  String get timeFormatMidnight => 'Tengah Malam';
+
+  @override
+  String get timeFormatNoon => 'Siang';
+
+  @override
+  String get weeklyStoryTitle => 'Minggu Ini';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return 'Minggu $weekNumber';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return 'Minggu $weekNumber — $timeStr di layar sejauh ini.';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return 'Anda telah menghemat $diff dibandingkan dengan Minggu 1.';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return 'Waktu layar naik $diff dari Minggu 1.';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return 'Masih perlu ditingkatkan: $timeLabel di $worstCat.';
+  }
+
+  @override
+  String get weekdayNameMonday => 'Senin';
+
+  @override
+  String get weekdayNameTuesday => 'Selasa';
+
+  @override
+  String get weekdayNameWednesday => 'Rabu';
+
+  @override
+  String get weekdayNameThursday => 'Kamis';
+
+  @override
+  String get weekdayNameFriday => 'Jumat';
+
+  @override
+  String get weekdayNameSaturday => 'Sabtu';
+
+  @override
+  String get weekdayNameSunday => 'Minggu';
+
+  @override
+  String get weekdayNameUnknown => 'hari itu';
 }

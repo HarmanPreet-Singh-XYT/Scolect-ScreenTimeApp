@@ -3125,4 +3125,175 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get dailyResetTimeDescription =>
       'Установите время, когда счетчик времени экрана сбрасывается для нового дня.';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return 'Сегодня вы провели за компьютером $timeStr.';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return 'Самый продуктивный период: $start – $end.';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: 'сессий',
+      one: 'сессию',
+    );
+    return 'Вы завершили $focusSessions фокус-$_temp0 общей длительностью $fsMinutes мин.';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return 'Вы проверяли $topAppName $topAppOpenCount раз(а), но ненадолго.';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: 'сессий',
+      one: 'сессию',
+    );
+    return 'Большую часть времени в $topAppName вы провели всего за $topAppOpenCount $_temp0.';
+  }
+
+  @override
+  String get narrativeToneSolid => 'Отличный день.';
+
+  @override
+  String get narrativeToneDecent => 'Хороший прогресс.';
+
+  @override
+  String get narrativeToneLight => 'Легкий день — в этом нет ничего плохого.';
+
+  @override
+  String get narrativeToneImprove => 'Завтра можно лучше.';
+
+  @override
+  String get habitDnaTitle => 'ДНК ваших привычек';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '$daysAnalyzed дн. анализа';
+  }
+
+  @override
+  String get habitDnaChronotype => 'Хронотип';
+
+  @override
+  String get habitDnaWorkStyle => 'Стиль работы';
+
+  @override
+  String get habitDnaPeakFocus => 'Пик концентрации';
+
+  @override
+  String get habitDnaAvgSession => 'Средняя сессия';
+
+  @override
+  String get habitDnaBestDay => 'Лучший день';
+
+  @override
+  String get habitDnaRoughDay => 'Тяжелый день';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return 'Главное отвлечение: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => 'Жаворонок';
+
+  @override
+  String get chronotypeAfternoon => 'Дневной пик';
+
+  @override
+  String get chronotypeNight => 'Сова';
+
+  @override
+  String get chronotypeMixed => 'Смешанный';
+
+  @override
+  String get workStyleDeep => 'Глубокая работа';
+
+  @override
+  String get workStyleSwitcher => 'Многозадачность';
+
+  @override
+  String get workStyleBalanced => 'Сбалансированный';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '$hour ДП';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '$hour ПП';
+  }
+
+  @override
+  String get timeFormatMidnight => 'Полночь';
+
+  @override
+  String get timeFormatNoon => 'Полдень';
+
+  @override
+  String get weeklyStoryTitle => 'На этой неделе';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return 'Неделя $weekNumber';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return 'Неделя $weekNumber — пока $timeStr у экрана.';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return 'Вы сэкономили $diff по сравнению с Неделей 1.';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return 'Экранное время выросло на $diff по сравнению с Неделей 1.';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return 'Всё еще работаем над: $timeLabel в $worstCat.';
+  }
+
+  @override
+  String get weekdayNameMonday => 'Понедельник';
+
+  @override
+  String get weekdayNameTuesday => 'Вторник';
+
+  @override
+  String get weekdayNameWednesday => 'Среда';
+
+  @override
+  String get weekdayNameThursday => 'Четверг';
+
+  @override
+  String get weekdayNameFriday => 'Пятница';
+
+  @override
+  String get weekdayNameSaturday => 'Суббота';
+
+  @override
+  String get weekdayNameSunday => 'Воскресенье';
+
+  @override
+  String get weekdayNameUnknown => 'этот день';
 }

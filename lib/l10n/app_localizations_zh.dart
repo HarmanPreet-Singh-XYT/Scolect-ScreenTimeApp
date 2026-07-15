@@ -2956,4 +2956,175 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dailyResetTimeDescription => '设置屏幕时间计数器在新的一天重置的时间。';
+
+  @override
+  String narrativeTodaySpent(String timeStr) {
+    return '今天您在电脑前度过了$timeStr。';
+  }
+
+  @override
+  String narrativeMostFocused(String start, String end) {
+    return '您最专注的时间段是 $start – $end。';
+  }
+
+  @override
+  String narrativeFocusSessions(
+      int focusSessions, int focusSessionsCount, int fsMinutes) {
+    String _temp0 = intl.Intl.pluralLogic(
+      focusSessionsCount,
+      locale: localeName,
+      other: '会话',
+      one: '会话',
+    );
+    return '您完成了 $focusSessions 次专注$_temp0，共计 $fsMinutes 分钟。';
+  }
+
+  @override
+  String narrativeCheckedAppShort(String topAppName, int topAppOpenCount) {
+    return '您查看了 $topAppName $topAppOpenCount 次，但每次停留都很短。';
+  }
+
+  @override
+  String narrativeCheckedAppLong(
+      String topAppName, int topAppOpenCount, int topAppOpenCountPlural) {
+    String _temp0 = intl.Intl.pluralLogic(
+      topAppOpenCountPlural,
+      locale: localeName,
+      other: '会话',
+      one: '会话',
+    );
+    return '您在 $topAppName 上的大部分时间都花在了短短 $topAppOpenCount 次$_temp0上。';
+  }
+
+  @override
+  String get narrativeToneSolid => '充实的一天。';
+
+  @override
+  String get narrativeToneDecent => '不错的进展。';
+
+  @override
+  String get narrativeToneLight => '轻松的一天 — 这也没什么不好。';
+
+  @override
+  String get narrativeToneImprove => '明天还有提升空间。';
+
+  @override
+  String get habitDnaTitle => '您的习惯基因';
+
+  @override
+  String habitDnaAnalyzed(int daysAnalyzed) {
+    return '已分析 $daysAnalyzed 天';
+  }
+
+  @override
+  String get habitDnaChronotype => '生物钟类型';
+
+  @override
+  String get habitDnaWorkStyle => '工作方式';
+
+  @override
+  String get habitDnaPeakFocus => '巅峰专注';
+
+  @override
+  String get habitDnaAvgSession => '平均会话';
+
+  @override
+  String get habitDnaBestDay => '最佳表现日';
+
+  @override
+  String get habitDnaRoughDay => '状态不佳日';
+
+  @override
+  String habitDnaKryptonite(String appName) {
+    return '最大干扰: $appName';
+  }
+
+  @override
+  String get chronotypeMorning => '早起鸟';
+
+  @override
+  String get chronotypeAfternoon => '午后高峰';
+
+  @override
+  String get chronotypeNight => '夜猫子';
+
+  @override
+  String get chronotypeMixed => '混合型';
+
+  @override
+  String get workStyleDeep => '深度专注';
+
+  @override
+  String get workStyleSwitcher => '任务切换';
+
+  @override
+  String get workStyleBalanced => '平衡型';
+
+  @override
+  String timeFormatAm(int hour) {
+    return '上午 $hour';
+  }
+
+  @override
+  String timeFormatPm(int hour) {
+    return '下午 $hour';
+  }
+
+  @override
+  String get timeFormatMidnight => '午夜';
+
+  @override
+  String get timeFormatNoon => '正午';
+
+  @override
+  String get weeklyStoryTitle => '本周';
+
+  @override
+  String weeklyStoryWeekNumber(int weekNumber) {
+    return '第 $weekNumber 周';
+  }
+
+  @override
+  String weeklyStoryHeadline(int weekNumber, String timeStr) {
+    return '第 $weekNumber 周 — 至今屏幕时间为 $timeStr。';
+  }
+
+  @override
+  String weeklyStoryReclaimed(String diff) {
+    return '与第1周相比，您节省了 $diff。';
+  }
+
+  @override
+  String weeklyStoryUp(String diff) {
+    return '与第1周相比，屏幕时间增加了 $diff。';
+  }
+
+  @override
+  String weeklyStoryImprovementArea(String timeLabel, String worstCat) {
+    return '仍需改进：在 $worstCat 上花费了 $timeLabel。';
+  }
+
+  @override
+  String get weekdayNameMonday => '星期一';
+
+  @override
+  String get weekdayNameTuesday => '星期二';
+
+  @override
+  String get weekdayNameWednesday => '星期三';
+
+  @override
+  String get weekdayNameThursday => '星期四';
+
+  @override
+  String get weekdayNameFriday => '星期五';
+
+  @override
+  String get weekdayNameSaturday => '星期六';
+
+  @override
+  String get weekdayNameSunday => '星期日';
+
+  @override
+  String get weekdayNameUnknown => '那天';
 }

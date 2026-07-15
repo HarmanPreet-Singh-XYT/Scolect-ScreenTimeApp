@@ -513,49 +513,152 @@ class _ExportButton extends StatelessWidget {
   }
 }
 
-class _ExportDialog extends StatelessWidget {
+class _ExportDialog extends StatefulWidget {
   final AppLocalizations l10n;
   final VoidCallback onExport;
 
   const _ExportDialog({required this.l10n, required this.onExport});
 
   @override
+  State<_ExportDialog> createState() => _ExportDialogState();
+}
+
+class _ExportDialogState extends State<_ExportDialog> {
+  bool _isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = widget.l10n;
+
     return ContentDialog(
-      title: Text(l10n.exportAnalyticsReport),
+      constraints: const BoxConstraints(maxWidth: 420),
+      title: Row(
+        children: [
+          Icon(FluentIcons.excel_document, color: Colors.green, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            l10n.exportAnalyticsReport,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.chooseExportFormat),
-          const SizedBox(height: 16),
-          ListTile(
-            title: Text(l10n.beautifulExcelReport),
-            subtitle: Text(l10n.beautifulExcelReportDescription),
-            leading: const Icon(FluentIcons.excel_document),
-            onPressed: () {
-              Navigator.pop(context);
-              onExport();
-            },
-          ),
-          const SizedBox(height: 12),
-          const Divider(),
-          const SizedBox(height: 8),
           Text(
-            l10n.excelReportIncludes,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            l10n.chooseExportFormat,
+            style: TextStyle(color: theme.inactiveColor, fontSize: 13),
           ),
-          const SizedBox(height: 8),
-          _FeatureItem(text: l10n.summarySheetDescription),
-          _FeatureItem(text: l10n.dailyBreakdownDescription),
-          _FeatureItem(text: l10n.appsSheetDescription),
-          _FeatureItem(text: l10n.insightsDescription),
+          const SizedBox(height: 16),
+          MouseRegion(
+            onEnter: (_) => setState(() => _isHovered = true),
+            onExit: (_) => setState(() => _isHovered = false),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.micaBackgroundColor,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _isHovered
+                      ? Colors.green.withValues(alpha: 0.8)
+                      : Colors.green.withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
+                boxShadow: _isHovered
+                    ? [
+                        BoxShadow(
+                          color: Colors.green.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        )
+                      ]
+                    : [],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      FluentIcons.excel_document,
+                      color: Colors.green,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.beautifulExcelReport,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          l10n.beautifulExcelReportDescription,
+                          style: TextStyle(
+                            color: theme.inactiveColor,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: theme.resources.subtleFillColorTertiary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.excelReportIncludes,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _FeatureItem(text: l10n.summarySheetDescription),
+                _FeatureItem(text: l10n.dailyBreakdownDescription),
+                _FeatureItem(text: l10n.appsSheetDescription),
+                _FeatureItem(text: l10n.insightsDescription),
+              ],
+            ),
+          ),
         ],
       ),
       actions: [
         Button(
           child: Text(l10n.cancel),
           onPressed: () => Navigator.pop(context),
+        ),
+        FilledButton(
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.all(Colors.green),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onExport();
+          },
+          child: Text(l10n.export),
         ),
       ],
     );

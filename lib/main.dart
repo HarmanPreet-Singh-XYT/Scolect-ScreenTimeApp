@@ -256,11 +256,23 @@ Future<void> _appMain(List<String> args) async {
 
     if (wasSystemLaunched || isMinimizeAtLaunch) {
       debugPrint('🔽 Starting hidden');
-      Platform.isMacOS ? await MacOSWindow.hide() : win.hide();
+      // win.hide() keeps bitsdojo's internal state consistent.
+      // MacOSWindow.hide() additionally switches activation policy to remove from Dock.
+      win.hide();
+      if (Platform.isMacOS) await MacOSWindow.hide();
       navigationState.stopPeriodicRefresh();
     } else {
       debugPrint('🔼 Starting visible');
-      Platform.isMacOS ? await MacOSWindow.show() : win.show();
+      if (Platform.isMacOS) {
+        // win.show() tells bitsdojo the window can be shown (clears BDW_HIDE_ON_STARTUP).
+        // Then after a brief delay, MacOSWindow.show() sets activation policy and
+        // brings the window to front.
+        win.show();
+        await Future.delayed(const Duration(milliseconds: 150));
+        await MacOSWindow.show();
+      } else {
+        win.show();
+      }
       navigationState.startPeriodicRefresh(refreshImmediately: true);
     }
   });
