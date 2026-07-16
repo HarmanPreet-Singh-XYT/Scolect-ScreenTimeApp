@@ -1,5 +1,7 @@
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
 class DailyOverviewData {
   static final DailyOverviewData _instance = DailyOverviewData._internal();
@@ -156,6 +158,75 @@ class DailyOverviewData {
       return '${minutes}m';
     }
     return '${duration.inSeconds.remainder(60)}s';
+  }
+
+  Future<OverviewData> _fetchWebOverview() async {
+    final d = DateTime.now();
+    final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    final storageKey = 'scolect_day_$dateKey';
+
+    final result = await chromeStorageGet([storageKey]);
+    final dayData = result[storageKey] as Map<dynamic, dynamic>? ?? {};
+    final domains = (dayData['domains'] as List<dynamic>?) ?? [];
+
+    Duration totalTime = Duration.zero;
+    List<ApplicationDetail> applications = [];
+    int maxSeconds = 0;
+    String mostUsed = "None";
+
+    for (var d in domains) {
+      final domain = d['domain'] as String? ?? 'unknown';
+      final seconds = d['seconds'] as num? ?? 0;
+      final duration = Duration(seconds: seconds.toInt());
+
+      if (seconds > maxSeconds) {
+        maxSeconds = seconds.toInt();
+        mostUsed = domain;
+      }
+
+      totalTime += duration;
+
+      applications.add(ApplicationDetail(
+        name: domain,
+        category: 'Web',
+        screenTime: duration,
+        percentageOfTotalTime: 0,
+        isVisible: true,
+        isProductive: true,
+      ));
+    }
+
+    final totalSecs = totalTime.inSeconds;
+    if (totalSecs > 0) {
+      for (int i = 0; i < applications.length; i++) {
+        final app = applications[i];
+        final pct = (app.screenTime.inSeconds / totalSecs) * 100;
+        applications[i] = ApplicationDetail(
+          name: app.name,
+          category: app.category,
+          screenTime: app.screenTime,
+          percentageOfTotalTime: pct,
+          isVisible: true,
+          isProductive: true,
+        );
+      }
+    }
+
+    applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
+
+    return OverviewData(
+      totalScreenTime: totalTime,
+      averageScreenTime: totalTime,
+      screenTimePercentage: 0,
+      productiveTime: totalTime,
+      productivityScore: 100,
+      mostUsedApp: mostUsed,
+      focusSessions: 0,
+      totalFocusTime: Duration.zero,
+      topApplications: applications,
+      categoryBreakdown: [],
+      applicationLimits: [],
+    );
   }
 }
 

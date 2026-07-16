@@ -1,1 +1,67 @@
-{}
+{
+  "ar": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "bn": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "es": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "fr": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "hi": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "id": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "ja": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "pt": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "ru": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "ur": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ],
+
+  "zh": [
+    "navBrowser",
+    "browserExtensionTitle",
+    "browserExtensionDescription"
+  ]
+}

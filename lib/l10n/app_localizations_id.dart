@@ -75,6 +75,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get navFocusMode => 'Mode Fokus';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'Pengaturan';
 
   @override
@@ -982,6 +985,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'Mulai aplikasi di System Tray (Direkomendasikan untuk Windows 10)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'Pelaporan Kerusakan';

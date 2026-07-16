@@ -75,6 +75,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get navFocusMode => 'ফোকাস মোড';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'সেটিংস';
 
   @override
@@ -981,6 +984,13 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'সিস্টেম ট্রেতে অ্যাপ্লিকেশন শুরু করুন (Windows 10-এর জন্য প্রস্তাবিত)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'ক্র্যাশ রিপোর্টিং';

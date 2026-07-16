@@ -1,4 +1,5 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
@@ -19,6 +20,8 @@ import 'package:screentime/sections/UI sections/Settings/data.dart';
 import 'package:screentime/sections/UI sections/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_section.dart';
+import 'package:screentime/utils/browser_extension_server.dart';
+import 'package:screentime/sections/UI sections/Browser/browser_extension_settings.dart';
 
 // ============== CONSTANTS ==============
 
@@ -35,6 +38,7 @@ const _simpleSettingPaths = <String, String>{
   'language': 'language.selected',
   'launchAtStartup': 'launchAtStartup',
   'launchAsMinimized': 'launchAsMinimized',
+  'browserExtensionEnabled': 'browserExtensionEnabled',
   'crashReportingEnabled': 'crashReportingEnabled',
   'notificationsEnabled': 'notifications.enabled',
   'notificationsFocusMode': 'notifications.focusMode',
@@ -61,6 +65,7 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'language': (p, v) => p._language = v,
   'launchAtStartup': (p, v) => p._launchAtStartupVar = v,
   'launchAsMinimized': (p, v) => p._launchAsMinimized = v,
+  'browserExtensionEnabled': (p, v) => p._browserExtensionEnabled = v,
   'crashReportingEnabled': (p, v) => p._crashReportingEnabled = v,
   'notificationsEnabled': (p, v) => p._notificationsEnabled = v,
   'notificationsFocusMode': (p, v) => p._notificationsFocusMode = v,
@@ -88,6 +93,7 @@ class SettingsProvider extends ChangeNotifier {
   String _language = 'en';
   bool _launchAtStartupVar = false;
   bool _launchAsMinimized = false;
+  bool _browserExtensionEnabled = false;
   bool _crashReportingEnabled = true;
   bool _notificationsEnabled = false;
   bool _notificationsFocusMode = false;
@@ -100,7 +106,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _monitorAudio = true;
   bool _monitorControllers = true;
   bool _monitorHIDDevices = true;
-  bool _monitorKeyboard = !Platform.isMacOS;
+  bool _monitorKeyboard = !PlatformUtils.isMacOS;
   double _audioThreshold = 0.001;
   int _resetHour = 0;
 
@@ -112,6 +118,7 @@ class SettingsProvider extends ChangeNotifier {
   String get language => _language;
   bool get launchAtStartupVar => _launchAtStartupVar;
   bool get launchAsMinimized => _launchAsMinimized;
+  bool get browserExtensionEnabled => _browserExtensionEnabled;
   bool get crashReportingEnabled => _crashReportingEnabled;
   bool get notificationsEnabled => _notificationsEnabled;
   bool get notificationsFocusMode => _notificationsFocusMode;
@@ -152,6 +159,8 @@ class SettingsProvider extends ChangeNotifier {
     _launchAtStartupVar = _settingsManager.getSetting('launchAtStartup');
     _launchAsMinimized =
         _settingsManager.getSetting('launchAsMinimized') ?? false;
+    _browserExtensionEnabled =
+        _settingsManager.getSetting('browserExtensionEnabled') ?? false;
     _notificationsEnabled =
         _settingsManager.getSetting('notifications.enabled');
     _notificationsFocusMode =
@@ -178,7 +187,7 @@ class SettingsProvider extends ChangeNotifier {
         _settingsManager.getSetting('tracking.monitorHIDDevices') ?? true;
     _monitorKeyboard =
         _settingsManager.getSetting('tracking.monitorKeyboard') ??
-            !Platform.isMacOS;
+            !PlatformUtils.isMacOS;
     _audioThreshold =
         _settingsManager.getSetting('tracking.audioThreshold') ?? 0.001;
     _resetHour = _settingsManager.getSetting('tracking.resetHour') ?? 0;
@@ -211,11 +220,15 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> _handleSideEffects(String key, dynamic value) async {
     switch (key) {
       case 'launchAtStartup':
-        if (Platform.isMacOS) {
+        if (PlatformUtils.isMacOS) {
           value
               ? await launchAtStartup.enable()
               : await launchAtStartup.disable();
         }
+      case 'browserExtensionEnabled':
+        value
+            ? await BrowserExtensionServer.startServer()
+            : await BrowserExtensionServer.dispose();
       case 'trackingMode':
         final mode = value == TrackingModeOptions.precise
             ? TrackingMode.precise
@@ -268,7 +281,7 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> resetSettings() async {
     await _settingsManager.resetSettings();
-    if (Platform.isMacOS) {
+    if (PlatformUtils.isMacOS) {
       await launchAtStartup.enable();
     }
     _loadSettings();
@@ -295,11 +308,9 @@ class SettingsProvider extends ChangeNotifier {
 final _currentPlatform = _detectPlatform();
 
 String _detectPlatform() {
-  if (Platform.isMacOS) return 'macos';
-  if (Platform.isWindows) return 'windows';
-  if (Platform.isLinux) return 'linux';
-  if (Platform.isAndroid) return 'android';
-  if (Platform.isIOS) return 'ios';
+  if (PlatformUtils.isMacOS) return 'macos';
+  if (PlatformUtils.isWindows) return 'windows';
+  if (PlatformUtils.isLinux) return 'linux';
   return 'unknown';
 }
 
@@ -328,7 +339,7 @@ String buildUrl(String path, {bool isBugReport = false}) {
 }
 
 Future<void> launchAppropriateUrl(String url) async {
-  if (Platform.isWindows) {
+  if (PlatformUtils.isWindows) {
     if (await UrlLauncherPlatform.instance.canLaunch(url)) {
       await UrlLauncherPlatform.instance.launch(
         url,
@@ -481,8 +492,16 @@ class _SettingsContentState extends State<SettingsContent> {
               children: [
                 GeneralSection(setLocale: widget.setLocale),
                 _kSectionSpacing,
-                notificationSection,
-                _kSectionSpacing,
+                if (kIsWeb) ...[
+                  BrowserExtensionSettings(
+                    onModeChanged: (_) {}, // Mode toggle handled by app reload
+                  ),
+                  _kSectionSpacing,
+                ],
+                if (!kIsWeb) ...[
+                  notificationSection,
+                  _kSectionSpacing,
+                ],
                 const DataSection(),
               ],
             ),
@@ -490,14 +509,16 @@ class _SettingsContentState extends State<SettingsContent> {
           const SizedBox(width: 20),
           Expanded(
             child: Column(
-              children: const [
-                TrackingSection(),
+              children: [
+                if (!kIsWeb) ...[
+                  const TrackingSection(),
+                  _kSectionSpacing,
+                  const ied.BackupRestoreSection(),
+                  _kSectionSpacing,
+                ],
+                const ThemeCustomizationSection(),
                 _kSectionSpacing,
-                ied.BackupRestoreSection(),
-                _kSectionSpacing,
-                ThemeCustomizationSection(),
-                _kSectionSpacing,
-                AboutSection(),
+                const AboutSection(),
               ],
             ),
           ),
@@ -509,14 +530,24 @@ class _SettingsContentState extends State<SettingsContent> {
       children: [
         GeneralSection(setLocale: widget.setLocale),
         _kSectionSpacing,
-        const TrackingSection(),
-        _kSectionSpacing,
-        notificationSection,
-        _kSectionSpacing,
+        if (kIsWeb) ...[
+          BrowserExtensionSettings(
+            onModeChanged: (_) {}, // Handled by reload
+          ),
+          _kSectionSpacing,
+        ],
+        if (!kIsWeb) ...[
+          const TrackingSection(),
+          _kSectionSpacing,
+          notificationSection,
+          _kSectionSpacing,
+        ],
         const DataSection(),
         _kSectionSpacing,
-        const ied.BackupRestoreSection(),
-        _kSectionSpacing,
+        if (!kIsWeb) ...[
+          const ied.BackupRestoreSection(),
+          _kSectionSpacing,
+        ],
         const ThemeCustomizationSection(),
         _kSectionSpacing,
         const AboutSection(),

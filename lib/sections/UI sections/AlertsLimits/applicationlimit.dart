@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -86,7 +87,7 @@ class ApplicationLimitsCard extends StatelessWidget {
               icon: isEdit ? FluentIcons.edit : FluentIcons.add,
               label: isEdit
                   ? l10n.editLimitTitle(app.appName)
-                  : l10n.addApplicationLimit,
+                  : (kIsWeb ? "Add Website Limit" : l10n.addApplicationLimit),
             ),
             content: SizedBox(
               width: 420,
@@ -100,7 +101,7 @@ class ApplicationLimitsCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     ComboBox<String>(
                       placeholder: Text(
-                        l10n.selectApplicationPlaceholder,
+                        kIsWeb ? "Select Website" : l10n.selectApplicationPlaceholder,
                         style: TextStyle(
                           color: theme.resources.textFillColorSecondary,
                         ),
@@ -224,12 +225,12 @@ class _Header extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  l10n.applicationLimits,
+                  kIsWeb ? "Website Limits" : l10n.applicationLimits,
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  l10n.applicationsTracked(count),
+                  kIsWeb ? "$count Websites" : l10n.applicationsTracked(count),
                   style: TextStyle(
                     fontSize: 12,
                     color:

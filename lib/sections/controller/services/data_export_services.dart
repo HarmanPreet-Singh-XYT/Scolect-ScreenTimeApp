@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
@@ -527,7 +528,7 @@ class DataExportService {
 
   /// Save data to a file (with save dialog on macOS)
   Future<String> _saveToFile(Uint8List data, String fileName) async {
-    if (Platform.isMacOS) {
+    if (PlatformUtils.isMacOS) {
       // On macOS, let user choose location via save dialog
       try {
         final String? outputPath = await FilePicker.platform.saveFile(

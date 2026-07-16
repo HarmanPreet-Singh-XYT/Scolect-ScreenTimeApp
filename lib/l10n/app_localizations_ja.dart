@@ -74,6 +74,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navFocusMode => '集中モード';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => '設定';
 
   @override
@@ -959,6 +962,13 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get launchMinimizedDescription => 'システムトレイでアプリケーションを起動（Windows 10に推奨）';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'クラッシュレポート';

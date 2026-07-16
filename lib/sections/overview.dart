@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart' as mn;
 import './controller/data_controllers/overview_data_controller.dart';
@@ -234,8 +235,7 @@ class _OverviewState extends State<Overview>
 
       setState(() {
         _viewState = _ViewState.error;
-        _errorMessage =
-            AppLocalizations.of(context)!.errorLoadingData(e.toString());
+        _errorMessage = AppLocalizations.of(context)!.errorLoadingData(e.toString());
       });
     }
   }
@@ -442,7 +442,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              l10n.startUsingApplications,
+              kIsWeb ? "No websites tracked yet. Let's start browsing!" : l10n.startUsingApplications,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.inactiveColor,
@@ -646,49 +646,78 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                             data: snapshot.applicationLimits),
                       ),
                     ),
-                    if (hasProfile) ...[
+                    if (hasProfile || hasWeekly) ...[
+                      if (hasProfile) ...[
+                        const SizedBox(width: 16),
+                        Expanded(
+                          flex: 4,
+                          child: HabitDNACard(profile: snapshot.habitProfile!),
+                        ),
+                      ],
+                    ] else ...[
                       const SizedBox(width: 16),
                       Expanded(
                         flex: 4,
-                        child: HabitDNACard(profile: snapshot.habitProfile!),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: ProgressCard(
+                                title: AppLocalizations.of(context)!.screenTimeProgress,
+                                value: snapshot.screenTime,
+                                color: _kPurple,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: ProgressCard(
+                                title: AppLocalizations.of(context)!.productiveScoreProgress,
+                                value: snapshot.productiveScore,
+                                color: _kGreen,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ],
                 ),
               ),
-              SizedBox(height: vSpace),
-              SizedBox(
-                height: 200,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (hasWeekly) ...[
+              if (hasProfile || hasWeekly) ...[
+                SizedBox(height: vSpace),
+                SizedBox(
+                  height: 200,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (hasWeekly) ...[
+                        Expanded(
+                          flex: isMedium ? 4 : 5,
+                          child: WeeklyStoryCard(story: snapshot.weeklyStory!),
+                        ),
+                        const SizedBox(width: 16),
+                      ],
                       Expanded(
-                        flex: isMedium ? 4 : 5,
-                        child: WeeklyStoryCard(story: snapshot.weeklyStory!),
+                        flex: 2,
+                        child: ProgressCard(
+                          title: AppLocalizations.of(context)!.screenTimeProgress,
+                          value: snapshot.screenTime,
+                          color: _kPurple,
+                        ),
                       ),
                       const SizedBox(width: 16),
+                      Expanded(
+                        flex: 2,
+                        child: ProgressCard(
+                          title: AppLocalizations.of(context)!.productiveScoreProgress,
+                          value: snapshot.productiveScore,
+                          color: _kGreen,
+                        ),
+                      ),
                     ],
-                    Expanded(
-                      flex: 2,
-                      child: ProgressCard(
-                        title: AppLocalizations.of(context)!.screenTimeProgress,
-                        value: snapshot.screenTime,
-                        color: _kPurple,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      flex: 2,
-                      child: ProgressCard(
-                        title: AppLocalizations.of(context)!.productiveScoreProgress,
-                        value: snapshot.productiveScore,
-                        color: _kGreen,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         );

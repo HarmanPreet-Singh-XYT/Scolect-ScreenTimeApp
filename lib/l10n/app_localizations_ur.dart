@@ -75,6 +75,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get navFocusMode => 'فوکس موڈ';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'ترتیبات';
 
   @override
@@ -979,6 +982,13 @@ class AppLocalizationsUr extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'ایپلیکیشن کو سسٹم ٹرے میں شروع کریں (ونڈوز 10 کے لیے تجویز کردہ)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'کریش رپورٹنگ';

@@ -111,7 +111,12 @@
   "@navFocusMode": {
     "description": "Navigation item for focus mode page"
   },
-  
+
+  "navBrowser": "Browser",
+  "@navBrowser": {
+    "description": "Navigation item for browser / website tracking page"
+  },
+
   "navSettings": "Settings",
   "@navSettings": {
     "description": "Navigation item for settings page"
@@ -979,6 +984,9 @@
   
   "launchMinimizedTitle": "Launch as Minimized",
   "launchMinimizedDescription": "Start the application in System Tray (Recommended for Windows 10)",
+
+  "browserExtensionTitle": "Browser Extension",
+  "browserExtensionDescription": "Allow the Scolect browser extension to connect and sync website usage data",
 
   "crashReportingTitle": "Crash Reporting",
   "crashReportingDescription": "Send anonymous crash reports to help improve Scolect. No personal data or usage history is included.",

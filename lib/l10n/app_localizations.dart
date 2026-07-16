@@ -244,6 +244,12 @@ abstract class AppLocalizations {
   /// **'Focus Mode'**
   String get navFocusMode;
 
+  /// Navigation item for browser / website tracking page
+  ///
+  /// In en, this message translates to:
+  /// **'Browser'**
+  String get navBrowser;
+
   /// Navigation item for settings page
   ///
   /// In en, this message translates to:
@@ -1863,6 +1869,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start the application in System Tray (Recommended for Windows 10)'**
   String get launchMinimizedDescription;
+
+  /// No description provided for @browserExtensionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser Extension'**
+  String get browserExtensionTitle;
+
+  /// No description provided for @browserExtensionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow the Scolect browser extension to connect and sync website usage data'**
+  String get browserExtensionDescription;
 
   /// No description provided for @crashReportingTitle.
   ///

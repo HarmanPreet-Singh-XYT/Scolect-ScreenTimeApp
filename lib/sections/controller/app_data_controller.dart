@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:synchronized/synchronized.dart';
+import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
 // TypeAdapters for complex types
 @HiveType(typeId: 1)
@@ -213,11 +214,17 @@ class AppDataStore extends ChangeNotifier {
       if (_isInitialized) return true;
 
       try {
+        if (kIsWeb) {
+          await _initWebData();
+          _isInitialized = true;
+          return true;
+        }
+
         // Platform-specific initialization
         String hivePath;
 
         String? _supportDirPath;
-        if (Platform.isMacOS || Platform.isWindows) {
+        if (!kIsWeb && (Platform.isMacOS || Platform.isWindows)) {
           final docsDir = await getApplicationDocumentsDirectory();
           final supportDir = await getApplicationSupportDirectory();
           _supportDirPath = supportDir.path;
@@ -326,7 +333,7 @@ class AppDataStore extends ChangeNotifier {
         // access can still be blocked by the sandbox (errno = 1). If that
         // happens, reinitialize Hive to Application Support and retry.
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
-        if (_usageBox == null && Platform.isMacOS && _supportDirPath != null) {
+        if (_usageBox == null && !kIsWeb && Platform.isMacOS && _supportDirPath != null) {
           final fallbackPath = '$_supportDirPath/Scolect';
           debugPrint('⚠️ Box open failed on macOS, falling back to Application Support: $fallbackPath');
           await Hive.close();
@@ -681,14 +688,19 @@ class AppDataStore extends ChangeNotifier {
   }
 
   bool _ensureInitialized() {
-    if (!_isInitialized ||
-        _usageBox == null ||
-        _focusBox == null ||
-        _metadataBox == null) {
+    if (!_isInitialized) {
       _lastError = "AppDataStore not initialized. Call init() first.";
       debugPrint(_lastError);
       return false;
     }
+    
+    // On web, we don't use Hive boxes, so they will be null.
+    if (!kIsWeb && (_usageBox == null || _focusBox == null || _metadataBox == null)) {
+      _lastError = "AppDataStore Hive boxes not initialized.";
+      debugPrint(_lastError);
+      return false;
+    }
+    
     return true;
   }
 
@@ -1795,6 +1807,93 @@ class AppDataStore extends ChangeNotifier {
         dateStringBytes;
 
     return totalBytes / (1024 * 1024);
+  }
+
+  // ============================================================
+  // WEB STORAGE INTEGRATION
+  // ============================================================
+
+  Future<void> _initWebData() async {
+    final now = DateTime.now();
+    final List<String> keysToFetch = [];
+    final List<DateTime> dates = [];
+    
+    for (int i = 0; i < 60; i++) {
+      final d = now.subtract(Duration(days: i));
+      final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+      keysToFetch.add('scolect_day_$dateKey');
+      dates.add(DateTime(d.year, d.month, d.day));
+    }
+    
+    keysToFetch.add('scolect_focus_sessions');
+    keysToFetch.add('scolect_app_metadata');
+    
+    final result = await chromeStorageGet(keysToFetch);
+    
+    for (int i = 0; i < dates.length; i++) {
+      final date = dates[i];
+      final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final storageKey = 'scolect_day_$dateStr';
+      final dayData = result[storageKey] as Map<dynamic, dynamic>? ?? {};
+      final domains = (dayData['domains'] as List<dynamic>?) ?? [];
+      
+      final mapForDate = <String, AppUsageRecord>{};
+      for (var d in domains) {
+        final domain = d['domain'] as String? ?? 'unknown';
+        final seconds = d['seconds'] as num? ?? 0;
+        final visits = d['visits'] as num? ?? 0;
+        
+        mapForDate[domain] = AppUsageRecord(
+          date: date,
+          timeSpent: Duration(seconds: seconds.toInt()),
+          openCount: visits.toInt(),
+          usagePeriods: [],
+        );
+        
+        if (!_metadataCache.containsKey(domain)) {
+          _metadataCache[domain] = AppMetadata(
+            category: 'Web',
+            isProductive: true,
+            isTracking: true,
+            isVisible: true,
+          );
+        }
+      }
+      _usageCacheByDate[dateStr] = mapForDate;
+    }
+    
+    final focusData = result['scolect_focus_sessions'] as List<dynamic>? ?? [];
+    for (var f in focusData) {
+      if (f is Map) {
+        final fs = FocusSessionRecord(
+          date: DateTime.fromMillisecondsSinceEpoch((f['date'] as num?)?.toInt() ?? 0),
+          startTime: DateTime.fromMillisecondsSinceEpoch((f['startTime'] as num?)?.toInt() ?? 0),
+          duration: Duration(seconds: (f['duration'] as num?)?.toInt() ?? 0),
+          appsBlocked: (f['appsBlocked'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+          completed: f['completed'] ?? true,
+          breakCount: (f['breakCount'] as num?)?.toInt() ?? 0,
+          totalBreakTime: Duration(seconds: (f['totalBreakTime'] as num?)?.toInt() ?? 0),
+        );
+        final dateStr = _formatDateKey(fs.date);
+        _focusCacheByDate.putIfAbsent(dateStr, () => []).add(fs);
+      }
+    }
+    
+    final metaData = result['scolect_app_metadata'] as Map<dynamic, dynamic>? ?? {};
+    for (var entry in metaData.entries) {
+      final domain = entry.key.toString();
+      final val = entry.value as Map<dynamic, dynamic>;
+      _metadataCache[domain] = AppMetadata(
+        category: val['category'] ?? 'Web',
+        isProductive: val['isProductive'] ?? true,
+        isTracking: val['isTracking'] ?? true,
+        isVisible: val['isVisible'] ?? true,
+        dailyLimit: Duration(seconds: (val['dailyLimit'] as num?)?.toInt() ?? 0),
+        limitStatus: val['limitStatus'] ?? false,
+      );
+    }
+    
+    _cachedAppNames = null;
   }
 }
 

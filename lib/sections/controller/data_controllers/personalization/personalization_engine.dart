@@ -60,7 +60,8 @@ class PersonalizationEngine {
       if (topAppOpenCount >= 8 && avgMinutes < 5) {
         appNote = l10n.narrativeCheckedAppShort(topAppName, topAppOpenCount);
       } else if (topAppOpenCount <= 3 && topAppTimeSpent.inMinutes >= 30) {
-        appNote = l10n.narrativeCheckedAppLong(topAppName, topAppOpenCount, topAppOpenCount);
+        appNote = l10n.narrativeCheckedAppLong(
+            topAppName, topAppOpenCount, topAppOpenCount);
       }
     }
 
@@ -96,16 +97,16 @@ class PersonalizationEngine {
       final allUsage = _store.getAllAppUsageForRange(start, today);
       final focusSessions = _store.getFocusSessionsRange(start, today);
 
-      final raw = await compute(_runDetectors, _DetectorInput(
-        allUsage: allUsage,
-        focusSessions: focusSessions,
-        metadataByApp: _buildMetadataSnapshot(),
-        today: today,
-      ));
+      final raw = await compute(
+          _runDetectors,
+          _DetectorInput(
+            allUsage: allUsage,
+            focusSessions: focusSessions,
+            metadataByApp: _buildMetadataSnapshot(),
+            today: today,
+          ));
 
-      return raw
-          .where((i) => !_persist.isInsightDismissed(i.id))
-          .toList();
+      return raw.where((i) => !_persist.isInsightDismissed(i.id)).toList();
     } catch (e) {
       debugPrint('PersonalizationEngine.getActiveInsights error: $e');
       return [];
@@ -178,8 +179,8 @@ class PersonalizationEngine {
       if (completedSessions.isNotEmpty) {
         final total = completedSessions.fold(
             Duration.zero, (sum, s) => sum + s.focusTime);
-        avgFocusLen = Duration(
-            seconds: total.inSeconds ~/ completedSessions.length);
+        avgFocusLen =
+            Duration(seconds: total.inSeconds ~/ completedSessions.length);
       }
 
       late final WorkStyle workStyle;
@@ -250,8 +251,9 @@ class PersonalizationEngine {
       // Average daily screen time
       final avgDaily = dailyTimes.isNotEmpty
           ? Duration(
-              seconds: dailyTimes.fold(Duration.zero, (a, b) => a + b).inSeconds ~/
-                  dailyTimes.length)
+              seconds:
+                  dailyTimes.fold(Duration.zero, (a, b) => a + b).inSeconds ~/
+                      dailyTimes.length)
           : Duration.zero;
 
       // Average productivity score
@@ -289,21 +291,20 @@ class PersonalizationEngine {
   }
 
   /// Builds the weekly story narrative.
-  Future<WeeklyStory?> buildWeeklyStory({required AppLocalizations l10n}) async {
+  Future<WeeklyStory?> buildWeeklyStory(
+      {required AppLocalizations l10n}) async {
     try {
       if (!_store.isInitialized) return null;
 
       final today = DateTime.now();
       final weekStart = today.subtract(Duration(days: today.weekday - 1));
-      final thisWeekTotal =
-          _store.getTotalScreenTimeRange(weekStart, today);
+      final thisWeekTotal = _store.getTotalScreenTimeRange(weekStart, today);
 
       if (thisWeekTotal.inMinutes < 5) return null;
 
       // Ordinal week since first tracking date
       final firstDate = _persist.firstTrackingDate ?? weekStart;
-      final weekNumber =
-          today.difference(firstDate).inDays ~/ 7 + 1;
+      final weekNumber = today.difference(firstDate).inDays ~/ 7 + 1;
 
       // Week 1 total for comparison
       final week1Start = firstDate;
@@ -332,8 +333,7 @@ class PersonalizationEngine {
       }
 
       // Find the biggest non-productive category this week
-      final catBreakdown =
-          _store.getCategoryBreakdownRange(weekStart, today);
+      final catBreakdown = _store.getCategoryBreakdownRange(weekStart, today);
       String? improvementArea;
       Duration maxDistraction = Duration.zero;
       String? worstCat;
@@ -431,7 +431,9 @@ class PersonalizationEngine {
     final m = dt.minute;
     final suffix = h < 12 ? 'AM' : 'PM';
     final hour = h == 0 ? 12 : (h > 12 ? h - 12 : h);
-    return m == 0 ? '$hour $suffix' : '$hour:${m.toString().padLeft(2, '0')} $suffix';
+    return m == 0
+        ? '$hour $suffix'
+        : '$hour:${m.toString().padLeft(2, '0')} $suffix';
   }
 }
 
@@ -486,17 +488,15 @@ Insight? _detectWeekdayPattern(_DetectorInput input) {
     // Average per weekday
     final Map<int, Duration> avgByDay = {};
     for (final entry in byWeekday.entries) {
-      final total =
-          entry.value.fold(Duration.zero, (a, b) => a + b);
+      final total = entry.value.fold(Duration.zero, (a, b) => a + b);
       avgByDay[entry.key] =
           Duration(seconds: total.inSeconds ~/ entry.value.length);
     }
 
     final overallAvg = Duration(
-        seconds: avgByDay.values
-                .fold(Duration.zero, (a, b) => a + b)
-                .inSeconds ~/
-            avgByDay.length);
+        seconds:
+            avgByDay.values.fold(Duration.zero, (a, b) => a + b).inSeconds ~/
+                avgByDay.length);
 
     for (final entry in avgByDay.entries) {
       if (overallAvg.inSeconds < 60) continue;
@@ -682,7 +682,16 @@ Insight? _detectPostHeavyUsage(_DetectorInput input) {
 // ─── Small utilities (top-level for isolate access) ───────────────────────────
 
 String _weekdayName(int day) {
-  const names = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const names = [
+    '',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
   return day >= 1 && day <= 7 ? names[day] : 'that day';
 }
 

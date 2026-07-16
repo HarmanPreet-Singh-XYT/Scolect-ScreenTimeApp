@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class _TrackingSectionState extends State<TrackingSection>
   bool _hasInputMonitoringPermission = true;
   bool _isCheckingPermission = true;
 
-  static final _isMacOS = Platform.isMacOS;
+  static final _isMacOS = PlatformUtils.isMacOS;
 
   @override
   void initState() {

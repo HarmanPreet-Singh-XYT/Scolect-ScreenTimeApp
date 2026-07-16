@@ -74,6 +74,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navFocusMode => '专注模式';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => '设置';
 
   @override
@@ -950,6 +953,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get launchMinimizedDescription => '在系统托盘中启动应用程序（推荐Windows 10用户使用）';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => '崩溃报告';

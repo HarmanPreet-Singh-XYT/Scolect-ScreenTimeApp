@@ -75,6 +75,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navFocusMode => 'Modo Enfoque';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'Configuración';
 
   @override
@@ -997,6 +1000,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'Iniciar la aplicación en la Bandeja del Sistema (Recomendado para Windows 10)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'Informes de fallos';

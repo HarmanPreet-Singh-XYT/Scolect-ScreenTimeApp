@@ -74,6 +74,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navFocusMode => 'وضع التركيز';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'الإعدادات';
 
   @override
@@ -968,6 +971,13 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'بدء التطبيق في شريط النظام (موصى به لويندوز 10)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'الإبلاغ عن الأعطال';

@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -107,28 +107,37 @@ class GeneralSection extends StatelessWidget {
             },
           ),
         ),
-        if (Platform.isMacOS)
+        if (PlatformUtils.isMacOS)
           SettingRow(
             title: l10n.launchAtStartupTitle,
             description: l10n.launchAtStartupDescription,
-            showDivider: Platform.isWindows,
+            showDivider: PlatformUtils.isWindows,
             control: ToggleSwitch(
               checked: settings.launchAtStartupVar,
               onChanged: (value) =>
                   settings.updateSetting('launchAtStartup', value),
             ),
           ),
-        if (Platform.isWindows)
+        if (PlatformUtils.isWindows)
           SettingRow(
             title: l10n.launchMinimizedTitle,
             description: l10n.launchMinimizedDescription,
-            showDivider: false,
             control: ToggleSwitch(
               checked: settings.launchAsMinimized,
               onChanged: (value) =>
                   settings.updateSetting('launchAsMinimized', value),
             ),
           ),
+        SettingRow(
+          title: l10n.browserExtensionTitle,
+          description: l10n.browserExtensionDescription,
+          showDivider: false,
+          control: ToggleSwitch(
+            checked: settings.browserExtensionEnabled,
+            onChanged: (value) =>
+                settings.updateSetting('browserExtensionEnabled', value),
+          ),
+        ),
       ],
     );
   }

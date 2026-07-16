@@ -74,6 +74,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get navFocusMode => 'फोकस मोड';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'सेटिंग्स';
 
   @override
@@ -981,6 +984,13 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'एप्लिकेशन को सिस्टम ट्रे में शुरू करें (Windows 10 के लिए अनुशंसित)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'क्रैश रिपोर्टिंग';

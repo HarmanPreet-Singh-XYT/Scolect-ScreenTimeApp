@@ -1,8 +1,8 @@
 // background_app_tracker.dart
 import 'dart:async';
-import 'dart:io';
+import 'package:screentime/utils/platform_utils.dart';
 import 'dart:ui' as ui;
-import 'package:desktop_screenstate/desktop_screenstate.dart';
+import 'package:screentime/utils/screenstate_wrapper.dart';
 import 'package:screentime/foreground_window_plugin.dart';
 import 'package:screentime/sections/controller/notification_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
@@ -267,7 +267,7 @@ class BackgroundAppTracker {
         SettingsManager().getSetting("tracking.monitorHIDDevices") ?? false;
     bool monitorKeyboard =
         SettingsManager().getSetting("tracking.monitorKeyboard") ??
-            !Platform.isMacOS;
+            !PlatformUtils.isMacOS;
     double audioThreshold =
         SettingsManager().getSetting("tracking.audioThreshold") ?? 0.001;
 

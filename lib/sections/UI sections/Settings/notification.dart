@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -57,7 +57,7 @@ class _NotificationSectionState extends State<NotificationSection>
       curve: Curves.easeInOut,
     );
 
-    if (Platform.isMacOS) _checkPermissionStatus();
+    if (PlatformUtils.isMacOS) _checkPermissionStatus();
     if (widget.isHighlighted) _startHighlight();
   }
 
@@ -80,7 +80,7 @@ class _NotificationSectionState extends State<NotificationSection>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && Platform.isMacOS) {
+    if (state == AppLifecycleState.resumed && PlatformUtils.isMacOS) {
       _checkPermissionStatus();
     }
   }
@@ -169,7 +169,7 @@ class _NotificationSectionState extends State<NotificationSection>
 
   Future<void> _handleNotificationToggle(
       bool value, SettingsProvider settings) async {
-    if (!Platform.isMacOS) {
+    if (!PlatformUtils.isMacOS) {
       settings.updateSetting('notificationsEnabled', value);
       return;
     }
@@ -239,7 +239,7 @@ class _NotificationSectionState extends State<NotificationSection>
     final accent = theme.accentColor;
 
     final permissionGranted = _permissionStatus?.isGranted ?? false;
-    final canEnable = !Platform.isMacOS || permissionGranted;
+    final canEnable = !PlatformUtils.isMacOS || permissionGranted;
     final notificationsEnabled = settings.notificationsEnabled && canEnable;
 
     return AnimatedBuilder(
@@ -280,7 +280,7 @@ class _NotificationSectionState extends State<NotificationSection>
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (Platform.isMacOS) ...[
+            if (PlatformUtils.isMacOS) ...[
               _buildPermissionBadge(l10n),
               const SizedBox(width: 8),
             ],
@@ -295,7 +295,7 @@ class _NotificationSectionState extends State<NotificationSection>
           _buildPermissionWarning(theme, l10n),
           SettingRow(
             title: l10n.notificationsTitle,
-            description: Platform.isMacOS && !permissionGranted
+            description: PlatformUtils.isMacOS && !permissionGranted
                 ? l10n.enable_notification_permission_hint
                 : l10n.notificationsAllDescription,
             control: ToggleSwitch(
@@ -353,7 +353,7 @@ class _NotificationSectionState extends State<NotificationSection>
   // ── Permission Widgets ────────────────────────────────────────────────────
 
   Widget _buildPermissionBadge(AppLocalizations l10n) {
-    if (!Platform.isMacOS) return const SizedBox.shrink();
+    if (!PlatformUtils.isMacOS) return const SizedBox.shrink();
 
     if (_isCheckingPermission) {
       return const SizedBox(
@@ -401,7 +401,7 @@ class _NotificationSectionState extends State<NotificationSection>
   }
 
   Widget _buildPermissionWarning(FluentThemeData theme, AppLocalizations l10n) {
-    if (!Platform.isMacOS ||
+    if (!PlatformUtils.isMacOS ||
         _isCheckingPermission ||
         _permissionStatus == null) {
       return const SizedBox.shrink();

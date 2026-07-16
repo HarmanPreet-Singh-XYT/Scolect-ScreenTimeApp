@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:io' show Platform;
+import 'package:screentime/utils/platform_utils.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -29,7 +30,7 @@ class NotificationController with ChangeNotifier {
   factory NotificationController() => _instance;
   NotificationController._internal();
 
-  static final bool _isMacOS = Platform.isMacOS;
+  static final bool _isMacOS = PlatformUtils.isMacOS;
   static const int autoDismissSeconds = 5;
   static const Duration _permissionCacheDuration = Duration(seconds: 30);
   static const Duration _snoozeDelay = Duration(minutes: 15);

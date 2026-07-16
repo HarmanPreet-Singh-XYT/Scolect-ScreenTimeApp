@@ -75,6 +75,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get navFocusMode => 'Режим фокусировки';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'Настройки';
 
   @override
@@ -984,6 +987,13 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'Запускать приложение в системном трее (рекомендуется для Windows 10)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'Отчеты о сбоях';

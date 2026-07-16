@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import './reusable.dart';
@@ -182,8 +183,8 @@ class TopApplicationsList extends StatelessWidget {
         _SectionHeader(
           color: _kBlue,
           icon: FluentIcons.app_icon_default_list,
-          title: l10n.topApplications,
-          countLabel: l10n.appsCount(filteredData.length),
+          title: kIsWeb ? "Top Websites" : l10n.topApplications,
+          countLabel: kIsWeb ? "${filteredData.length} Websites" : l10n.appsCount(filteredData.length),
           theme: theme,
         ),
         Divider(
@@ -195,8 +196,8 @@ class TopApplicationsList extends StatelessWidget {
         Expanded(
           child: filteredData.isEmpty
               ? EmptyState(
-                  icon: FluentIcons.app_icon_default,
-                  message: l10n.noApplicationDataAvailable,
+                  icon: kIsWeb ? FluentIcons.globe : FluentIcons.app_icon_default,
+                  message: kIsWeb ? "No websites tracked yet" : l10n.noApplicationDataAvailable,
                 )
               : ListView.builder(
                   padding: _kListPadding,

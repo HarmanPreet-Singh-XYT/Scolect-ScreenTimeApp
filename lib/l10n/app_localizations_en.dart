@@ -74,6 +74,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navFocusMode => 'Focus Mode';
 
   @override
+  String get navBrowser => 'Browser';
+
+  @override
   String get navSettings => 'Settings';
 
   @override
@@ -973,6 +976,13 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get launchMinimizedDescription =>
       'Start the application in System Tray (Recommended for Windows 10)';
+
+  @override
+  String get browserExtensionTitle => 'Browser Extension';
+
+  @override
+  String get browserExtensionDescription =>
+      'Allow the Scolect browser extension to connect and sync website usage data';
 
   @override
   String get crashReportingTitle => 'Crash Reporting';

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=360">
+  <title>Scolect</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+
+    <!-- ── Header ───────────────────────────────────────────── -->
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#60A5FA" stroke-width="2"/>
+            <path d="M12 6v6l4 2" stroke="#60A5FA" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">Scolect</span>
+        <div id="modeChip" class="mode-chip">Standalone</div>
+      </div>
+      <div class="active-row" id="activeRow" style="display:none">
+        <span class="pulse-dot"></span>
+        <span class="active-label" id="activeLabel">Tracking…</span>
+      </div>
+    </div>
+
+    <!-- ── Today stat ─────────────────────────────────────────── -->
+    <div class="today-card">
+      <div class="today-meta">Today's Web Time</div>
+      <div class="today-time" id="todayTime">—</div>
+      <div class="today-sub" id="todaySub">0 sites · 0 visits</div>
+    </div>
+
+    <!-- ── Top sites ──────────────────────────────────────────── -->
+    <div class="section-label">Top Sites</div>
+    <div class="sites-list" id="sitesList">
+      <div class="empty-state">Browse the web to see your stats here.</div>
+    </div>
+
+    <!-- ── Sync status (hybrid / tracker-only) ────────────────── -->
+    <div class="sync-row" id="syncRow" style="display:none">
+      <div class="sync-dot" id="syncDot"></div>
+      <span class="sync-label" id="syncLabel">Syncing to desktop…</span>
+    </div>
+
+    <!-- ── Footer actions ─────────────────────────────────────── -->
+    <div class="footer">
+      <button class="btn-ghost" id="settingsBtn" title="Settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        Settings
+      </button>
+      <button class="btn-primary" id="openDashBtn">
+        Open Dashboard
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M7 17L17 7M17 7H7M17 7v10"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

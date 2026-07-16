@@ -19,6 +19,8 @@ import './sections/focus_mode.dart';
 import './sections/reports.dart';
 import './sections/settings.dart';
 import './sections/help.dart';
+import './sections/browser.dart';
+import './sections/web_dashboard.dart';
 import 'sections/controller/settings_data_controller.dart';
 import './adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -26,6 +28,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:tray_manager/tray_manager.dart';
 import './sections/controller/application_controller.dart';
 import 'utils/single_instance_ipc.dart';
+import 'utils/browser_extension_server.dart';
 import 'dart:ui' show lerpDouble, PlatformDispatcher;
 import 'package:provider/provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
@@ -136,8 +139,130 @@ final NavigationState navigationState = NavigationState();
 // ============================================================================
 
 void main(List<String> args) async {
-  _appMain(args);
+  if (kIsWeb) {
+    await _appMainWeb();
+  } else {
+    _appMain(args);
+  }
 }
+
+Future<void> _appMainWeb() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await SettingsManager().init();
+
+  final String savedTheme = SettingsManager().getSetting("theme.selected") ?? "System";
+  String? savedLocale = SettingsManager().getSetting("language.selected");
+  if (savedLocale == null) {
+    savedLocale = LanguageOptions.defaultLanguage;
+    SettingsManager().updateSetting("language.selected", savedLocale);
+  }
+
+  final AdaptiveThemeMode initialTheme;
+  switch (savedTheme) {
+    case "Dark":
+      initialTheme = AdaptiveThemeMode.dark;
+      break;
+    case "Light":
+      initialTheme = AdaptiveThemeMode.light;
+      break;
+    default:
+      initialTheme = AdaptiveThemeMode.system;
+  }
+
+  runApp(MyAppWeb(
+    initialTheme: initialTheme,
+    savedLocale: savedLocale,
+  ));
+}
+
+class MyAppWeb extends StatefulWidget {
+  final AdaptiveThemeMode initialTheme;
+  final String? savedLocale;
+
+  const MyAppWeb({
+    super.key,
+    this.initialTheme = AdaptiveThemeMode.system,
+    this.savedLocale,
+  });
+
+  @override
+  State<MyAppWeb> createState() => _MyAppWebState();
+}
+
+class _MyAppWebState extends State<MyAppWeb> {
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.savedLocale != null) {
+      _locale = Locale(widget.savedLocale!);
+    }
+  }
+
+  void setLocale(Locale locale) {
+    setState(() => _locale = locale);
+    SettingsManager().updateSetting("language.selected", locale.languageCode);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeCustomizationProvider()),
+        ChangeNotifierProvider.value(value: navigationState),
+      ],
+      child: _AppWithThemeWeb(
+        initialTheme: widget.initialTheme,
+        locale: _locale,
+        setLocale: setLocale,
+      ),
+    );
+  }
+}
+
+class _AppWithThemeWeb extends StatelessWidget {
+  final AdaptiveThemeMode initialTheme;
+  final Locale? locale;
+  final Function(Locale) setLocale;
+
+  const _AppWithThemeWeb({
+    required this.initialTheme,
+    required this.locale,
+    required this.setLocale,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeCustomizationProvider>();
+    final customTheme = themeProvider.currentTheme;
+    final themeMode = themeProvider.adaptiveThemeMode;
+    final themeKey = Object.hash(customTheme.id, themeProvider.themeMode);
+
+    return FluentAdaptiveTheme(
+      key: ValueKey(themeKey),
+      light: buildLightTheme(customTheme),
+      dark: buildDarkTheme(customTheme),
+      initial: themeMode,
+      builder: (theme, darkTheme) => FluentApp(
+        title: 'Scolect Web',
+        theme: theme,
+        darkTheme: darkTheme,
+        navigatorKey: navigatorKey,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: locale,
+        debugShowCheckedModeBanner: false,
+        home: const ScaffoldPage(
+          padding: EdgeInsets.zero,
+          content: WebDashboard(),
+        ),
+      ),
+    );
+  }
+}
+
 
 Future<void> _appMain(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -187,6 +312,12 @@ Future<void> _appMain(List<String> args) async {
     } else {
       await launchAtStartup.disable();
     }
+  }
+
+  final bool isBrowserExtensionEnabled =
+      await SettingsManager().getSetting("browserExtensionEnabled") ?? false;
+  if (isBrowserExtensionEnabled) {
+    await BrowserExtensionServer.startServer();
   }
 
   final bool isMinimizeAtLaunch =
@@ -603,6 +734,7 @@ class _MyAppState extends State<MyApp>
     WidgetsBinding.instance.removeObserver(this);
     BackgroundAppTracker().dispose();
     SingleInstanceIPC.dispose();
+    BrowserExtensionServer.dispose();
     _dataStore.dispose().then((_) => Hive.close());
     trayManager.removeListener(this);
     SoundManager.dispose();
@@ -850,10 +982,12 @@ class CustomSidebar extends StatelessWidget {
           icon: FluentIcons.analytics_report, label: l10n.navReports, index: 3),
       _NavItemData(
           icon: FluentIcons.red_eye, label: l10n.navFocusMode, index: 4),
+      _NavItemData(
+          icon: FluentIcons.globe, label: l10n.navBrowser, index: 5),
       _NavItemData.separator(),
       _NavItemData(
-          icon: FluentIcons.settings, label: l10n.navSettings, index: 5),
-      _NavItemData(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 6),
+          icon: FluentIcons.settings, label: l10n.navSettings, index: 6),
+      _NavItemData(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 7),
     ];
   }
 
@@ -1402,8 +1536,10 @@ class _ContentArea extends StatelessWidget {
       case 4:
         return const FocusMode(key: ValueKey('focus'));
       case 5:
-        return Settings(key: const ValueKey('settings'), setLocale: setLocale);
+        return const Browser(key: ValueKey('browser'));
       case 6:
+        return Settings(key: const ValueKey('settings'), setLocale: setLocale);
+      case 7:
         return const Help(key: ValueKey('help'));
       default:
         assert(false, 'Unhandled nav index: $index');

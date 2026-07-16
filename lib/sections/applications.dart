@@ -7,6 +7,7 @@ import './controller/data_controllers/applications_data_controller.dart';
 import './controller/categories_controller.dart';
 import 'dart:async';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -224,9 +225,9 @@ class _ApplicationsState extends State<Applications>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const ProgressRing(),
-              const SizedBox(height: 16),
-              Text(l10n.applicationsTitle, style: theme.typography.body),
+              Icon(kIsWeb ? FluentIcons.globe : FluentIcons.apps_content, size: 24, color: theme.accentColor),
+              const SizedBox(width: 12),
+              Text(kIsWeb ? "Websites" : l10n.applicationsTitle, style: theme.typography.body),
             ],
           ),
         ),
@@ -264,7 +265,7 @@ class _ApplicationsState extends State<Applications>
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 8),
                 child: Text(
-                  l10n.applicationCount(filteredApps.length),
+                  kIsWeb ? '${filteredApps.length} websites' : l10n.applicationCount(filteredApps.length),
                   style: TextStyle(
                     fontSize: 13,
                     color:
@@ -319,13 +320,13 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.applicationsTitle,
+                  kIsWeb ? "Websites" : l10n.applicationsTitle,
                   style: theme.typography.subtitle?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
-                  l10n.applicationsSubtitle,
+                  kIsWeb ? "Manage tracking and visibility for websites" : l10n.applicationsSubtitle,
                   style: TextStyle(
                     fontSize: 12,
                     color: captionColor?.withValues(alpha: 0.6),
@@ -338,7 +339,7 @@ class _Header extends StatelessWidget {
         Row(
           children: [
             _SearchBox(
-              placeholder: l10n.searchApplication,
+              placeholder: kIsWeb ? "Search website or domain..." : l10n.searchApplication,
               onChanged: changeSearchValue,
             ),
             const SizedBox(width: 12),
@@ -749,7 +750,7 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.noApplicationsFound,
+            kIsWeb ? "No websites found matching your filters." : l10n.noApplicationsFound,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

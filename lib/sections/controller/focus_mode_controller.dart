@@ -96,6 +96,9 @@ class PomodoroTimerService {
   Function()? _onLongBreakStart;
   Function()? _onTimerComplete;
 
+  // Static accessor for the singleton (used by BrowserExtensionServer)
+  static PomodoroTimerService get instance => _instance;
+
   // Getters
   TimerState get currentState => _currentState;
   int get secondsRemaining => _secondsRemaining;

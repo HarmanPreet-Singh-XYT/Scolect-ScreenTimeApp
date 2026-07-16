@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'dart:io' show Platform;
+import 'package:screentime/utils/platform_utils.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:math' show max;
 
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -127,7 +128,7 @@ class SettingsManager {
   late SharedPreferences _prefs;
   late Map<String, dynamic> settings;
 
-  static final bool _isMacOS = Platform.isMacOS;
+  static final bool _isMacOS = PlatformUtils.isMacOS;
 
   Map<String, String> versionInfo = {
     "version": "2.1.3",
@@ -143,6 +144,7 @@ class SettingsManager {
         "language": {"selected": LanguageOptions.defaultLanguage},
         "launchAtStartup": true,
         "launchAsMinimized": false,
+        "browserExtensionEnabled": false,
         "crashReportingEnabled": true,
         "notifications": {
           "enabled": !_isMacOS,

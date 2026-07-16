@@ -1,4 +1,4 @@
-import 'dart:io' show Platform;
+import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ mixin _NotificationBannerMixin<T extends StatefulWidget> on State<T> {
   }
 
   Future<void> checkPermission() async {
-    if (!Platform.isMacOS) return;
+    if (!PlatformUtils.isMacOS) return;
 
     setState(() => isCheckingPermission = true);
 
@@ -83,7 +83,7 @@ mixin _NotificationBannerMixin<T extends StatefulWidget> on State<T> {
 
   /// `true` when the banner should be hidden.
   bool get shouldHide =>
-      !Platform.isMacOS ||
+      !PlatformUtils.isMacOS ||
       isDismissed ||
       isCheckingPermission ||
       currentIssue == null;
