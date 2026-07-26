@@ -25,6 +25,7 @@ const _kAmberColor = Color(0xFFF59E0B);
 
 class AppViewModel {
   final String name;
+  final String siteName;
   final String category;
   final String screenTime;
   bool isTracking;
@@ -35,6 +36,7 @@ class AppViewModel {
 
   AppViewModel({
     required this.name,
+    this.siteName = '',
     required this.category,
     required this.screenTime,
     required this.isTracking,
@@ -47,6 +49,7 @@ class AppViewModel {
   factory AppViewModel.fromDetail(ApplicationBasicDetail detail) {
     return AppViewModel(
       name: detail.name,
+      siteName: detail.siteName,
       category: detail.category,
       screenTime: detail.formattedScreenTime,
       isTracking: detail.isTracking,
@@ -898,11 +901,26 @@ class _ApplicationRowState extends State<_ApplicationRow> {
             // Name
             Expanded(
               flex: 3,
-              child: Text(
-                app.name,
-                style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    app.siteName.isNotEmpty ? app.siteName : app.name,
+                    style:
+                        const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  if (app.siteName.isNotEmpty && app.siteName != app.name)
+                    Text(
+                      app.name,
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: theme.typography.caption?.color?.withValues(alpha: 0.5),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                ],
               ),
             ),
             // Category

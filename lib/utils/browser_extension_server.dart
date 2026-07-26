@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import '../sections/controller/app_data_controller.dart';
+import '../sections/controller/categories_controller.dart';
 import '../sections/controller/focus_mode_controller.dart';
 
 /// Lightweight HTTP server on port 46000 for the Scolect browser extension.
@@ -13,22 +14,31 @@ import '../sections/controller/focus_mode_controller.dart';
 ///   POST /usage  → ingest domain-level usage data from the extension
 ///   GET  /focus  → full focus state for the extension's blocker
 class BrowserExtensionServer {
-  static const int _port = 46000;
+  static const int defaultPort = 46000;
   static const String _version = '1.0';
 
   static HttpServer? _server;
+  static int _currentPort = defaultPort;
   static final AppDataStore _dataStore = AppDataStore();
 
-  static Future<void> startServer() async {
+  static int get currentPort => _currentPort;
+
+  static Future<void> startServer({int port = defaultPort}) async {
+    _currentPort = port;
     try {
-      _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _port);
-      debugPrint('✅ Extension server started on port $_port');
+      _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _currentPort);
+      debugPrint('✅ Extension server started on port $_currentPort');
       _server!.listen(_handleRequest, onError: (e) {
         debugPrint('⚠️ Extension server error: $e');
       });
     } catch (e) {
-      debugPrint('⚠️ Extension server bind failed (port $_port in use?): $e');
+      debugPrint('⚠️ Extension server bind failed (port $_currentPort in use?): $e');
     }
+  }
+
+  static Future<void> restartWithPort(int port) async {
+    await dispose();
+    await startServer(port: port);
   }
 
   static Future<void> dispose() async {
@@ -54,6 +64,7 @@ class BrowserExtensionServer {
         case 'GET /ping':
           await _handlePing(req);
         case 'POST /usage':
+        case 'POST /api/browser-sync':
           await _handleUsage(req);
         case 'GET /focus':
           await _handleFocus(req);
@@ -108,6 +119,7 @@ class BrowserExtensionServer {
       final domain = entry['domain'] as String?;
       final seconds = (entry['seconds'] as num?)?.toInt() ?? 0;
       final visits = (entry['visits'] as num?)?.toInt() ?? 0;
+      final siteName = entry['siteName'] as String? ?? '';
 
       if (domain == null || domain.isEmpty || seconds < 0) continue;
 
@@ -123,14 +135,32 @@ class BrowserExtensionServer {
       await _dataStore.recordAppUsage(appName, date, timeSpent, visits, usagePeriods);
 
       // Ensure metadata exists for this domain (first-time setup)
-      if (_dataStore.getAppMetadata(appName) == null) {
+      final existing = _dataStore.getAppMetadata(appName);
+      if (existing == null) {
+        final category = WebsiteCategories.categorizeWebsite(domain);
         await _dataStore.updateAppMetadata(
           appName,
-          category: 'Browser',
-          isProductive: false,
+          category: category,
+          isProductive: !WebsiteCategories.isDefaultCategory(category) &&
+              category != 'Entertainment' &&
+              category != 'Gaming' &&
+              category != 'Social Media',
           isTracking: true,
           isVisible: true,
+          siteName: siteName,
         );
+      } else {
+        // Retroactively categorize domains that were saved with a placeholder
+        if (WebsiteCategories.isDefaultCategory(existing.category)) {
+          final category = WebsiteCategories.categorizeWebsite(domain);
+          if (!WebsiteCategories.isDefaultCategory(category)) {
+            await _dataStore.updateAppMetadata(appName, category: category);
+          }
+        }
+        // Update siteName if we now have one and the stored one is still empty
+        if (siteName.isNotEmpty && existing.siteName.isEmpty) {
+          await _dataStore.updateAppMetadata(appName, siteName: siteName);
+        }
       }
     }
 
@@ -157,9 +187,23 @@ class BrowserExtensionServer {
           DateTime.now().millisecondsSinceEpoch + (timer.secondsRemaining * 1000);
     }
 
+    // Collect blocked domains (limit exceeded)
+    final now2 = DateTime.now();
+    final startOfDay = DateTime(now2.year, now2.month, now2.day);
+    final blockedDomains = <String>[];
+    for (final appName in _dataStore.allAppNames) {
+      if (!appName.startsWith('web:')) continue;
+      final meta = _dataStore.getAppMetadata(appName);
+      if (meta == null || meta.dailyLimit == Duration.zero) continue;
+      final record = _dataStore.getAppUsage(appName, startOfDay);
+      if (record != null && record.timeSpent >= meta.dailyLimit) {
+        blockedDomains.add(appName.replaceFirst('web:', ''));
+      }
+    }
+
     await _sendJson(req.response, HttpStatus.ok, {
       'active': isActive,
-      'blockedDomains': <String>[], // v1: populated in future when website blocking is configured
+      'blockedDomains': blockedDomains,
       'allowedDomains': <String>[],
       'endTimeEpochMs': endTimeEpochMs,
       'sessionLabel': sessionLabel,

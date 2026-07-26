@@ -489,11 +489,26 @@ class _AppListItem extends StatelessWidget {
                     _AppIcon(isProductive: app.isProductive),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: Text(
-                        app.appName,
-                        style: theme.typography.body
-                            ?.copyWith(fontWeight: FontWeight.w500),
-                        overflow: TextOverflow.ellipsis,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            app.siteName.isNotEmpty ? app.siteName : app.appName,
+                            style: theme.typography.body
+                                ?.copyWith(fontWeight: FontWeight.w500),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (app.siteName.isNotEmpty && app.siteName != app.appName)
+                            Text(
+                              app.appName,
+                              style: theme.typography.caption?.copyWith(
+                                fontSize: 10,
+                                color: theme.inactiveColor,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
                       ),
                     ),
                   ],

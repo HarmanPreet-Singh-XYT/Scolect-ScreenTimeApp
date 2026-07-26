@@ -35,7 +35,8 @@ class AppRow extends StatelessWidget {
             child: Row(
               children: [
                 _AppNameCell(
-                  appName: app.appName,
+                  appName: app.siteName.isNotEmpty ? app.siteName : app.appName,
+                  domain: app.appName,
                   isActive: app.limitStatus,
                   statusColor: statusColor,
                 ),
@@ -125,11 +126,13 @@ class _HoverBuilderState extends State<_HoverBuilder> {
 
 class _AppNameCell extends StatelessWidget {
   final String appName;
+  final String? domain;
   final bool isActive;
   final Color statusColor;
 
   const _AppNameCell({
     required this.appName,
+    this.domain,
     required this.isActive,
     required this.statusColor,
   });
@@ -152,6 +155,16 @@ class _AppNameCell extends StatelessWidget {
               fontSize: 13,
             ),
           ),
+          if (domain != null && domain!.isNotEmpty && domain != appName)
+            Text(
+              domain!,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10.5,
+                color: FluentTheme.of(context).typography.caption?.color?.withValues(alpha: 0.5),
+              ),
+            ),
+          const SizedBox(height: 2),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

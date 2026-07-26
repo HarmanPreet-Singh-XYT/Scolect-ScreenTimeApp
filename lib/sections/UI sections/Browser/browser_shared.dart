@@ -281,39 +281,7 @@ class BrowserSummaryCard extends StatelessWidget {
 
 // ─── Tab bar ─────────────────────────────────────────────────────────────────
 
-enum BrowserTab { overview, websites, categories, limits, settings }
-
-class BrowserTabBar extends StatelessWidget {
-  final BrowserTab current;
-  final ValueChanged<BrowserTab> onChanged;
-
-  const BrowserTabBar({
-    super.key,
-    required this.current,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    return BrowserCard(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: BrowserTab.values.map((tab) {
-          final selected = current == tab;
-          return _TabButton(
-            label: tab.label,
-            icon: tab.icon,
-            selected: selected,
-            onTap: () => onChanged(tab),
-            accent: theme.accentColor,
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
+enum BrowserTab { overview, websites, categories, limits, history, settings }
 
 class _TabButton extends StatefulWidget {
   final String label;
@@ -389,19 +357,12 @@ class _TabButtonState extends State<_TabButton> {
 }
 
 extension BrowserTabExt on BrowserTab {
-  String get label => switch (this) {
-        BrowserTab.overview    => 'Overview',
-        BrowserTab.websites    => 'Websites',
-        BrowserTab.categories  => 'Categories',
-        BrowserTab.limits      => 'Limits',
-        BrowserTab.settings    => 'Settings',
-      };
-
   IconData get icon => switch (this) {
         BrowserTab.overview    => FluentIcons.grid_view_small,
         BrowserTab.websites    => FluentIcons.globe,
         BrowserTab.categories  => FluentIcons.tag,
         BrowserTab.limits      => FluentIcons.time_picker,
+        BrowserTab.history     => FluentIcons.history,
         BrowserTab.settings    => FluentIcons.settings,
       };
 }

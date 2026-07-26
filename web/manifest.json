@@ -36,7 +36,8 @@
     "tabs",
     "storage",
     "alarms",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ],
 
   "host_permissions": [
@@ -54,7 +55,8 @@
         "assets/**",
         "canvaskit/**",
         "icons/**",
-        "favicon.png"
+        "favicon.png",
+        "blocked.html"
       ],
       "matches": ["<all_urls>"]
     }

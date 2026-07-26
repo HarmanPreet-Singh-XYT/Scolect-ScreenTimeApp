@@ -2,12 +2,74 @@
 // Tracks active tab's domain, stores seconds in chrome.storage.local.
 // Runs in Standalone, Tracker-Only, and Hybrid modes.
 
-const STORAGE_PREFIX = 'scolect_';
-const ALARM_TICK     = 'scolect_tick';
-const ALARM_SYNC     = 'scolect_sync';
-const FLUTTER_PORT   = 46000;
-const TICK_PERIOD    = 1 / 60; // minutes (~1 second)
-const SYNC_PERIOD    = 1;       // minutes
+const STORAGE_PREFIX    = 'scolect_';
+const ALARM_TICK        = 'scolect_tick';
+const ALARM_SYNC        = 'scolect_sync';
+const ALARM_REFRESH_BLOCKED = 'scolect_refresh_blocked';
+const FLUTTER_PORT      = 46000;
+const TICK_PERIOD       = 1 / 60; // minutes (~1 second)
+const SYNC_PERIOD       = 1;       // minutes
+
+// ─── Blocked domains & limit notifications ────────────────────────────────────
+
+let _blockedDomains = new Set();
+
+// Tracks which domains have already had the 90% warning fired today (reset on day change).
+let _warned90 = new Set();
+let _warned90Date = '';
+
+function _resetWarningsIfNewDay() {
+  const today = getTodayKey();
+  if (_warned90Date !== today) {
+    _warned90 = new Set();
+    _warned90Date = today;
+  }
+}
+
+function _showNotification(id, title, message) {
+  chrome.notifications.create(id, {
+    type: 'basic',
+    iconUrl: 'icons/Icon-192.png',
+    title,
+    message,
+    priority: 1,
+  });
+}
+
+async function checkLimitNotifications(domain, totalSeconds) {
+  _resetWarningsIfNewDay();
+  const settings = await getSettings();
+  const meta = settings.metadata?.[domain];
+  if (!meta?.dailyLimitSeconds || meta.dailyLimitSeconds <= 0) return;
+
+  const limit = meta.dailyLimitSeconds;
+  const ratio = totalSeconds / limit;
+  const siteName = meta.siteName || domain;
+
+  // 90% warning — fire once per domain per day
+  if (ratio >= 0.9 && ratio < 1.0 && !_warned90.has(domain)) {
+    _warned90.add(domain);
+    const remaining = Math.ceil((limit - totalSeconds) / 60);
+    _showNotification(
+      `scolect_warn_${domain}`,
+      'Time limit approaching',
+      `${siteName} — ${remaining} min left of your daily limit.`,
+    );
+  }
+
+  // Limit reached — add to blocked set and notify (unless user unblocked it today)
+  if (ratio >= 1.0 && !_blockedDomains.has(domain)) {
+    const unblockedToday = await getUnblockedToday();
+    if (!unblockedToday.has(domain)) {
+      _blockedDomains.add(domain);
+      _showNotification(
+        `scolect_blocked_${domain}`,
+        'Daily limit reached',
+        `${siteName} has been blocked for today.`,
+      );
+    }
+  }
+}
 
 const IGNORED_DOMAINS = new Set([
   '', 'newtab', 'extensions', 'settings', 'history',
@@ -47,6 +109,26 @@ async function setDayData(dateKey, data) {
   await chrome.storage.local.set({ [storageKey]: data });
 }
 
+async function updateSiteName(domain, rawTitle) {
+  if (!rawTitle) return;
+  // Strip leading notification badges: "(2) ", "[3] ", "• ", "★ "
+  const cleaned = rawTitle
+    .replace(/^\(\d+\)\s*/, '')
+    .replace(/^\[\d+\]\s*/, '')
+    .replace(/^[•★]\s*/, '')
+    .trim();
+  if (!cleaned || cleaned.toLowerCase() === domain) return;
+
+  const key = `${STORAGE_PREFIX}app_metadata`;
+  const result = await chrome.storage.local.get(key);
+  const meta = result[key] ?? {};
+  // Only set on first visit — don't overwrite with per-page titles
+  if (!meta[domain]?.siteName) {
+    meta[domain] = { ...(meta[domain] ?? {}), siteName: cleaned };
+    await chrome.storage.local.set({ [key]: meta });
+  }
+}
+
 async function updateDomain(dateKey, domain, deltaSeconds, deltaVisits) {
   const day = await getDayData(dateKey);
   const idx = day.domains.findIndex(d => d.domain === domain);
@@ -77,14 +159,18 @@ async function setActive(entry) {
 
 // ─── Tracking logic ───────────────────────────────────────────────────────────
 
-async function startTracking(url) {
+async function startTracking(url, title) {
   const domain = extractDomain(url);
   if (!domain || IGNORED_DOMAINS.has(domain)) {
     await setActive(null);
     return;
   }
   const current = await getActive();
-  if (current?.domain === domain) return; // already tracking
+  if (current?.domain === domain) {
+    // Still update site name even if already tracking (e.g. first load)
+    await updateSiteName(domain, title);
+    return;
+  }
   // Flush old entry
   if (current && current.pendingSeconds > 0) {
     const day = getTodayKey();
@@ -93,6 +179,7 @@ async function startTracking(url) {
   await setActive({ domain, startedAt: Date.now(), pendingSeconds: 0 });
   // Record a visit
   await updateDomain(getTodayKey(), domain, 0, 1);
+  await updateSiteName(domain, title);
 }
 
 async function pauseTracking() {
@@ -122,6 +209,13 @@ async function tick() {
   if (current.pendingSeconds % 10 === 0) {
     await updateDomain(today, current.domain, current.pendingSeconds, 0);
     current.pendingSeconds = 0;
+
+    // Check if this domain is approaching or has hit its daily limit
+    const day = await getDayData(today);
+    const domainEntry = day.domains.find(d => d.domain === current.domain);
+    if (domainEntry) {
+      await checkLimitNotifications(current.domain, domainEntry.seconds);
+    }
   }
 
   await setActive({ ...current, date: today });
@@ -140,7 +234,16 @@ async function refreshAppState() {
   const existing = await chrome.storage.local.get(`${STORAGE_PREFIX}app_state`);
   const prev = existing[`${STORAGE_PREFIX}app_state`] ?? {};
 
-  const domains = [...day.domains].sort((a, b) => b.seconds - a.seconds);
+  const metaKey = `${STORAGE_PREFIX}app_metadata`;
+  const metaResult = await chrome.storage.local.get(metaKey);
+  const siteMeta = metaResult[metaKey] ?? {};
+
+  const domains = [...day.domains]
+    .sort((a, b) => b.seconds - a.seconds)
+    .map(d => ({
+      ...d,
+      siteName: siteMeta[d.domain]?.siteName || '',
+    }));
 
   await chrome.storage.local.set({
     [`${STORAGE_PREFIX}app_state`]: {
@@ -154,6 +257,58 @@ async function refreshAppState() {
   });
 }
 
+// ─── Blocked domains refresh ──────────────────────────────────────────────────
+
+async function getUnblockedToday() {
+  const today = new Date().toDateString();
+  const result = await chrome.storage.local.get(['scolect_unblocked_today']);
+  const map = result['scolect_unblocked_today'] || {};
+  // Return set of domains the user manually unblocked today
+  return new Set(Object.entries(map).filter(([, d]) => d === today).map(([k]) => k));
+}
+
+async function refreshBlockedDomains() {
+  const settings = await getSettings();
+  const mode = settings.mode || 'standalone';
+  const unblockedToday = await getUnblockedToday();
+
+  let blocked = [];
+  if (mode === 'standalone') {
+    // Read from storage (set by Flutter web app via WebBrowserDataProvider)
+    const data = await chrome.storage.local.get([`${STORAGE_PREFIX}blocked_domains`]);
+    blocked = data[`${STORAGE_PREFIX}blocked_domains`] || [];
+  } else {
+    // Fetch from desktop Flutter app
+    let connected = false;
+    try {
+      const desktopUrl = settings.desktopUrl || `http://localhost:${FLUTTER_PORT}`;
+      const resp = await fetch(`${desktopUrl}/ping`, {
+        signal: AbortSignal.timeout(3000),
+      });
+      if (resp.ok) {
+        connected = true;
+        const focusResp = await fetch(`${desktopUrl}/focus`, {
+          signal: AbortSignal.timeout(3000),
+        });
+        if (focusResp.ok) {
+          const json = await focusResp.json();
+          blocked = json.blockedDomains || [];
+        }
+      }
+    } catch (_) {}
+
+    const stateKey = `${STORAGE_PREFIX}app_state`;
+    const existing = await chrome.storage.local.get(stateKey);
+    const prev = existing[stateKey] ?? {};
+    await chrome.storage.local.set({
+      [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt }
+    });
+  }
+
+  // Exclude domains the user explicitly unblocked for today
+  _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
+}
+
 // ─── Desktop sync (Hybrid / Tracker-Only) ────────────────────────────────────
 
 async function runSync() {
@@ -164,14 +319,24 @@ async function runSync() {
   const day = await getDayData(today);
   if (day.domains.length === 0) return;
 
-  const url = `${settings.desktopUrl ?? `http://localhost:${FLUTTER_PORT}`}/api/browser-sync`;
+  const url = `${settings.desktopUrl ?? `http://localhost:${FLUTTER_PORT}`}/usage`;
   let connected = false;
+
+  const metaKey = `${STORAGE_PREFIX}app_metadata`;
+  const metaResult = await chrome.storage.local.get(metaKey);
+  const siteMeta = metaResult[metaKey] ?? {};
 
   try {
     const resp = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date: today, domains: day.domains }),
+      body: JSON.stringify({
+        date: today,
+        domains: day.domains.map(d => ({
+          ...d,
+          siteName: siteMeta[d.domain]?.siteName ?? null,
+        })),
+      }),
       signal: AbortSignal.timeout(3000),
     });
     connected = resp.ok;
@@ -192,6 +357,7 @@ async function runSync() {
 chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === ALARM_TICK) tick().catch(console.error);
   if (alarm.name === ALARM_SYNC) runSync().catch(console.error);
+  if (alarm.name === ALARM_REFRESH_BLOCKED) refreshBlockedDomains().catch(console.error);
 });
 
 function setupAlarms() {
@@ -201,6 +367,9 @@ function setupAlarms() {
   chrome.alarms.get(ALARM_SYNC, a => {
     if (!a) chrome.alarms.create(ALARM_SYNC, { periodInMinutes: SYNC_PERIOD });
   });
+  chrome.alarms.get(ALARM_REFRESH_BLOCKED, a => {
+    if (!a) chrome.alarms.create(ALARM_REFRESH_BLOCKED, { periodInMinutes: 1 });
+  });
 }
 
 // ─── Tab / window events ──────────────────────────────────────────────────────
@@ -208,13 +377,27 @@ function setupAlarms() {
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
     const tab = await chrome.tabs.get(tabId);
-    if (tab.url) await startTracking(tab.url);
+    if (tab.url) await startTracking(tab.url, tab.title);
   } catch { /* tab closed */ }
 });
 
-chrome.tabs.onUpdated.addListener((_id, info, tab) => {
-  if (info.status === 'complete' && tab.active && tab.url) {
-    startTracking(tab.url).catch(console.error);
+chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
+  if (!tab.url) return;
+
+  // Block sites that have exceeded their daily limit.
+  // Only intercept on 'loading' to catch the navigation early, and skip if we
+  // are already on the blocked page (avoids infinite redirect loops).
+  if (info.status === 'loading' && !tab.url.startsWith(chrome.runtime.getURL('blocked.html'))) {
+    const domain = extractDomain(tab.url);
+    if (domain && _blockedDomains.has(domain)) {
+      const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
+      chrome.tabs.update(tabId, { url: blockedUrl });
+      return;
+    }
+  }
+
+  if (info.status === 'complete' && tab.active) {
+    startTracking(tab.url, tab.title).catch(console.error);
   }
 });
 
@@ -260,6 +443,14 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     tick().then(() => sendResponse({ ok: true }));
     return true;
   }
+  if (msg.type === 'TRIGGER_SYNC') {
+    (async () => {
+      await tick();
+      await runSync();
+      sendResponse({ ok: true });
+    })();
+    return true;
+  }
   return false;
 });
 
@@ -268,10 +459,13 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 chrome.runtime.onInstalled.addListener(() => {
   setupAlarms();
   refreshAppState().catch(console.error);
+  refreshBlockedDomains().catch(console.error);
 });
 
 chrome.runtime.onStartup.addListener(() => {
   setupAlarms();
+  refreshBlockedDomains().catch(console.error);
 });
 
 setupAlarms();
+refreshBlockedDomains().catch(console.error);

@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
 
@@ -45,16 +46,17 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) {
       return const Center(child: ProgressRing());
     }
 
     if (_categories.isEmpty) {
-      return const BrowserEmptyState(
+      return BrowserEmptyState(
         icon: FluentIcons.tag,
-        title: 'No categories yet',
-        subtitle: 'Categories appear once websites are tracked',
+        title: l10n.browserNoCategoriesTitle,
+        subtitle: l10n.browserNoCategoriesSubtitle,
       );
     }
 
@@ -81,7 +83,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Time Distribution',
+                  l10n.browserTimeDistribution,
                   style: theme.typography.bodyStrong
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
@@ -182,7 +184,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                 ),
                               ),
                               Text(
-                                '${cat.siteCount} site${cat.siteCount != 1 ? 's' : ''}  ·  ${cat.formattedTime}',
+                                '${l10n.browserSiteCount(cat.siteCount)}  ·  ${cat.formattedTime}',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: theme.typography.caption?.color
@@ -245,7 +247,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                           ),
                                           const SizedBox(width: 10),
                                           Expanded(
-                                            child: Text(s.domain,
+                                            child: Text(s.displayName,
                                                 style: const TextStyle(
                                                     fontSize: 13)),
                                           ),

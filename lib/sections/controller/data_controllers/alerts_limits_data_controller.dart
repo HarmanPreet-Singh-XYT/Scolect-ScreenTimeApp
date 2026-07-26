@@ -4,6 +4,7 @@ import '../settings_data_controller.dart';
 
 class AppUsageSummary {
   final String appName;
+  final String siteName;
   final String category;
   final Duration dailyLimit;
   final Duration currentUsage;
@@ -15,6 +16,7 @@ class AppUsageSummary {
 
   const AppUsageSummary({
     required this.appName,
+    this.siteName = '',
     required this.category,
     required this.dailyLimit,
     required this.currentUsage,
@@ -28,6 +30,7 @@ class AppUsageSummary {
   factory AppUsageSummary.fromJson(Map<String, dynamic> json) {
     return AppUsageSummary(
       appName: json['appName'] as String,
+      siteName: json['siteName'] as String? ?? '',
       category: json['category'] as String,
       dailyLimit: Duration(seconds: json['dailyLimit'] as int),
       currentUsage: Duration(seconds: json['currentUsage'] as int),
@@ -48,6 +51,7 @@ class AppUsageSummary {
 
   Map<String, dynamic> toJson() => {
         'appName': appName,
+        'siteName': siteName,
         'category': category,
         'dailyLimit': dailyLimit.inSeconds,
         'currentUsage': currentUsage.inSeconds,
@@ -261,6 +265,7 @@ class ScreenTimeDataController extends ChangeNotifier {
     final result = <AppUsageSummary>[];
 
     for (final appName in appNames) {
+      if (appName.startsWith('web:')) continue;
       final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null || !metadata.isVisible) continue;
 
@@ -296,6 +301,7 @@ class ScreenTimeDataController extends ChangeNotifier {
 
     return AppUsageSummary(
       appName: appName,
+      siteName: metadata.siteName,
       category: metadata.category,
       dailyLimit: metadata.dailyLimit,
       currentUsage: currentUsage,

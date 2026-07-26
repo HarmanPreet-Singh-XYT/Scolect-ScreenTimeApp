@@ -85,3 +85,16 @@ Future<void> chromeStorageRemove(String key) async {
     await _storageRemove(key.toJS).toDart;
   } catch (_) {}
 }
+
+/// Sends a message to the background service worker to flush & sync immediately.
+Future<void> triggerExtensionSync() async {
+  if (!isChromeStorageAvailable) return;
+  try {
+    final msg = jsonEncode({'type': 'TRIGGER_SYNC'});
+    final jsObj = _jsonParse(msg.toJS);
+    _sendMessage(jsObj);
+  } catch (_) {}
+}
+
+@JS('chrome.runtime.sendMessage')
+external void _sendMessage(JSAny message);

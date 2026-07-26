@@ -70,14 +70,15 @@ async function render() {
 
     top.forEach((d, i) => {
       const pct = Math.round((d.seconds / maxSec) * 100);
+      const displayName = d.siteName || d.domain;
       const row = document.createElement('div');
       row.className = 'site-row';
 
       row.innerHTML = `
         <div class="site-bar-bg" style="width:${pct}%"></div>
         <div class="site-rank">${i + 1}</div>
-        <div class="site-favicon">${domainInitial(d.domain)}</div>
-        <div class="site-domain">${d.domain}</div>
+        <div class="site-favicon">${domainInitial(displayName)}</div>
+        <div class="site-domain" title="${d.domain}">${displayName}</div>
         <div class="site-time">${formatSeconds(d.seconds)}</div>
       `;
       list.appendChild(row);
@@ -124,7 +125,7 @@ document.getElementById('openDashBtn').addEventListener('click', () => {
 });
 
 document.getElementById('settingsBtn').addEventListener('click', () => {
-  chrome.tabs.create({ url: chrome.runtime.getURL('index.html#settings') });
+  chrome.tabs.create({ url: chrome.runtime.getURL('index.html?tab=settings') });
   window.close();
 });
 

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Blocked – Scolect</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0e0e14;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #e8e8f0;
+    }
+
+    .card {
+      text-align: center;
+      padding: 48px 56px;
+      background: #16161f;
+      border-radius: 20px;
+      border: 1px solid rgba(107, 78, 255, 0.18);
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(107, 78, 255, 0.08);
+      max-width: 460px;
+      width: 90vw;
+    }
+
+    .icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: rgba(107, 78, 255, 0.12);
+      margin-bottom: 28px;
+      border: 1px solid rgba(107, 78, 255, 0.22);
+    }
+
+    .icon-wrap svg { width: 44px; height: 44px; }
+
+    .badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6B4EFF;
+      background: rgba(107, 78, 255, 0.12);
+      border: 1px solid rgba(107, 78, 255, 0.2);
+      border-radius: 6px;
+      padding: 3px 10px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .domain {
+      font-size: 15px;
+      font-weight: 600;
+      color: #6B4EFF;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, #6B4EFF, #9b7dff);
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+
+    /* Stats row */
+    .stats {
+      display: flex;
+      gap: 1px;
+      background: rgba(107, 78, 255, 0.12);
+      border: 1px solid rgba(107, 78, 255, 0.14);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .stat {
+      flex: 1;
+      padding: 14px 12px;
+      background: #16161f;
+    }
+
+    .stat + .stat { border-left: 1px solid rgba(107, 78, 255, 0.12); }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.3px;
+      margin-bottom: 3px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #6666880;
+      color: rgba(136, 136, 160, 0.9);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Countdown */
+    .reset-row {
+      font-size: 13px;
+      color: #8888a0;
+      margin-bottom: 28px;
+    }
+
+    .reset-row strong {
+      color: #c4b8ff;
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      border: none;
+    }
+
+    button:active { transform: scale(0.97); }
+
+    .btn-back {
+      background: #6B4EFF;
+      color: #ffffff;
+    }
+
+    .btn-back:hover { opacity: 0.88; }
+
+    .btn-dashboard {
+      background: rgba(107, 78, 255, 0.12);
+      color: #a78bff;
+      border: 1px solid rgba(107, 78, 255, 0.22);
+    }
+
+    .btn-dashboard:hover { background: rgba(107, 78, 255, 0.2); }
+
+    .btn-unblock {
+      background: transparent;
+      color: #555568;
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+      padding: 9px 18px;
+    }
+
+    .btn-unblock:hover { color: #8888a0; border-color: rgba(255,255,255,0.12); }
+
+    /* Unblock confirmation panel */
+    .unblock-panel {
+      display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 80, 80, 0.06);
+      border: 1px solid rgba(255, 80, 80, 0.18);
+      border-radius: 12px;
+      text-align: left;
+    }
+
+    .unblock-panel.visible { display: block; }
+
+    .unblock-panel label {
+      display: block;
+      font-size: 13px;
+      color: #8888a0;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    .unblock-panel label strong { color: #e8e8f0; }
+
+    .unblock-input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .unblock-input {
+      flex: 1;
+      background: #0e0e14;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #e8e8f0;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .unblock-input:focus { border-color: rgba(107, 78, 255, 0.5); }
+    .unblock-input.error { border-color: rgba(255, 80, 80, 0.6); animation: shake 0.3s; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25%       { transform: translateX(-6px); }
+      75%       { transform: translateX(6px); }
+    }
+
+    .btn-confirm-unblock {
+      background: rgba(255, 80, 80, 0.15);
+      color: #ff7070;
+      border: 1px solid rgba(255, 80, 80, 0.25);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 16px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-confirm-unblock:hover { background: rgba(255, 80, 80, 0.25); }
+    .btn-confirm-unblock:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon-wrap">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 4L6 10v10c0 9.375 6.8 18.15 16 20.25C31.2 38.15 38 29.375 38 20V10L22 4z"
+              fill="rgba(107,78,255,0.22)" stroke="#6B4EFF" stroke-width="2" stroke-linejoin="round"/>
+        <rect x="16" y="20" width="12" height="9" rx="2"
+              fill="none" stroke="#a78bff" stroke-width="1.8"/>
+        <path d="M18.5 20v-2.5a3.5 3.5 0 0 1 7 0V20"
+              stroke="#a78bff" stroke-width="1.8" stroke-linecap="round"/>
+        <circle cx="22" cy="24.5" r="1.3" fill="#a78bff"/>
+      </svg>
+    </div>
+
+    <div class="badge">Scolect Screen Time</div>
+    <h1>Daily Limit Reached</h1>
+    <div class="domain" id="domain-label">this site</div>
+    <div class="divider"></div>
+
+    <!-- Usage stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="stat-spent">–</div>
+        <div class="stat-label">Time spent</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-limit">–</div>
+        <div class="stat-label">Daily limit</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-visits">–</div>
+        <div class="stat-label">Visits today</div>
+      </div>
+    </div>
+
+    <!-- Countdown to reset -->
+    <div class="reset-row">
+      Resets in <strong id="countdown">–</strong>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-back" onclick="history.length > 1 ? history.back() : window.close()">Go Back</button>
+      <button class="btn-dashboard" id="btn-dash">Open Dashboard</button>
+      <button class="btn-unblock" id="btn-unblock-toggle">Unblock for today</button>
+    </div>
+
+    <!-- Unblock confirmation -->
+    <div class="unblock-panel" id="unblock-panel">
+      <label>Type <strong id="confirm-hint">the site name</strong> to unblock for the rest of today:</label>
+      <div class="unblock-input-row">
+        <input class="unblock-input" id="unblock-input" type="text" placeholder="" autocomplete="off" spellcheck="false" />
+        <button class="btn-confirm-unblock" id="btn-confirm-unblock" disabled>Unblock</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // ── Helpers ────────────────────────────────────────────────────────────
+      function fmtDuration(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
+        return m > 0 ? `${m}m` : `${Math.round(seconds)}s`;
+      }
+
+      function getTodayKey() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        const da = String(d.getDate()).padStart(2, '0');
+        return `${y}-${mo}-${da}`;
+      }
+
+      function secondsUntilMidnight() {
+        const now = new Date();
+        const midnight = new Date(now);
+        midnight.setHours(24, 0, 0, 0);
+        return Math.floor((midnight - now) / 1000);
+      }
+
+      function fmtCountdown(s) {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        if (h > 0) return `${h}h ${m}m`;
+        if (m > 0) return `${m}m ${sec}s`;
+        return `${sec}s`;
+      }
+
+      // ── Parse domain from URL ─────────────────────────────────────────────
+      const params = new URLSearchParams(location.search);
+      const domain = params.get('domain') || '';
+
+      const domainLabel = document.getElementById('domain-label');
+      if (domain) {
+        domainLabel.textContent = domain;
+        document.title = domain + ' – Blocked · Scolect';
+      }
+
+      // ── Open dashboard button ─────────────────────────────────────────────
+      document.getElementById('btn-dash').addEventListener('click', () => {
+        chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+      });
+
+      // ── Unblock confirmation ───────────────────────────────────────────────
+      // The user must type the site name (or domain) to confirm intentional unblock.
+      let confirmWord = domain; // fallback to domain
+      const panel = document.getElementById('unblock-panel');
+      const input = document.getElementById('unblock-input');
+      const confirmBtn = document.getElementById('btn-confirm-unblock');
+      const confirmHint = document.getElementById('confirm-hint');
+
+      document.getElementById('btn-unblock-toggle').addEventListener('click', () => {
+        panel.classList.toggle('visible');
+        if (panel.classList.contains('visible')) input.focus();
+      });
+
+      // Once we have the siteName from storage, use that as the confirm word
+      // (set after storage load below via window._setConfirmWord)
+      window._setConfirmWord = (name) => {
+        confirmWord = name;
+        confirmHint.textContent = name;
+        input.placeholder = name;
+      };
+
+      input.addEventListener('input', () => {
+        const match = input.value.trim().toLowerCase() === confirmWord.toLowerCase();
+        confirmBtn.disabled = !match;
+        input.classList.remove('error');
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && !confirmBtn.disabled) confirmBtn.click();
+      });
+
+      confirmBtn.addEventListener('click', async () => {
+        if (typeof chrome === 'undefined' || !chrome.storage) return;
+
+        // Remove this domain from scolect_blocked_domains in storage
+        const result = await chrome.storage.local.get(['scolect_blocked_domains']);
+        const blocked = (result['scolect_blocked_domains'] || []).filter(d => d !== domain);
+        await chrome.storage.local.set({ scolect_blocked_domains: blocked });
+
+        // Also clear the dailyLimitSeconds temporarily by storing an override
+        // so the extension won't re-block immediately on the next limit check.
+        // We record the unblock in a separate key that refreshBlockedDomains respects.
+        const unblockKey = 'scolect_unblocked_today';
+        const unblockResult = await chrome.storage.local.get([unblockKey]);
+        const unblockedToday = unblockResult[unblockKey] || {};
+        unblockedToday[domain] = new Date().toDateString();
+        await chrome.storage.local.set({ [unblockKey]: unblockedToday });
+
+        // Navigate to the original site
+        window.location.href = 'https://' + domain;
+      });
+
+      // ── Load stats from chrome.storage ────────────────────────────────────
+      if (domain && typeof chrome !== 'undefined' && chrome.storage) {
+        const todayKey = `scolect_day_${getTodayKey()}`;
+        chrome.storage.local.get([todayKey, 'scolect_settings'], (result) => {
+          // Time spent & visits
+          const day = result[todayKey];
+          if (day?.domains) {
+            const entry = day.domains.find(d => d.domain === domain);
+            if (entry) {
+              document.getElementById('stat-spent').textContent = fmtDuration(entry.seconds || 0);
+              document.getElementById('stat-visits').textContent = String(entry.visits || 0);
+            }
+          }
+
+          // Daily limit
+          const settings = result['scolect_settings'] || {};
+          const meta = settings.metadata?.[domain];
+          if (meta?.dailyLimitSeconds) {
+            document.getElementById('stat-limit').textContent = fmtDuration(meta.dailyLimitSeconds);
+          }
+          // Use siteName for display and as the confirm word
+          if (meta?.siteName) {
+            domainLabel.textContent = meta.siteName;
+            window._setConfirmWord(meta.siteName);
+          } else {
+            window._setConfirmWord(domain);
+          }
+        });
+      }
+
+      // ── Countdown to midnight ─────────────────────────────────────────────
+      function updateCountdown() {
+        const s = secondsUntilMidnight();
+        document.getElementById('countdown').textContent = fmtCountdown(s);
+      }
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    })();
+  </script>
+</body>
+</html>

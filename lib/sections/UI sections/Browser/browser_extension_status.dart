@@ -5,9 +5,12 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/l10n/app_localizations.dart';
 import 'browser_shared.dart';
 
-// Conditionally import ExtensionSettings only on web
+// Conditionally import Chrome storage interop & ExtensionSettings on web
+import '../../../web/chrome_storage_interop.dart'
+    if (dart.library.io) '../../../web/chrome_storage_interop_stub.dart';
 import '../../../web/extension_settings.dart'
     if (dart.library.io) '../../../web/extension_settings_stub.dart';
 
@@ -40,12 +43,49 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
 
   Future<void> _loadStatus() async {
     if (!kIsWeb) return;
-    // In a real implementation, read from chrome.storage.local
-    // For now show the last-sync from AppState
-    setState(() {
-      _connected = false;
-      _lastSyncText = null;
-    });
+    try {
+      final stateData = await chromeStorageGet(['scolect_app_state']);
+      final state = stateData['scolect_app_state'] as Map<String, dynamic>?;
+      final settings = ExtensionSettings();
+      await settings.load();
+
+      // Read last sync timestamp if available
+      final lastSyncAt = state?['lastSyncAt'] as int?;
+      String? syncText;
+      if (lastSyncAt != null) {
+        final dt = DateTime.fromMillisecondsSinceEpoch(lastSyncAt);
+        final hour = dt.hour.toString().padLeft(2, '0');
+        final min = dt.minute.toString().padLeft(2, '0');
+        syncText = 'Last synced at $hour:$min';
+      }
+
+      // Read sync status from background.js app state or test endpoint
+      bool isConnected = state?['appConnected'] as bool? ?? false;
+
+      // Also verify via web-compatible fetch if available
+      try {
+        final serverUrl = settings.desktopUrl.isNotEmpty
+            ? settings.desktopUrl
+            : 'http://localhost:46000';
+        final result = await chromeStorageGet(['scolect_app_state']);
+        final updatedState = result['scolect_app_state'] as Map<String, dynamic>?;
+        if (updatedState != null && updatedState['appConnected'] != null) {
+          isConnected = updatedState['appConnected'] as bool;
+        }
+      } catch (_) {}
+
+      if (!mounted) return;
+      setState(() {
+        _connected = isConnected;
+        _lastSyncText = syncText;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _connected = false;
+        _lastSyncText = null;
+      });
+    }
   }
 
   @override
@@ -57,6 +97,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Center(
       child: SizedBox(
@@ -92,7 +133,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
 
             // ── Status text ───────────────────────────────────────────────
             Text(
-              'Tracking Active',
+              l10n.browserTrackingActive,
               style: theme.typography.subtitle?.copyWith(
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
@@ -100,7 +141,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
             ),
             const SizedBox(height: 8),
             Text(
-              'Your browser activity is being tracked and\nsynced to the Scolect desktop app.',
+              l10n.browserTrackingActiveDesc,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -130,7 +171,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _connected ? 'Connected to Scolect Desktop' : 'Desktop app not reachable',
+                          _connected ? l10n.browserConnectedToDesktop : l10n.browserDesktopNotReachable,
                           style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                         ),
                         if (_lastSyncText != null)
@@ -145,7 +186,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
                     ),
                   ),
                   BrowserIconButton(
-                    tooltip: 'Refresh sync status',
+                    tooltip: l10n.browserRefreshSyncStatus,
                     icon: FluentIcons.refresh,
                     onPressed: _loadStatus,
                   ),
@@ -161,7 +202,7 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
               child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: Text(
-                  'Switch to Standalone mode →',
+                  l10n.browserSwitchToStandalone,
                   style: TextStyle(
                     fontSize: 13,
                     color: theme.accentColor,

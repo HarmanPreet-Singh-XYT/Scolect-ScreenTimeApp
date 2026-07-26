@@ -21,7 +21,8 @@ import 'package:screentime/sections/UI sections/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_section.dart';
 import 'package:screentime/utils/browser_extension_server.dart';
-import 'package:screentime/sections/UI sections/Browser/browser_extension_settings.dart';
+import '../web/extension_settings.dart'
+    if (dart.library.io) '../web/extension_settings_stub.dart';
 
 // ============== CONSTANTS ==============
 
@@ -39,6 +40,7 @@ const _simpleSettingPaths = <String, String>{
   'launchAtStartup': 'launchAtStartup',
   'launchAsMinimized': 'launchAsMinimized',
   'browserExtensionEnabled': 'browserExtensionEnabled',
+  'browserServerPort': 'browserServerPort',
   'crashReportingEnabled': 'crashReportingEnabled',
   'notificationsEnabled': 'notifications.enabled',
   'notificationsFocusMode': 'notifications.focusMode',
@@ -66,6 +68,7 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'launchAtStartup': (p, v) => p._launchAtStartupVar = v,
   'launchAsMinimized': (p, v) => p._launchAsMinimized = v,
   'browserExtensionEnabled': (p, v) => p._browserExtensionEnabled = v,
+  'browserServerPort': (p, v) => p._browserServerPort = v,
   'crashReportingEnabled': (p, v) => p._crashReportingEnabled = v,
   'notificationsEnabled': (p, v) => p._notificationsEnabled = v,
   'notificationsFocusMode': (p, v) => p._notificationsFocusMode = v,
@@ -94,6 +97,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _launchAtStartupVar = false;
   bool _launchAsMinimized = false;
   bool _browserExtensionEnabled = false;
+  int _browserServerPort = BrowserExtensionServer.defaultPort;
   bool _crashReportingEnabled = true;
   bool _notificationsEnabled = false;
   bool _notificationsFocusMode = false;
@@ -119,6 +123,7 @@ class SettingsProvider extends ChangeNotifier {
   bool get launchAtStartupVar => _launchAtStartupVar;
   bool get launchAsMinimized => _launchAsMinimized;
   bool get browserExtensionEnabled => _browserExtensionEnabled;
+  int get browserServerPort => _browserServerPort;
   bool get crashReportingEnabled => _crashReportingEnabled;
   bool get notificationsEnabled => _notificationsEnabled;
   bool get notificationsFocusMode => _notificationsFocusMode;
@@ -161,6 +166,8 @@ class SettingsProvider extends ChangeNotifier {
         _settingsManager.getSetting('launchAsMinimized') ?? false;
     _browserExtensionEnabled =
         _settingsManager.getSetting('browserExtensionEnabled') ?? false;
+    _browserServerPort =
+        _settingsManager.getSetting('browserServerPort') ?? BrowserExtensionServer.defaultPort;
     _notificationsEnabled =
         _settingsManager.getSetting('notifications.enabled');
     _notificationsFocusMode =
@@ -227,8 +234,12 @@ class SettingsProvider extends ChangeNotifier {
         }
       case 'browserExtensionEnabled':
         value
-            ? await BrowserExtensionServer.startServer()
+            ? await BrowserExtensionServer.startServer(port: _browserServerPort)
             : await BrowserExtensionServer.dispose();
+      case 'browserServerPort':
+        if (_browserExtensionEnabled) {
+          await BrowserExtensionServer.restartWithPort(value as int);
+        }
       case 'trackingMode':
         final mode = value == TrackingModeOptions.precise
             ? TrackingMode.precise
@@ -266,11 +277,7 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> enableAllNotifications() => setAllNotifications(true);
   Future<void> disableAllNotifications() => setAllNotifications(false);
 
-  int getReminderFrequency() {
-    return _settingsManager
-            .getSetting('notificationController.reminderFrequency') ??
-        60;
-  }
+  int getReminderFrequency() => _reminderFrequency;
 
   Future<void> clearData() async {
     final dataStore = AppDataStore();
@@ -370,10 +377,7 @@ class Settings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SettingsProvider(),
-      child: SettingsContent(setLocale: setLocale),
-    );
+    return SettingsContent(setLocale: setLocale);
   }
 }
 
@@ -492,16 +496,8 @@ class _SettingsContentState extends State<SettingsContent> {
               children: [
                 GeneralSection(setLocale: widget.setLocale),
                 _kSectionSpacing,
-                if (kIsWeb) ...[
-                  BrowserExtensionSettings(
-                    onModeChanged: (_) {}, // Mode toggle handled by app reload
-                  ),
-                  _kSectionSpacing,
-                ],
-                if (!kIsWeb) ...[
-                  notificationSection,
-                  _kSectionSpacing,
-                ],
+                notificationSection,
+                _kSectionSpacing,
                 const DataSection(),
               ],
             ),
@@ -530,18 +526,12 @@ class _SettingsContentState extends State<SettingsContent> {
       children: [
         GeneralSection(setLocale: widget.setLocale),
         _kSectionSpacing,
-        if (kIsWeb) ...[
-          BrowserExtensionSettings(
-            onModeChanged: (_) {}, // Handled by reload
-          ),
-          _kSectionSpacing,
-        ],
         if (!kIsWeb) ...[
           const TrackingSection(),
           _kSectionSpacing,
-          notificationSection,
-          _kSectionSpacing,
         ],
+        notificationSection,
+        _kSectionSpacing,
         const DataSection(),
         _kSectionSpacing,
         if (!kIsWeb) ...[

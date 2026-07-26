@@ -1,10 +1,9 @@
 // ─── Extension Settings Tab ───────────────────────────────────────────────────
 //
-// Web-only settings page for configuring the extension mode, desktop sync URL,
-// and managing website data. Shown as a 4th tab (gear icon) in the Browser view
-// when running on web.
+// Web-only settings page shown as the gear icon tab in the Browser view.
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'browser_shared.dart';
 import '../../../web/extension_settings.dart'
     if (dart.library.io) '../../../web/extension_settings_stub.dart';
@@ -12,7 +11,10 @@ import '../../../web/extension_settings.dart'
 class BrowserExtensionSettings extends StatefulWidget {
   final ValueChanged<ExtensionMode> onModeChanged;
 
-  const BrowserExtensionSettings({super.key, required this.onModeChanged});
+  const BrowserExtensionSettings({
+    super.key,
+    required this.onModeChanged,
+  });
 
   @override
   State<BrowserExtensionSettings> createState() => _BrowserExtensionSettingsState();
@@ -20,12 +22,10 @@ class BrowserExtensionSettings extends StatefulWidget {
 
 class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
   final _settings = ExtensionSettings();
-
+  final _urlController = TextEditingController();
   ExtensionMode _mode = ExtensionMode.standalone;
   bool _isLoading = true;
-  final _urlController = TextEditingController();
   bool _saving = false;
-  bool _clearConfirm = false;
 
   @override
   void initState() {
@@ -57,20 +57,11 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
   Future<void> _saveUrl() async {
     await _settings.setDesktopUrl(_urlController.text.trim());
     if (!mounted) return;
-    _showSnack('Desktop URL saved');
-  }
-
-  Future<void> _clearData() async {
-    await _settings.clearAllData();
-    if (!mounted) return;
-    setState(() => _clearConfirm = false);
-    _showSnack('All website data cleared');
-  }
-
-  void _showSnack(String msg) {
-    displayInfoBar(context, builder: (ctx, close) {
-      return InfoBar(title: Text(msg), action: Button(onPressed: close, child: const Text('OK')));
-    });
+    final l10n = AppLocalizations.of(context)!;
+    displayInfoBar(context, builder: (ctx, close) => InfoBar(
+      title: Text(l10n.browserDesktopUrlSaved),
+      action: Button(onPressed: close, child: Text(l10n.ok)),
+    ));
   }
 
   @override
@@ -82,6 +73,7 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) return const Center(child: ProgressRing());
 
@@ -91,27 +83,23 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Mode selector ─────────────────────────────────────────────────
-          _SectionTitle('Extension Mode'),
+          _SectionTitle(l10n.browserExtensionMode),
           const SizedBox(height: 12),
-
-          ...ExtensionMode.values.map((mode) {
-            final selected = _mode == mode;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _ModeCard(
-                mode: mode,
-                selected: selected,
-                saving: _saving,
-                onTap: () => _saveMode(mode),
-              ),
-            );
-          }),
+          ...ExtensionMode.values.map((mode) => Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: _ModeCard(
+              mode: mode,
+              selected: _mode == mode,
+              saving: _saving,
+              onTap: () => _saveMode(mode),
+            ),
+          )),
 
           const SizedBox(height: 24),
 
-          // ── Desktop sync URL (only for hybrid / tracker-only) ─────────────
+          // ── Desktop app URL (only when syncing to desktop) ────────────────
           if (_mode != ExtensionMode.standalone) ...[
-            _SectionTitle('Desktop App URL'),
+            _SectionTitle(l10n.browserDesktopAppUrl),
             const SizedBox(height: 8),
             BrowserCard(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -119,7 +107,7 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'The URL where the Scolect desktop app is running its local server.',
+                    l10n.browserDesktopAppUrlDesc,
                     style: TextStyle(
                       fontSize: 12,
                       color: theme.typography.caption?.color?.withValues(alpha: 0.6),
@@ -138,7 +126,7 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
                       const SizedBox(width: 8),
                       FilledButton(
                         onPressed: _saveUrl,
-                        child: const Text('Save'),
+                        child: Text(l10n.saveButton),
                       ),
                     ],
                   ),
@@ -149,82 +137,20 @@ class _BrowserExtensionSettingsState extends State<BrowserExtensionSettings> {
           ],
 
           // ── About ─────────────────────────────────────────────────────────
-          _SectionTitle('About'),
+          _SectionTitle(l10n.browserAbout),
           const SizedBox(height: 8),
           BrowserCard(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _AboutRow('Extension', 'Scolect – Web Time Tracker'),
+                _AboutRow(l10n.browserAboutExtension, l10n.browserAboutExtensionValue),
                 const SizedBox(height: 6),
-                _AboutRow('Version', '1.0.0'),
+                _AboutRow(l10n.browserAboutVersion, '1.0.0'),
                 const SizedBox(height: 6),
-                _AboutRow('Storage', 'chrome.storage.local'),
+                _AboutRow(l10n.browserAboutStorage, l10n.browserAboutStorageValue),
                 const SizedBox(height: 6),
-                _AboutRow('History', 'Last 30 days retained'),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
-          // ── Danger zone ───────────────────────────────────────────────────
-          _SectionTitle('Danger Zone'),
-          const SizedBox(height: 8),
-          BrowserCard(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Clear All Website Data',
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Permanently deletes all tracked website history. This cannot be undone.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.typography.caption?.color?.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (!_clearConfirm)
-                  Button(
-                    onPressed: () => setState(() => _clearConfirm = true),
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(
-                        kBrowserRed.withValues(alpha: 0.1),
-                      ),
-                    ),
-                    child: Text('Clear Data', style: TextStyle(color: kBrowserRed)),
-                  )
-                else
-                  Row(
-                    children: [
-                      Text(
-                        'Are you sure?',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: theme.typography.caption?.color?.withValues(alpha: 0.6),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(kBrowserRed),
-                        ),
-                        onPressed: _clearData,
-                        child: const Text('Yes, Delete'),
-                      ),
-                      const SizedBox(width: 8),
-                      Button(
-                        onPressed: () => setState(() => _clearConfirm = false),
-                        child: const Text('Cancel'),
-                      ),
-                    ],
-                  ),
+                _AboutRow(l10n.browserAboutHistory, l10n.browserAboutHistoryValue),
               ],
             ),
           ),

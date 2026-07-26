@@ -1,5 +1,7 @@
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/sections/controller/categories_controller.dart';
+import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'focus_mode_data_controller.dart';
@@ -45,6 +47,7 @@ class DailyScreenTime {
 
 class AppUsageSummary {
   final String appName;
+  final String siteName;
   final String category;
   final Duration totalTime;
   final bool isProductive;
@@ -52,6 +55,7 @@ class AppUsageSummary {
 
   const AppUsageSummary({
     required this.appName,
+    this.siteName = '',
     required this.category,
     required this.totalTime,
     required this.isProductive,
@@ -256,7 +260,9 @@ class UsageAnalyticsController extends ChangeNotifier {
     _setLoading(true);
 
     try {
-      final result = _computeAnalytics(range);
+      final result = kIsWeb
+          ? await _computeWebAnalytics(range)
+          : _computeAnalytics(range);
       _setLoading(false);
       return result;
     } catch (e) {
@@ -296,6 +302,7 @@ class UsageAnalyticsController extends ChangeNotifier {
 
       // Per-app usage for this day
       for (final appName in appNames) {
+        if (appName.startsWith('web:')) continue;
         final record = _dataStore.getAppUsage(appName, currentDate);
         if (record != null && record.timeSpent > Duration.zero) {
           appTotalUsage.update(
@@ -346,6 +353,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       final metadata = _dataStore.getAppMetadata(appName);
       appUsageDetails.add(AppUsageSummary(
         appName: appName,
+        siteName: metadata?.siteName ?? '',
         category: metadata?.category ?? 'Uncategorized',
         totalTime: totalTime,
         isProductive: metadata?.isProductive ?? false,
@@ -405,6 +413,118 @@ class UsageAnalyticsController extends ChangeNotifier {
       totalScreenTime: totalScreenTime,
       productiveTime: productiveTime,
       focusSessionsCount: focusSessionsCount,
+    );
+  }
+
+  Future<AnalyticsSummary> _computeWebAnalytics(_AnalyticsDateRange range) async {
+    final metaRes = await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
+    final siteMeta = (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
+    final settingsMap = (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
+    final customMeta = (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
+
+    final dailyScreenTimeData = <DailyScreenTime>[];
+    Duration totalScreenTime = Duration.zero;
+    final domainTotals = <String, int>{};
+    final categoryTotals = <String, int>{};
+
+    DateTime currentDate = range.startDate;
+    while (!currentDate.isAfter(range.endDate)) {
+      final dateKey = '${currentDate.year}-${currentDate.month.toString().padLeft(2, '0')}-${currentDate.day.toString().padLeft(2, '0')}';
+      final storageKey = 'scolect_day_$dateKey';
+      final dayRes = await chromeStorageGet([storageKey]);
+      final dayData = dayRes[storageKey] as Map<dynamic, dynamic>? ?? {};
+      final domains = (dayData['domains'] as List<dynamic>?) ?? [];
+
+      int daySeconds = 0;
+      for (var d in domains) {
+        final domain = d['domain'] as String? ?? 'unknown';
+        final secs = (d['seconds'] as num? ?? 0).toInt();
+        daySeconds += secs;
+
+        domainTotals[domain] = (domainTotals[domain] ?? 0) + secs;
+
+        final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+        final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+        final siteName = (meta['siteName'] as String?)?.isNotEmpty == true
+            ? meta['siteName'] as String
+            : (rawSiteMeta['siteName'] as String? ?? '');
+        final displayName = siteName.isNotEmpty ? siteName : domain;
+        final rawCat = (meta['category'] as String?)?.isNotEmpty == true
+            ? meta['category'] as String
+            : (rawSiteMeta['category'] as String? ?? '');
+        final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
+            ? rawCat
+            : AppCategories.categorizeApp(displayName);
+
+        categoryTotals[category] = (categoryTotals[category] ?? 0) + secs;
+      }
+
+      totalScreenTime += Duration(seconds: daySeconds);
+      dailyScreenTimeData.add(DailyScreenTime(date: currentDate, screenTime: Duration(seconds: daySeconds)));
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+
+    String mostUsedApp = 'None';
+    int maxSecs = 0;
+    domainTotals.forEach((domain, secs) {
+      if (secs > maxSecs) {
+        maxSecs = secs;
+        final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+        final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+        final siteName = (meta['siteName'] as String?)?.isNotEmpty == true
+            ? meta['siteName'] as String
+            : (rawSiteMeta['siteName'] as String? ?? '');
+        mostUsedApp = siteName.isNotEmpty ? siteName : domain;
+      }
+    });
+
+    final totalSecs = totalScreenTime.inSeconds;
+    final categoryBreakdown = <String, double>{};
+    if (totalSecs > 0) {
+      categoryTotals.forEach((category, secs) {
+        categoryBreakdown[category] = (secs / totalSecs) * 100;
+      });
+    }
+
+    final appUsageDetails = <AppUsageSummary>[];
+    domainTotals.forEach((domain, secs) {
+      final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+      final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+      final siteName = (meta['siteName'] as String?)?.isNotEmpty == true
+          ? meta['siteName'] as String
+          : (rawSiteMeta['siteName'] as String? ?? '');
+      final displayName = siteName.isNotEmpty ? siteName : domain;
+      final rawCat = (meta['category'] as String?)?.isNotEmpty == true
+          ? meta['category'] as String
+          : (rawSiteMeta['category'] as String? ?? '');
+      final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
+          ? rawCat
+          : AppCategories.categorizeApp(displayName);
+
+      appUsageDetails.add(AppUsageSummary(
+        appName: domain,
+        siteName: siteName,
+        category: category,
+        totalTime: Duration(seconds: secs),
+        isProductive: meta['isProductive'] as bool? ?? false,
+        isVisible: true,
+      ));
+    });
+
+    appUsageDetails.sort((a, b) => b.totalTime.compareTo(a.totalTime));
+
+    return AnalyticsSummary(
+      totalScreenTime: totalScreenTime,
+      screenTimeComparisonPercent: 0,
+      productiveTime: totalScreenTime,
+      productiveTimeComparisonPercent: 0,
+      mostUsedApp: mostUsedApp,
+      mostUsedAppTime: Duration(seconds: maxSecs),
+      focusSessionsCount: 0,
+      focusSessionsComparisonPercent: 0,
+      dailyScreenTimeData: dailyScreenTimeData,
+      categoryBreakdown: categoryBreakdown,
+      appUsageDetails: appUsageDetails,
     );
   }
 

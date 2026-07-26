@@ -11,6 +11,7 @@
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../sections/controller/data_controllers/browser_data_controller.dart';
+import '../sections/controller/categories_controller.dart';
 import 'chrome_storage_interop.dart';
 import 'extension_settings.dart';
 
@@ -58,16 +59,39 @@ class WebBrowserDataProvider {
 
   // ── fetchAllWebsites ──────────────────────────────────────────────────────
 
+  /// Reads site names captured by background.js from scolect_app_metadata.
+  Future<Map<String, String>> _fetchSiteNames() async {
+    final result = await chromeStorageGet(['scolect_app_metadata']);
+    final raw = result['scolect_app_metadata'] as Map<String, dynamic>? ?? {};
+    return {
+      for (final e in raw.entries)
+        e.key: (e.value as Map<String, dynamic>?)?['siteName'] as String? ?? '',
+    };
+  }
+
   Future<List<WebsiteBasicDetail>> fetchAllWebsites() async {
+    // Active sync: trigger immediate background flush & desktop push when viewing analytics
+    await triggerExtensionSync();
     final domains = await _fetchTodayDomains();
     final metaMap = await _settings.getAllMetadata();
+    final siteNames = await _fetchSiteNames();
 
     final sites = <WebsiteBasicDetail>[];
     for (final d in domains) {
       final meta = metaMap[d.domain] ?? const WebsiteMetadata();
+      final siteName = meta.siteName.isNotEmpty
+          ? meta.siteName
+          : (siteNames[d.domain] ?? '');
+      final rawCat = meta.category;
+      final displayName = siteName.isNotEmpty ? siteName : d.domain;
+      final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
+          ? rawCat
+          : AppCategories.categorizeApp(displayName);
+
       sites.add(WebsiteBasicDetail(
         domain: d.domain,
-        category: meta.category,
+        siteName: siteName,
+        category: category,
         timeSpent: Duration(seconds: d.seconds),
         isTracking: meta.isTracking,
         isHidden: false,
@@ -82,9 +106,15 @@ class WebBrowserDataProvider {
     final seenDomains = sites.map((s) => s.domain).toSet();
     for (final entry in metaMap.entries) {
       if (!seenDomains.contains(entry.key)) {
+        final displayName = entry.value.siteName.isNotEmpty ? entry.value.siteName : entry.key;
+        final rawCat = entry.value.category;
+        final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
+            ? rawCat
+            : AppCategories.categorizeApp(displayName);
         sites.add(WebsiteBasicDetail(
           domain: entry.key,
-          category: entry.value.category,
+          siteName: entry.value.siteName,
+          category: category,
           timeSpent: Duration.zero,
           isTracking: entry.value.isTracking,
           isHidden: false,
@@ -97,12 +127,35 @@ class WebBrowserDataProvider {
     }
 
     sites.sort((a, b) => b.timeSpent.compareTo(a.timeSpent));
+
+    // Keep chrome.storage in sync so background.js can enforce blocks in
+    // standalone mode (fire-and-forget — don't await).
+    _syncBlockedDomains(domains, metaMap);
+
     return sites;
+  }
+
+  /// Writes the list of limit-exceeded domains to chrome.storage so that
+  /// background.js can redirect to blocked.html without needing to reach the
+  /// desktop app.
+  Future<void> _syncBlockedDomains(
+    List<_RawDomain> domains,
+    Map<String, WebsiteMetadata> metaMap,
+  ) async {
+    final blocked = <String>[];
+    for (final d in domains) {
+      final meta = metaMap[d.domain] ?? const WebsiteMetadata();
+      if (meta.dailyLimitSeconds > 0 && d.seconds >= meta.dailyLimitSeconds) {
+        blocked.add(d.domain);
+      }
+    }
+    await chromeStorageSet({'scolect_blocked_domains': blocked});
   }
 
   // ── fetchTodaySummary ─────────────────────────────────────────────────────
 
   Future<({Duration totalTime, int siteCount, int visitCount})> fetchTodaySummary() async {
+    await triggerExtensionSync();
     final domains = await _fetchTodayDomains();
     Duration total = Duration.zero;
     int visits = 0;
@@ -173,6 +226,7 @@ class WebBrowserDataProvider {
     bool? isTracking,
     bool? isVisible,
     Duration? dailyLimit,
+    String? siteName,
   }) async {
     try {
       await _settings.updateMetadata(
@@ -181,6 +235,7 @@ class WebBrowserDataProvider {
         isTracking: isTracking,
         isProductive: isProductive,
         dailyLimit: dailyLimit,
+        siteName: siteName,
       );
       return true;
     } catch (_) {

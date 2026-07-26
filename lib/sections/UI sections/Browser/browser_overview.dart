@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
 
@@ -42,6 +43,7 @@ class _BrowserOverviewState extends State<BrowserOverview> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) {
       return const Center(child: ProgressRing());
@@ -62,7 +64,7 @@ class _BrowserOverviewState extends State<BrowserOverview> {
               Expanded(
                 child: BrowserSummaryCard(
                   icon: FluentIcons.timer,
-                  label: "Today's Web Time",
+                  label: l10n.browserTodayWebTime,
                   value: summary.totalTime.toHourMinuteFormat(),
                   color: kBrowserBlue,
                 ),
@@ -71,7 +73,7 @@ class _BrowserOverviewState extends State<BrowserOverview> {
               Expanded(
                 child: BrowserSummaryCard(
                   icon: FluentIcons.globe,
-                  label: 'Sites Visited',
+                  label: l10n.browserSitesVisited,
                   value: '${summary.siteCount}',
                   color: kBrowserPurple,
                 ),
@@ -80,7 +82,7 @@ class _BrowserOverviewState extends State<BrowserOverview> {
               Expanded(
                 child: BrowserSummaryCard(
                   icon: FluentIcons.link,
-                  label: 'Page Visits',
+                  label: l10n.browserPageVisits,
                   value: '${summary.visitCount}',
                   color: kBrowserGreen,
                 ),
@@ -93,11 +95,11 @@ class _BrowserOverviewState extends State<BrowserOverview> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _SectionLabel('Top Sites Today'),
+              _SectionLabel(l10n.browserTopSitesToday),
               GestureDetector(
                 onTap: () => widget.onTabChange(BrowserTab.websites),
                 child: Text(
-                  'View all →',
+                  l10n.browserViewAll,
                   style: TextStyle(
                     fontSize: 12,
                     color: theme.accentColor,
@@ -114,10 +116,10 @@ class _BrowserOverviewState extends State<BrowserOverview> {
               height: 160,
               child: BrowserEmptyState(
                 icon: FluentIcons.globe,
-                title: 'No web activity yet today',
+                title: l10n.browserNoWebActivityTitle,
                 subtitle: kIsWeb
-                    ? 'Browse the web to start tracking your time'
-                    : 'Install the browser extension to start tracking',
+                    ? l10n.browserNoActivityWebSubtitle
+                    : l10n.browserNoActivityDesktopSubtitle,
               ),
             )
           else
@@ -148,11 +150,11 @@ class _BrowserOverviewState extends State<BrowserOverview> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _SectionLabel('By Category'),
+              _SectionLabel(l10n.browserByCategory),
               GestureDetector(
                 onTap: () => widget.onTabChange(BrowserTab.categories),
                 child: Text(
-                  'View all →',
+                  l10n.browserViewAll,
                   style: TextStyle(
                     fontSize: 12,
                     color: theme.accentColor,
@@ -167,10 +169,10 @@ class _BrowserOverviewState extends State<BrowserOverview> {
           if (_categories.isEmpty)
             BrowserCard(
               height: 120,
-              child: const BrowserEmptyState(
+              child: BrowserEmptyState(
                 icon: FluentIcons.tag,
-                title: 'No categories yet',
-                subtitle: 'Categories appear once websites are tracked',
+                title: l10n.browserNoCategoriesTitle,
+                subtitle: l10n.browserNoCategoriesSubtitle,
               ),
             )
           else
@@ -212,6 +214,7 @@ class _SiteRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final captionColor = theme.typography.caption?.color;
 
     return Column(
@@ -238,7 +241,7 @@ class _SiteRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      site.domain,
+                      site.displayName,
                       style: const TextStyle(
                           fontSize: 13, fontWeight: FontWeight.w500),
                       overflow: TextOverflow.ellipsis,
@@ -284,7 +287,7 @@ class _SiteRow extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${site.visits} visit${site.visits != 1 ? 's' : ''}',
+                    l10n.browserVisitCount(site.visits),
                     style: TextStyle(
                       fontSize: 11,
                       color: captionColor?.withValues(alpha: 0.5),

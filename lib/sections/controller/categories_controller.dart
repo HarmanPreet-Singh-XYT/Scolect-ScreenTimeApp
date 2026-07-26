@@ -230,6 +230,112 @@ class AppCategories {
           .toList(growable: false);
 }
 
+// ────────────────────── Website Auto-Categorization ─────────────
+
+/// Domain-pattern–based category classifier for website tracking.
+///
+/// Uses the same category names as [AppCategories] so that all existing
+/// color, localization, and filter logic applies automatically.
+///
+/// Matching is done on the eTLD+1 portion of the domain (e.g. "github.com"
+/// from "gist.github.com") using case-insensitive substring checks.
+class WebsiteCategories {
+  WebsiteCategories._();
+
+  static const _uncategorized = 'Uncategorized';
+
+  // Each entry is a list of domain keywords that belong to a category.
+  // Order matters — first match wins.
+  static const Map<String, List<String>> _domainPatterns = {
+    'Social Media': [
+      'facebook', 'instagram', 'twitter', 'x.com', 'tiktok', 'snapchat',
+      'reddit', 'linkedin', 'pinterest', 'tumblr', 'mastodon', 'threads',
+      'vk.com', 'weibo', 'quora', 'nextdoor',
+    ],
+    'Entertainment': [
+      'youtube', 'netflix', 'hulu', 'disneyplus', 'primevideo', 'amazon',
+      'twitch', 'spotify', 'soundcloud', 'deezer', 'tidal', 'pandora',
+      'vimeo', 'dailymotion', 'crunchyroll', 'funimation', 'peacocktv',
+      'max.com', 'paramountplus', 'appletv', 'plex', 'imdb',
+    ],
+    'Development': [
+      'github', 'gitlab', 'bitbucket', 'stackoverflow', 'stackexchange',
+      'npmjs', 'pypi', 'crates.io', 'rubygems', 'packagist',
+      'developer.mozilla', 'developers.google', 'developer.apple',
+      'docs.microsoft', 'learn.microsoft', 'developer.android',
+      'codepen', 'jsfiddle', 'replit', 'codesandbox', 'glitch.me',
+      'leetcode', 'hackerrank', 'codewars', 'exercism',
+      'docker', 'kubernetes', 'terraform', 'ansible',
+      'vercel', 'netlify', 'heroku', 'render.com', 'railway',
+    ],
+    'Productivity': [
+      'notion', 'trello', 'asana', 'todoist', 'clickup', 'monday.com',
+      'basecamp', 'jira', 'confluence', 'linear.app', 'height.app',
+      'airtable', 'coda.io', 'roamresearch', 'obsidian',
+      'docs.google', 'sheets.google', 'slides.google', 'drive.google',
+      'calendar.google', 'office365', 'microsoft365', 'office.com',
+      'evernote', 'onenote', 'bear.app', 'craft.do',
+    ],
+    'Communication': [
+      'slack', 'discord', 'telegram', 'signal', 'teams.microsoft',
+      'meet.google', 'zoom', 'webex', 'skype', 'whereby',
+      'mail.google', 'gmail', 'outlook', 'mail.yahoo', 'protonmail',
+      'fastmail', 'hey.com', 'superhuman',
+    ],
+    'Education': [
+      'coursera', 'udemy', 'edx', 'khanacademy', 'duolingo', 'brilliant',
+      'skillshare', 'pluralsight', 'lynda', 'linkedin.com/learning',
+      'codecademy', 'freecodecamp', 'theodinproject', 'boot.dev',
+      'wikipedia', 'britannica', 'scholarpedia',
+      'scholar.google', 'academia.edu', 'arxiv', 'researchgate',
+      'jstor', 'pubmed', 'semanticscholar',
+    ],
+    'Creative': [
+      'figma', 'sketch.cloud', 'adobe', 'canva', 'dribbble', 'behance',
+      'unsplash', 'pexels', 'pixabay', 'shutterstock', 'gettyimages',
+      'midjourney', 'runwayml', 'stability.ai',
+      'deviantart', 'artstation',
+    ],
+    'Gaming': [
+      'steampowered', 'epicgames', 'gog.com', 'ea.com', 'ubisoft',
+      'xbox', 'playstation', 'nintendo',
+      'ign', 'gamespot', 'kotaku', 'pcgamer', 'polygon',
+    ],
+    'Utility': [
+      'translate.google', 'deepl', 'wolframalpha',
+      'weather', 'maps.google', 'bing.com/maps', 'openstreetmap',
+      'archive.org', 'web.archive',
+      'pastebin', 'gist.github', 'hastebin',
+      'regex101', 'crontab.guru', 'jsonlint',
+      'transferwise', 'wise.com', 'paypal', 'stripe',
+    ],
+  };
+
+  /// Returns the best-matching category name for a given domain.
+  ///
+  /// [domain] should be the bare domain (e.g. "github.com" or
+  /// "gist.github.com") — no scheme, no path.
+  static String categorizeWebsite(String domain) {
+    final lower = domain.toLowerCase();
+    // Strip common subdomains to get the core domain for matching
+    final core = lower
+        .replaceFirst(RegExp(r'^www\.'), '')
+        .replaceFirst(RegExp(r'^m\.'), '');
+
+    for (final entry in _domainPatterns.entries) {
+      for (final keyword in entry.value) {
+        if (core.contains(keyword)) return entry.key;
+      }
+    }
+    return _uncategorized;
+  }
+
+  /// Returns true if this domain's category is not yet known
+  /// (i.e. was assigned a default placeholder by the server).
+  static bool isDefaultCategory(String category) =>
+      category == 'Browser' || category == 'Web' || category == _uncategorized;
+}
+
 // ────────────────────── Localization Maps ──────────────────────
 // Single source of truth — replaces two giant switch statements.
 

@@ -1,5 +1,6 @@
 import 'package:screentime/utils/platform_utils.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -7,6 +8,8 @@ import 'package:screentime/sections/settings.dart';
 import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/web/extension_settings.dart'
+    if (dart.library.io) 'package:screentime/web/extension_settings_stub.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared Constants
@@ -46,6 +49,10 @@ class GeneralSection extends StatelessWidget {
       title: l10n.generalSection,
       icon: FluentIcons.settings,
       children: [
+        if (kIsWeb) ...[
+          const _ExtensionModeCard(),
+          const SizedBox(height: 16),
+        ],
         SettingRow(
           title: l10n.themeTitle,
           description: l10n.themeDescription,
@@ -82,11 +89,12 @@ class GeneralSection extends StatelessWidget {
             onChanged: (value) => settings.updateSetting('voiceGender', value),
           ),
         ),
-        SettingRow(
-          title: l10n.trackingModeTitle,
-          description: l10n.trackingModeDescription,
-          control: _TrackingModeSelector(l10n: l10n),
-        ),
+        if (!kIsWeb)
+          SettingRow(
+            title: l10n.trackingModeTitle,
+            description: l10n.trackingModeDescription,
+            control: _TrackingModeSelector(l10n: l10n),
+          ),
         SettingRow(
           title: l10n.dailyResetTimeTitle,
           description: l10n.dailyResetTimeDescription,
@@ -111,7 +119,7 @@ class GeneralSection extends StatelessWidget {
           SettingRow(
             title: l10n.launchAtStartupTitle,
             description: l10n.launchAtStartupDescription,
-            showDivider: PlatformUtils.isWindows,
+            showDivider: false,
             control: ToggleSwitch(
               checked: settings.launchAtStartupVar,
               onChanged: (value) =>
@@ -122,22 +130,13 @@ class GeneralSection extends StatelessWidget {
           SettingRow(
             title: l10n.launchMinimizedTitle,
             description: l10n.launchMinimizedDescription,
+            showDivider: false,
             control: ToggleSwitch(
               checked: settings.launchAsMinimized,
               onChanged: (value) =>
                   settings.updateSetting('launchAsMinimized', value),
             ),
           ),
-        SettingRow(
-          title: l10n.browserExtensionTitle,
-          description: l10n.browserExtensionDescription,
-          showDivider: false,
-          control: ToggleSwitch(
-            checked: settings.browserExtensionEnabled,
-            onChanged: (value) =>
-                settings.updateSetting('browserExtensionEnabled', value),
-          ),
-        ),
       ],
     );
   }
@@ -378,6 +377,127 @@ class _SegmentedButtonState extends State<_SegmentedButton> {
           ),
         ),
       ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Extension Mode Selector Card (Web Only)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _ExtensionModeCard extends StatefulWidget {
+  const _ExtensionModeCard();
+
+  @override
+  State<_ExtensionModeCard> createState() => _ExtensionModeCardState();
+}
+
+class _ExtensionModeCardState extends State<_ExtensionModeCard> {
+  final _settings = ExtensionSettings();
+  final _urlController = TextEditingController();
+  ExtensionMode _mode = ExtensionMode.standalone;
+  bool _isLoading = true;
+  bool _saving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    await _settings.load();
+    if (!mounted) return;
+    setState(() {
+      _mode = _settings.mode;
+      _urlController.text = _settings.desktopUrl;
+      _isLoading = false;
+    });
+  }
+
+  Future<void> _saveMode(ExtensionMode mode) async {
+    setState(() => _saving = true);
+    await _settings.setMode(mode);
+    if (!mounted) return;
+    setState(() {
+      _mode = mode;
+      _saving = false;
+    });
+  }
+
+  Future<void> _saveUrl() async {
+    await _settings.setDesktopUrl(_urlController.text.trim());
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context)!;
+    displayInfoBar(context, builder: (ctx, close) => InfoBar(
+      title: Text(l10n.browserDesktopUrlSaved),
+      action: Button(onPressed: close, child: Text(l10n.ok)),
+    ));
+  }
+
+  @override
+  void dispose() {
+    _urlController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_isLoading) return const SizedBox(height: 100, child: Center(child: ProgressRing()));
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SettingRow(
+          title: l10n.browserExtensionMode,
+          description: _mode.description,
+          control: SizedBox(
+            width: 160,
+            child: ComboBox<ExtensionMode>(
+              value: _mode,
+              isExpanded: true,
+              items: ExtensionMode.values
+                  .map((m) => ComboBoxItem<ExtensionMode>(
+                        value: m,
+                        child: Text(m.label),
+                      ))
+                  .toList(),
+              onChanged: (mode) {
+                if (mode != null && !_saving) _saveMode(mode);
+              },
+            ),
+          ),
+        ),
+        if (_mode != ExtensionMode.standalone) ...[
+          const SizedBox(height: 8),
+          SettingRow(
+            title: l10n.browserDesktopAppUrl,
+            description: l10n.browserDesktopAppUrlDesc,
+            showDivider: true,
+            control: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 200,
+                  child: TextBox(
+                    controller: _urlController,
+                    placeholder: 'http://localhost:46000',
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: _saveUrl,
+                  child: Text(l10n.saveButton),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }

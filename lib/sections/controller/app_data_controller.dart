@@ -126,6 +126,9 @@ class AppMetadata {
   @HiveField(5)
   final bool limitStatus;
 
+  @HiveField(6)
+  final String siteName; // empty string means "use domain as display name"
+
   AppMetadata({
     required this.category,
     required this.isProductive,
@@ -133,6 +136,7 @@ class AppMetadata {
     this.isVisible = true,
     this.dailyLimit = Duration.zero,
     this.limitStatus = false,
+    this.siteName = '',
   });
 }
 
@@ -728,6 +732,7 @@ class AppDataStore extends ChangeNotifier {
     bool? isVisible,
     Duration? dailyLimit,
     bool? limitStatus,
+    String? siteName,
   }) async {
     if (!_ensureInitialized()) return false;
 
@@ -743,6 +748,7 @@ class AppDataStore extends ChangeNotifier {
         isVisible: isVisible ?? existing?.isVisible ?? true,
         dailyLimit: dailyLimit ?? existing?.dailyLimit ?? Duration.zero,
         limitStatus: limitStatus ?? existing?.limitStatus ?? false,
+        siteName: siteName ?? existing?.siteName ?? '',
       );
 
       _metadataCache[appName] = updated;
@@ -1890,6 +1896,7 @@ class AppDataStore extends ChangeNotifier {
         isVisible: val['isVisible'] ?? true,
         dailyLimit: Duration(seconds: (val['dailyLimit'] as num?)?.toInt() ?? 0),
         limitStatus: val['limitStatus'] ?? false,
+        siteName: val['siteName'] as String? ?? '',
       );
     }
     
@@ -2040,12 +2047,13 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
       isVisible: fields[3] as bool,
       dailyLimit: fields[4] as Duration,
       limitStatus: fields[5] as bool,
+      siteName: fields.containsKey(6) ? (fields[6] as String? ?? '') : '',
     );
   }
 
   @override
   void write(BinaryWriter writer, AppMetadata obj) {
-    writer.writeByte(6);
+    writer.writeByte(7);
     writer.writeByte(0);
     writer.write(obj.category);
     writer.writeByte(1);
@@ -2058,5 +2066,7 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
     writer.write(obj.dailyLimit);
     writer.writeByte(5);
     writer.write(obj.limitStatus);
+    writer.writeByte(6);
+    writer.write(obj.siteName);
   }
 }

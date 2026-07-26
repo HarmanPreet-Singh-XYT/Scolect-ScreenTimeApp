@@ -1,5 +1,6 @@
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
+import '../categories_controller.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
@@ -19,6 +20,7 @@ class DailyOverviewData {
 
   /// Fetch today's overview data - OPTIMIZED: Single pass through all apps
   Future<OverviewData> fetchTodayOverview() async {
+    if (kIsWeb) return _fetchWebOverview();
     await _ensureInitialized();
 
     final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
@@ -66,6 +68,7 @@ class DailyOverviewData {
 
     // ── One loop through all apps ──
     for (final appName in _dataStore.allAppNames) {
+      if (appName.startsWith('web:')) continue;
       final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null) continue;
 
@@ -169,26 +172,46 @@ class DailyOverviewData {
     final dayData = result[storageKey] as Map<dynamic, dynamic>? ?? {};
     final domains = (dayData['domains'] as List<dynamic>?) ?? [];
 
+    final metaRes = await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
+    final siteMeta = (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
+    final settingsMap = (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
+    final customMeta = (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
+
     Duration totalTime = Duration.zero;
     List<ApplicationDetail> applications = [];
     int maxSeconds = 0;
     String mostUsed = "None";
+    Map<String, Duration> categoryTotals = {};
 
     for (var d in domains) {
       final domain = d['domain'] as String? ?? 'unknown';
       final seconds = d['seconds'] as num? ?? 0;
       final duration = Duration(seconds: seconds.toInt());
 
+      final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+      final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+
+      final siteName = (meta['siteName'] as String?)?.isNotEmpty == true
+          ? meta['siteName'] as String
+          : (rawSiteMeta['siteName'] as String? ?? '');
+      final displayName = siteName.isNotEmpty ? siteName : domain;
+      final category = (meta['category'] as String?)?.isNotEmpty == true
+          ? meta['category'] as String
+          : (rawSiteMeta['category'] as String?)?.isNotEmpty == true
+              ? rawSiteMeta['category'] as String
+              : AppCategories.categorizeApp(displayName);
+
       if (seconds > maxSeconds) {
         maxSeconds = seconds.toInt();
-        mostUsed = domain;
+        mostUsed = displayName;
       }
 
       totalTime += duration;
+      categoryTotals[category] = (categoryTotals[category] ?? Duration.zero) + duration;
 
       applications.add(ApplicationDetail(
-        name: domain,
-        category: 'Web',
+        name: displayName,
+        category: category,
         screenTime: duration,
         percentageOfTotalTime: 0,
         isVisible: true,
@@ -212,7 +235,18 @@ class DailyOverviewData {
       }
     }
 
+    final categoryBreakdown = totalSecs > 0
+        ? categoryTotals.entries.map((entry) {
+            return CategoryDetail(
+              name: entry.key,
+              totalScreenTime: entry.value,
+              percentageOfTotalTime: (entry.value.inSeconds / totalSecs) * 100,
+            );
+          }).toList()
+        : <CategoryDetail>[];
+
     applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
+    categoryBreakdown.sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
 
     return OverviewData(
       totalScreenTime: totalTime,
@@ -224,7 +258,7 @@ class DailyOverviewData {
       focusSessions: 0,
       totalFocusTime: Duration.zero,
       topApplications: applications,
-      categoryBreakdown: [],
+      categoryBreakdown: categoryBreakdown,
       applicationLimits: [],
     );
   }

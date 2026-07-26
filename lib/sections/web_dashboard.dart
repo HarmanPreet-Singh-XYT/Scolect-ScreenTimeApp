@@ -6,7 +6,9 @@
 
 import 'dart:ui' show lerpDouble;
 import 'package:fluent_ui/fluent_ui.dart';
+import 'dart:async';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:html' as html;
 import 'package:provider/provider.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
@@ -20,6 +22,7 @@ import 'package:screentime/sections/alerts_limits.dart';
 import 'package:screentime/sections/focus_mode.dart';
 import 'package:screentime/sections/settings.dart' as native_settings;
 import 'UI sections/Browser/browser_extension_status.dart';
+import 'UI sections/Browser/browser_websites.dart';
 import 'UI sections/Browser/browser_shared.dart';
 
 import '../web/extension_settings.dart'
@@ -49,6 +52,8 @@ class _WebDashboardState extends State<WebDashboard>
   String? _activeDomain;
   bool _isLoading = true;
 
+  StreamSubscription? _hashSub;
+
   @override
   void initState() {
     super.initState();
@@ -62,22 +67,49 @@ class _WebDashboardState extends State<WebDashboard>
     );
     _sidebarAnimController.value = 1.0;
 
+    if (kIsWeb) {
+      _hashSub = html.window.onHashChange.listen((_) => _checkHashNavigation());
+    }
+
     _load();
   }
 
   @override
   void dispose() {
+    _hashSub?.cancel();
     _sidebarAnimController.dispose();
     super.dispose();
+  }
+
+  void _checkHashNavigation() {
+    if (!kIsWeb) return;
+    final href = html.window.location.href.toLowerCase();
+    final hash = html.window.location.hash.toLowerCase();
+    final search = (html.window.location.search ?? '').toLowerCase();
+    if (hash.contains('settings') || href.contains('settings') || search.contains('tab=settings')) {
+      if (_selectedIndex != 5) {
+        setState(() => _selectedIndex = 5);
+      }
+    }
   }
 
   Future<void> _load() async {
     final mode = await ExtensionSettings().getMode();
     final state = await _readAppState();
+    int initialIndex = 0;
+    if (kIsWeb) {
+      final href = html.window.location.href.toLowerCase();
+      final hash = html.window.location.hash.toLowerCase();
+      final search = (html.window.location.search ?? '').toLowerCase();
+      if (hash.contains('settings') || href.contains('settings') || search.contains('tab=settings')) {
+        initialIndex = 5;
+      }
+    }
     if (!mounted) return;
     setState(() {
       _mode = mode;
       _activeDomain = state?['activeDomain'] as String?;
+      _selectedIndex = initialIndex;
       _isLoading = false;
     });
   }
@@ -451,7 +483,7 @@ class _WebSidebar extends StatelessWidget {
     return const [
       _WebNavItem(icon: FluentIcons.home, label: 'Overview', index: 0),
       _WebNavItem(
-          icon: FluentIcons.apps_content, label: 'Applications', index: 1),
+          icon: FluentIcons.globe, label: 'Websites', index: 1),
       _WebNavItem(
           icon: FluentIcons.report_document, label: 'Reports', index: 2),
       _WebNavItem(icon: FluentIcons.timer, label: 'Limits', index: 3),

@@ -8,3 +8,4 @@ Future<Map<String, dynamic>> chromeStorageGet(List<String> keys) async => {};
 Future<Map<String, dynamic>> chromeStorageGetAll() async => {};
 Future<void> chromeStorageSet(Map<String, dynamic> data) async {}
 Future<void> chromeStorageRemove(String key) async {}
+Future<void> triggerExtensionSync() async {}

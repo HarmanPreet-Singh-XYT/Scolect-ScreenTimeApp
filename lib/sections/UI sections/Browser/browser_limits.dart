@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
 
@@ -36,6 +37,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) {
       return const Center(child: ProgressRing());
@@ -52,8 +54,8 @@ class _BrowserLimitsState extends State<BrowserLimits> {
           // ── Active limits ──────────────────────────────────────────────
           _SectionHeader(
             icon: FluentIcons.time_picker,
-            title: 'Active Limits',
-            subtitle: '${withLimits.length} website${withLimits.length != 1 ? 's' : ''} with daily limits',
+            title: l10n.browserActiveLimits,
+            subtitle: l10n.browserActiveLimitsSubtitle(withLimits.length),
             color: kBrowserAmber,
           ),
           const SizedBox(height: 10),
@@ -61,10 +63,10 @@ class _BrowserLimitsState extends State<BrowserLimits> {
           if (withLimits.isEmpty)
             BrowserCard(
               height: 120,
-              child: const BrowserEmptyState(
+              child: BrowserEmptyState(
                 icon: FluentIcons.time_picker,
-                title: 'No limits set',
-                subtitle: 'Set daily time limits below',
+                title: l10n.browserNoLimitsTitle,
+                subtitle: l10n.browserNoLimitsSubtitle,
               ),
             )
           else
@@ -89,8 +91,8 @@ class _BrowserLimitsState extends State<BrowserLimits> {
           // ── Add limits ────────────────────────────────────────────────
           _SectionHeader(
             icon: FluentIcons.globe,
-            title: 'All Websites',
-            subtitle: 'Tap a site to set or change its daily limit',
+            title: l10n.browserAllWebsites,
+            subtitle: l10n.browserAllWebsitesSubtitle,
             color: theme.accentColor,
           ),
           const SizedBox(height: 10),
@@ -98,9 +100,9 @@ class _BrowserLimitsState extends State<BrowserLimits> {
           if (withoutLimits.isEmpty && withLimits.isNotEmpty)
             BrowserCard(
               height: 80,
-              child: const BrowserEmptyState(
+              child: BrowserEmptyState(
                 icon: FluentIcons.check_mark,
-                title: 'All sites have limits',
+                title: l10n.browserAllSitesHaveLimits,
                 subtitle: '',
               ),
             )
@@ -109,10 +111,10 @@ class _BrowserLimitsState extends State<BrowserLimits> {
               height: 120,
               child: BrowserEmptyState(
                 icon: FluentIcons.globe,
-                title: 'No websites tracked yet',
+                title: l10n.browserNoWebsitesTrackedTitle,
                 subtitle: kIsWeb
-                    ? 'Browse the web to see your sites here'
-                    : 'Install the extension and browse to get started',
+                    ? l10n.browserNoWebsitesTrackedWebSubtitle
+                    : l10n.browserNoWebsitesTrackedDesktopSubtitle,
               ),
             )
           else
@@ -207,6 +209,7 @@ class _LimitRowState extends State<_LimitRow> {
   bool _hovered = false;
 
   void _showLimitPicker() {
+    final l10n = AppLocalizations.of(context)!;
     final site = widget.site;
     int hours = site.dailyLimit.inHours;
     int minutes = site.dailyLimit.inMinutes % 60;
@@ -215,18 +218,18 @@ class _LimitRowState extends State<_LimitRow> {
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setInner) => ContentDialog(
-          title: Text('Daily Limit – ${site.domain}'),
+          title: Text(l10n.browserDailyLimitDialog(site.domain)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Set how long you can visit this site per day.'),
+              Text(l10n.browserDailyLimitDialogDesc),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
                     children: [
-                      const Text('Hours', style: TextStyle(fontSize: 12)),
+                      Text(l10n.browserHours, style: const TextStyle(fontSize: 12)),
                       const SizedBox(height: 4),
                       NumberBox<int>(
                         value: hours,
@@ -245,7 +248,7 @@ class _LimitRowState extends State<_LimitRow> {
                   ),
                   Column(
                     children: [
-                      const Text('Minutes', style: TextStyle(fontSize: 12)),
+                      Text(l10n.minutesLabel, style: const TextStyle(fontSize: 12)),
                       const SizedBox(height: 4),
                       NumberBox<int>(
                         value: minutes,
@@ -263,19 +266,19 @@ class _LimitRowState extends State<_LimitRow> {
           actions: [
             Button(
               onPressed: () => Navigator.of(ctx).pop(),
-              child: const Text('Cancel'),
+              child: Text(l10n.cancelButton),
             ),
             if (site.dailyLimit > Duration.zero)
               Button(
                 onPressed: () async {
                   Navigator.of(ctx).pop();
                   await BrowserDataProvider().updateWebsiteMetadata(
-                    site.domain,
+                    site.displayName,
                     dailyLimit: Duration.zero,
                   );
                   widget.onChanged();
                 },
-                child: const Text('Remove Limit'),
+                child: Text(l10n.browserRemoveLimit),
               ),
             FilledButton(
               onPressed: () async {
@@ -283,12 +286,12 @@ class _LimitRowState extends State<_LimitRow> {
                 final limit =
                     Duration(hours: hours, minutes: minutes);
                 await BrowserDataProvider().updateWebsiteMetadata(
-                  site.domain,
+                  site.displayName,
                   dailyLimit: limit,
                 );
                 widget.onChanged();
               },
-              child: const Text('Save'),
+              child: Text(l10n.saveButton),
             ),
           ],
         ),
@@ -299,6 +302,7 @@ class _LimitRowState extends State<_LimitRow> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final site = widget.site;
     final hasLimit = site.dailyLimit > Duration.zero;
 
@@ -347,7 +351,7 @@ class _LimitRowState extends State<_LimitRow> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(site.domain,
+                        Text(site.displayName,
                             style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500)),
@@ -392,7 +396,7 @@ class _LimitRowState extends State<_LimitRow> {
                           ),
                         ),
                         Text(
-                          '${site.formattedTimeSpent} used',
+                          l10n.browserTimeUsed(site.formattedTimeSpent),
                           style: TextStyle(
                             fontSize: 11,
                             color: theme.typography.caption?.color
@@ -403,7 +407,7 @@ class _LimitRowState extends State<_LimitRow> {
                     )
                   else
                     Text(
-                      'Set limit',
+                      l10n.browserSetLimit,
                       style: TextStyle(
                         fontSize: 12,
                         color: theme.accentColor.withValues(alpha: 0.7),

@@ -21,6 +21,7 @@ class WebBrowserDataProvider {
     bool? isTracking,
     bool? isVisible,
     Duration? dailyLimit,
+    String? siteName,
   }) async => false;
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async => [];

@@ -212,6 +212,7 @@ class _MyAppWebState extends State<MyAppWeb> {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeCustomizationProvider()),
         ChangeNotifierProvider.value(value: navigationState),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: _AppWithThemeWeb(
         initialTheme: widget.initialTheme,
@@ -749,6 +750,7 @@ class _MyAppState extends State<MyApp>
         ChangeNotifierProvider(create: (_) => ThemeCustomizationProvider()),
         ChangeNotifierProvider.value(value: navigationState),
         if (autoUpdates) ChangeNotifierProvider.value(value: UpdateService()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: _AppWithTheme(
         initialTheme: widget.initialTheme,

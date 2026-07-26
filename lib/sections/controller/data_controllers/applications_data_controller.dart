@@ -1,7 +1,11 @@
 import 'package:intl/intl.dart';
 import 'dart:math';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/web/web_browser_data_provider.dart'
+    if (dart.library.io) 'package:screentime/web/web_browser_data_provider_stub.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
+import '../categories_controller.dart';
 
 // Extension for formatting Duration objects
 extension DurationFormatter on Duration {
@@ -31,6 +35,7 @@ class DateRange {
 
 class ApplicationBasicDetail {
   final String name;
+  final String siteName;
   final String category;
   final Duration screenTime;
   final String formattedScreenTime;
@@ -42,6 +47,7 @@ class ApplicationBasicDetail {
 
   ApplicationBasicDetail({
     required this.name,
+    this.siteName = '',
     required this.category,
     required this.screenTime,
     required this.isTracking,
@@ -220,6 +226,28 @@ class ApplicationsDataProvider {
   // ============================================================
 
   Future<List<ApplicationBasicDetail>> fetchAllApplications() async {
+    if (kIsWeb) {
+      final webSites = await WebBrowserDataProvider().fetchAllWebsites();
+      final apps = webSites.map((site) {
+        final category = site.category.isNotEmpty
+            ? site.category
+            : AppCategories.categorizeApp(site.displayName);
+        return ApplicationBasicDetail(
+          name: site.domain,
+          siteName: site.siteName,
+          category: category,
+          screenTime: site.timeSpent,
+          isTracking: site.isTracking,
+          isHidden: site.isHidden,
+          isProductive: site.isProductive,
+          dailyLimit: site.dailyLimit,
+          limitStatus: site.limitStatus,
+        );
+      }).toList();
+      apps.sort((a, b) => b.screenTime.compareTo(a.screenTime));
+      return apps;
+    }
+
     await _ensureInitialized();
 
     final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
@@ -228,6 +256,7 @@ class ApplicationsDataProvider {
     final applications = <ApplicationBasicDetail>[];
 
     for (final appName in appNames) {
+      if (appName.startsWith('web:')) continue;
       final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null) continue;
 
@@ -235,6 +264,7 @@ class ApplicationsDataProvider {
 
       applications.add(ApplicationBasicDetail(
         name: appName,
+        siteName: metadata.siteName,
         category: metadata.category,
         screenTime: usageRecord?.timeSpent ?? Duration.zero,
         isTracking: metadata.isTracking,

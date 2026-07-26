@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../app_data_controller.dart';
+import '../categories_controller.dart';
 import '../settings_data_controller.dart';
 import 'applications_data_controller.dart';
 import '../../../web/web_browser_data_provider.dart'
@@ -13,6 +14,7 @@ const _kWebPrefix = 'web:';
 
 class WebsiteBasicDetail {
   final String domain;
+  final String siteName;
   final String category;
   final Duration timeSpent;
   final String formattedTimeSpent;
@@ -25,6 +27,7 @@ class WebsiteBasicDetail {
 
   WebsiteBasicDetail({
     required this.domain,
+    this.siteName = '',
     required this.category,
     required this.timeSpent,
     required this.isTracking,
@@ -35,8 +38,13 @@ class WebsiteBasicDetail {
     required this.visits,
   }) : formattedTimeSpent = timeSpent.toHourMinuteFormat();
 
+  /// Human-readable name: siteName if captured, otherwise the bare domain.
+  String get displayName => siteName.isNotEmpty ? siteName : domain;
+
   bool matchesSearch(String query) =>
-      query.isEmpty || domain.toLowerCase().contains(query.toLowerCase());
+      query.isEmpty ||
+      domain.toLowerCase().contains(query.toLowerCase()) ||
+      siteName.toLowerCase().contains(query.toLowerCase());
 
   bool matchesCategory(String category) =>
       category == 'All' || this.category == category;
@@ -114,10 +122,23 @@ class BrowserDataProvider {
       if (metadata == null) continue;
 
       final record = _dataStore.getAppUsage(appName, startOfDay);
+      final domain = _toDomain(appName);
+
+      // Auto-categorize on read if the stored category is still a placeholder
+      String category = metadata.category;
+      if (WebsiteCategories.isDefaultCategory(category)) {
+        final detected = WebsiteCategories.categorizeWebsite(domain);
+        if (!WebsiteCategories.isDefaultCategory(detected)) {
+          category = detected;
+          // Persist the correction asynchronously (fire-and-forget)
+          _dataStore.updateAppMetadata(appName, category: detected);
+        }
+      }
 
       sites.add(WebsiteBasicDetail(
-        domain: _toDomain(appName),
-        category: metadata.category,
+        domain: domain,
+        siteName: metadata.siteName,
+        category: category,
         timeSpent: record?.timeSpent ?? Duration.zero,
         isTracking: metadata.isTracking,
         isHidden: !metadata.isVisible,
@@ -197,6 +218,37 @@ class BrowserDataProvider {
       ..sort((a, b) => b.totalTime.compareTo(a.totalTime));
   }
 
+  // ─── History (last N days) ────────────────────────────────────────────────
+
+  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async {
+    await _ensureInitialized();
+
+    final result = <({String date, Duration totalTime, int siteCount})>[];
+    final now = DateTime.now();
+
+    for (int i = 0; i < days; i++) {
+      final date = now.subtract(Duration(days: i));
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final dateKey =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+
+      Duration total = Duration.zero;
+      int sites = 0;
+
+      for (final appName in _webAppNames) {
+        final record = _dataStore.getAppUsage(appName, startOfDay);
+        if (record != null && record.timeSpent > Duration.zero) {
+          total += record.timeSpent;
+          sites++;
+        }
+      }
+
+      result.add((date: dateKey, totalTime: total, siteCount: sites));
+    }
+
+    return result;
+  }
+
   // ─── All known categories across all web entries ──────────────────────────
 
   Future<List<String>> fetchAllCategories() async {
@@ -219,6 +271,7 @@ class BrowserDataProvider {
     bool? isTracking,
     bool? isVisible,
     Duration? dailyLimit,
+    String? siteName,
   }) async {
     await _ensureInitialized();
     return _dataStore.updateAppMetadata(
@@ -228,6 +281,7 @@ class BrowserDataProvider {
       isTracking: isTracking,
       isVisible: isVisible,
       dailyLimit: dailyLimit,
+      siteName: siteName,
     );
   }
 }
@@ -256,6 +310,10 @@ class _WebDelegatingProvider extends BrowserDataProvider {
   Future<List<String>> fetchAllCategories() => _web.fetchAllCategories();
 
   @override
+  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) =>
+      _web.fetchHistory(days: days);
+
+  @override
   Future<bool> updateWebsiteMetadata(
     String domain, {
     String? category,
@@ -263,6 +321,7 @@ class _WebDelegatingProvider extends BrowserDataProvider {
     bool? isTracking,
     bool? isVisible,
     Duration? dailyLimit,
+    String? siteName,
   }) =>
       _web.updateWebsiteMetadata(
         domain,
@@ -271,5 +330,6 @@ class _WebDelegatingProvider extends BrowserDataProvider {
         isTracking: isTracking,
         isVisible: isVisible,
         dailyLimit: dailyLimit,
+        siteName: siteName,
       );
 }

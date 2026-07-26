@@ -46,12 +46,14 @@ class WebsiteMetadata {
   final bool isTracking;
   final bool isProductive;
   final int dailyLimitSeconds; // 0 = no limit
+  final String siteName;
 
   const WebsiteMetadata({
     this.category = 'Uncategorized',
     this.isTracking = true,
     this.isProductive = false,
     this.dailyLimitSeconds = 0,
+    this.siteName = '',
   });
 
   Duration get dailyLimit => Duration(seconds: dailyLimitSeconds);
@@ -61,12 +63,14 @@ class WebsiteMetadata {
     bool? isTracking,
     bool? isProductive,
     int? dailyLimitSeconds,
+    String? siteName,
   }) =>
       WebsiteMetadata(
         category: category ?? this.category,
         isTracking: isTracking ?? this.isTracking,
         isProductive: isProductive ?? this.isProductive,
         dailyLimitSeconds: dailyLimitSeconds ?? this.dailyLimitSeconds,
+        siteName: siteName ?? this.siteName,
       );
 
   factory WebsiteMetadata.fromMap(Map<String, dynamic> m) => WebsiteMetadata(
@@ -74,6 +78,7 @@ class WebsiteMetadata {
         isTracking: m['isTracking'] as bool? ?? true,
         isProductive: m['isProductive'] as bool? ?? false,
         dailyLimitSeconds: m['dailyLimitSeconds'] as int? ?? 0,
+        siteName: m['siteName'] as String? ?? '',
       );
 
   Map<String, dynamic> toMap() => {
@@ -81,6 +86,7 @@ class WebsiteMetadata {
         'isTracking': isTracking,
         'isProductive': isProductive,
         'dailyLimitSeconds': dailyLimitSeconds,
+        if (siteName.isNotEmpty) 'siteName': siteName,
       };
 }
 
@@ -160,6 +166,7 @@ class ExtensionSettings {
     bool? isTracking,
     bool? isProductive,
     Duration? dailyLimit,
+    String? siteName,
   }) async {
     await _ensureLoaded();
     final current = _metadata[domain] ?? const WebsiteMetadata();
@@ -168,6 +175,7 @@ class ExtensionSettings {
       isTracking: isTracking,
       isProductive: isProductive,
       dailyLimitSeconds: dailyLimit?.inSeconds,
+      siteName: siteName,
     );
     await _persist();
   }

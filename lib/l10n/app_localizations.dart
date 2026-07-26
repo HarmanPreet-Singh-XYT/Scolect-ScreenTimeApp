@@ -5861,6 +5861,648 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'that day'**
   String get weekdayNameUnknown;
+
+  /// No description provided for @browserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser'**
+  String get browserTitle;
+
+  /// No description provided for @browserWebsiteTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Website tracking'**
+  String get browserWebsiteTracking;
+
+  /// No description provided for @browserSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track and manage your website usage'**
+  String get browserSubtitle;
+
+  /// No description provided for @browserToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get browserToday;
+
+  /// No description provided for @browserSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Sites'**
+  String get browserSites;
+
+  /// No description provided for @browserExtensionSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension Settings'**
+  String get browserExtensionSettings;
+
+  /// No description provided for @browserSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing'**
+  String get browserSyncing;
+
+  /// No description provided for @browserTabOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get browserTabOverview;
+
+  /// No description provided for @browserTabWebsites.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites'**
+  String get browserTabWebsites;
+
+  /// No description provided for @browserTabCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get browserTabCategories;
+
+  /// No description provided for @browserTabLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get browserTabLimits;
+
+  /// No description provided for @browserTabHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get browserTabHistory;
+
+  /// No description provided for @browserHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Overview'**
+  String get browserHistoryTitle;
+
+  /// No description provided for @browserHistorySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browsing time over the last 7 days'**
+  String get browserHistorySubtitle;
+
+  /// No description provided for @browserHistoryNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No browsing data yet'**
+  String get browserHistoryNoData;
+
+  /// No description provided for @browserHistoryAvgPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg / day'**
+  String get browserHistoryAvgPerDay;
+
+  /// No description provided for @browserHistoryPeakDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak day'**
+  String get browserHistoryPeakDay;
+
+  /// No description provided for @browserHistoryTotalWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Total this week'**
+  String get browserHistoryTotalWeek;
+
+  /// No description provided for @browserHistoryTopSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Top sites this week'**
+  String get browserHistoryTopSites;
+
+  /// No description provided for @browserTodayWebTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Web Time'**
+  String get browserTodayWebTime;
+
+  /// No description provided for @browserSitesVisited.
+  ///
+  /// In en, this message translates to:
+  /// **'Sites Visited'**
+  String get browserSitesVisited;
+
+  /// No description provided for @browserPageVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Page Visits'**
+  String get browserPageVisits;
+
+  /// No description provided for @browserTopSitesToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Sites Today'**
+  String get browserTopSitesToday;
+
+  /// No description provided for @browserViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all →'**
+  String get browserViewAll;
+
+  /// No description provided for @browserNoWebActivityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No web activity yet today'**
+  String get browserNoWebActivityTitle;
+
+  /// No description provided for @browserNoActivityWebSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the web to start tracking your time'**
+  String get browserNoActivityWebSubtitle;
+
+  /// No description provided for @browserNoActivityDesktopSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the browser extension to start tracking'**
+  String get browserNoActivityDesktopSubtitle;
+
+  /// No description provided for @browserNoCategoriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories yet'**
+  String get browserNoCategoriesTitle;
+
+  /// No description provided for @browserNoCategoriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories appear once websites are tracked'**
+  String get browserNoCategoriesSubtitle;
+
+  /// No description provided for @browserByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By Category'**
+  String get browserByCategory;
+
+  /// No description provided for @browserVisitCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 visit} other{{count} visits}}'**
+  String browserVisitCount(int count);
+
+  /// No description provided for @browserSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search website or domain…'**
+  String get browserSearchPlaceholder;
+
+  /// No description provided for @browserFilterAllTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'All Tracking'**
+  String get browserFilterAllTracking;
+
+  /// No description provided for @browserFilterTracked.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked'**
+  String get browserFilterTracked;
+
+  /// No description provided for @browserFilterUntracked.
+  ///
+  /// In en, this message translates to:
+  /// **'Untracked'**
+  String get browserFilterUntracked;
+
+  /// No description provided for @browserFilterAllTypes.
+  ///
+  /// In en, this message translates to:
+  /// **'All Types'**
+  String get browserFilterAllTypes;
+
+  /// No description provided for @browserFilterUnproductive.
+  ///
+  /// In en, this message translates to:
+  /// **'Unproductive'**
+  String get browserFilterUnproductive;
+
+  /// No description provided for @browserWebsiteCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 website} other{{count} websites}}'**
+  String browserWebsiteCount(int count);
+
+  /// No description provided for @browserColumnDomain.
+  ///
+  /// In en, this message translates to:
+  /// **'Domain'**
+  String get browserColumnDomain;
+
+  /// No description provided for @browserColumnTimeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Today'**
+  String get browserColumnTimeToday;
+
+  /// No description provided for @browserColumnVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get browserColumnVisits;
+
+  /// No description provided for @browserColumnTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking'**
+  String get browserColumnTracking;
+
+  /// No description provided for @browserNoWebsitesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites found'**
+  String get browserNoWebsitesTitle;
+
+  /// No description provided for @browserNoWebsitesWebSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the web — your sites will appear here.'**
+  String get browserNoWebsitesWebSubtitle;
+
+  /// No description provided for @browserNoWebsitesDesktopSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Try adjusting your filters or wait for the\nextension to sync some data.'**
+  String get browserNoWebsitesDesktopSubtitle;
+
+  /// No description provided for @browserTimeDistribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Time Distribution'**
+  String get browserTimeDistribution;
+
+  /// No description provided for @browserSiteCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 site} other{{count} sites}}'**
+  String browserSiteCount(int count);
+
+  /// No description provided for @browserActiveLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Limits'**
+  String get browserActiveLimits;
+
+  /// No description provided for @browserActiveLimitsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 website with daily limits} other{{count} websites with daily limits}}'**
+  String browserActiveLimitsSubtitle(int count);
+
+  /// No description provided for @browserNoLimitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No limits set'**
+  String get browserNoLimitsTitle;
+
+  /// No description provided for @browserNoLimitsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set daily time limits below'**
+  String get browserNoLimitsSubtitle;
+
+  /// No description provided for @browserAllWebsites.
+  ///
+  /// In en, this message translates to:
+  /// **'All Websites'**
+  String get browserAllWebsites;
+
+  /// No description provided for @browserAllWebsitesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a site to set or change its daily limit'**
+  String get browserAllWebsitesSubtitle;
+
+  /// No description provided for @browserAllSitesHaveLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'All sites have limits'**
+  String get browserAllSitesHaveLimits;
+
+  /// No description provided for @browserNoWebsitesTrackedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites tracked yet'**
+  String get browserNoWebsitesTrackedTitle;
+
+  /// No description provided for @browserNoWebsitesTrackedWebSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse the web to see your sites here'**
+  String get browserNoWebsitesTrackedWebSubtitle;
+
+  /// No description provided for @browserNoWebsitesTrackedDesktopSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the extension and browse to get started'**
+  String get browserNoWebsitesTrackedDesktopSubtitle;
+
+  /// No description provided for @browserDailyLimitDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Limit – {domain}'**
+  String browserDailyLimitDialog(String domain);
+
+  /// No description provided for @browserDailyLimitDialogDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set how long you can visit this site per day.'**
+  String get browserDailyLimitDialogDesc;
+
+  /// No description provided for @browserHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get browserHours;
+
+  /// No description provided for @browserRemoveLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Limit'**
+  String get browserRemoveLimit;
+
+  /// No description provided for @browserTimeUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} used'**
+  String browserTimeUsed(String time);
+
+  /// No description provided for @browserSetLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set limit'**
+  String get browserSetLimit;
+
+  /// No description provided for @browserExtensionMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension Mode'**
+  String get browserExtensionMode;
+
+  /// No description provided for @browserDesktopAppUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop App URL'**
+  String get browserDesktopAppUrl;
+
+  /// No description provided for @browserDesktopAppUrlDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The URL where the Scolect desktop app is running its local server.'**
+  String get browserDesktopAppUrlDesc;
+
+  /// No description provided for @browserAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get browserAbout;
+
+  /// No description provided for @browserAboutExtension.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension'**
+  String get browserAboutExtension;
+
+  /// No description provided for @browserAboutExtensionValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect – Web Time Tracker'**
+  String get browserAboutExtensionValue;
+
+  /// No description provided for @browserAboutVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get browserAboutVersion;
+
+  /// No description provided for @browserAboutStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage'**
+  String get browserAboutStorage;
+
+  /// No description provided for @browserAboutStorageValue.
+  ///
+  /// In en, this message translates to:
+  /// **'chrome.storage.local'**
+  String get browserAboutStorageValue;
+
+  /// No description provided for @browserAboutHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get browserAboutHistory;
+
+  /// No description provided for @browserAboutHistoryValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days retained'**
+  String get browserAboutHistoryValue;
+
+  /// No description provided for @browserDangerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger Zone'**
+  String get browserDangerZone;
+
+  /// No description provided for @browserClearDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear All Website Data'**
+  String get browserClearDataTitle;
+
+  /// No description provided for @browserClearDataDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently deletes all tracked website history. This cannot be undone.'**
+  String get browserClearDataDesc;
+
+  /// No description provided for @browserClearDataButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Data'**
+  String get browserClearDataButton;
+
+  /// No description provided for @browserAreYouSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure?'**
+  String get browserAreYouSure;
+
+  /// No description provided for @browserYesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes, Delete'**
+  String get browserYesDelete;
+
+  /// No description provided for @browserDesktopUrlSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop URL saved'**
+  String get browserDesktopUrlSaved;
+
+  /// No description provided for @browserDataCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'All website data cleared'**
+  String get browserDataCleared;
+
+  /// No description provided for @browserTrackingActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking Active'**
+  String get browserTrackingActive;
+
+  /// No description provided for @browserTrackingActiveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browser activity is being tracked and\nsynced to the Scolect desktop app.'**
+  String get browserTrackingActiveDesc;
+
+  /// No description provided for @browserConnectedToDesktop.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected to Scolect Desktop'**
+  String get browserConnectedToDesktop;
+
+  /// No description provided for @browserDesktopNotReachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Desktop app not reachable'**
+  String get browserDesktopNotReachable;
+
+  /// No description provided for @browserRefreshSyncStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh sync status'**
+  String get browserRefreshSyncStatus;
+
+  /// No description provided for @browserSwitchToStandalone.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to Standalone mode →'**
+  String get browserSwitchToStandalone;
+
+  /// No description provided for @browserSetupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Browser Extension'**
+  String get browserSetupTitle;
+
+  /// No description provided for @browserSetupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the local server so the Scolect browser extension can sync your web activity to this app.'**
+  String get browserSetupSubtitle;
+
+  /// No description provided for @browserSetupEnableServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Extension Server'**
+  String get browserSetupEnableServer;
+
+  /// No description provided for @browserSetupServerRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Server running · port {port}'**
+  String browserSetupServerRunning(int port);
+
+  /// No description provided for @browserSetupServerOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Server disabled'**
+  String get browserSetupServerOff;
+
+  /// No description provided for @browserSetupStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable the server using the toggle above'**
+  String get browserSetupStep1;
+
+  /// No description provided for @browserSetupStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the Scolect extension in your browser'**
+  String get browserSetupStep2;
+
+  /// No description provided for @browserSetupStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Open your browser and visit any site'**
+  String get browserSetupStep3;
+
+  /// No description provided for @browserSetupStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Web activity will appear here automatically'**
+  String get browserSetupStep4;
+
+  /// No description provided for @browserSetupHowTo.
+  ///
+  /// In en, this message translates to:
+  /// **'How to get started'**
+  String get browserSetupHowTo;
+
+  /// No description provided for @browserSetupServerActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Active'**
+  String get browserSetupServerActive;
+
+  /// No description provided for @browserSetupServerActiveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your browser extension can now connect and sync data.'**
+  String get browserSetupServerActiveDesc;
+
+  /// No description provided for @browserServerPort.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Port'**
+  String get browserServerPort;
+
+  /// No description provided for @browserServerPortDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Port the local server listens on. Change this if port 46000 is already in use.'**
+  String get browserServerPortDesc;
+
+  /// No description provided for @browserServerPortSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Port updated — extension reconnecting'**
+  String get browserServerPortSaved;
+
+  /// No description provided for @browserServerPortInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a port between 1024 and 65535'**
+  String get browserServerPortInvalid;
+
+  /// No description provided for @browserDisableServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disable Extension Server'**
+  String get browserDisableServer;
+
+  /// No description provided for @browserEditSiteName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit display name'**
+  String get browserEditSiteName;
+
+  /// No description provided for @browserSiteNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name (e.g. YouTube)'**
+  String get browserSiteNameHint;
 }
 
 class _AppLocalizationsDelegate

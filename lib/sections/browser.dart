@@ -1,8 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:screentime/app_design.dart';
+import 'package:provider/provider.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
+import 'package:screentime/sections/settings.dart';
 import 'dart:async';
 import 'UI sections/Browser/browser_shared.dart';
 import 'UI sections/Browser/browser_overview.dart';
@@ -11,14 +13,11 @@ import 'UI sections/Browser/browser_categories.dart';
 import 'UI sections/Browser/browser_limits.dart';
 import 'UI sections/Browser/browser_extension_status.dart';
 import 'UI sections/Browser/browser_extension_settings.dart';
+import 'UI sections/Browser/browser_history.dart';
 
 // Conditionally import extension settings (web only)
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
-
-// ─── Constants ────────────────────────────────────────────────────────────────
-
-const _kDebounceDuration = Duration(milliseconds: 300);
 
 // ─── Main section widget ──────────────────────────────────────────────────────
 
@@ -38,7 +37,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   BrowserTab _currentTab = BrowserTab.overview;
   bool _isLoading = true;
   ({Duration totalTime, int siteCount, int visitCount})? _summary;
-  Timer? _debounce;
 
   // Web-only: extension mode state
   ExtensionMode _extensionMode = ExtensionMode.standalone;
@@ -92,7 +90,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   void _onModeChanged(ExtensionMode mode) {
     setState(() {
       _extensionMode = mode;
-      // If switching away from tracker-only, go to overview
       if (mode != ExtensionMode.trackerOnly &&
           _currentTab == BrowserTab.settings) {
         _currentTab = BrowserTab.overview;
@@ -102,20 +99,43 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _debounce?.cancel();
     _animationController.dispose();
     super.dispose();
   }
 
+  String _tabLabel(BrowserTab tab, AppLocalizations l10n) => switch (tab) {
+        BrowserTab.overview => l10n.browserTabOverview,
+        BrowserTab.websites => l10n.browserTabWebsites,
+        BrowserTab.categories => l10n.browserTabCategories,
+        BrowserTab.limits => l10n.browserTabLimits,
+        BrowserTab.history => l10n.browserTabHistory,
+        BrowserTab.settings => l10n.settings,
+      };
+
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final captionColor = theme.typography.caption?.color;
+
+    // Desktop: read server-enabled state from SettingsProvider
+    final settings = kIsWeb ? null : context.watch<SettingsProvider>();
+    final serverEnabled = kIsWeb ? true : (settings?.browserExtensionEnabled ?? false);
 
     if (_isLoading) {
       return ScaffoldPage(
         padding: EdgeInsets.zero,
         content: const Center(child: ProgressRing()),
+      );
+    }
+
+    // Desktop: show setup screen when server is off
+    if (!kIsWeb && !serverEnabled) {
+      return ScaffoldPage(
+        padding: EdgeInsets.zero,
+        content: _DesktopSetupScreen(
+          onEnabled: () => settings?.updateSetting('browserExtensionEnabled', true),
+        ),
       );
     }
 
@@ -143,15 +163,15 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Browser',
+                            l10n.browserTitle,
                             style: theme.typography.subtitle?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           Text(
                             kIsWeb
-                                ? 'Website tracking · ${_extensionMode.label}'
-                                : 'Track and manage your website usage',
+                                ? '${l10n.browserWebsiteTracking} · ${_extensionMode.label}'
+                                : l10n.browserSubtitle,
                             style: TextStyle(
                               fontSize: 12,
                               color: captionColor?.withValues(alpha: 0.6),
@@ -163,36 +183,38 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                   ),
                   Row(
                     children: [
-                      // Hybrid sync badge
+                      // Web: hybrid sync badge
                       if (kIsWeb && _extensionMode == ExtensionMode.hybrid)
                         _SyncBadge(),
+                      // Desktop: server-running badge
+                      if (!kIsWeb && serverEnabled)
+                        _ServerBadge(),
 
                       if (_summary != null) ...[
-                        if (kIsWeb && _extensionMode == ExtensionMode.hybrid)
-                          const SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         _QuickStat(
-                          label: 'Today',
+                          label: l10n.browserToday,
                           value: _summary!.totalTime.toHourMinuteFormat(),
                           color: theme.accentColor,
                         ),
                         const SizedBox(width: 20),
                         _QuickStat(
-                          label: 'Sites',
+                          label: l10n.browserSites,
                           value: '${_summary!.siteCount}',
                           color: kBrowserPurple,
                         ),
                         const SizedBox(width: 16),
                       ],
                       BrowserIconButton(
-                        tooltip: 'Refresh',
+                        tooltip: l10n.refresh,
                         icon: FluentIcons.refresh,
                         onPressed: _refreshData,
                       ),
-                      // Settings icon (web only)
-                      if (kIsWeb) ...[
+                      // Settings gear icon (web + desktop when enabled)
+                      if (kIsWeb || serverEnabled) ...[
                         const SizedBox(width: 8),
                         BrowserIconButton(
-                          tooltip: 'Extension Settings',
+                          tooltip: l10n.browserExtensionSettings,
                           icon: FluentIcons.settings,
                           onPressed: () => _switchTab(BrowserTab.settings),
                         ),
@@ -207,7 +229,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
             if (!kIsWeb || _extensionMode != ExtensionMode.trackerOnly) ...[
               Padding(
                 padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                child: _buildTabBar(theme),
+                child: _buildTabBar(theme, l10n),
               ),
               const SizedBox(height: 4),
             ],
@@ -216,6 +238,13 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
             Expanded(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
+                layoutBuilder: (currentChild, previousChildren) => Stack(
+                  alignment: Alignment.topLeft,
+                  children: [
+                    ...previousChildren,
+                    if (currentChild != null) currentChild,
+                  ],
+                ),
                 child: _buildContent(),
               ),
             ),
@@ -225,12 +254,8 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     );
   }
 
-  Widget _buildTabBar(FluentThemeData theme) {
-    // On web: show overview / websites / categories / limits / (settings via icon)
-    // Filter out settings from tab bar — it's accessed via the gear icon
-    final tabs = kIsWeb
-        ? BrowserTab.values.where((t) => t != BrowserTab.settings).toList()
-        : BrowserTab.values.where((t) => t != BrowserTab.settings).toList();
+  Widget _buildTabBar(FluentThemeData theme, AppLocalizations l10n) {
+    final tabs = BrowserTab.values.where((t) => t != BrowserTab.settings).toList();
 
     return BrowserCard(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
@@ -239,7 +264,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
         children: tabs.map((tab) {
           final selected = _currentTab == tab;
           return _TabButton(
-            label: tab.label,
+            label: _tabLabel(tab, l10n),
             icon: tab.icon,
             selected: selected,
             onTap: () => _switchTab(tab),
@@ -256,14 +281,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       return BrowserExtensionStatus(
         key: const ValueKey('tracker_only_status'),
         onSwitchToStandalone: () => _onModeChanged(ExtensionMode.standalone),
-      );
-    }
-
-    // Settings tab (web only)
-    if (_currentTab == BrowserTab.settings) {
-      return BrowserExtensionSettings(
-        key: const ValueKey('ext_settings'),
-        onModeChanged: _onModeChanged,
       );
     }
 
@@ -284,17 +301,513 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
           key: const ValueKey('browser_limits'),
           onTabChange: _switchTab,
         ),
-      BrowserTab.settings => const SizedBox.shrink(),
+      BrowserTab.history => const BrowserHistory(
+          key: ValueKey('browser_history'),
+        ),
+      BrowserTab.settings => kIsWeb
+          ? BrowserExtensionSettings(key: const ValueKey('ext_settings'), onModeChanged: _onModeChanged)
+          : const _DesktopServerSettings(key: ValueKey('desktop_server_settings')),
     };
   }
 }
 
-// ─── Hybrid sync badge ────────────────────────────────────────────────────────
+// ─── Desktop setup screen ─────────────────────────────────────────────────────
+
+class _DesktopSetupScreen extends StatefulWidget {
+  final VoidCallback onEnabled;
+  const _DesktopSetupScreen({required this.onEnabled});
+
+  @override
+  State<_DesktopSetupScreen> createState() => _DesktopSetupScreenState();
+}
+
+class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
+  late TextEditingController _portController;
+  String? _portError;
+
+  @override
+  void initState() {
+    super.initState();
+    final settings = context.read<SettingsProvider>();
+    _portController = TextEditingController(text: '${settings.browserServerPort}');
+  }
+
+  @override
+  void dispose() {
+    _portController.dispose();
+    super.dispose();
+  }
+
+  void _savePort(SettingsProvider settings, AppLocalizations l10n) {
+    final value = int.tryParse(_portController.text.trim());
+    if (value == null || value < 1024 || value > 65535) {
+      setState(() => _portError = l10n.browserServerPortInvalid);
+      return;
+    }
+    setState(() => _portError = null);
+    settings.updateSetting('browserServerPort', value);
+    displayInfoBar(context, builder: (ctx, close) => InfoBar(
+      title: Text(l10n.browserServerPortSaved),
+      action: Button(onPressed: close, child: Text(l10n.ok)),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final captionColor = theme.typography.caption?.color;
+    final settings = context.watch<SettingsProvider>();
+
+    return Center(
+      child: SizedBox(
+        width: 520,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icon
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.accentColor.withValues(alpha: 0.15),
+                    theme.accentColor.withValues(alpha: 0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Icon(FluentIcons.globe, size: 40, color: theme.accentColor),
+            ),
+            const SizedBox(height: 24),
+
+            // Title + subtitle
+            Text(
+              l10n.browserSetupTitle,
+              style: theme.typography.subtitle?.copyWith(fontWeight: FontWeight.w700),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              l10n.browserSetupSubtitle,
+              style: TextStyle(
+                fontSize: 13,
+                color: captionColor?.withValues(alpha: 0.6),
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 28),
+
+            // Enable toggle card
+            BrowserCard(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: (settings.browserExtensionEnabled
+                              ? kBrowserGreen
+                              : captionColor ?? theme.accentColor)
+                          .withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      FluentIcons.plug_connected,
+                      size: 16,
+                      color: settings.browserExtensionEnabled
+                          ? kBrowserGreen
+                          : captionColor?.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.browserSetupEnableServer,
+                          style: const TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          settings.browserExtensionEnabled
+                              ? l10n.browserSetupServerRunning(settings.browserServerPort)
+                              : l10n.browserSetupServerOff,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: settings.browserExtensionEnabled
+                                ? kBrowserGreen
+                                : captionColor?.withValues(alpha: 0.45),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ToggleSwitch(
+                    checked: settings.browserExtensionEnabled,
+                    onChanged: (v) =>
+                        settings.updateSetting('browserExtensionEnabled', v),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // Port configuration card
+            BrowserCard(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.browserServerPort,
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.browserServerPortDesc,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: captionColor?.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        if (_portError != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            _portError!,
+                            style: const TextStyle(fontSize: 11, color: Color(0xFFE53935)),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  SizedBox(
+                    width: 90,
+                    child: TextBox(
+                      controller: _portController,
+                      keyboardType: TextInputType.number,
+                      placeholder: '46000',
+                      style: const TextStyle(fontSize: 13),
+                      onChanged: (_) {
+                        if (_portError != null) setState(() => _portError = null);
+                      },
+                      onSubmitted: (_) => _savePort(settings, l10n),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Button(
+                    onPressed: () => _savePort(settings, l10n),
+                    child: Text(l10n.saveButton),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Steps card
+            BrowserCard(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.browserSetupHowTo,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: captionColor?.withValues(alpha: 0.5),
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _SetupStep(number: 1, text: l10n.browserSetupStep1),
+                  _SetupStep(number: 2, text: l10n.browserSetupStep2),
+                  _SetupStep(number: 3, text: l10n.browserSetupStep3),
+                  _SetupStep(number: 4, text: l10n.browserSetupStep4, last: true),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SetupStep extends StatelessWidget {
+  final int number;
+  final String text;
+  final bool last;
+
+  const _SetupStep({
+    required this.number,
+    required this.text,
+    this.last = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final captionColor = theme.typography.caption?.color;
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: last ? 0 : 10),
+      child: Row(
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              color: theme.accentColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                '$number',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: theme.accentColor,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 13,
+                color: captionColor?.withValues(alpha: 0.7),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Desktop server settings tab ─────────────────────────────────────────────
+
+class _DesktopServerSettings extends StatefulWidget {
+  const _DesktopServerSettings({super.key});
+
+  @override
+  State<_DesktopServerSettings> createState() => _DesktopServerSettingsState();
+}
+
+class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
+  late TextEditingController _portController;
+  String? _portError;
+
+  @override
+  void initState() {
+    super.initState();
+    final settings = context.read<SettingsProvider>();
+    _portController = TextEditingController(text: '${settings.browserServerPort}');
+  }
+
+  @override
+  void dispose() {
+    _portController.dispose();
+    super.dispose();
+  }
+
+  void _validateAndSavePort(SettingsProvider settings, AppLocalizations l10n) {
+    final value = int.tryParse(_portController.text.trim());
+    if (value == null || value < 1024 || value > 65535) {
+      setState(() => _portError = l10n.browserServerPortInvalid);
+      return;
+    }
+    setState(() => _portError = null);
+    settings.updateSetting('browserServerPort', value);
+    displayInfoBar(context, builder: (ctx, close) => InfoBar(
+      title: Text(l10n.browserServerPortSaved),
+      action: Button(onPressed: close, child: Text(l10n.ok)),
+    ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final settings = context.watch<SettingsProvider>();
+    final captionColor = theme.typography.caption?.color;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Enable / disable toggle ────────────────────────────────────
+          BrowserCard(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: (settings.browserExtensionEnabled ? kBrowserGreen : (captionColor ?? theme.accentColor))
+                        .withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    FluentIcons.plug_connected,
+                    size: 16,
+                    color: settings.browserExtensionEnabled
+                        ? kBrowserGreen
+                        : captionColor?.withValues(alpha: 0.5),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.browserSetupEnableServer,
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        settings.browserExtensionEnabled
+                            ? l10n.browserSetupServerRunning(settings.browserServerPort)
+                            : l10n.browserSetupServerOff,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: settings.browserExtensionEnabled
+                              ? kBrowserGreen
+                              : captionColor?.withValues(alpha: 0.45),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                ToggleSwitch(
+                  checked: settings.browserExtensionEnabled,
+                  onChanged: (v) => settings.updateSetting('browserExtensionEnabled', v),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Port configuration ─────────────────────────────────────────
+          Text(
+            l10n.browserServerPort,
+            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          BrowserCard(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.browserServerPortDesc,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: captionColor?.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      child: TextBox(
+                        controller: _portController,
+                        keyboardType: TextInputType.number,
+                        placeholder: '46000',
+                        style: const TextStyle(fontSize: 13),
+                        onChanged: (_) {
+                          if (_portError != null) setState(() => _portError = null);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    FilledButton(
+                      onPressed: settings.browserExtensionEnabled
+                          ? () => _validateAndSavePort(settings, l10n)
+                          : null,
+                      child: Text(l10n.saveButton),
+                    ),
+                  ],
+                ),
+                if (_portError != null) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    _portError!,
+                    style: const TextStyle(fontSize: 11, color: Color(0xFFE53935)),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Server running badge (desktop) ──────────────────────────────────────────
+
+class _ServerBadge extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: kBrowserGreen.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: kBrowserGreen.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: kBrowserGreen,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            l10n.browserSetupServerActive,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: kBrowserGreen.withValues(alpha: 0.9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Hybrid sync badge (web) ──────────────────────────────────────────────────
 
 class _SyncBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -315,7 +828,7 @@ class _SyncBadge extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Text(
-            'Syncing',
+            l10n.browserSyncing,
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
