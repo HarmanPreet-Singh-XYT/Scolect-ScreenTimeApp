@@ -873,6 +873,41 @@ class AppDataStore extends ChangeNotifier {
     }
   }
 
+  Future<bool> setAppUsage(
+    String appName,
+    DateTime date,
+    Duration timeSpent,
+    int openCount,
+    List<TimeRange> usagePeriods,
+  ) async {
+    if (!_ensureInitialized()) return false;
+
+    try {
+      return await _runtimeCacheLock.synchronized(() async {
+        final dateKey = _formatDateKey(date);
+        _usageCacheByDate.putIfAbsent(dateKey, () => {});
+
+        final AppUsageRecord record = AppUsageRecord(
+          date: date,
+          timeSpent: timeSpent,
+          openCount: openCount,
+          usagePeriods: usagePeriods,
+        );
+
+        _usageCacheByDate[dateKey]![appName] = record;
+        _dirtyUsageKeys.add('$dateKey::$appName');
+        _markDirty();
+
+        notifyListeners();
+        return true;
+      });
+    } catch (e) {
+      _lastError = "Error setting app usage for $appName: $e";
+      debugPrint(_lastError);
+      return false;
+    }
+  }
+
   List<TimeRange> _optimizeUsagePeriods(List<TimeRange> periods) {
     if (periods.length <= 10) return periods;
 

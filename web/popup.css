@@ -2,13 +2,46 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* ─── Root ──────────────────────────────────────────────────────────────────── */
+:root {
+  --bg: #0a0a0f;
+  --accent-primary: #60a5fa;
+  --accent-secondary: #a78bfa;
+}
+
+body[data-theme="purple_dream"] {
+  --bg: #130a1e;
+  --accent-primary: #a855f7;
+  --accent-secondary: #ec4899;
+}
+body[data-theme="ocean_blue"] {
+  --bg: #0b1528;
+  --accent-primary: #38bdf8;
+  --accent-secondary: #818cf8;
+}
+body[data-theme="forest_green"] {
+  --bg: #081a14;
+  --accent-primary: #34d399;
+  --accent-secondary: #a3e635;
+}
+body[data-theme="sunset_orange"] {
+  --bg: #1c0e0b;
+  --accent-primary: #fb923c;
+  --accent-secondary: #f43f5e;
+}
+body[data-theme="monochrome"] {
+  --bg: #121212;
+  --accent-primary: #94a3b8;
+  --accent-secondary: #cbd5e1;
+}
+
 body {
   width: 360px;
   min-height: 100px;
-  background: #0a0a0f;
+  background: var(--bg);
   font-family: -apple-system, 'Segoe UI', Inter, sans-serif;
   color: #e2e8f0;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 .popup {
@@ -56,11 +89,11 @@ body {
   padding: 3px 8px;
   border-radius: 20px;
   background: rgba(96, 165, 250, 0.15);
-  color: #60a5fa;
+  color: var(--accent-primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.mode-chip.hybrid   { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+.mode-chip.hybrid   { background: rgba(139, 92, 246, 0.15); color: var(--accent-secondary); }
 .mode-chip.tracker  { background: rgba(16, 185, 129, 0.15); color: #34d399; }
 
 .active-row {
@@ -98,8 +131,8 @@ body {
 
 /* ─── Today card ────────────────────────────────────────────────────────────── */
 .today-card {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.12) 0%, rgba(167, 139, 250, 0.08) 100%);
+  border: 1px solid rgba(96, 165, 250, 0.2);
   border-radius: 12px;
   padding: 14px 16px;
   text-align: center;
@@ -117,7 +150,7 @@ body {
 .today-time {
   font-size: 36px;
   font-weight: 800;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -171,7 +204,8 @@ body {
 .site-bar-bg {
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  background: rgba(59, 130, 246, 0.05);
+  background: var(--accent-primary);
+  opacity: 0.08;
   pointer-events: none;
   border-radius: 0;
   transition: width 0.4s ease;
@@ -191,13 +225,13 @@ body {
   width: 20px;
   height: 20px;
   border-radius: 5px;
-  background: rgba(96, 165, 250, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   font-size: 10px;
-  color: #60a5fa;
+  color: var(--accent-primary);
   position: relative;
 }
 
@@ -215,7 +249,7 @@ body {
 .site-time {
   font-size: 12px;
   font-weight: 700;
-  color: #60a5fa;
+  color: var(--accent-primary);
   white-space: nowrap;
   position: relative;
 }
@@ -287,7 +321,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
   border: none;
   border-radius: 8px;
   color: #fff;

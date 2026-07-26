@@ -4,6 +4,8 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/web/chrome_storage_interop.dart'
+    if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
 // ============== THEME CUSTOMIZATION PROVIDER ==============
 
@@ -118,6 +120,9 @@ class ThemeCustomizationProvider extends ChangeNotifier {
   Future<void> setTheme(CustomThemeData theme) async {
     _currentTheme = theme;
     await _saveCurrentTheme();
+    if (kIsWeb) {
+      chromeStorageSet({'scolect_theme_id': theme.id});
+    }
     notifyListeners();
   }
 

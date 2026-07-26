@@ -132,7 +132,7 @@ class BrowserExtensionServer {
           ? [TimeRange(startTime: now.subtract(timeSpent), endTime: now)]
           : <TimeRange>[];
 
-      await _dataStore.recordAppUsage(appName, date, timeSpent, visits, usagePeriods);
+      await _dataStore.setAppUsage(appName, date, timeSpent, visits, usagePeriods);
 
       // Ensure metadata exists for this domain (first-time setup)
       final existing = _dataStore.getAppMetadata(appName);

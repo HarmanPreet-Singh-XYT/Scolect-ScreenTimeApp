@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
@@ -508,6 +509,85 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                   Button(
                     onPressed: () => _savePort(settings, l10n),
                     child: Text(l10n.saveButton),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // Chrome Extension Promo Card
+            BrowserCard(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: theme.accentColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(
+                      FluentIcons.globe,
+                      size: 22,
+                      color: theme.accentColor,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Get the Scolect Chrome Extension',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(
+                          'Track active websites, category screen time, and sync statistics seamlessly with Scolect Desktop.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: captionColor?.withValues(alpha: 0.65),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Button(
+                    onPressed: () {
+                      final platformStr = defaultTargetPlatform == TargetPlatform.macOS
+                          ? 'mac'
+                          : defaultTargetPlatform == TargetPlatform.windows
+                              ? 'windows'
+                              : 'linux';
+                      launchUrl(
+                        Uri.parse('https://www.scolect.com/download?source=desktop&platform=$platformStr'),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: ButtonState.all(theme.accentColor.withValues(alpha: 0.15)),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(FluentIcons.open_in_new_window, size: 12, color: theme.accentColor),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Extension Info',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: theme.accentColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -164,7 +164,7 @@ class DailyOverviewData {
   }
 
   Future<OverviewData> _fetchWebOverview() async {
-    final d = DateTime.now();
+    final d = SettingsManager().getLogicalDate(DateTime.now());
     final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     final storageKey = 'scolect_day_$dateKey';
 

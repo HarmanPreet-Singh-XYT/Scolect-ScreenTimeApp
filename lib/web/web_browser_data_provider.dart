@@ -12,13 +12,14 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../sections/controller/data_controllers/browser_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
+import '../sections/controller/settings_data_controller.dart';
 import 'chrome_storage_interop.dart';
 import 'extension_settings.dart';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 String _todayKey() {
-  final now = DateTime.now();
+  final now = SettingsManager().getLogicalDate(DateTime.now());
   final y = now.year;
   final m = now.month.toString().padLeft(2, '0');
   final d = now.day.toString().padLeft(2, '0');

@@ -7,8 +7,10 @@
 import 'dart:ui' show lerpDouble;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'dart:async';
+import 'package:screentime/web/web_location_helper.dart'
+    if (dart.library.io) 'package:screentime/web/web_location_helper_stub.dart';
+
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:html' as html;
 import 'package:provider/provider.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
@@ -68,7 +70,7 @@ class _WebDashboardState extends State<WebDashboard>
     _sidebarAnimController.value = 1.0;
 
     if (kIsWeb) {
-      _hashSub = html.window.onHashChange.listen((_) => _checkHashNavigation());
+      _hashSub = subscribeHashChange(_checkHashNavigation);
     }
 
     _load();
@@ -83,10 +85,7 @@ class _WebDashboardState extends State<WebDashboard>
 
   void _checkHashNavigation() {
     if (!kIsWeb) return;
-    final href = html.window.location.href.toLowerCase();
-    final hash = html.window.location.hash.toLowerCase();
-    final search = (html.window.location.search ?? '').toLowerCase();
-    if (hash.contains('settings') || href.contains('settings') || search.contains('tab=settings')) {
+    if (isSettingsUrl()) {
       if (_selectedIndex != 5) {
         setState(() => _selectedIndex = 5);
       }
@@ -98,10 +97,7 @@ class _WebDashboardState extends State<WebDashboard>
     final state = await _readAppState();
     int initialIndex = 0;
     if (kIsWeb) {
-      final href = html.window.location.href.toLowerCase();
-      final hash = html.window.location.hash.toLowerCase();
-      final search = (html.window.location.search ?? '').toLowerCase();
-      if (hash.contains('settings') || href.contains('settings') || search.contains('tab=settings')) {
+      if (isSettingsUrl()) {
         initialIndex = 5;
       }
     }
@@ -267,15 +263,17 @@ class _WebTitleBar extends StatelessWidget {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final captionColor = theme.typography.caption?.color;
+    final themeProvider = context.watch<ThemeCustomizationProvider>();
+    final customTheme = themeProvider.currentTheme;
 
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: isDark ? AppDesign.darkSurface : AppDesign.lightSurface,
+        color: isDark ? customTheme.darkSurface : customTheme.lightSurface,
         border: Border(
           bottom: BorderSide(
-            color: isDark ? AppDesign.darkBorder : AppDesign.lightBorder,
+            color: isDark ? customTheme.darkBorder : customTheme.lightBorder,
             width: 1,
           ),
         ),
@@ -564,6 +562,85 @@ class _WebSidebar extends StatelessWidget {
               },
             ),
           ),
+
+          // "Get Desktop App" promo card at bottom of Web Sidebar (shown if NOT connected to Desktop App)
+          if (!isCompact) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: customTheme.primaryAccent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: customTheme.primaryAccent.withValues(alpha: 0.2),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          FluentIcons.desktop_flow,
+                          size: 14,
+                          color: customTheme.primaryAccent,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Get Desktop App',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: isDark
+                                ? customTheme.darkTextPrimary
+                                : customTheme.lightTextPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Unlock full system app tracking & automatic sync across devices.',
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        color: isDark
+                            ? customTheme.darkTextSecondary
+                            : customTheme.lightTextSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        onTap: () {
+                          openDownloadUrl();
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          decoration: BoxDecoration(
+                            color: customTheme.primaryAccent,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Download App',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
 
           // Sidebar Footer version indicator
           Padding(

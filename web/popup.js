@@ -21,17 +21,28 @@ function domainInitial(domain) {
 async function render() {
   let state = null;
   let settings = null;
+  let themeId = null;
 
   try {
-    // Request state from background
+    // Request state and theme from background / storage
     state = await new Promise((resolve) => {
       chrome.runtime.sendMessage({ type: 'GET_STATE' }, resolve);
     });
     settings = await new Promise((resolve) => {
       chrome.runtime.sendMessage({ type: 'GET_SETTINGS' }, resolve);
     });
+    const storageRes = await new Promise((resolve) => {
+      chrome.storage.local.get(['scolect_theme_id'], resolve);
+    });
+    themeId = storageRes?.scolect_theme_id;
   } catch (e) {
     console.error('Popup render error:', e);
+  }
+
+  if (themeId) {
+    document.body.dataset.theme = themeId;
+  } else {
+    delete document.body.dataset.theme;
   }
 
   const mode = settings?.mode ?? 'standalone';
