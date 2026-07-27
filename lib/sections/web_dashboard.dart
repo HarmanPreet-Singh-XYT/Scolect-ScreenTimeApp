@@ -26,6 +26,7 @@ import 'package:screentime/sections/settings.dart' as native_settings;
 import 'UI sections/Browser/browser_extension_status.dart';
 import 'UI sections/Browser/browser_websites.dart';
 import 'UI sections/Browser/browser_shared.dart';
+import 'package:screentime/onboarding/web_onboarding_screen.dart';
 
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
@@ -53,6 +54,7 @@ class _WebDashboardState extends State<WebDashboard>
   ExtensionMode _mode = ExtensionMode.standalone;
   String? _activeDomain;
   bool _isLoading = true;
+  bool _showOnboarding = false;
 
   StreamSubscription? _hashSub;
 
@@ -101,12 +103,19 @@ class _WebDashboardState extends State<WebDashboard>
         initialIndex = 5;
       }
     }
+    bool showOnboarding = false;
+    if (kIsWeb) {
+      final stored = await chromeStorageGet(['onboarding_completed']);
+      showOnboarding = stored['onboarding_completed'] != true;
+    }
+
     if (!mounted) return;
     setState(() {
       _mode = mode;
       _activeDomain = state?['activeDomain'] as String?;
       _selectedIndex = initialIndex;
       _isLoading = false;
+      _showOnboarding = showOnboarding;
     });
   }
 
@@ -149,6 +158,12 @@ class _WebDashboardState extends State<WebDashboard>
       return const ScaffoldPage(
         padding: EdgeInsets.zero,
         content: Center(child: ProgressRing()),
+      );
+    }
+
+    if (_showOnboarding) {
+      return WebOnboardingScreen(
+        onComplete: () => setState(() => _showOnboarding = false),
       );
     }
 

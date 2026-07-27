@@ -556,4 +556,16 @@ class SettingsManager {
       debugPrint("🍎 macOS detected — notifications reset to disabled");
     }
   }
+
+  // --------------------------------------------------------------------------
+  // ONBOARDING
+  // --------------------------------------------------------------------------
+
+  bool get onboardingCompleted =>
+      _prefs.getBool("onboarding_completed") ?? false;
+
+  Future<void> markOnboardingCompleted() async {
+    await _prefs.setBool("onboarding_completed", true);
+    debugPrint("✅ Onboarding marked as completed");
+  }
 }

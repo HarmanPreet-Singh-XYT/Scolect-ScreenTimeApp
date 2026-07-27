@@ -34,6 +34,7 @@ import 'package:provider/provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
 import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
 import 'package:screentime/app_design.dart';
+import 'package:screentime/onboarding/onboarding_screen.dart';
 import 'package:screentime/sections/UI sections/FocusMode/audio.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:window_manager/window_manager.dart';
@@ -369,6 +370,7 @@ Future<void> _appMain(List<String> args) async {
   runApp(MyApp(
     initialTheme: initialTheme,
     savedLocale: savedLocale,
+    showOnboarding: !SettingsManager().onboardingCompleted,
   ));
 
   doWhenWindowReady(() async {
@@ -541,11 +543,13 @@ FluentThemeData buildDarkTheme(CustomThemeData themeData) {
 class MyApp extends StatefulWidget {
   final AdaptiveThemeMode initialTheme;
   final String? savedLocale;
+  final bool showOnboarding;
 
   const MyApp({
     super.key,
     this.initialTheme = AdaptiveThemeMode.system,
     this.savedLocale,
+    this.showOnboarding = false,
   });
 
   @override
@@ -756,6 +760,7 @@ class _MyAppState extends State<MyApp>
         initialTheme: widget.initialTheme,
         locale: _locale,
         setLocale: setLocale,
+        showOnboarding: widget.showOnboarding,
       ),
     );
   }
@@ -769,11 +774,13 @@ class _AppWithTheme extends StatelessWidget {
   final AdaptiveThemeMode initialTheme;
   final Locale? locale;
   final Function(Locale) setLocale;
+  final bool showOnboarding;
 
   const _AppWithTheme({
     required this.initialTheme,
     required this.locale,
     required this.setLocale,
+    this.showOnboarding = false,
   });
 
   @override
@@ -799,7 +806,9 @@ class _AppWithTheme extends StatelessWidget {
         locale: locale,
         debugShowCheckedModeBanner: false,
         // navigatorObservers: [SentryNavigatorObserver()],
-        home: HomePage(setLocale: setLocale),
+        home: showOnboarding
+            ? OnboardingScreen(setLocale: setLocale)
+            : HomePage(setLocale: setLocale),
       ),
     );
   }
