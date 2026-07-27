@@ -88,6 +88,12 @@ class ThemeCustomizationProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_currentThemeKey, _currentTheme.id);
+      if (kIsWeb) {
+        chromeStorageSet({
+          'scolect_theme_id': _currentTheme.id,
+          'scolect_theme_colors': _currentTheme.toJson(),
+        });
+      }
     } catch (e) {
       debugPrint('Error saving current theme: $e');
     }
@@ -112,6 +118,9 @@ class ThemeCustomizationProvider extends ChangeNotifier {
         ? mode
         : ThemeOptions.defaultTheme;
     SettingsManager().updateSetting('theme.selected', _themeMode);
+    if (kIsWeb) {
+      chromeStorageSet({'scolect_theme_id': _themeMode});
+    }
     notifyListeners();
   }
 
@@ -140,6 +149,9 @@ class ThemeCustomizationProvider extends ChangeNotifier {
     if (_currentTheme.id == updated.id) {
       _currentTheme = updated;
       await _saveCurrentTheme();
+      if (kIsWeb) {
+        chromeStorageSet({'scolect_theme_id': updated.id});
+      }
     }
     await _saveCustomThemes();
     notifyListeners();
@@ -150,6 +162,9 @@ class ThemeCustomizationProvider extends ChangeNotifier {
     if (_currentTheme.id == themeId) {
       _currentTheme = ThemePresets.defaultTheme;
       await _saveCurrentTheme();
+      if (kIsWeb) {
+        chromeStorageSet({'scolect_theme_id': ThemePresets.defaultTheme.id});
+      }
     }
     await _saveCustomThemes();
     notifyListeners();
@@ -160,6 +175,9 @@ class ThemeCustomizationProvider extends ChangeNotifier {
     _themeMode = ThemeOptions.defaultTheme;
     await _saveCurrentTheme();
     SettingsManager().updateSetting('theme.selected', _themeMode);
+    if (kIsWeb) {
+      chromeStorageSet({'scolect_theme_id': ThemePresets.defaultTheme.id});
+    }
     notifyListeners();
   }
 

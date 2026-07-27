@@ -7,23 +7,80 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg: #0e0e14;
+      --card-bg: #16161f;
+      --accent: #6B4EFF;
+      --accent-grad: #9b7dff;
+      --accent-alpha: rgba(107, 78, 255, 0.12);
+      --accent-border: rgba(107, 78, 255, 0.22);
+      --accent-text: #a78bff;
+    }
+
+    body[data-theme="purple_dream"] {
+      --bg: #130a1e;
+      --card-bg: #1d102e;
+      --accent: #a855f7;
+      --accent-grad: #ec4899;
+      --accent-alpha: rgba(168, 85, 247, 0.15);
+      --accent-border: rgba(168, 85, 247, 0.3);
+      --accent-text: #c084fc;
+    }
+    body[data-theme="ocean_blue"] {
+      --bg: #0b1528;
+      --card-bg: #11203b;
+      --accent: #38bdf8;
+      --accent-grad: #818cf8;
+      --accent-alpha: rgba(56, 189, 248, 0.15);
+      --accent-border: rgba(56, 189, 248, 0.3);
+      --accent-text: #7dd3fc;
+    }
+    body[data-theme="forest_green"] {
+      --bg: #081a14;
+      --card-bg: #0e2920;
+      --accent: #34d399;
+      --accent-grad: #a3e635;
+      --accent-alpha: rgba(52, 211, 153, 0.15);
+      --accent-border: rgba(52, 211, 153, 0.3);
+      --accent-text: #6ee7b7;
+    }
+    body[data-theme="sunset_orange"] {
+      --bg: #1c0e0b;
+      --card-bg: #2b1712;
+      --accent: #fb923c;
+      --accent-grad: #f43f5e;
+      --accent-alpha: rgba(251, 146, 60, 0.15);
+      --accent-border: rgba(251, 146, 60, 0.3);
+      --accent-text: #fdba74;
+    }
+    body[data-theme="monochrome"] {
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --accent: #94a3b8;
+      --accent-grad: #cbd5e1;
+      --accent-alpha: rgba(148, 163, 184, 0.15);
+      --accent-border: rgba(148, 163, 184, 0.3);
+      --accent-text: #cbd5e1;
+    }
+
     body {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #0e0e14;
+      background: var(--bg);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: #e8e8f0;
+      transition: background 0.3s ease;
     }
 
     .card {
       text-align: center;
       padding: 48px 56px;
-      background: #16161f;
+      background: var(--card-bg);
       border-radius: 20px;
-      border: 1px solid rgba(107, 78, 255, 0.18);
-      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(107, 78, 255, 0.08);
+      border: 1px solid var(--accent-border);
+      box-shadow: 0 8px 48px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--accent-alpha);
       max-width: 460px;
       width: 90vw;
     }
@@ -35,9 +92,9 @@
       width: 88px;
       height: 88px;
       border-radius: 50%;
-      background: rgba(107, 78, 255, 0.12);
+      background: var(--accent-alpha);
       margin-bottom: 28px;
-      border: 1px solid rgba(107, 78, 255, 0.22);
+      border: 1px solid var(--accent-border);
     }
 
     .icon-wrap svg { width: 44px; height: 44px; }
@@ -48,9 +105,9 @@
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: #6B4EFF;
-      background: rgba(107, 78, 255, 0.12);
-      border: 1px solid rgba(107, 78, 255, 0.2);
+      color: var(--accent);
+      background: var(--accent-alpha);
+      border: 1px solid var(--accent-border);
       border-radius: 6px;
       padding: 3px 10px;
       margin-bottom: 18px;
@@ -67,7 +124,7 @@
     .domain {
       font-size: 15px;
       font-weight: 600;
-      color: #6B4EFF;
+      color: var(--accent);
       margin-bottom: 20px;
       word-break: break-all;
     }
@@ -75,7 +132,7 @@
     .divider {
       width: 48px;
       height: 3px;
-      background: linear-gradient(90deg, #6B4EFF, #9b7dff);
+      background: linear-gradient(90deg, var(--accent), var(--accent-grad));
       border-radius: 2px;
       margin: 0 auto 24px;
     }
@@ -84,8 +141,8 @@
     .stats {
       display: flex;
       gap: 1px;
-      background: rgba(107, 78, 255, 0.12);
-      border: 1px solid rgba(107, 78, 255, 0.14);
+      background: var(--accent-alpha);
+      border: 1px solid var(--accent-border);
       border-radius: 14px;
       overflow: hidden;
       margin-bottom: 24px;
@@ -94,10 +151,10 @@
     .stat {
       flex: 1;
       padding: 14px 12px;
-      background: #16161f;
+      background: var(--card-bg);
     }
 
-    .stat + .stat { border-left: 1px solid rgba(107, 78, 255, 0.12); }
+    .stat + .stat { border-left: 1px solid var(--accent-border); }
 
     .stat-value {
       font-size: 18px;
@@ -109,7 +166,6 @@
 
     .stat-label {
       font-size: 11px;
-      color: #6666880;
       color: rgba(136, 136, 160, 0.9);
       font-weight: 500;
       text-transform: uppercase;
@@ -124,7 +180,7 @@
     }
 
     .reset-row strong {
-      color: #c4b8ff;
+      color: var(--accent-text);
       font-weight: 600;
     }
 
@@ -149,17 +205,19 @@
     button:active { transform: scale(0.97); }
 
     .btn-back {
-      background: #6B4EFF;
+      background: var(--accent);
       color: #ffffff;
     }
 
     .btn-back:hover { opacity: 0.88; }
 
     .btn-dashboard {
-      background: rgba(107, 78, 255, 0.12);
-      color: #a78bff;
-      border: 1px solid rgba(107, 78, 255, 0.22);
+      background: var(--accent-alpha);
+      color: var(--accent-text);
+      border: 1px solid var(--accent-border);
     }
+
+    .btn-dashboard:hover { opacity: 0.88; }
 
     .btn-dashboard:hover { background: rgba(107, 78, 255, 0.2); }
 
@@ -295,145 +353,6 @@
     </div>
   </div>
 
-  <script>
-    (function () {
-      // ── Helpers ────────────────────────────────────────────────────────────
-      function fmtDuration(seconds) {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
-        return m > 0 ? `${m}m` : `${Math.round(seconds)}s`;
-      }
-
-      function getTodayKey() {
-        const d = new Date();
-        const y = d.getFullYear();
-        const mo = String(d.getMonth() + 1).padStart(2, '0');
-        const da = String(d.getDate()).padStart(2, '0');
-        return `${y}-${mo}-${da}`;
-      }
-
-      function secondsUntilMidnight() {
-        const now = new Date();
-        const midnight = new Date(now);
-        midnight.setHours(24, 0, 0, 0);
-        return Math.floor((midnight - now) / 1000);
-      }
-
-      function fmtCountdown(s) {
-        const h = Math.floor(s / 3600);
-        const m = Math.floor((s % 3600) / 60);
-        const sec = s % 60;
-        if (h > 0) return `${h}h ${m}m`;
-        if (m > 0) return `${m}m ${sec}s`;
-        return `${sec}s`;
-      }
-
-      // ── Parse domain from URL ─────────────────────────────────────────────
-      const params = new URLSearchParams(location.search);
-      const domain = params.get('domain') || '';
-
-      const domainLabel = document.getElementById('domain-label');
-      if (domain) {
-        domainLabel.textContent = domain;
-        document.title = domain + ' – Blocked · Scolect';
-      }
-
-      // ── Open dashboard button ─────────────────────────────────────────────
-      document.getElementById('btn-dash').addEventListener('click', () => {
-        chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
-      });
-
-      // ── Unblock confirmation ───────────────────────────────────────────────
-      // The user must type the site name (or domain) to confirm intentional unblock.
-      let confirmWord = domain; // fallback to domain
-      const panel = document.getElementById('unblock-panel');
-      const input = document.getElementById('unblock-input');
-      const confirmBtn = document.getElementById('btn-confirm-unblock');
-      const confirmHint = document.getElementById('confirm-hint');
-
-      document.getElementById('btn-unblock-toggle').addEventListener('click', () => {
-        panel.classList.toggle('visible');
-        if (panel.classList.contains('visible')) input.focus();
-      });
-
-      // Once we have the siteName from storage, use that as the confirm word
-      // (set after storage load below via window._setConfirmWord)
-      window._setConfirmWord = (name) => {
-        confirmWord = name;
-        confirmHint.textContent = name;
-        input.placeholder = name;
-      };
-
-      input.addEventListener('input', () => {
-        const match = input.value.trim().toLowerCase() === confirmWord.toLowerCase();
-        confirmBtn.disabled = !match;
-        input.classList.remove('error');
-      });
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !confirmBtn.disabled) confirmBtn.click();
-      });
-
-      confirmBtn.addEventListener('click', async () => {
-        if (typeof chrome === 'undefined' || !chrome.storage) return;
-
-        // Remove this domain from scolect_blocked_domains in storage
-        const result = await chrome.storage.local.get(['scolect_blocked_domains']);
-        const blocked = (result['scolect_blocked_domains'] || []).filter(d => d !== domain);
-        await chrome.storage.local.set({ scolect_blocked_domains: blocked });
-
-        // Also clear the dailyLimitSeconds temporarily by storing an override
-        // so the extension won't re-block immediately on the next limit check.
-        // We record the unblock in a separate key that refreshBlockedDomains respects.
-        const unblockKey = 'scolect_unblocked_today';
-        const unblockResult = await chrome.storage.local.get([unblockKey]);
-        const unblockedToday = unblockResult[unblockKey] || {};
-        unblockedToday[domain] = new Date().toDateString();
-        await chrome.storage.local.set({ [unblockKey]: unblockedToday });
-
-        // Navigate to the original site
-        window.location.href = 'https://' + domain;
-      });
-
-      // ── Load stats from chrome.storage ────────────────────────────────────
-      if (domain && typeof chrome !== 'undefined' && chrome.storage) {
-        const todayKey = `scolect_day_${getTodayKey()}`;
-        chrome.storage.local.get([todayKey, 'scolect_settings'], (result) => {
-          // Time spent & visits
-          const day = result[todayKey];
-          if (day?.domains) {
-            const entry = day.domains.find(d => d.domain === domain);
-            if (entry) {
-              document.getElementById('stat-spent').textContent = fmtDuration(entry.seconds || 0);
-              document.getElementById('stat-visits').textContent = String(entry.visits || 0);
-            }
-          }
-
-          // Daily limit
-          const settings = result['scolect_settings'] || {};
-          const meta = settings.metadata?.[domain];
-          if (meta?.dailyLimitSeconds) {
-            document.getElementById('stat-limit').textContent = fmtDuration(meta.dailyLimitSeconds);
-          }
-          // Use siteName for display and as the confirm word
-          if (meta?.siteName) {
-            domainLabel.textContent = meta.siteName;
-            window._setConfirmWord(meta.siteName);
-          } else {
-            window._setConfirmWord(domain);
-          }
-        });
-      }
-
-      // ── Countdown to midnight ─────────────────────────────────────────────
-      function updateCountdown() {
-        const s = secondsUntilMidnight();
-        document.getElementById('countdown').textContent = fmtCountdown(s);
-      }
-      updateCountdown();
-      setInterval(updateCountdown, 1000);
-    })();
-  </script>
+  <script src="blocked.js"></script>
 </body>
 </html>

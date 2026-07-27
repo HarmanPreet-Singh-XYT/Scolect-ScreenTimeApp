@@ -452,7 +452,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                 onPressed: () async {
                   Navigator.of(ctx).pop();
                   await BrowserDataProvider().updateWebsiteMetadata(
-                    site.displayName,
+                    site.domain,
                     dailyLimit: Duration.zero,
                   );
                   widget.onMetadataChanged();
@@ -464,7 +464,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                 Navigator.of(ctx).pop();
                 final limit = Duration(hours: hours, minutes: minutes);
                 await BrowserDataProvider().updateWebsiteMetadata(
-                  site.displayName,
+                  site.domain,
                   dailyLimit: limit,
                 );
                 widget.onMetadataChanged();

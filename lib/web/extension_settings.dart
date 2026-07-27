@@ -170,6 +170,10 @@ class ExtensionSettings {
   }) async {
     await _ensureLoaded();
     final current = _metadata[domain] ?? const WebsiteMetadata();
+    final newSiteName = siteName ?? current.siteName;
+    if (newSiteName.isNotEmpty && newSiteName != domain && _metadata.containsKey(newSiteName)) {
+      _metadata.remove(newSiteName);
+    }
     _metadata[domain] = current.copyWith(
       category: category,
       isTracking: isTracking,

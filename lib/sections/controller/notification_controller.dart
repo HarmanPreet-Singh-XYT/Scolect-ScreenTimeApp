@@ -460,7 +460,7 @@ class NotificationController with ChangeNotifier {
   }
 
   Future<void> _checkAppLimits() async {
-    final appSummaries = _screenTimeController.getAllAppsSummary();
+    final appSummaries = await _screenTimeController.getAllAppsSummary();
 
     for (final app in appSummaries) {
       if (!app.limitStatus) continue;

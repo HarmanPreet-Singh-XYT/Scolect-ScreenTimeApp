@@ -186,10 +186,11 @@ class _AlertsLimitsState extends State<AlertsLimits> {
 
   // ──────────────── reset ────────────────
 
-  void _resetAllLimits() {
+  Future<void> _resetAllLimits() async {
     try {
-      for (final app in _controller.getAllAppsSummary()) {
-        _controller.updateAppLimit(app.appName, Duration.zero, false);
+      final summaries = await _controller.getAllAppsSummary();
+      for (final app in summaries) {
+        await _controller.updateAppLimit(app.appName, Duration.zero, false);
       }
 
       setState(() {

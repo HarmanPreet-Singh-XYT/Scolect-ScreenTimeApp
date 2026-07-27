@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:async';
 import 'package:synchronized/synchronized.dart';
 import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
+import '../../web/web_browser_data_provider.dart' if (dart.library.io) '../../web/web_browser_data_provider_stub.dart';
 
 // TypeAdapters for complex types
 @HiveType(typeId: 1)
@@ -851,6 +852,19 @@ class AppDataStore extends ChangeNotifier {
     bool? limitStatus,
     String? siteName,
   }) async {
+    if (kIsWeb) {
+      final effectiveLimit = (limitStatus == false) ? Duration.zero : dailyLimit;
+      await WebBrowserDataProvider().updateWebsiteMetadata(
+        appName,
+        category: category,
+        isProductive: isProductive,
+        isTracking: isTracking,
+        isVisible: isVisible,
+        dailyLimit: effectiveLimit,
+        siteName: siteName,
+      );
+    }
+
     if (!_ensureInitialized()) return false;
 
     try {

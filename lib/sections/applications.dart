@@ -1090,13 +1090,17 @@ class _EditAppDialogState extends State<_EditAppDialog> {
             : l10n.uncategorized)
         : _selectedCategory;
 
+    final effectiveLimit = _limitStatus
+        ? Duration(hours: _limitHours, minutes: _limitMinutes)
+        : Duration.zero;
+
     await AppDataStore().updateAppMetadata(
       widget.app.name,
       category: finalCategory,
       isProductive: _isProductive,
       isTracking: _isTracking,
       isVisible: _isVisible,
-      dailyLimit: Duration(hours: _limitHours, minutes: _limitMinutes),
+      dailyLimit: effectiveLimit,
       limitStatus: _limitStatus,
     );
 

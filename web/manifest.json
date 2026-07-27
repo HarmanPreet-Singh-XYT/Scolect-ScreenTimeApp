@@ -56,7 +56,8 @@
         "canvaskit/**",
         "icons/**",
         "favicon.png",
-        "blocked.html"
+        "blocked.html",
+        "blocked.js"
       ],
       "matches": ["<all_urls>"]
     }

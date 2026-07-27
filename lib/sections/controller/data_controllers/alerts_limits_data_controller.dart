@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
+import '../../../web/web_browser_data_provider.dart' if (dart.library.io) '../../../web/web_browser_data_provider_stub.dart';
 
 class AppUsageSummary {
   final String appName;
@@ -134,7 +135,7 @@ class ScreenTimeDataController extends ChangeNotifier {
     _cachedSummariesTimestamp = null;
   }
 
-  List<AppUsageSummary> getAllAppsSummary() {
+  Future<List<AppUsageSummary>> getAllAppsSummary() async {
     final now = DateTime.now();
     if (_cachedSummaries != null &&
         _cachedSummariesTimestamp != null &&
@@ -143,7 +144,7 @@ class ScreenTimeDataController extends ChangeNotifier {
       return _cachedSummaries!;
     }
 
-    _cachedSummaries = _buildAppSummaries(now);
+    _cachedSummaries = await _buildAppSummaries(now);
     _cachedSummariesTimestamp = now;
     return _cachedSummaries!;
   }
@@ -161,19 +162,20 @@ class ScreenTimeDataController extends ChangeNotifier {
     );
   }
 
-  List<AppUsageSummary> getAppsWithLimits() {
-    final apps = getAllAppsSummary().where((app) => app.limitStatus).toList();
+  Future<List<AppUsageSummary>> getAppsWithLimits() async {
+    final summaries = await getAllAppsSummary();
+    final apps = summaries.where((app) => app.limitStatus).toList();
     apps.sort(
         (a, b) => b.percentageOfLimitUsed.compareTo(a.percentageOfLimitUsed));
     return apps;
   }
 
-  List<AppUsageSummary> getAppsNearLimit({double threshold = 0.8}) =>
-      getAppsWithLimits()
+  Future<List<AppUsageSummary>> getAppsNearLimit({double threshold = 0.8}) async =>
+      (await getAppsWithLimits())
           .where((app) => app.percentageOfLimitUsed >= threshold)
           .toList();
 
-  List<AppUsageSummary> getAppsExceededLimit() => getAppsWithLimits()
+  Future<List<AppUsageSummary>> getAppsExceededLimit() async => (await getAppsWithLimits())
       .where((app) => app.percentageOfLimitUsed >= 1.0)
       .toList();
 
@@ -207,9 +209,10 @@ class ScreenTimeDataController extends ChangeNotifier {
   // ANALYTICS - OPTIMIZED: Single pass for category aggregation
   // ============================================================
 
-  Map<String, Duration> getUsageByCategory() {
+  Future<Map<String, Duration>> getUsageByCategory() async {
     final result = <String, Duration>{};
-    for (final app in getAllAppsSummary()) {
+    final summaries = await getAllAppsSummary();
+    for (final app in summaries) {
       result.update(
         app.category,
         (existing) => existing + app.currentUsage,
@@ -219,14 +222,14 @@ class ScreenTimeDataController extends ChangeNotifier {
     return result;
   }
 
-  List<AppUsageSummary> getMostUsedApps({int limit = 5}) {
-    final apps = getAllAppsSummary();
+  Future<List<AppUsageSummary>> getMostUsedApps({int limit = 5}) async {
+    final apps = await getAllAppsSummary();
     apps.sort((a, b) => b.currentUsage.compareTo(a.currentUsage));
     return apps.take(limit).toList();
   }
 
-  Map<String, dynamic> getAllData() {
-    final appSummaries = getAllAppsSummary();
+  Future<Map<String, dynamic>> getAllData() async {
+    final appSummaries = await getAllAppsSummary();
     final overallUsage = getOverallUsage();
 
     // Compute category usage and most-used in a single pass
@@ -260,7 +263,35 @@ class ScreenTimeDataController extends ChangeNotifier {
   // PRIVATE HELPERS
   // ============================================================
 
-  List<AppUsageSummary> _buildAppSummaries(DateTime today) {
+  Future<List<AppUsageSummary>> _buildAppSummaries(DateTime today) async {
+    if (kIsWeb) {
+      final webSites = await WebBrowserDataProvider().fetchAllWebsites();
+      final result = <AppUsageSummary>[];
+      for (final site in webSites) {
+        final hasActiveLimit = site.dailyLimit > Duration.zero;
+        double percentOfLimit = 0.0;
+        bool isApproaching = false;
+        if (hasActiveLimit) {
+          percentOfLimit = site.timeSpent.inSeconds / site.dailyLimit.inSeconds;
+          final remaining = site.dailyLimit - site.timeSpent;
+          isApproaching = remaining > Duration.zero && remaining <= const Duration(minutes: 5);
+        }
+        result.add(AppUsageSummary(
+          appName: site.domain,
+          siteName: site.siteName,
+          category: site.category,
+          dailyLimit: site.dailyLimit,
+          currentUsage: site.timeSpent,
+          limitStatus: site.dailyLimit > Duration.zero,
+          isProductive: site.isProductive,
+          isAboutToReachLimit: isApproaching,
+          percentageOfLimitUsed: percentOfLimit,
+          trend: UsageTrend.stable,
+        ));
+      }
+      return result;
+    }
+
     final appNames = _dataStore.allAppNames;
     final result = <AppUsageSummary>[];
 

@@ -36,6 +36,23 @@ function _showNotification(id, title, message) {
   });
 }
 
+async function _redirectBlockedDomainTabs(domain) {
+  try {
+    const tabs = await chrome.tabs.query({});
+    for (const tab of tabs) {
+      if (tab.url && !tab.url.startsWith(chrome.runtime.getURL('blocked.html'))) {
+        const d = extractDomain(tab.url);
+        if (d === domain) {
+          const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
+          await chrome.tabs.update(tab.id, { url: blockedUrl });
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Error redirecting tabs for domain:', domain, e);
+  }
+}
+
 async function checkLimitNotifications(domain, totalSeconds) {
   _resetWarningsIfNewDay();
   const settings = await getSettings();
@@ -57,7 +74,7 @@ async function checkLimitNotifications(domain, totalSeconds) {
     );
   }
 
-  // Limit reached — add to blocked set and notify (unless user unblocked it today)
+  // Limit reached — add to blocked set, notify, and redirect active tabs
   if (ratio >= 1.0 && !_blockedDomains.has(domain)) {
     const unblockedToday = await getUnblockedToday();
     if (!unblockedToday.has(domain)) {
@@ -75,6 +92,7 @@ async function checkLimitNotifications(domain, totalSeconds) {
         'Daily limit reached',
         `${siteName} has been blocked for today.`,
       );
+      await _redirectBlockedDomainTabs(domain);
     }
   }
 }
@@ -117,22 +135,51 @@ async function setDayData(dateKey, data) {
   await chrome.storage.local.set({ [storageKey]: data });
 }
 
-async function updateSiteName(domain, rawTitle) {
-  if (!rawTitle) return;
-  // Strip leading notification badges: "(2) ", "[3] ", "• ", "★ "
-  const cleaned = rawTitle
+function _getBaseName(domain) {
+  const parts = domain.replace(/^www\./, '').split('.');
+  return parts.length > 1 ? parts[parts.length - 2] : domain;
+}
+
+function _getCleanSiteName(domain, rawTitle) {
+  const baseName = _getBaseName(domain);
+  const fallback = baseName.charAt(0).toUpperCase() + baseName.slice(1);
+  
+  if (!rawTitle) return fallback;
+  
+  let cleaned = rawTitle
     .replace(/^\(\d+\)\s*/, '')
     .replace(/^\[\d+\]\s*/, '')
     .replace(/^[•★]\s*/, '')
     .trim();
-  if (!cleaned || cleaned.toLowerCase() === domain) return;
+    
+  const titleParts = cleaned.split(/\s*[\-\|:—–\/]\s*/).filter(p => p.length > 0);
+  
+  const exactMatch = titleParts.find(p => p.toLowerCase() === baseName.toLowerCase());
+  if (exactMatch) return exactMatch;
+  
+  const containsMatch = titleParts.find(p => p.toLowerCase().includes(baseName.toLowerCase()));
+  if (containsMatch && containsMatch.length <= 30) return containsMatch;
+  
+  const shortest = titleParts.reduce((a, b) => a.length <= b.length ? a : b, titleParts[0]);
+  if (shortest && shortest.length <= 30 && shortest.length >= 2) return shortest;
+
+  return fallback;
+}
+
+async function updateSiteName(domain, rawTitle) {
+  if (!rawTitle) return;
+
+  const cleanName = _getCleanSiteName(domain, rawTitle);
+  if (!cleanName || cleanName.toLowerCase() === domain) return;
 
   const key = `${STORAGE_PREFIX}app_metadata`;
   const result = await chrome.storage.local.get(key);
   const meta = result[key] ?? {};
-  // Only set on first visit — don't overwrite with per-page titles
-  if (!meta[domain]?.siteName) {
-    meta[domain] = { ...(meta[domain] ?? {}), siteName: cleaned };
+  
+  // Overwrite if missing OR if we generated a shorter, cleaner name than the currently saved one
+  const currentSaved = meta[domain]?.siteName;
+  if (!currentSaved || (currentSaved !== cleanName && cleanName.length < currentSaved.length)) {
+    meta[domain] = { ...(meta[domain] ?? {}), siteName: cleanName };
     await chrome.storage.local.set({ [key]: meta });
   }
 }
@@ -397,6 +444,9 @@ async function refreshBlockedDomains() {
 
   // Exclude domains the user explicitly unblocked for today.
   _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
+  for (const domain of _blockedDomains) {
+    await _redirectBlockedDomainTabs(domain);
+  }
 }
 
 // ─── Desktop sync (Hybrid / Tracker-Only) ────────────────────────────────────
@@ -557,6 +607,14 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       await runSync();
       sendResponse({ ok: true });
     })();
+    return true;
+  }
+  if (msg.type === 'UNBLOCK_DOMAIN') {
+    _blockedDomains.delete(msg.domain);
+    refreshBlockedDomains().then(() => sendResponse({ ok: true })).catch(e => {
+      console.error(e);
+      sendResponse({ ok: false });
+    });
     return true;
   }
   return false;
