@@ -62,6 +62,14 @@ async function checkLimitNotifications(domain, totalSeconds) {
     const unblockedToday = await getUnblockedToday();
     if (!unblockedToday.has(domain)) {
       _blockedDomains.add(domain);
+      // Persist to storage so the blocked set survives service worker restarts.
+      // background.js is the single writer; Flutter reads this for display only.
+      const bKey = `${STORAGE_PREFIX}blocked_domains`;
+      const bResult = await chrome.storage.local.get([bKey]);
+      const bList = bResult[bKey] || [];
+      if (!bList.includes(domain)) {
+        await chrome.storage.local.set({ [bKey]: [...bList, domain] });
+      }
       _showNotification(
         `scolect_blocked_${domain}`,
         'Daily limit reached',
@@ -205,8 +213,9 @@ async function tick() {
 
   current.pendingSeconds = (current.pendingSeconds || 0) + 1;
 
-  // Flush every 10 seconds to storage to avoid data loss on worker kill
-  if (current.pendingSeconds % 10 === 0) {
+  // Flush every 5 seconds to storage to avoid data loss on worker kill.
+  // (Reduced from 10s so limit enforcement kicks in faster.)
+  if (current.pendingSeconds % 5 === 0) {
     await updateDomain(today, current.domain, current.pendingSeconds, 0);
     current.pendingSeconds = 0;
 
@@ -215,6 +224,24 @@ async function tick() {
     const domainEntry = day.domains.find(d => d.domain === current.domain);
     if (domainEntry) {
       await checkLimitNotifications(current.domain, domainEntry.seconds);
+    }
+  } else {
+    // Fast-path: check limit in-memory every tick once we're near the threshold.
+    // This catches the exact second a limit is crossed without waiting for a flush.
+    const settings = await getSettings();
+    const meta = settings.metadata?.[current.domain];
+    if (meta?.dailyLimitSeconds > 0) {
+      // Estimate committed seconds (last flush) + pending
+      const today2 = getTodayKey();
+      const day2 = await getDayData(today2);
+      const committed = day2.domains.find(d => d.domain === current.domain)?.seconds ?? 0;
+      const estimated = committed + current.pendingSeconds;
+      const ratio = estimated / meta.dailyLimitSeconds;
+      // Only invoke full notification logic once we're >= 90% — avoids storage
+      // reads on every tick for domains nowhere near their limit.
+      if (ratio >= 0.9) {
+        await checkLimitNotifications(current.domain, estimated);
+      }
     }
   }
 
@@ -273,13 +300,28 @@ async function refreshBlockedDomains() {
   const unblockedToday = await getUnblockedToday();
 
   let blocked = [];
+
   if (mode === 'standalone') {
-    // Read from storage (set by Flutter web app via WebBrowserDataProvider)
-    const data = await chrome.storage.local.get([`${STORAGE_PREFIX}blocked_domains`]);
-    blocked = data[`${STORAGE_PREFIX}blocked_domains`] || [];
+    // ─── Authoritative computation from settings + today's usage ──────────
+    // Do NOT read the stale scolect_blocked_domains key here — that key is
+    // only written lazily when the dashboard is open. Instead, recompute
+    // directly from scolect_settings.metadata vs scolect_day_* so this
+    // works even when the dashboard has never been opened.
+    const today = getTodayKey();
+    const day = await getDayData(today);
+    const meta = settings.metadata ?? {};
+    for (const entry of day.domains) {
+      const m = meta[entry.domain];
+      if (m && m.dailyLimitSeconds > 0 && entry.seconds >= m.dailyLimitSeconds) {
+        blocked.push(entry.domain);
+      }
+    }
+    // Write the computed list back so the Flutter UI can read it for display.
+    await chrome.storage.local.set({ [`${STORAGE_PREFIX}blocked_domains`]: blocked });
   } else {
-    // Fetch from desktop Flutter app
+    // ─── Hybrid / Tracker-Only: fetch from desktop Flutter app ────────────
     let connected = false;
+    let focusJson = null;
     try {
       const desktopUrl = settings.desktopUrl || `http://localhost:${FLUTTER_PORT}`;
       const resp = await fetch(`${desktopUrl}/ping`, {
@@ -291,21 +333,69 @@ async function refreshBlockedDomains() {
           signal: AbortSignal.timeout(3000),
         });
         if (focusResp.ok) {
-          const json = await focusResp.json();
-          blocked = json.blockedDomains || [];
+          focusJson = await focusResp.json();
+          blocked = focusJson.blockedDomains || [];
         }
       }
     } catch (_) {}
+
+    // ─── Merge desktop domainLimits into scolect_settings.metadata ──────────
+    // The desktop returns a map of every web domain it knows about with its
+    // current limit / metadata. We merge these into the extension's own
+    // scolect_settings.metadata ONLY for fields the extension has NOT set
+    // (extension values always win; desktop fills gaps).
+    if (focusJson?.domainLimits) {
+      const currentSettings = await getSettings();
+      const currentMeta = currentSettings.metadata ?? {};
+      let changed = false;
+
+      for (const [domain, desktopMeta] of Object.entries(focusJson.domainLimits)) {
+        const ext = currentMeta[domain] ?? {};
+        const merged = {
+          category:          ext.category          || desktopMeta.category          || 'Uncategorized',
+          isTracking:        ext.isTracking  !== undefined ? ext.isTracking  : (desktopMeta.isTracking  ?? true),
+          isProductive:      ext.isProductive !== undefined ? ext.isProductive : (desktopMeta.isProductive ?? false),
+          // Extension limit wins; desktop fills if extension has none (= 0)
+          dailyLimitSeconds: (ext.dailyLimitSeconds ?? 0) > 0
+            ? ext.dailyLimitSeconds
+            : (desktopMeta.dailyLimitSeconds ?? 0),
+          siteName: ext.siteName || desktopMeta.siteName || '',
+        };
+        // Only write if something actually changed
+        if (JSON.stringify(ext) !== JSON.stringify(merged)) {
+          currentMeta[domain] = { ...ext, ...merged };
+          changed = true;
+        }
+      }
+
+      if (changed) {
+        await chrome.storage.local.set({
+          'scolect_settings': { ...currentSettings, metadata: currentMeta },
+        });
+        // Now recompute blocked from the freshly merged metadata + current usage
+        // so limits the desktop set are enforced immediately without waiting for
+        // the next ALARM_REFRESH_BLOCKED tick.
+        const mergedSettings = await getSettings();
+        const today2 = getTodayKey();
+        const day2 = await getDayData(today2);
+        for (const entry of day2.domains) {
+          const m = mergedSettings.metadata?.[entry.domain];
+          if (m && m.dailyLimitSeconds > 0 && entry.seconds >= m.dailyLimitSeconds) {
+            if (!blocked.includes(entry.domain)) blocked.push(entry.domain);
+          }
+        }
+      }
+    }
 
     const stateKey = `${STORAGE_PREFIX}app_state`;
     const existing = await chrome.storage.local.get(stateKey);
     const prev = existing[stateKey] ?? {};
     await chrome.storage.local.set({
-      [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt }
+      [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt },
     });
   }
 
-  // Exclude domains the user explicitly unblocked for today
+  // Exclude domains the user explicitly unblocked for today.
   _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
 }
 
@@ -325,6 +415,7 @@ async function runSync() {
   const metaKey = `${STORAGE_PREFIX}app_metadata`;
   const metaResult = await chrome.storage.local.get(metaKey);
   const siteMeta = metaResult[metaKey] ?? {};
+  const meta = settings.metadata ?? {};
 
   try {
     const resp = await fetch(url, {
@@ -332,9 +423,15 @@ async function runSync() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         date: today,
+        // Include limits + metadata alongside usage so the desktop can keep
+        // its own Hive store in sync. Extension is the authority; desktop merges.
         domains: day.domains.map(d => ({
           ...d,
-          siteName: siteMeta[d.domain]?.siteName ?? null,
+          siteName:          siteMeta[d.domain]?.siteName    ?? meta[d.domain]?.siteName    ?? null,
+          dailyLimitSeconds: meta[d.domain]?.dailyLimitSeconds ?? 0,
+          isTracking:        meta[d.domain]?.isTracking        ?? true,
+          isProductive:      meta[d.domain]?.isProductive      ?? false,
+          category:          meta[d.domain]?.category          ?? '',
         })),
       }),
       signal: AbortSignal.timeout(3000),
@@ -348,7 +445,7 @@ async function runSync() {
   const existing = await chrome.storage.local.get(stateKey);
   const prev = existing[stateKey] ?? {};
   await chrome.storage.local.set({
-    [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt }
+    [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt },
   });
 }
 
@@ -358,6 +455,17 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   if (alarm.name === ALARM_TICK) tick().catch(console.error);
   if (alarm.name === ALARM_SYNC) runSync().catch(console.error);
   if (alarm.name === ALARM_REFRESH_BLOCKED) refreshBlockedDomains().catch(console.error);
+});
+
+// ─── React instantly to limit changes saved from the Flutter dashboard ────────
+// When the user saves a new daily limit, scolect_settings changes in storage.
+// Re-running refreshBlockedDomains immediately means enforcement takes effect
+// in seconds, not after the next ALARM_REFRESH_BLOCKED tick (up to 1 min later).
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local') return;
+  if (changes['scolect_settings']) {
+    refreshBlockedDomains().catch(console.error);
+  }
 });
 
 function setupAlarms() {

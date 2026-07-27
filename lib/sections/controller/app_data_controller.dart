@@ -145,10 +145,14 @@ class AppDataStore extends ChangeNotifier {
   static const String _usageBoxName = 'harman_screentime_app_usage_box';
   static const String _focusBoxName = 'harman_screentime_focus_session_box';
   static const String _metadataBoxName = 'harman_screentime_app_metadata_box';
+  static const String _webUsageBoxName = 'scolect_web_usage_box';
+  static const String _webMetadataBoxName = 'scolect_web_metadata_box';
 
   Box<AppUsageRecord>? _usageBox;
   Box<FocusSessionRecord>? _focusBox;
   Box<AppMetadata>? _metadataBox;
+  Box<AppUsageRecord>? _webUsageBox;
+  Box<AppMetadata>? _webMetadataBox;
 
   bool _isInitialized = false;
   String? _lastError;
@@ -256,7 +260,7 @@ class AppDataStore extends ChangeNotifier {
                   hivePath = newHivePath;
                 } else if (Platform.isWindows) {
                   // On Windows, we move only the specific box files if they exist in root
-                  final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName];
+                  final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName, _webUsageBoxName, _webMetadataBoxName];
                   bool migratedAny = false;
 
                   await newDir.create(recursive: true);
@@ -335,7 +339,8 @@ class AppDataStore extends ChangeNotifier {
 
         // Open boxes — on macOS, the probe may pass but Hive's internal file
         // access can still be blocked by the sandbox (errno = 1). If that
-        // happens, reinitialize Hive to Application Support and retry.
+        // happens, reinitialize Hive to Application Support and retry all boxes
+        // from the new path.
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
         if (_usageBox == null && !kIsWeb && Platform.isMacOS && _supportDirPath != null) {
           final fallbackPath = '$_supportDirPath/Scolect';
@@ -343,12 +348,21 @@ class AppDataStore extends ChangeNotifier {
           await Hive.close();
           await Directory(fallbackPath).create(recursive: true);
           Hive.init(fallbackPath);
-          _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
+          // Re-open all boxes from the fallback path — not just _usageBox.
+          _usageBox     = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
+          _focusBox     = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
+          _metadataBox  = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
+          _webUsageBox  = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
+          _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
+        } else {
+          _focusBox       = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
+          _metadataBox    = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
+          _webUsageBox    = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
+          _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
         }
-        _focusBox = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
-        _metadataBox = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
 
-        if (_usageBox == null || _focusBox == null || _metadataBox == null) {
+        if (_usageBox == null || _focusBox == null || _metadataBox == null ||
+            _webUsageBox == null || _webMetadataBox == null) {
           _lastError = "Failed to open one or more Hive boxes";
           return false;
         }
@@ -415,6 +429,23 @@ class AppDataStore extends ChangeNotifier {
         }
       }
 
+      // Load recent web usage records from dedicated web box
+      if (_webUsageBox != null) {
+        for (var entry in _webUsageBox!.toMap().entries) {
+          final record = entry.value;
+          if (record.date.isAfter(usageCutoff)) {
+            final dateKey = _formatDateKey(record.date);
+            final appName = _extractAppNameFromKey(entry.key.toString());
+
+            _usageCacheByDate.putIfAbsent(dateKey, () => {});
+            _usageCacheByDate[dateKey]![appName] = record;
+            loadedUsage++;
+          } else {
+            skippedUsage++;
+          }
+        }
+      }
+
       // Load focus sessions from last year - grouped by date
       if (_focusBox != null) {
         for (var entry in _focusBox!.toMap().entries) {
@@ -434,6 +465,13 @@ class AppDataStore extends ChangeNotifier {
       // Load ALL metadata (always needed, tiny ~10 KB)
       if (_metadataBox != null) {
         for (var entry in _metadataBox!.toMap().entries) {
+          _metadataCache[entry.key.toString()] = entry.value;
+        }
+      }
+
+      // Load ALL web metadata from dedicated web metadata box
+      if (_webMetadataBox != null) {
+        for (var entry in _webMetadataBox!.toMap().entries) {
           _metadataCache[entry.key.toString()] = entry.value;
         }
       }
@@ -465,6 +503,12 @@ class AppDataStore extends ChangeNotifier {
     }
     return key;
   }
+
+  Box<AppUsageRecord> _usageBoxFor(String appName) =>
+      appName.startsWith('web:') ? _webUsageBox! : _usageBox!;
+
+  Box<AppMetadata> _metadataBoxFor(String appName) =>
+      appName.startsWith('web:') ? _webMetadataBox! : _metadataBox!;
 
   // ============================================================
   // PERIODIC PERSISTENCE - Only runs when needed
@@ -517,7 +561,19 @@ class AppDataStore extends ChangeNotifier {
             }
           }
 
-          await _usageBox!.putAll(batch);
+          final appBatch = <String, AppUsageRecord>{};
+          final webBatch = <String, AppUsageRecord>{};
+          for (final entry in batch.entries) {
+            // The hive key format is "appName:YYYY-MM-DD" — extract appName
+            final appName = entry.key.substring(0, entry.key.lastIndexOf(':'));
+            if (appName.startsWith('web:')) {
+              webBatch[entry.key] = entry.value;
+            } else {
+              appBatch[entry.key] = entry.value;
+            }
+          }
+          if (appBatch.isNotEmpty) await _usageBox!.putAll(appBatch);
+          if (webBatch.isNotEmpty && _webUsageBox != null) await _webUsageBox!.putAll(webBatch);
           usageCommitted = batch.length;
           _dirtyUsageKeys.clear();
         }
@@ -593,21 +649,21 @@ class AppDataStore extends ChangeNotifier {
           return null;
         }
 
-        if (e.toString().contains('corrupted') ||
-            e.toString().contains('not found') ||
-            e.toString().contains('lock') ||
-            e.toString().contains('permission')) {
+        // On any failure (not just known corruption strings), back up and
+        // delete the box so the next attempt starts with a clean file.
+        // Previously only pattern-matched errors triggered deletion, meaning
+        // unknown Hive errors would retry against the same broken file.
+        try {
+          debugPrint("Backing up and recreating box: $boxName");
           try {
-            debugPrint("Attempting to delete and recreate box: $boxName");
-            try {
-              final box = Hive.box(boxName);
-              if (box.isOpen) await box.close();
-            } catch (_) {}
-            await Hive.deleteBoxFromDisk(boxName);
-            debugPrint("Deleted corrupted box: $boxName, retrying...");
-          } catch (deleteError) {
-            debugPrint("Error deleting box: $deleteError");
-          }
+            final box = Hive.box(boxName);
+            if (box.isOpen) await box.close();
+          } catch (_) {}
+          await _backupBoxFile(boxName);
+          await Hive.deleteBoxFromDisk(boxName);
+          debugPrint("Deleted box: $boxName, retrying...");
+        } catch (deleteError) {
+          debugPrint("Error deleting box: $deleteError");
         }
 
         await Future.delayed(Duration(milliseconds: 200 * (1 << attempts)));
@@ -615,6 +671,46 @@ class AppDataStore extends ChangeNotifier {
     }
 
     return null;
+  }
+
+  /// Renames the .hive file to .hive.bak before deletion so manual recovery
+  /// is possible. Silently no-ops if the file doesn't exist or path is unknown.
+  Future<void> _backupBoxFile(String boxName) async {
+    if (kIsWeb) return;
+    try {
+      // Derive the Hive directory from the same logic used in init():
+      // prefer Documents/Scolect, fall back to Application Support/Scolect.
+      String? hiveDirPath;
+      try {
+        final docsDir = await getApplicationDocumentsDirectory();
+        final candidate = '${docsDir.path}/Scolect';
+        if (await Directory(candidate).exists()) {
+          hiveDirPath = candidate;
+        }
+      } catch (_) {}
+
+      if (hiveDirPath == null) {
+        try {
+          final supportDir = await getApplicationSupportDirectory();
+          final candidate = '${supportDir.path}/Scolect';
+          if (await Directory(candidate).exists()) {
+            hiveDirPath = candidate;
+          }
+        } catch (_) {}
+      }
+
+      if (hiveDirPath == null) return;
+
+      final src = File('$hiveDirPath/$boxName.hive');
+      if (await src.exists()) {
+        final dst = File('$hiveDirPath/$boxName.hive.bak');
+        if (await dst.exists()) await dst.delete();
+        await src.rename(dst.path);
+        debugPrint('📦 Backed up $boxName.hive → $boxName.hive.bak');
+      }
+    } catch (e) {
+      debugPrint('⚠️ Could not back up $boxName: $e');
+    }
   }
 
   Future<void> checkAndRepairBoxes() async {
@@ -629,6 +725,12 @@ class AppDataStore extends ChangeNotifier {
           'box': _metadataBox,
           'lock': _metadataBoxLock
         },
+        {'name': _webUsageBoxName, 'box': _webUsageBox, 'lock': _usageBoxLock},
+        {
+          'name': _webMetadataBoxName,
+          'box': _webMetadataBox,
+          'lock': _metadataBoxLock
+        },
       ]) {
         final String boxName = boxInfo['name'] as String;
         final Box? box = boxInfo['box'] as Box?;
@@ -638,7 +740,10 @@ class AppDataStore extends ChangeNotifier {
           try {
             if (box != null && box.isOpen) {
               try {
-                box.keys.take(1).toList();
+                // Read all keys (not just 1) to stress the full key index.
+                // A single-key probe passes even when corruption sits in the
+                // middle of the file and only surfaces on real reads later.
+                box.keys.toList();
                 debugPrint("Box $boxName is healthy");
               } catch (e) {
                 debugPrint("Box $boxName is corrupted, repairing: $e");
@@ -646,6 +751,9 @@ class AppDataStore extends ChangeNotifier {
                 try {
                   await box.close();
                 } catch (_) {}
+
+                // Back up before wiping so manual recovery is possible.
+                await _backupBoxFile(boxName);
 
                 try {
                   await Hive.deleteBoxFromDisk(boxName);
@@ -660,6 +768,10 @@ class AppDataStore extends ChangeNotifier {
                       await _openBoxWithRetry<FocusSessionRecord>(boxName);
                 } else if (boxName == _metadataBoxName) {
                   _metadataBox = await _openBoxWithRetry<AppMetadata>(boxName);
+                } else if (boxName == _webUsageBoxName) {
+                  _webUsageBox = await _openBoxWithRetry<AppUsageRecord>(boxName);
+                } else if (boxName == _webMetadataBoxName) {
+                  _webMetadataBox = await _openBoxWithRetry<AppMetadata>(boxName);
                 }
               }
             } else {
@@ -671,6 +783,10 @@ class AppDataStore extends ChangeNotifier {
                     await _openBoxWithRetry<FocusSessionRecord>(boxName);
               } else if (boxName == _metadataBoxName) {
                 _metadataBox = await _openBoxWithRetry<AppMetadata>(boxName);
+              } else if (boxName == _webUsageBoxName) {
+                _webUsageBox = await _openBoxWithRetry<AppUsageRecord>(boxName);
+              } else if (boxName == _webMetadataBoxName) {
+                _webMetadataBox = await _openBoxWithRetry<AppMetadata>(boxName);
               }
             }
           } catch (e) {
@@ -699,7 +815,8 @@ class AppDataStore extends ChangeNotifier {
     }
     
     // On web, we don't use Hive boxes, so they will be null.
-    if (!kIsWeb && (_usageBox == null || _focusBox == null || _metadataBox == null)) {
+    if (!kIsWeb && (_usageBox == null || _focusBox == null || _metadataBox == null ||
+        _webUsageBox == null || _webMetadataBox == null)) {
       _lastError = "AppDataStore Hive boxes not initialized.";
       debugPrint(_lastError);
       return false;
@@ -756,7 +873,7 @@ class AppDataStore extends ChangeNotifier {
       // Invalidate cached app names list
       _cachedAppNames = null;
 
-      _metadataBox!.put(appName, updated).catchError((e) {
+      _metadataBoxFor(appName).put(appName, updated).catchError((e) {
         debugPrint('⚠️ Error saving metadata to Hive: $e');
       });
 
@@ -789,8 +906,8 @@ class AppDataStore extends ChangeNotifier {
       // Invalidate cached app names list
       _cachedAppNames = null;
 
-      if (_metadataBox!.containsKey(appName)) {
-        _metadataBox!.delete(appName).catchError((e) {
+      if (_metadataBoxFor(appName).containsKey(appName)) {
+        _metadataBoxFor(appName).delete(appName).catchError((e) {
           debugPrint('⚠️ Error deleting metadata from Hive: $e');
         });
       }
@@ -962,9 +1079,10 @@ class AppDataStore extends ChangeNotifier {
       }
 
       // Fallback to Hive (slower but works)
-      if (_usageBox != null) {
+      final targetUsageBox = appName.startsWith('web:') ? _webUsageBox : _usageBox;
+      if (targetUsageBox != null) {
         final hiveKey = _makeUsageKey(appName, date);
-        final record = _usageBox!.get(hiveKey);
+        final record = targetUsageBox.get(hiveKey);
 
         // Cache if within extended window (90 days) and space available
         if (record != null) {
@@ -1039,10 +1157,13 @@ class AppDataStore extends ChangeNotifier {
       int hiveReads = 0;
 
       // Iterate through cache efficiently - O(days) instead of O(days * apps)
+      // Skip web:* entries — browser domain data belongs only to the Browser
+      // section and must not appear in native app totals or Reports.
       for (var dateEntry in _usageCacheByDate.entries) {
         final date = _parseDate(dateEntry.key);
         if (date != null && !date.isBefore(start) && !date.isAfter(end)) {
           for (var appEntry in dateEntry.value.entries) {
+            if (appEntry.key.startsWith('web:')) continue;
             totals[appEntry.key] = (totals[appEntry.key] ?? Duration.zero) +
                 appEntry.value.timeSpent;
             cacheHits++;
@@ -1059,6 +1180,7 @@ class AppDataStore extends ChangeNotifier {
           // Skip if date already in cache
           if (!_usageCacheByDate.containsKey(dateKey)) {
             for (final appName in allAppNames) {
+              if (appName.startsWith('web:')) continue; // browser-only — skip
               final hiveKey = _makeUsageKey(appName, current);
               final record = _usageBox!.get(hiveKey);
               if (record != null) {
@@ -1124,7 +1246,7 @@ class AppDataStore extends ChangeNotifier {
           if (!_usageCacheByDate.containsKey(dateKey)) {
             for (final appName in allAppNames) {
               final hiveKey = _makeUsageKey(appName, current);
-              final record = _usageBox!.get(hiveKey);
+              final record = _usageBoxFor(appName).get(hiveKey);
               if (record != null) {
                 result.putIfAbsent(appName, () => []);
                 result[appName]!.add(record);
@@ -1285,10 +1407,11 @@ class AppDataStore extends ChangeNotifier {
       final dayRecords = _usageCacheByDate[dateKey];
 
       if (dayRecords != null) {
-        // Fast path: sum from cache
-        return dayRecords.values.fold(
+        // Fast path: sum from cache — exclude web:* (browser domains tracked
+        // separately in the Browser section, must not inflate native totals)
+        return dayRecords.entries.fold(
           Duration.zero,
-          (sum, record) => sum + record.timeSpent,
+          (sum, e) => e.key.startsWith('web:') ? sum : sum + e.value.timeSpent,
         );
       }
 
@@ -1296,6 +1419,7 @@ class AppDataStore extends ChangeNotifier {
       Duration total = Duration.zero;
       if (_usageBox != null) {
         for (final appName in allAppNames) {
+          if (appName.startsWith('web:')) continue; // browser-only — skip
           final record = getAppUsage(appName, date);
           if (record != null) {
             total += record.timeSpent;
@@ -1360,6 +1484,7 @@ class AppDataStore extends ChangeNotifier {
 
       if (dayRecords != null) {
         for (var entry in dayRecords.entries) {
+          if (entry.key.startsWith('web:')) continue; // browser-only — skip
           final metadata = _metadataCache[entry.key];
           if (metadata?.isProductive ?? false) {
             total += entry.value.timeSpent;
@@ -1368,6 +1493,7 @@ class AppDataStore extends ChangeNotifier {
       } else if (_usageBox != null) {
         // Fallback to Hive
         for (final appName in allAppNames) {
+          if (appName.startsWith('web:')) continue; // browser-only — skip
           final metadata = _metadataCache[appName];
           if (metadata?.isProductive ?? false) {
             final record = getAppUsage(appName, date);
@@ -1398,6 +1524,7 @@ class AppDataStore extends ChangeNotifier {
 
       if (dayRecords != null) {
         for (var entry in dayRecords.entries) {
+          if (entry.key.startsWith('web:')) continue; // browser-only — skip
           if (entry.value.timeSpent > maxTime) {
             maxTime = entry.value.timeSpent;
             mostUsed = entry.key;
@@ -1405,6 +1532,7 @@ class AppDataStore extends ChangeNotifier {
         }
       } else if (_usageBox != null) {
         for (final appName in allAppNames) {
+          if (appName.startsWith('web:')) continue; // browser-only — skip
           final record = getAppUsage(appName, date);
           if (record != null && record.timeSpent > maxTime) {
             maxTime = record.timeSpent;
@@ -1465,6 +1593,7 @@ class AppDataStore extends ChangeNotifier {
 
       if (dayRecords != null) {
         for (var entry in dayRecords.entries) {
+          if (entry.key.startsWith('web:')) continue; // browser-only — skip
           final metadata = _metadataCache[entry.key];
           if (metadata != null) {
             final category = metadata.category;
@@ -1474,6 +1603,7 @@ class AppDataStore extends ChangeNotifier {
         }
       } else if (_usageBox != null) {
         for (final appName in allAppNames) {
+          if (appName.startsWith('web:')) continue; // browser-only — skip
           final metadata = _metadataCache[appName];
           final record = getAppUsage(appName, date);
 
@@ -1511,6 +1641,7 @@ class AppDataStore extends ChangeNotifier {
         final date = _parseDate(dateEntry.key);
         if (date != null && !date.isBefore(start) && !date.isAfter(end)) {
           for (var appEntry in dateEntry.value.entries) {
+            if (appEntry.key.startsWith('web:')) continue; // browser-only — skip
             final metadata = _metadataCache[appEntry.key];
             if (metadata != null) {
               aggregated[metadata.category] =
@@ -1706,6 +1837,9 @@ class AppDataStore extends ChangeNotifier {
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
         if (_metadataBox != null && _metadataBox!.isOpen)
           await _metadataBox!.close();
+        if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+          await _webMetadataBox!.close();
 
         if (progressCallback != null) progressCallback(0.4);
 
@@ -1716,11 +1850,15 @@ class AppDataStore extends ChangeNotifier {
         if (progressCallback != null) progressCallback(0.8);
 
         await Hive.deleteBoxFromDisk(_metadataBoxName);
+        await Hive.deleteBoxFromDisk(_webUsageBoxName);
+        await Hive.deleteBoxFromDisk(_webMetadataBoxName);
         if (progressCallback != null) progressCallback(0.9);
 
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
         _focusBox = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
         _metadataBox = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
+        _webUsageBox = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
+        _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
 
         if (progressCallback != null) progressCallback(1.0);
 
@@ -1751,6 +1889,9 @@ class AppDataStore extends ChangeNotifier {
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
         if (_metadataBox != null && _metadataBox!.isOpen)
           await _metadataBox!.close();
+        if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+          await _webMetadataBox!.close();
 
         await Hive.close();
         _isInitialized = false;
@@ -1774,6 +1915,9 @@ class AppDataStore extends ChangeNotifier {
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
         if (_metadataBox != null && _metadataBox!.isOpen)
           await _metadataBox!.close();
+        if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+          await _webMetadataBox!.close();
 
         _isInitialized = false;
       } catch (e) {

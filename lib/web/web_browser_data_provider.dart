@@ -9,7 +9,7 @@
 //
 // Per-domain metadata (category, tracking, limits) is stored in ExtensionSettings.
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+
 import '../sections/controller/data_controllers/browser_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
 import '../sections/controller/settings_data_controller.dart';
@@ -129,28 +129,16 @@ class WebBrowserDataProvider {
 
     sites.sort((a, b) => b.timeSpent.compareTo(a.timeSpent));
 
-    // Keep chrome.storage in sync so background.js can enforce blocks in
-    // standalone mode (fire-and-forget — don't await).
-    _syncBlockedDomains(domains, metaMap);
-
     return sites;
   }
 
-  /// Writes the list of limit-exceeded domains to chrome.storage so that
-  /// background.js can redirect to blocked.html without needing to reach the
-  /// desktop app.
-  Future<void> _syncBlockedDomains(
-    List<_RawDomain> domains,
-    Map<String, WebsiteMetadata> metaMap,
-  ) async {
-    final blocked = <String>[];
-    for (final d in domains) {
-      final meta = metaMap[d.domain] ?? const WebsiteMetadata();
-      if (meta.dailyLimitSeconds > 0 && d.seconds >= meta.dailyLimitSeconds) {
-        blocked.add(d.domain);
-      }
-    }
-    await chromeStorageSet({'scolect_blocked_domains': blocked});
+  /// background.js is the single writer of scolect_blocked_domains.
+  /// This read-only helper lets the UI display the current blocked list
+  /// (e.g. lock icons) without the Flutter app needing to recompute it.
+  Future<List<String>> fetchBlockedDomains() async {
+    final result = await chromeStorageGet(['scolect_blocked_domains']);
+    return List<String>.from(
+        (result['scolect_blocked_domains'] as List<dynamic>?) ?? []);
   }
 
   // ── fetchTodaySummary ─────────────────────────────────────────────────────

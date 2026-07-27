@@ -50,7 +50,28 @@ class BrowserExtensionServer {
   // ─── Request dispatcher ──────────────────────────────────────────────────
 
   static Future<void> _handleRequest(HttpRequest req) async {
-    _setCors(req.response);
+    // ─── CORS origin check ─────────────────────────────────────────
+    // Only allow requests from the Scolect Chrome Extension.
+    // The server binds to 127.0.0.1 so it's local-only, but any webpage
+    // open in the browser could fetch http://localhost:46000/focus and
+    // read the user's blocked domain list. Restrict to chrome-extension://
+    // origins to prevent that.
+    final origin = req.headers.value('origin') ?? '';
+    final isExtension = origin.startsWith('chrome-extension://');
+
+    if (!isExtension && req.method != 'OPTIONS') {
+      // Allow requests with no Origin header (e.g., curl, same-process tests)
+      // only if they genuinely have no origin — browsers always set it for
+      // cross-origin fetch. Blank origin = direct/non-browser caller = OK.
+      if (origin.isNotEmpty) {
+        req.response.statusCode = HttpStatus.forbidden;
+        req.response.write(jsonEncode({'error': 'Forbidden: extension-only endpoint'}));
+        await req.response.close();
+        return;
+      }
+    }
+
+    _setCors(req.response, origin);
 
     // Pre-flight
     if (req.method == 'OPTIONS') {
@@ -121,45 +142,90 @@ class BrowserExtensionServer {
       final visits = (entry['visits'] as num?)?.toInt() ?? 0;
       final siteName = entry['siteName'] as String? ?? '';
 
+      // Extension-pushed metadata fields (new in sync protocol v2)
+      final extLimitSecs = (entry['dailyLimitSeconds'] as num?)?.toInt();
+      final extIsTracking = entry['isTracking'] as bool?;
+      final extIsProductive = entry['isProductive'] as bool?;
+      final extCategory = entry['category'] as String?;
+
       if (domain == null || domain.isEmpty || seconds < 0) continue;
 
       final appName = 'web:$domain';
       final timeSpent = Duration(seconds: seconds);
       final now = DateTime.now();
 
-      // Create a single usage period spanning the recorded duration
-      final usagePeriods = seconds > 0
-          ? [TimeRange(startTime: now.subtract(timeSpent), endTime: now)]
-          : <TimeRange>[];
+      // ─── Max-wins usage merge ───────────────────────────────────────
+      // The extension sends cumulative day totals; only overwrite if the
+      // incoming value is strictly larger than what's already stored.
+      // This prevents a stale push (e.g. after a SW restart mid-day) from
+      // overwriting a more recent record.
+      final existingUsage = _dataStore.getAppUsage(appName, date);
+      final shouldUpdate = existingUsage == null ||
+          timeSpent > existingUsage.timeSpent;
 
-      await _dataStore.setAppUsage(appName, date, timeSpent, visits, usagePeriods);
+      if (shouldUpdate) {
+        // Preserve existing usage periods if they're richer than the
+        // synthetic single-block we'd generate from the cumulative total.
+        final existingPeriods = existingUsage?.usagePeriods ?? [];
+        final usagePeriods = existingPeriods.isNotEmpty
+            ? existingPeriods // keep real timeline data already on desktop
+            : (seconds > 0
+                ? [TimeRange(startTime: now.subtract(timeSpent), endTime: now)]
+                : <TimeRange>[]);
+        await _dataStore.setAppUsage(appName, date, timeSpent, visits, usagePeriods);
+      }
 
+      // ─── Metadata sync (extension is authority) ──────────────────────
       // Ensure metadata exists for this domain (first-time setup)
-      final existing = _dataStore.getAppMetadata(appName);
-      if (existing == null) {
-        final category = WebsiteCategories.categorizeWebsite(domain);
+      final existingMeta = _dataStore.getAppMetadata(appName);
+      if (existingMeta == null) {
+        final category = (extCategory != null && extCategory.isNotEmpty)
+            ? extCategory
+            : WebsiteCategories.categorizeWebsite(domain);
         await _dataStore.updateAppMetadata(
           appName,
           category: category,
-          isProductive: !WebsiteCategories.isDefaultCategory(category) &&
-              category != 'Entertainment' &&
-              category != 'Gaming' &&
-              category != 'Social Media',
-          isTracking: true,
+          isProductive: extIsProductive ??
+              (!WebsiteCategories.isDefaultCategory(category) &&
+               category != 'Entertainment' &&
+               category != 'Gaming' &&
+               category != 'Social Media'),
+          isTracking: extIsTracking ?? true,
           isVisible: true,
           siteName: siteName,
+          dailyLimit: extLimitSecs != null && extLimitSecs > 0
+              ? Duration(seconds: extLimitSecs)
+              : null,
         );
       } else {
         // Retroactively categorize domains that were saved with a placeholder
-        if (WebsiteCategories.isDefaultCategory(existing.category)) {
-          final category = WebsiteCategories.categorizeWebsite(domain);
+        if (WebsiteCategories.isDefaultCategory(existingMeta.category)) {
+          final category = (extCategory != null && extCategory.isNotEmpty)
+              ? extCategory
+              : WebsiteCategories.categorizeWebsite(domain);
           if (!WebsiteCategories.isDefaultCategory(category)) {
             await _dataStore.updateAppMetadata(appName, category: category);
           }
         }
         // Update siteName if we now have one and the stored one is still empty
-        if (siteName.isNotEmpty && existing.siteName.isEmpty) {
+        if (siteName.isNotEmpty && existingMeta.siteName.isEmpty) {
           await _dataStore.updateAppMetadata(appName, siteName: siteName);
+        }
+        // Sync limit from extension into Hive (extension wins).
+        // Only update if the extension explicitly sent a non-zero limit AND
+        // the desktop's stored limit differs — avoids pointless Hive writes.
+        if (extLimitSecs != null && extLimitSecs > 0) {
+          final extDuration = Duration(seconds: extLimitSecs);
+          if (existingMeta.dailyLimit != extDuration) {
+            await _dataStore.updateAppMetadata(appName, dailyLimit: extDuration);
+          }
+        }
+        // Sync isTracking / isProductive if extension sent explicit values
+        if (extIsTracking != null && extIsTracking != existingMeta.isTracking) {
+          await _dataStore.updateAppMetadata(appName, isTracking: extIsTracking);
+        }
+        if (extIsProductive != null && extIsProductive != existingMeta.isProductive) {
+          await _dataStore.updateAppMetadata(appName, isProductive: extIsProductive);
         }
       }
     }
@@ -191,13 +257,32 @@ class BrowserExtensionServer {
     final now2 = DateTime.now();
     final startOfDay = DateTime(now2.year, now2.month, now2.day);
     final blockedDomains = <String>[];
+
+    // Build domainLimits map — returned to the extension so it can merge
+    // desktop-only limits into scolect_settings.metadata (fills gaps only;
+    // extension values always win, which is handled on the extension side).
+    final domainLimits = <String, Map<String, dynamic>>{};
+
     for (final appName in _dataStore.allAppNames) {
       if (!appName.startsWith('web:')) continue;
+      final domain = appName.replaceFirst('web:', '');
       final meta = _dataStore.getAppMetadata(appName);
-      if (meta == null || meta.dailyLimit == Duration.zero) continue;
+      if (meta == null) continue;
+
+      // Add to domainLimits regardless of whether a limit is set, so the
+      // extension can sync metadata fields (category, isTracking, etc.) too.
+      domainLimits[domain] = {
+        'dailyLimitSeconds': meta.dailyLimit.inSeconds,
+        'isTracking':        meta.isTracking,
+        'isProductive':      meta.isProductive,
+        'category':          meta.category,
+        'siteName':          meta.siteName,
+      };
+
+      if (meta.dailyLimit == Duration.zero) continue;
       final record = _dataStore.getAppUsage(appName, startOfDay);
       if (record != null && record.timeSpent >= meta.dailyLimit) {
-        blockedDomains.add(appName.replaceFirst('web:', ''));
+        blockedDomains.add(domain);
       }
     }
 
@@ -207,16 +292,25 @@ class BrowserExtensionServer {
       'allowedDomains': <String>[],
       'endTimeEpochMs': endTimeEpochMs,
       'sessionLabel': sessionLabel,
+      // New in sync protocol v2: lets the extension merge desktop-only limits
+      // and metadata into scolect_settings.metadata (gaps-fill, extension wins).
+      'domainLimits': domainLimits,
     });
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────
 
-  static void _setCors(HttpResponse response) {
+  static void _setCors(HttpResponse response, [String origin = '']) {
+    // Echo back the extension origin rather than '*' so browsers enforce
+    // the same-origin policy against non-extension callers.
+    final allowedOrigin = origin.startsWith('chrome-extension://')
+        ? origin
+        : 'null'; // 'null' deliberately blocks non-extension browser fetches
     response.headers
-      ..add('Access-Control-Allow-Origin', '*')
+      ..add('Access-Control-Allow-Origin', allowedOrigin)
       ..add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-      ..add('Access-Control-Allow-Headers', 'Content-Type');
+      ..add('Access-Control-Allow-Headers', 'Content-Type')
+      ..add('Vary', 'Origin');
   }
 
   static Future<String> _readBody(HttpRequest req) async {

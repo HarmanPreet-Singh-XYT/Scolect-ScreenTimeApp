@@ -278,6 +278,10 @@ class _TableHeader extends StatelessWidget {
             child: _HeaderCell(l10n.browserColumnVisits, color: color, align: TextAlign.center),
           ),
           SizedBox(
+            width: 110,
+            child: _HeaderCell('Daily Limit', color: color, align: TextAlign.center),
+          ),
+          SizedBox(
             width: 80,
             child: _HeaderCell(l10n.productive, color: color, align: TextAlign.center),
           ),
@@ -380,12 +384,119 @@ class _WebsiteRowState extends State<_WebsiteRow> {
     });
   }
 
+  /// Opens the daily limit picker dialog — same UX as BrowserLimits tab.
+  void _showLimitPicker() {
+    final l10n = AppLocalizations.of(context)!;
+    final site = widget.site;
+    int hours = site.dailyLimit.inHours;
+    int minutes = site.dailyLimit.inMinutes % 60;
+
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setInner) => ContentDialog(
+          title: Text(l10n.browserDailyLimitDialog(site.domain)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(l10n.browserDailyLimitDialogDesc),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Text(l10n.browserHours,
+                          style: const TextStyle(fontSize: 12)),
+                      const SizedBox(height: 4),
+                      NumberBox<int>(
+                        value: hours,
+                        min: 0,
+                        max: 23,
+                        onChanged: (v) => setInner(() => hours = v ?? 0),
+                        mode: SpinButtonPlacementMode.inline,
+                      ),
+                    ],
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(':',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
+                  ),
+                  Column(
+                    children: [
+                      Text(l10n.minutesLabel,
+                          style: const TextStyle(fontSize: 12)),
+                      const SizedBox(height: 4),
+                      NumberBox<int>(
+                        value: minutes,
+                        min: 0,
+                        max: 59,
+                        onChanged: (v) => setInner(() => minutes = v ?? 0),
+                        mode: SpinButtonPlacementMode.inline,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            Button(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.cancelButton),
+            ),
+            if (site.dailyLimit > Duration.zero)
+              Button(
+                onPressed: () async {
+                  Navigator.of(ctx).pop();
+                  await BrowserDataProvider().updateWebsiteMetadata(
+                    site.displayName,
+                    dailyLimit: Duration.zero,
+                  );
+                  widget.onMetadataChanged();
+                },
+                child: Text(l10n.browserRemoveLimit),
+              ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                final limit = Duration(hours: hours, minutes: minutes);
+                await BrowserDataProvider().updateWebsiteMetadata(
+                  site.displayName,
+                  dailyLimit: limit,
+                );
+                widget.onMetadataChanged();
+              },
+              child: Text(l10n.saveButton),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final captionColor = theme.typography.caption?.color;
     final site = widget.site;
     final hasDifferentName = site.siteName.isNotEmpty && site.siteName != site.domain;
+
+    // Limit progress
+    final hasLimit = site.dailyLimit > Duration.zero;
+    double limitProgress = 0;
+    if (hasLimit && site.timeSpent > Duration.zero) {
+      limitProgress =
+          (site.timeSpent.inSeconds / site.dailyLimit.inSeconds).clamp(0.0, 1.0);
+    }
+    final overLimit = limitProgress >= 1.0;
+    final limitColor = overLimit
+        ? kBrowserRed
+        : limitProgress > 0.75
+            ? kBrowserAmber
+            : kBrowserGreen;
 
     return Column(
       children: [
@@ -530,6 +641,74 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                   ),
                 ),
 
+                // ── Daily Limit column ──────────────────────────────────────
+                SizedBox(
+                  width: 110,
+                  child: GestureDetector(
+                    onTap: _showLimitPicker,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Tooltip(
+                        message: hasLimit
+                            ? 'Click to edit limit'
+                            : 'Click to set a daily limit',
+                        child: hasLimit
+                            ? Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Progress bar
+                                  SizedBox(
+                                    width: 90,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            color: theme.inactiveBackgroundColor,
+                                            borderRadius: BorderRadius.circular(2),
+                                          ),
+                                        ),
+                                        FractionallySizedBox(
+                                          widthFactor: limitProgress,
+                                          child: Container(
+                                            height: 4,
+                                            decoration: BoxDecoration(
+                                              color: limitColor,
+                                              borderRadius: BorderRadius.circular(2),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 3),
+                                  Text(
+                                    _formatLimit(site.dailyLimit),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: limitColor,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Center(
+                                child: Text(
+                                  'No limit',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: captionColor?.withValues(alpha: 0.35),
+                                  ),
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Productive toggle
                 SizedBox(
                   width: 80,
@@ -579,6 +758,14 @@ class _WebsiteRowState extends State<_WebsiteRow> {
           ),
       ],
     );
+  }
+
+  String _formatLimit(Duration d) {
+    final h = d.inHours;
+    final m = d.inMinutes % 60;
+    if (h > 0 && m > 0) return '${h}h ${m}m';
+    if (h > 0) return '${h}h';
+    return '${m}m';
   }
 }
 

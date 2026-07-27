@@ -516,6 +516,47 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
 
             const SizedBox(height: 20),
 
+            // ── Browser limits info card ───────────────────────────────────
+            BrowserCard(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: kBrowserAmber.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(FluentIcons.info, size: 16, color: kBrowserAmber),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Browser limits are enforced by the Chrome Extension',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Daily limits and website blocking only work inside Chrome. Install the extension and enable this server — the extension handles all enforcement and syncs data here.',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: captionColor?.withValues(alpha: 0.65),
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
             // Chrome Extension Promo Card
             BrowserCard(
               padding: const EdgeInsets.all(20),
@@ -548,7 +589,7 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Track active websites, category screen time, and sync statistics seamlessly with Scolect Desktop.',
+                          'Set daily limits, block sites when limits are reached, and sync website usage to this app — all enforced directly in Chrome.',
                           style: TextStyle(
                             fontSize: 12,
                             color: captionColor?.withValues(alpha: 0.65),
