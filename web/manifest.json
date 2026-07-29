@@ -1,26 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "Scolect – Web Time Tracker",
+  "name": "Scolect – Screen Time & Website Tracker",
   "short_name": "Scolect",
-  "description": "Track your website usage. Dashboard powered by Flutter.",
-  "version": "1.0.0",
+  "description": "Track time spent on websites, set daily limits, block distracting sites, and run focus sessions. Open source screen time tracker.",
+  "version": "2.1.1",
 
   "icons": {
-    "16":  "icons/Icon-192.png",
-    "32":  "icons/Icon-192.png",
-    "48":  "icons/Icon-192.png",
-    "128": "icons/Icon-512.png"
+    "16":  "icons/Icon-16.png",
+    "32":  "icons/Icon-32.png",
+    "48":  "icons/Icon-48.png",
+    "128": "icons/Icon-192.png",
+    "512": "icons/Icon-512.png"
   },
 
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16":  "icons/Icon-192.png",
-      "32":  "icons/Icon-192.png",
-      "48":  "icons/Icon-192.png",
-      "128": "icons/Icon-512.png"
+      "16":  "icons/Icon-16.png",
+      "32":  "icons/Icon-32.png",
+      "48":  "icons/Icon-48.png",
+      "128": "icons/Icon-192.png"
     },
-    "default_title": "Scolect – Web Time Tracker"
+    "default_title": "Scolect – Screen Time Tracker"
   },
 
   "background": {
