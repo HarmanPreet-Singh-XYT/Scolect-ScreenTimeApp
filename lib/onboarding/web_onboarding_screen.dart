@@ -63,7 +63,7 @@ const List<_SlideData> _slides = [
     accentColor: Color(0xFF10B981),
     title: 'Sync with the Desktop App',
     description:
-        'Install the Scolect desktop app to merge browser and native app usage into one unified timeline. Limits set on desktop apply here too.',
+        'Install the Scolect desktop app to merge browser and desktop usage into one unified timeline. Limits set on desktop apply here too.',
     chips: ['Unified view', 'Shared limits', 'Auto-sync'],
     visualType: _VisualType.sync,
   ),

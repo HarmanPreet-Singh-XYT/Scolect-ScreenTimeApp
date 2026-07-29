@@ -5,7 +5,7 @@ import 'package:local_notifier/local_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
+import 'package:screentime/sections/widgets/Settings/reusables.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants

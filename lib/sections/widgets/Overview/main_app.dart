@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import './reusable.dart';
-import 'package:screentime/sections/UI sections/Reports/appdetails.dialog.dart';
+import 'package:screentime/sections/widgets/Reports/appdetails.dialog.dart';
 import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────

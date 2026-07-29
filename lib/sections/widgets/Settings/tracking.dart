@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/application_controller.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
-import 'package:screentime/sections/UI sections/Settings/permission_notification.dart';
+import 'package:screentime/sections/widgets/Settings/reusables.dart';
+import 'package:screentime/sections/widgets/Settings/permission_notification.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants

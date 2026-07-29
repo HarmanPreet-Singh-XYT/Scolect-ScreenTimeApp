@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 
 // ============================================================================
 // DYNAMIC APP DESIGN - Works with ThemeCustomizationProvider

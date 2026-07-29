@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/web/chrome_storage_interop.dart'
     if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';

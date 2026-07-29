@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'app_data_controller.dart';
+import 'package:screentime/sections/controller/app_data_controller.dart';
 class MaintenanceService {
   final AppDataStore _dataStore = AppDataStore();
   Timer? _maintenanceTimer;

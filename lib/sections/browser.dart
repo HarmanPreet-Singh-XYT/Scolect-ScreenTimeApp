@@ -7,14 +7,14 @@ import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'package:screentime/sections/settings.dart';
 import 'dart:async';
-import 'UI sections/Browser/browser_shared.dart';
-import 'UI sections/Browser/browser_overview.dart';
-import 'UI sections/Browser/browser_websites.dart';
-import 'UI sections/Browser/browser_categories.dart';
-import 'UI sections/Browser/browser_limits.dart';
-import 'UI sections/Browser/browser_extension_status.dart';
-import 'UI sections/Browser/browser_extension_settings.dart';
-import 'UI sections/Browser/browser_history.dart';
+import 'widgets/Browser/browser_shared.dart';
+import 'widgets/Browser/browser_overview.dart';
+import 'widgets/Browser/browser_websites.dart';
+import 'widgets/Browser/browser_categories.dart';
+import 'widgets/Browser/browser_limits.dart';
+import 'widgets/Browser/browser_extension_status.dart';
+import 'widgets/Browser/browser_extension_settings.dart';
+import 'widgets/Browser/browser_history.dart';
 
 // Conditionally import extension settings (web only)
 import '../web/extension_settings.dart'

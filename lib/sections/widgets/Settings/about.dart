@@ -3,9 +3,9 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/settings.dart';
-import 'package:screentime/sections/UI%20sections/Settings/reusables.dart';
+import 'package:screentime/sections/widgets/Settings/reusables.dart';
 import 'package:screentime/utils/update_service.dart';
-import 'package:screentime/sections/UI%20sections/Overview/changelog.dart';
+import 'package:screentime/sections/widgets/Overview/changelog.dart';
 import 'package:screentime/main.dart' show autoUpdates;
 
 // ============== ABOUT SECTION ==============

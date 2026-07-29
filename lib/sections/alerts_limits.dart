@@ -3,10 +3,10 @@ import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
-import 'UI sections/AlertsLimits/applicationlimit.dart';
-import 'UI sections/AlertsLimits/notificationCard.dart';
-import 'UI sections/AlertsLimits/overalllimit.dart';
-import 'UI sections/AlertsLimits/quickStats.dart';
+import 'widgets/AlertsLimits/applicationlimit.dart';
+import 'widgets/AlertsLimits/notificationCard.dart';
+import 'widgets/AlertsLimits/overalllimit.dart';
+import 'widgets/AlertsLimits/quickStats.dart';
 
 // ──────────────── Settings Keys ────────────────
 

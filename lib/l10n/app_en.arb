@@ -2268,11 +2268,11 @@
   "browserTrackingActive": "Tracking Active",
   "browserTrackingActiveDesc": "Your browser activity is being tracked and\nsynced to the Scolect desktop app.",
   "browserConnectedToDesktop": "Connected to Scolect Desktop",
-  "browserDesktopNotReachable": "Desktop app not reachable",
+  "browserDesktopNotReachable": "Scolect Desktop not reachable",
   "browserRefreshSyncStatus": "Refresh sync status",
   "browserSwitchToStandalone": "Switch to Standalone mode →",
   "browserSetupTitle": "Connect Browser Extension",
-  "browserSetupSubtitle": "Enable the local server so the Scolect browser extension can sync your web activity to this app.",
+  "browserSetupSubtitle": "Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.",
   "browserSetupEnableServer": "Enable Extension Server",
   "browserSetupServerRunning": "Server running · port {port}",
   "@browserSetupServerRunning": {

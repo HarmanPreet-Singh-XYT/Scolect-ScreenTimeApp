@@ -3,8 +3,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:screentime/main.dart';
 import 'package:file_picker/file_picker.dart';
@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import './theme_helpers.dart';
 import './reusables.dart';
-import 'package:screentime/sections/UI sections/Settings/hover_state_mixin.dart';
+import 'package:screentime/sections/widgets/Settings/hover_state_mixin.dart';
 
 // ============== THEME CUSTOMIZATION SECTION ==============
 

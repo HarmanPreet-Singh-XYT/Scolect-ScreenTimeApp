@@ -6375,7 +6375,7 @@ abstract class AppLocalizations {
   /// No description provided for @browserDesktopNotReachable.
   ///
   /// In en, this message translates to:
-  /// **'Desktop app not reachable'**
+  /// **'Scolect Desktop not reachable'**
   String get browserDesktopNotReachable;
 
   /// No description provided for @browserRefreshSyncStatus.
@@ -6399,7 +6399,7 @@ abstract class AppLocalizations {
   /// No description provided for @browserSetupSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Enable the local server so the Scolect browser extension can sync your web activity to this app.'**
+  /// **'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.'**
   String get browserSetupSubtitle;
 
   /// No description provided for @browserSetupEnableServer.

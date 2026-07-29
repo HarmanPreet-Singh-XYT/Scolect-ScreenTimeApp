@@ -31,11 +31,11 @@ import 'utils/single_instance_ipc.dart';
 import 'utils/browser_extension_server.dart';
 import 'dart:ui' show lerpDouble, PlatformDispatcher;
 import 'package:provider/provider.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/onboarding/onboarding_screen.dart';
-import 'package:screentime/sections/UI sections/FocusMode/audio.dart';
+import 'package:screentime/sections/widgets/FocusMode/audio.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -256,9 +256,9 @@ class _AppWithThemeWeb extends StatelessWidget {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: locale,
         debugShowCheckedModeBanner: false,
-        home: const ScaffoldPage(
+        home: ScaffoldPage(
           padding: EdgeInsets.zero,
-          content: WebDashboard(),
+          content: WebDashboard(setLocale: setLocale),
         ),
       ),
     );

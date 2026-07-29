@@ -14,8 +14,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_provider.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 
 import 'package:screentime/sections/overview.dart';
 import 'package:screentime/sections/applications.dart';
@@ -23,9 +23,9 @@ import 'package:screentime/sections/reports.dart';
 import 'package:screentime/sections/alerts_limits.dart';
 import 'package:screentime/sections/focus_mode.dart';
 import 'package:screentime/sections/settings.dart' as native_settings;
-import 'UI sections/Browser/browser_extension_status.dart';
-import 'UI sections/Browser/browser_websites.dart';
-import 'UI sections/Browser/browser_shared.dart';
+import 'widgets/Browser/browser_extension_status.dart';
+import 'widgets/Browser/browser_websites.dart';
+import 'widgets/Browser/browser_shared.dart';
 import 'package:screentime/onboarding/web_onboarding_screen.dart';
 
 import '../web/extension_settings.dart'
@@ -36,7 +36,9 @@ import '../web/chrome_storage_interop.dart'
 // ─── Web Dashboard Root ───────────────────────────────────────────────────────
 
 class WebDashboard extends StatefulWidget {
-  const WebDashboard({super.key});
+  final Function(Locale) setLocale;
+
+  const WebDashboard({super.key, required this.setLocale});
 
   @override
   State<WebDashboard> createState() => _WebDashboardState();
@@ -250,7 +252,7 @@ class _WebDashboardState extends State<WebDashboard>
       case 5:
         return native_settings.Settings(
           key: const ValueKey('native_settings'),
-          setLocale: (_) {},
+          setLocale: widget.setLocale,
         );
       default:
         return const SizedBox.shrink();
@@ -616,7 +618,7 @@ class _WebSidebar extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      'Unlock full system app tracking & automatic sync across devices.',
+                      'Unlock full system-level tracking & automatic sync with your browser data.',
                       style: TextStyle(
                         fontSize: 10.5,
                         color: isDark
@@ -741,7 +743,7 @@ class _SidebarLogo extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Web Tracker',
+                    'Open Source',
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w500,

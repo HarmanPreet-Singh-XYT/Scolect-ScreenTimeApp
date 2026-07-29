@@ -4,8 +4,8 @@ import 'package:screentime/main.dart';
 import 'package:screentime/sections/graphs/reports_line_chart.dart';
 import 'package:screentime/sections/graphs/reports_pie_chart.dart';
 import './controller/data_controllers/reports_controller.dart';
-import 'package:screentime/sections/UI sections/Reports/application_usage.dart';
-import 'package:screentime/sections/UI sections/Reports/top_boxes.dart';
+import 'package:screentime/sections/widgets/Reports/application_usage.dart';
+import 'package:screentime/sections/widgets/Reports/top_boxes.dart';
 import 'package:screentime/sections/controller/analytics_xlsx_exporter.dart';
 
 enum PeriodType { last7Days, lastMonth, last3Months, lifetime, custom }

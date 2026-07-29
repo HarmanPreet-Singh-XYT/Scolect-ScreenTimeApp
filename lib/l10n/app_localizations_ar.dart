@@ -3520,7 +3520,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browserConnectedToDesktop => 'Connected to Scolect Desktop';
 
   @override
-  String get browserDesktopNotReachable => 'Desktop app not reachable';
+  String get browserDesktopNotReachable => 'Scolect Desktop not reachable';
 
   @override
   String get browserRefreshSyncStatus => 'Refresh sync status';
@@ -3533,7 +3533,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get browserSetupSubtitle =>
-      'Enable the local server so the Scolect browser extension can sync your web activity to this app.';
+      'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.';
 
   @override
   String get browserSetupEnableServer => 'Enable Extension Server';

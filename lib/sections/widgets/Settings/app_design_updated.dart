@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:screentime/sections/UI sections/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 
 // ============== APP DESIGN ==============
 //

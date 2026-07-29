@@ -7,14 +7,14 @@ import './controller/data_controllers/personalization/insight_models.dart';
 import './controller/data_controllers/personalization/habit_profile_models.dart';
 import './controller/data_controllers/personalization/personalization_engine.dart';
 import './controller/data_controllers/personalization/personalization_store.dart';
-import 'UI sections/Overview/bottom.dart';
-import 'UI sections/Overview/statCards.dart';
-import 'UI sections/Overview/main_app.dart';
-import 'UI Sections/overview/changelog.dart';
-import 'UI sections/Overview/personalization/narrative_card.dart';
-import 'UI sections/Overview/personalization/insight_card.dart';
-import 'UI sections/Overview/personalization/habit_dna_card.dart';
-import 'UI sections/Overview/personalization/weekly_story_card.dart';
+import 'widgets/Overview/bottom.dart';
+import 'widgets/Overview/statCards.dart';
+import 'widgets/Overview/main_app.dart';
+import 'widgets/Overview/changelog.dart';
+import 'widgets/Overview/personalization/narrative_card.dart';
+import 'widgets/Overview/personalization/insight_card.dart';
+import 'widgets/Overview/personalization/habit_dna_card.dart';
+import 'widgets/Overview/personalization/weekly_story_card.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
