@@ -1872,5 +1872,150 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navBrowser": "Navigateur",
+  "browserExtensionTitle": "Extension Navigateur",
+  "browserExtensionDescription": "Permettre à l'extension Scolect de se connecter et de synchroniser les données d'utilisation des sites web",
+  "browserTitle": "Navigateur",
+  "browserWebsiteTracking": "Suivi des sites web",
+  "browserSubtitle": "Suivez et gérez votre utilisation des sites web",
+  "browserToday": "Aujourd'hui",
+  "browserSites": "Sites",
+  "browserExtensionSettings": "Paramètres de l'extension",
+  "browserSyncing": "Synchronisation",
+  "browserTabOverview": "Aperçu",
+  "browserTabWebsites": "Sites web",
+  "browserTabCategories": "Catégories",
+  "browserTabLimits": "Limites",
+  "browserTabHistory": "Historique",
+  "browserHistoryTitle": "Aperçu hebdomadaire",
+  "browserHistorySubtitle": "Votre temps de navigation au cours des 7 derniers jours",
+  "browserHistoryNoData": "Aucune donnée de navigation pour l'instant",
+  "browserHistoryAvgPerDay": "Moy. / jour",
+  "browserHistoryPeakDay": "Jour de pointe",
+  "browserHistoryTotalWeek": "Total cette semaine",
+  "browserHistoryTopSites": "Meilleurs sites cette semaine",
+  "browserTodayWebTime": "Temps web aujourd'hui",
+  "browserSitesVisited": "Sites visités",
+  "browserPageVisits": "Pages visitées",
+  "browserTopSitesToday": "Meilleurs sites aujourd'hui",
+  "browserViewAll": "Tout voir →",
+  "browserNoWebActivityTitle": "Aucune activité web aujourd'hui",
+  "browserNoActivityWebSubtitle": "Naviguez sur le web pour commencer à suivre votre temps",
+  "browserNoActivityDesktopSubtitle": "Installez l'extension navigateur pour commencer le suivi",
+  "browserNoCategoriesTitle": "Aucune catégorie pour l'instant",
+  "browserNoCategoriesSubtitle": "Les catégories apparaissent une fois les sites web suivis",
+  "browserByCategory": "Par catégorie",
+  "browserVisitCount": "{count, plural, =1{1 visite} other{{count} visites}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserSearchPlaceholder": "Rechercher un site ou un domaine…",
+  "browserFilterAllTracking": "Tout le suivi",
+  "browserFilterTracked": "Suivi",
+  "browserFilterUntracked": "Non suivi",
+  "browserFilterAllTypes": "Tous les types",
+  "browserFilterUnproductive": "Non productif",
+  "browserWebsiteCount": "{count, plural, =1{1 site web} other{{count} sites web}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserColumnDomain": "Domaine",
+  "browserColumnTimeToday": "Temps aujourd'hui",
+  "browserColumnVisits": "Visites",
+  "browserColumnTracking": "Suivi",
+  "browserNoWebsitesTitle": "Aucun site web trouvé",
+  "browserNoWebsitesWebSubtitle": "Naviguez sur le web — vos sites apparaîtront ici.",
+  "browserNoWebsitesDesktopSubtitle": "Essayez d'ajuster vos filtres ou attendez que l'\nextension synchronise des données.",
+  "browserTimeDistribution": "Répartition du temps",
+  "browserSiteCount": "{count, plural, =1{1 site} other{{count} sites}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserActiveLimits": "Limites actives",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 site web avec des limites quotidiennes} other{{count} sites web avec des limites quotidiennes}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserNoLimitsTitle": "Aucune limite définie",
+  "browserNoLimitsSubtitle": "Définir des limites de temps quotidiennes ci-dessous",
+  "browserAllWebsites": "Tous les sites web",
+  "browserAllWebsitesSubtitle": "Appuyez sur un site pour définir ou modifier sa limite quotidienne",
+  "browserAllSitesHaveLimits": "Tous les sites ont des limites",
+  "browserNoWebsitesTrackedTitle": "Aucun site web suivi pour l'instant",
+  "browserNoWebsitesTrackedWebSubtitle": "Naviguez sur le web pour voir vos sites ici",
+  "browserNoWebsitesTrackedDesktopSubtitle": "Installez l'extension et naviguez pour commencer",
+  "browserDailyLimitDialog": "Limite quotidienne – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": { "type": "String" }
+    }
+  },
+  "browserDailyLimitDialogDesc": "Définissez combien de temps vous pouvez visiter ce site par jour.",
+  "browserHours": "Heures",
+  "browserRemoveLimit": "Supprimer la limite",
+  "browserTimeUsed": "{time} utilisé",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "browserSetLimit": "Définir une limite",
+  "browserExtensionMode": "Mode extension",
+  "browserDesktopAppUrl": "URL de l'application bureau",
+  "browserDesktopAppUrlDesc": "L'URL où l'application bureau Scolect exécute son serveur local.",
+  "browserAbout": "À propos",
+  "browserAboutExtension": "Extension",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "Version",
+  "browserAboutStorage": "Stockage",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "Historique",
+  "browserAboutHistoryValue": "30 derniers jours conservés",
+  "browserDangerZone": "Zone dangereuse",
+  "browserClearDataTitle": "Effacer toutes les données de sites web",
+  "browserClearDataDesc": "Supprime définitivement tout l'historique des sites web suivis. Cette action est irréversible.",
+  "browserClearDataButton": "Effacer les données",
+  "browserAreYouSure": "Êtes-vous sûr ?",
+  "browserYesDelete": "Oui, supprimer",
+  "browserDesktopUrlSaved": "URL bureau enregistrée",
+  "browserDataCleared": "Toutes les données de sites web effacées",
+  "browserTrackingActive": "Suivi actif",
+  "browserTrackingActiveDesc": "Votre activité de navigation est suivie et\nsynchronisée avec l'application bureau Scolect.",
+  "browserConnectedToDesktop": "Connecté à Scolect Bureau",
+  "browserDesktopNotReachable": "Scolect Bureau inaccessible",
+  "browserRefreshSyncStatus": "Actualiser le statut de synchronisation",
+  "browserSwitchToStandalone": "Passer en mode autonome →",
+  "browserSetupTitle": "Connecter l'extension navigateur",
+  "browserSetupSubtitle": "Activez le serveur local pour que l'extension Scolect puisse synchroniser votre activité web avec l'application bureau.",
+  "browserSetupEnableServer": "Activer le serveur d'extension",
+  "browserSetupServerRunning": "Serveur en cours · port {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "Serveur désactivé",
+  "browserSetupStep1": "Activez le serveur à l'aide du bouton ci-dessus",
+  "browserSetupStep2": "Installez l'extension Scolect dans votre navigateur",
+  "browserSetupStep3": "Ouvrez votre navigateur et visitez n'importe quel site",
+  "browserSetupStep4": "L'activité web apparaîtra ici automatiquement",
+  "browserSetupHowTo": "Comment commencer",
+  "browserSetupServerActive": "Serveur actif",
+  "browserSetupServerActiveDesc": "Votre extension navigateur peut maintenant se connecter et synchroniser les données.",
+  "browserServerPort": "Port du serveur",
+  "browserServerPortDesc": "Port sur lequel le serveur local écoute. Changez-le si le port 46000 est déjà utilisé.",
+  "browserServerPortSaved": "Port mis à jour — reconnexion de l'extension",
+  "browserServerPortInvalid": "Entrez un port entre 1024 et 65535",
+  "browserDisableServer": "Désactiver le serveur d'extension",
+  "browserEditSiteName": "Modifier le nom affiché",
+  "browserSiteNameHint": "Nom affiché (ex. YouTube)"
 }

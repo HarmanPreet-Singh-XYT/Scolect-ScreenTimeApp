@@ -1872,5 +1872,161 @@
         "type": "String"
       }
     }
-  }
+  },
+  "browserExtensionTitle": "براؤزر ایکسٹینشن",
+  "browserExtensionDescription": "Scolect براؤزر ایکسٹینشن کو ویب سائٹ استعمال کا ڈیٹا جوڑنے اور مطابقت پذیر کرنے کی اجازت دیں",
+  "browserTitle": "براؤزر",
+  "browserWebsiteTracking": "ویب سائٹ ٹریکنگ",
+  "browserSubtitle": "اپنی ویب سائٹ کے استعمال کو ٹریک اور منظم کریں",
+  "browserToday": "آج",
+  "browserSites": "سائٹس",
+  "browserExtensionSettings": "ایکسٹینشن کی ترتیبات",
+  "browserSyncing": "مطابقت پذیری",
+  "browserTabOverview": "جائزہ",
+  "browserTabWebsites": "ویب سائٹس",
+  "browserTabCategories": "زمرے",
+  "browserTabLimits": "حدود",
+  "browserTabHistory": "تاریخ",
+  "browserHistoryTitle": "ہفتہ وار جائزہ",
+  "browserHistorySubtitle": "گزشتہ 7 دنوں میں آپ کا براؤزنگ وقت",
+  "browserHistoryNoData": "ابھی تک کوئی براؤزنگ ڈیٹا نہیں",
+  "browserHistoryAvgPerDay": "اوسط / دن",
+  "browserHistoryPeakDay": "عروج کا دن",
+  "browserHistoryTotalWeek": "اس ہفتے کل",
+  "browserHistoryTopSites": "اس ہفتے کی اہم سائٹس",
+  "browserTodayWebTime": "آج کا ویب وقت",
+  "browserSitesVisited": "سائٹس کا دورہ",
+  "browserPageVisits": "صفحات کا دورہ",
+  "browserTopSitesToday": "آج کی اہم سائٹس",
+  "browserViewAll": "سب دیکھیں →",
+  "browserNoWebActivityTitle": "آج ابھی تک کوئی ویب سرگرمی نہیں",
+  "browserNoActivityWebSubtitle": "اپنا وقت ٹریک کرنا شروع کرنے کے لیے ویب براؤز کریں",
+  "browserNoActivityDesktopSubtitle": "ٹریکنگ شروع کرنے کے لیے براؤزر ایکسٹینشن انسٹال کریں",
+  "browserNoCategoriesTitle": "ابھی تک کوئی زمرہ نہیں",
+  "browserNoCategoriesSubtitle": "ویب سائٹس ٹریک ہونے کے بعد زمرے ظاہر ہوں گے",
+  "browserByCategory": "زمرے کے مطابق",
+  "browserVisitCount": "{count, plural, =1{1 دورہ} other{{count} دورے}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSearchPlaceholder": "ویب سائٹ یا ڈومین تلاش کریں…",
+  "browserFilterAllTracking": "تمام ٹریکنگ",
+  "browserFilterTracked": "ٹریک شدہ",
+  "browserFilterUntracked": "غیر ٹریک شدہ",
+  "browserFilterAllTypes": "تمام اقسام",
+  "browserFilterUnproductive": "غیر پیداواری",
+  "browserWebsiteCount": "{count, plural, =1{1 ویب سائٹ} other{{count} ویب سائٹس}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserColumnDomain": "ڈومین",
+  "browserColumnTimeToday": "آج کا وقت",
+  "browserColumnVisits": "دورے",
+  "browserColumnTracking": "ٹریکنگ",
+  "browserNoWebsitesTitle": "کوئی ویب سائٹ نہیں ملی",
+  "browserNoWebsitesWebSubtitle": "ویب براؤز کریں — آپ کی سائٹس یہاں ظاہر ہوں گی۔",
+  "browserNoWebsitesDesktopSubtitle": "اپنے فلٹرز کو ایڈجسٹ کریں یا انتظار کریں\nجب تک ایکسٹینشن کچھ ڈیٹا مطابقت پذیر کرے۔",
+  "browserTimeDistribution": "وقت کی تقسیم",
+  "browserSiteCount": "{count, plural, =1{1 سائٹ} other{{count} سائٹس}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserActiveLimits": "فعال حدود",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 ویب سائٹ روزانہ کی حد کے ساتھ} other{{count} ویب سائٹس روزانہ کی حدود کے ساتھ}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserNoLimitsTitle": "کوئی حد مقرر نہیں",
+  "browserNoLimitsSubtitle": "نیچے روزانہ کی وقت کی حدود مقرر کریں",
+  "browserAllWebsites": "تمام ویب سائٹس",
+  "browserAllWebsitesSubtitle": "روزانہ کی حد مقرر یا تبدیل کرنے کے لیے کسی سائٹ پر تھپتھپائیں",
+  "browserAllSitesHaveLimits": "تمام سائٹس کی حدود ہیں",
+  "browserNoWebsitesTrackedTitle": "ابھی تک کوئی ویب سائٹ ٹریک نہیں ہوئی",
+  "browserNoWebsitesTrackedWebSubtitle": "اپنی سائٹس یہاں دیکھنے کے لیے ویب براؤز کریں",
+  "browserNoWebsitesTrackedDesktopSubtitle": "شروع کرنے کے لیے ایکسٹینشن انسٹال کریں اور براؤز کریں",
+  "browserDailyLimitDialog": "روزانہ کی حد – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "browserDailyLimitDialogDesc": "یہ مقرر کریں کہ آپ روزانہ اس سائٹ پر کتنا وقت گزار سکتے ہیں۔",
+  "browserHours": "گھنٹے",
+  "browserRemoveLimit": "حد ہٹائیں",
+  "browserTimeUsed": "{time} استعمال ہوا",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSetLimit": "حد مقرر کریں",
+  "browserExtensionMode": "ایکسٹینشن موڈ",
+  "browserDesktopAppUrl": "ڈیسک ٹاپ ایپ URL",
+  "browserDesktopAppUrlDesc": "وہ URL جہاں Scolect ڈیسک ٹاپ ایپ اپنا مقامی سرور چلا رہا ہے۔",
+  "browserAbout": "کے بارے میں",
+  "browserAboutExtension": "ایکسٹینشن",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "ورژن",
+  "browserAboutStorage": "اسٹوریج",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "تاریخ",
+  "browserAboutHistoryValue": "آخری 30 دن محفوظ",
+  "browserDangerZone": "خطرے کا علاقہ",
+  "browserClearDataTitle": "تمام ویب سائٹ ڈیٹا صاف کریں",
+  "browserClearDataDesc": "تمام ٹریک شدہ ویب سائٹ کی تاریخ مستقل طور پر حذف کرتا ہے۔ یہ واپس نہیں ہو سکتا۔",
+  "browserClearDataButton": "ڈیٹا صاف کریں",
+  "browserAreYouSure": "کیا آپ کو یقین ہے؟",
+  "browserYesDelete": "ہاں، حذف کریں",
+  "browserDesktopUrlSaved": "ڈیسک ٹاپ URL محفوظ ہو گیا",
+  "browserDataCleared": "تمام ویب سائٹ ڈیٹا صاف ہو گیا",
+  "browserTrackingActive": "ٹریکنگ فعال",
+  "browserTrackingActiveDesc": "آپ کی براؤزر سرگرمی ٹریک ہو رہی ہے اور\nScolect ڈیسک ٹاپ ایپ کے ساتھ مطابقت پذیر ہو رہی ہے۔",
+  "browserConnectedToDesktop": "Scolect ڈیسک ٹاپ سے جڑا ہوا",
+  "browserDesktopNotReachable": "Scolect ڈیسک ٹاپ قابل رسائی نہیں",
+  "browserRefreshSyncStatus": "مطابقت پذیری کی حالت تازہ کریں",
+  "browserSwitchToStandalone": "اسٹینڈ الون موڈ میں جائیں →",
+  "browserSetupTitle": "براؤزر ایکسٹینشن جوڑیں",
+  "browserSetupSubtitle": "مقامی سرور کو فعال کریں تاکہ Scolect براؤزر ایکسٹینشن آپ کی ویب سرگرمی کو ڈیسک ٹاپ ایپلیکیشن سے مطابقت پذیر کر سکے۔",
+  "browserSetupEnableServer": "ایکسٹینشن سرور فعال کریں",
+  "browserSetupServerRunning": "سرور چل رہا ہے · پورٹ {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "سرور غیر فعال",
+  "browserSetupStep1": "اوپر والے ٹوگل سے سرور فعال کریں",
+  "browserSetupStep2": "اپنے براؤزر میں Scolect ایکسٹینشن انسٹال کریں",
+  "browserSetupStep3": "اپنا براؤزر کھولیں اور کسی سائٹ پر جائیں",
+  "browserSetupStep4": "ویب سرگرمی یہاں خودبخود ظاہر ہو گی",
+  "browserSetupHowTo": "شروع کرنے کا طریقہ",
+  "browserSetupServerActive": "سرور فعال",
+  "browserSetupServerActiveDesc": "آپ کی براؤزر ایکسٹینشن اب جڑ سکتی ہے اور ڈیٹا مطابقت پذیر کر سکتی ہے۔",
+  "browserServerPort": "سرور پورٹ",
+  "browserServerPortDesc": "وہ پورٹ جو مقامی سرور سنتا ہے۔ اگر پورٹ 46000 پہلے سے استعمال میں ہو تو تبدیل کریں۔",
+  "browserServerPortSaved": "پورٹ اپڈیٹ ہوا — ایکسٹینشن دوبارہ جڑ رہی ہے",
+  "browserServerPortInvalid": "1024 سے 65535 کے درمیان پورٹ درج کریں",
+  "browserDisableServer": "ایکسٹینشن سرور غیر فعال کریں",
+  "browserEditSiteName": "ڈسپلے نام ترمیم کریں",
+  "browserSiteNameHint": "ڈسپلے نام (مثلاً YouTube)"
 }

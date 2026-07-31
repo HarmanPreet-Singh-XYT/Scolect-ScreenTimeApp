@@ -1872,5 +1872,150 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navBrowser": "ব্রাউজার",
+  "browserExtensionTitle": "ব্রাউজার এক্সটেনশন",
+  "browserExtensionDescription": "Scolect ব্রাউজার এক্সটেনশনকে সংযুক্ত হতে এবং ওয়েবসাইট ব্যবহারের ডেটা সিঙ্ক করতে অনুমতি দিন",
+  "browserTitle": "ব্রাউজার",
+  "browserWebsiteTracking": "ওয়েবসাইট ট্র্যাকিং",
+  "browserSubtitle": "আপনার ওয়েবসাইট ব্যবহার ট্র্যাক করুন এবং পরিচালনা করুন",
+  "browserToday": "আজ",
+  "browserSites": "সাইট",
+  "browserExtensionSettings": "এক্সটেনশন সেটিংস",
+  "browserSyncing": "সিঙ্ক হচ্ছে",
+  "browserTabOverview": "সারসংক্ষেপ",
+  "browserTabWebsites": "ওয়েবসাইট",
+  "browserTabCategories": "বিভাগ",
+  "browserTabLimits": "সীমা",
+  "browserTabHistory": "ইতিহাস",
+  "browserHistoryTitle": "সাপ্তাহিক সারসংক্ষেপ",
+  "browserHistorySubtitle": "গত ৭ দিনে আপনার ব্রাউজিং সময়",
+  "browserHistoryNoData": "এখনও ব্রাউজিং ডেটা নেই",
+  "browserHistoryAvgPerDay": "গড় / দিন",
+  "browserHistoryPeakDay": "সর্বোচ্চ দিন",
+  "browserHistoryTotalWeek": "এই সপ্তাহে মোট",
+  "browserHistoryTopSites": "এই সপ্তাহে শীর্ষ সাইট",
+  "browserTodayWebTime": "আজকের ওয়েব সময়",
+  "browserSitesVisited": "পরিদর্শিত সাইট",
+  "browserPageVisits": "পৃষ্ঠা পরিদর্শন",
+  "browserTopSitesToday": "আজকের শীর্ষ সাইট",
+  "browserViewAll": "সব দেখুন →",
+  "browserNoWebActivityTitle": "আজ এখনও কোনো ওয়েব কার্যকলাপ নেই",
+  "browserNoActivityWebSubtitle": "আপনার সময় ট্র্যাক শুরু করতে ওয়েব ব্রাউজ করুন",
+  "browserNoActivityDesktopSubtitle": "ট্র্যাকিং শুরু করতে ব্রাউজার এক্সটেনশন ইনস্টল করুন",
+  "browserNoCategoriesTitle": "এখনও কোনো বিভাগ নেই",
+  "browserNoCategoriesSubtitle": "ওয়েবসাইট ট্র্যাক হলে বিভাগ প্রদর্শিত হবে",
+  "browserByCategory": "বিভাগ অনুযায়ী",
+  "browserVisitCount": "{count, plural, =1{১টি পরিদর্শন} other{{count} টি পরিদর্শন}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserSearchPlaceholder": "ওয়েবসাইট বা ডোমেইন খুঁজুন…",
+  "browserFilterAllTracking": "সব ট্র্যাকিং",
+  "browserFilterTracked": "ট্র্যাক করা",
+  "browserFilterUntracked": "ট্র্যাক করা হয়নি",
+  "browserFilterAllTypes": "সব ধরন",
+  "browserFilterUnproductive": "অনুৎপাদনশীল",
+  "browserWebsiteCount": "{count, plural, =1{১টি ওয়েবসাইট} other{{count} টি ওয়েবসাইট}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserColumnDomain": "ডোমেইন",
+  "browserColumnTimeToday": "আজকের সময়",
+  "browserColumnVisits": "পরিদর্শন",
+  "browserColumnTracking": "ট্র্যাকিং",
+  "browserNoWebsitesTitle": "কোনো ওয়েবসাইট পাওয়া যায়নি",
+  "browserNoWebsitesWebSubtitle": "ওয়েব ব্রাউজ করুন — আপনার সাইট এখানে দেখাবে।",
+  "browserNoWebsitesDesktopSubtitle": "আপনার ফিল্টার পরিবর্তন করুন বা এক্সটেনশনের\nডেটা সিঙ্ক হওয়ার জন্য অপেক্ষা করুন।",
+  "browserTimeDistribution": "সময় বিতরণ",
+  "browserSiteCount": "{count, plural, =1{১টি সাইট} other{{count} টি সাইট}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserActiveLimits": "সক্রিয় সীমা",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{১টি ওয়েবসাইটে দৈনিক সীমা আছে} other{{count} টি ওয়েবসাইটে দৈনিক সীমা আছে}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserNoLimitsTitle": "কোনো সীমা নির্ধারিত নেই",
+  "browserNoLimitsSubtitle": "নিচে দৈনিক সময়সীমা নির্ধারণ করুন",
+  "browserAllWebsites": "সব ওয়েবসাইট",
+  "browserAllWebsitesSubtitle": "দৈনিক সীমা নির্ধারণ বা পরিবর্তন করতে একটি সাইটে ট্যাপ করুন",
+  "browserAllSitesHaveLimits": "সব সাইটে সীমা আছে",
+  "browserNoWebsitesTrackedTitle": "এখনও কোনো ওয়েবসাইট ট্র্যাক হয়নি",
+  "browserNoWebsitesTrackedWebSubtitle": "এখানে আপনার সাইট দেখতে ওয়েব ব্রাউজ করুন",
+  "browserNoWebsitesTrackedDesktopSubtitle": "শুরু করতে এক্সটেনশন ইনস্টল করুন এবং ব্রাউজ করুন",
+  "browserDailyLimitDialog": "দৈনিক সীমা – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": { "type": "String" }
+    }
+  },
+  "browserDailyLimitDialogDesc": "প্রতিদিন এই সাইট কতক্ষণ পরিদর্শন করতে পারবেন তা নির্ধারণ করুন।",
+  "browserHours": "ঘণ্টা",
+  "browserRemoveLimit": "সীমা সরান",
+  "browserTimeUsed": "{time} ব্যবহৃত",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "browserSetLimit": "সীমা নির্ধারণ করুন",
+  "browserExtensionMode": "এক্সটেনশন মোড",
+  "browserDesktopAppUrl": "ডেস্কটপ অ্যাপ URL",
+  "browserDesktopAppUrlDesc": "Scolect ডেস্কটপ অ্যাপ যে URL-এ তার স্থানীয় সার্ভার চালাচ্ছে।",
+  "browserAbout": "সম্পর্কে",
+  "browserAboutExtension": "এক্সটেনশন",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "সংস্করণ",
+  "browserAboutStorage": "স্টোরেজ",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "ইতিহাস",
+  "browserAboutHistoryValue": "শেষ ৩০ দিন সংরক্ষিত",
+  "browserDangerZone": "বিপজ্জনক অঞ্চল",
+  "browserClearDataTitle": "সব ওয়েবসাইট ডেটা মুছুন",
+  "browserClearDataDesc": "ট্র্যাক করা সমস্ত ওয়েবসাইট ইতিহাস স্থায়ীভাবে মুছে দেয়। এটি পূর্বাবস্থায় ফেরানো যাবে না।",
+  "browserClearDataButton": "ডেটা মুছুন",
+  "browserAreYouSure": "আপনি কি নিশ্চিত?",
+  "browserYesDelete": "হ্যাঁ, মুছুন",
+  "browserDesktopUrlSaved": "ডেস্কটপ URL সংরক্ষিত হয়েছে",
+  "browserDataCleared": "সব ওয়েবসাইট ডেটা মুছে গেছে",
+  "browserTrackingActive": "ট্র্যাকিং সক্রিয়",
+  "browserTrackingActiveDesc": "আপনার ব্রাউজার কার্যকলাপ ট্র্যাক করা হচ্ছে এবং\nScolect ডেস্কটপ অ্যাপে সিঙ্ক করা হচ্ছে।",
+  "browserConnectedToDesktop": "Scolect Desktop-এর সাথে সংযুক্ত",
+  "browserDesktopNotReachable": "Scolect Desktop নাগাল পাওয়া যাচ্ছে না",
+  "browserRefreshSyncStatus": "সিঙ্ক স্থিতি রিফ্রেশ করুন",
+  "browserSwitchToStandalone": "স্বতন্ত্র মোডে যান →",
+  "browserSetupTitle": "ব্রাউজার এক্সটেনশন সংযুক্ত করুন",
+  "browserSetupSubtitle": "স্থানীয় সার্ভার চালু করুন যাতে Scolect ব্রাউজার এক্সটেনশন আপনার ওয়েব কার্যকলাপ ডেস্কটপ অ্যাপ্লিকেশনে সিঙ্ক করতে পারে।",
+  "browserSetupEnableServer": "এক্সটেনশন সার্ভার চালু করুন",
+  "browserSetupServerRunning": "সার্ভার চলছে · পোর্ট {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "সার্ভার অক্ষম",
+  "browserSetupStep1": "উপরের টগল দিয়ে সার্ভার চালু করুন",
+  "browserSetupStep2": "আপনার ব্রাউজারে Scolect এক্সটেনশন ইনস্টল করুন",
+  "browserSetupStep3": "আপনার ব্রাউজার খুলুন এবং যেকোনো সাইট পরিদর্শন করুন",
+  "browserSetupStep4": "ওয়েব কার্যকলাপ এখানে স্বয়ংক্রিয়ভাবে প্রদর্শিত হবে",
+  "browserSetupHowTo": "কিভাবে শুরু করবেন",
+  "browserSetupServerActive": "সার্ভার সক্রিয়",
+  "browserSetupServerActiveDesc": "আপনার ব্রাউজার এক্সটেনশন এখন সংযুক্ত হতে এবং ডেটা সিঙ্ক করতে পারবে।",
+  "browserServerPort": "সার্ভার পোর্ট",
+  "browserServerPortDesc": "স্থানীয় সার্ভার যে পোর্টে শোনে। পোর্ট 46000 ইতিমধ্যে ব্যবহারে থাকলে এটি পরিবর্তন করুন।",
+  "browserServerPortSaved": "পোর্ট আপডেট হয়েছে — এক্সটেনশন পুনরায় সংযুক্ত হচ্ছে",
+  "browserServerPortInvalid": "1024 থেকে 65535-এর মধ্যে একটি পোর্ট দিন",
+  "browserDisableServer": "এক্সটেনশন সার্ভার অক্ষম করুন",
+  "browserEditSiteName": "প্রদর্শন নাম সম্পাদনা করুন",
+  "browserSiteNameHint": "প্রদর্শন নাম (যেমন: YouTube)"
 }

@@ -1872,5 +1872,150 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navBrowser": "Peramban",
+  "browserExtensionTitle": "Ekstensi Peramban",
+  "browserExtensionDescription": "Izinkan ekstensi peramban Scolect untuk terhubung dan menyinkronkan data penggunaan situs web",
+  "browserTitle": "Peramban",
+  "browserWebsiteTracking": "Pelacakan situs web",
+  "browserSubtitle": "Lacak dan kelola penggunaan situs web Anda",
+  "browserToday": "Hari ini",
+  "browserSites": "Situs",
+  "browserExtensionSettings": "Pengaturan Ekstensi",
+  "browserSyncing": "Menyinkronkan",
+  "browserTabOverview": "Ikhtisar",
+  "browserTabWebsites": "Situs Web",
+  "browserTabCategories": "Kategori",
+  "browserTabLimits": "Batas",
+  "browserTabHistory": "Riwayat",
+  "browserHistoryTitle": "Ikhtisar Mingguan",
+  "browserHistorySubtitle": "Waktu browsing Anda selama 7 hari terakhir",
+  "browserHistoryNoData": "Belum ada data browsing",
+  "browserHistoryAvgPerDay": "Rata-rata / hari",
+  "browserHistoryPeakDay": "Hari puncak",
+  "browserHistoryTotalWeek": "Total minggu ini",
+  "browserHistoryTopSites": "Situs teratas minggu ini",
+  "browserTodayWebTime": "Waktu Web Hari Ini",
+  "browserSitesVisited": "Situs Dikunjungi",
+  "browserPageVisits": "Kunjungan Halaman",
+  "browserTopSitesToday": "Situs Teratas Hari Ini",
+  "browserViewAll": "Lihat semua →",
+  "browserNoWebActivityTitle": "Belum ada aktivitas web hari ini",
+  "browserNoActivityWebSubtitle": "Jelajahi web untuk mulai melacak waktu Anda",
+  "browserNoActivityDesktopSubtitle": "Instal ekstensi peramban untuk mulai melacak",
+  "browserNoCategoriesTitle": "Belum ada kategori",
+  "browserNoCategoriesSubtitle": "Kategori muncul setelah situs web dilacak",
+  "browserByCategory": "Berdasarkan Kategori",
+  "browserVisitCount": "{count, plural, =1{1 kunjungan} other{{count} kunjungan}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserSearchPlaceholder": "Cari situs web atau domain…",
+  "browserFilterAllTracking": "Semua Pelacakan",
+  "browserFilterTracked": "Dilacak",
+  "browserFilterUntracked": "Tidak Dilacak",
+  "browserFilterAllTypes": "Semua Jenis",
+  "browserFilterUnproductive": "Tidak Produktif",
+  "browserWebsiteCount": "{count, plural, =1{1 situs web} other{{count} situs web}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserColumnDomain": "Domain",
+  "browserColumnTimeToday": "Waktu Hari Ini",
+  "browserColumnVisits": "Kunjungan",
+  "browserColumnTracking": "Pelacakan",
+  "browserNoWebsitesTitle": "Tidak ada situs web ditemukan",
+  "browserNoWebsitesWebSubtitle": "Jelajahi web — situs Anda akan muncul di sini.",
+  "browserNoWebsitesDesktopSubtitle": "Coba sesuaikan filter Anda atau tunggu\nexstensi menyinkronkan beberapa data.",
+  "browserTimeDistribution": "Distribusi Waktu",
+  "browserSiteCount": "{count, plural, =1{1 situs} other{{count} situs}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserActiveLimits": "Batas Aktif",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 situs web dengan batas harian} other{{count} situs web dengan batas harian}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserNoLimitsTitle": "Tidak ada batas yang ditetapkan",
+  "browserNoLimitsSubtitle": "Tetapkan batas waktu harian di bawah",
+  "browserAllWebsites": "Semua Situs Web",
+  "browserAllWebsitesSubtitle": "Ketuk situs untuk menetapkan atau mengubah batas hariannya",
+  "browserAllSitesHaveLimits": "Semua situs memiliki batas",
+  "browserNoWebsitesTrackedTitle": "Belum ada situs web yang dilacak",
+  "browserNoWebsitesTrackedWebSubtitle": "Jelajahi web untuk melihat situs Anda di sini",
+  "browserNoWebsitesTrackedDesktopSubtitle": "Instal ekstensi dan jelajahi untuk memulai",
+  "browserDailyLimitDialog": "Batas Harian – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": { "type": "String" }
+    }
+  },
+  "browserDailyLimitDialogDesc": "Tetapkan berapa lama Anda dapat mengunjungi situs ini per hari.",
+  "browserHours": "Jam",
+  "browserRemoveLimit": "Hapus Batas",
+  "browserTimeUsed": "{time} digunakan",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "browserSetLimit": "Tetapkan batas",
+  "browserExtensionMode": "Mode Ekstensi",
+  "browserDesktopAppUrl": "URL Aplikasi Desktop",
+  "browserDesktopAppUrlDesc": "URL tempat aplikasi desktop Scolect menjalankan server lokalnya.",
+  "browserAbout": "Tentang",
+  "browserAboutExtension": "Ekstensi",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "Versi",
+  "browserAboutStorage": "Penyimpanan",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "Riwayat",
+  "browserAboutHistoryValue": "30 hari terakhir disimpan",
+  "browserDangerZone": "Zona Berbahaya",
+  "browserClearDataTitle": "Hapus Semua Data Situs Web",
+  "browserClearDataDesc": "Menghapus secara permanen semua riwayat situs web yang dilacak. Tindakan ini tidak dapat dibatalkan.",
+  "browserClearDataButton": "Hapus Data",
+  "browserAreYouSure": "Apakah Anda yakin?",
+  "browserYesDelete": "Ya, Hapus",
+  "browserDesktopUrlSaved": "URL desktop disimpan",
+  "browserDataCleared": "Semua data situs web dihapus",
+  "browserTrackingActive": "Pelacakan Aktif",
+  "browserTrackingActiveDesc": "Aktivitas peramban Anda sedang dilacak dan\ndisinkronkan ke aplikasi desktop Scolect.",
+  "browserConnectedToDesktop": "Terhubung ke Scolect Desktop",
+  "browserDesktopNotReachable": "Scolect Desktop tidak dapat dijangkau",
+  "browserRefreshSyncStatus": "Segarkan status sinkronisasi",
+  "browserSwitchToStandalone": "Beralih ke mode Mandiri →",
+  "browserSetupTitle": "Hubungkan Ekstensi Peramban",
+  "browserSetupSubtitle": "Aktifkan server lokal agar ekstensi peramban Scolect dapat menyinkronkan aktivitas web Anda ke aplikasi desktop.",
+  "browserSetupEnableServer": "Aktifkan Server Ekstensi",
+  "browserSetupServerRunning": "Server berjalan · port {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "Server dinonaktifkan",
+  "browserSetupStep1": "Aktifkan server menggunakan tombol di atas",
+  "browserSetupStep2": "Instal ekstensi Scolect di peramban Anda",
+  "browserSetupStep3": "Buka peramban Anda dan kunjungi situs mana saja",
+  "browserSetupStep4": "Aktivitas web akan muncul di sini secara otomatis",
+  "browserSetupHowTo": "Cara memulai",
+  "browserSetupServerActive": "Server Aktif",
+  "browserSetupServerActiveDesc": "Ekstensi peramban Anda kini dapat terhubung dan menyinkronkan data.",
+  "browserServerPort": "Port Server",
+  "browserServerPortDesc": "Port yang didengarkan server lokal. Ubah ini jika port 46000 sudah digunakan.",
+  "browserServerPortSaved": "Port diperbarui — ekstensi menyambung kembali",
+  "browserServerPortInvalid": "Masukkan port antara 1024 dan 65535",
+  "browserDisableServer": "Nonaktifkan Server Ekstensi",
+  "browserEditSiteName": "Edit nama tampilan",
+  "browserSiteNameHint": "Nama tampilan (mis. YouTube)"
 }

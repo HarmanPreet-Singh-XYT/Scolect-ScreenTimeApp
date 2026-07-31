@@ -1872,5 +1872,161 @@
         "type": "String"
       }
     }
-  }
+  },
+  "browserExtensionTitle": "ブラウザ拡張機能",
+  "browserExtensionDescription": "Scolectブラウザ拡張機能の接続とウェブサイト利用データの同期を許可します",
+  "browserTitle": "ブラウザ",
+  "browserWebsiteTracking": "ウェブサイト追跡",
+  "browserSubtitle": "ウェブサイトの利用状況を追跡・管理する",
+  "browserToday": "今日",
+  "browserSites": "サイト",
+  "browserExtensionSettings": "拡張機能の設定",
+  "browserSyncing": "同期中",
+  "browserTabOverview": "概要",
+  "browserTabWebsites": "ウェブサイト",
+  "browserTabCategories": "カテゴリ",
+  "browserTabLimits": "制限",
+  "browserTabHistory": "履歴",
+  "browserHistoryTitle": "週間概要",
+  "browserHistorySubtitle": "過去7日間のブラウジング時間",
+  "browserHistoryNoData": "ブラウジングデータがありません",
+  "browserHistoryAvgPerDay": "平均 / 日",
+  "browserHistoryPeakDay": "ピーク日",
+  "browserHistoryTotalWeek": "今週の合計",
+  "browserHistoryTopSites": "今週のトップサイト",
+  "browserTodayWebTime": "今日のウェブ時間",
+  "browserSitesVisited": "訪問サイト数",
+  "browserPageVisits": "ページ閲覧数",
+  "browserTopSitesToday": "今日のトップサイト",
+  "browserViewAll": "すべて表示 →",
+  "browserNoWebActivityTitle": "本日のウェブ活動はまだありません",
+  "browserNoActivityWebSubtitle": "ウェブを閲覧して時間の追跡を開始しましょう",
+  "browserNoActivityDesktopSubtitle": "ブラウザ拡張機能をインストールして追跡を開始しましょう",
+  "browserNoCategoriesTitle": "カテゴリはまだありません",
+  "browserNoCategoriesSubtitle": "ウェブサイトが追跡されるとカテゴリが表示されます",
+  "browserByCategory": "カテゴリ別",
+  "browserVisitCount": "{count, plural, =1{1 回訪問} other{{count} 回訪問}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSearchPlaceholder": "ウェブサイトまたはドメインを検索…",
+  "browserFilterAllTracking": "すべての追跡",
+  "browserFilterTracked": "追跡中",
+  "browserFilterUntracked": "未追跡",
+  "browserFilterAllTypes": "すべての種類",
+  "browserFilterUnproductive": "非生産的",
+  "browserWebsiteCount": "{count, plural, =1{1 件のウェブサイト} other{{count} 件のウェブサイト}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserColumnDomain": "ドメイン",
+  "browserColumnTimeToday": "本日の時間",
+  "browserColumnVisits": "訪問回数",
+  "browserColumnTracking": "追跡",
+  "browserNoWebsitesTitle": "ウェブサイトが見つかりません",
+  "browserNoWebsitesWebSubtitle": "ウェブを閲覧すると、サイトがここに表示されます。",
+  "browserNoWebsitesDesktopSubtitle": "フィルターを調整するか、\n拡張機能がデータを同期するまでお待ちください。",
+  "browserTimeDistribution": "時間の分布",
+  "browserSiteCount": "{count, plural, =1{1 件のサイト} other{{count} 件のサイト}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserActiveLimits": "アクティブな制限",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1日の制限があるウェブサイト 1 件} other{1日の制限があるウェブサイト {count} 件}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserNoLimitsTitle": "制限が設定されていません",
+  "browserNoLimitsSubtitle": "以下で1日の時間制限を設定してください",
+  "browserAllWebsites": "すべてのウェブサイト",
+  "browserAllWebsitesSubtitle": "サイトをタップして1日の制限を設定または変更する",
+  "browserAllSitesHaveLimits": "すべてのサイトに制限があります",
+  "browserNoWebsitesTrackedTitle": "まだウェブサイトが追跡されていません",
+  "browserNoWebsitesTrackedWebSubtitle": "ウェブを閲覧してサイトをここに表示する",
+  "browserNoWebsitesTrackedDesktopSubtitle": "拡張機能をインストールしてブラウジングを開始しましょう",
+  "browserDailyLimitDialog": "1日の制限 – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "browserDailyLimitDialogDesc": "1日にこのサイトを訪問できる時間を設定します。",
+  "browserHours": "時間",
+  "browserRemoveLimit": "制限を削除",
+  "browserTimeUsed": "{time} 使用済み",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSetLimit": "制限を設定",
+  "browserExtensionMode": "拡張機能モード",
+  "browserDesktopAppUrl": "デスクトップアプリのURL",
+  "browserDesktopAppUrlDesc": "Scolectデスクトップアプリがローカルサーバーとして実行中のURL。",
+  "browserAbout": "情報",
+  "browserAboutExtension": "拡張機能",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "バージョン",
+  "browserAboutStorage": "ストレージ",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "履歴",
+  "browserAboutHistoryValue": "過去30日間保持",
+  "browserDangerZone": "危険ゾーン",
+  "browserClearDataTitle": "すべてのウェブサイトデータを削除",
+  "browserClearDataDesc": "追跡されたすべてのウェブサイト履歴を完全に削除します。この操作は元に戻せません。",
+  "browserClearDataButton": "データを削除",
+  "browserAreYouSure": "本当によろしいですか？",
+  "browserYesDelete": "はい、削除します",
+  "browserDesktopUrlSaved": "デスクトップURLを保存しました",
+  "browserDataCleared": "すべてのウェブサイトデータを削除しました",
+  "browserTrackingActive": "追跡中",
+  "browserTrackingActiveDesc": "ブラウザの活動が追跡され、\nScolectデスクトップアプリに同期されています。",
+  "browserConnectedToDesktop": "Scolectデスクトップに接続済み",
+  "browserDesktopNotReachable": "Scolectデスクトップに接続できません",
+  "browserRefreshSyncStatus": "同期状況を更新",
+  "browserSwitchToStandalone": "スタンドアロンモードに切り替え →",
+  "browserSetupTitle": "ブラウザ拡張機能を接続",
+  "browserSetupSubtitle": "ローカルサーバーを有効にして、Scolectブラウザ拡張機能がウェブ活動をデスクトップアプリに同期できるようにします。",
+  "browserSetupEnableServer": "拡張機能サーバーを有効化",
+  "browserSetupServerRunning": "サーバー実行中 · ポート {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "サーバー無効",
+  "browserSetupStep1": "上のトグルでサーバーを有効にする",
+  "browserSetupStep2": "ブラウザにScolect拡張機能をインストールする",
+  "browserSetupStep3": "ブラウザを開いて任意のサイトにアクセスする",
+  "browserSetupStep4": "ウェブ活動が自動的にここに表示されます",
+  "browserSetupHowTo": "始め方",
+  "browserSetupServerActive": "サーバーアクティブ",
+  "browserSetupServerActiveDesc": "ブラウザ拡張機能が接続してデータを同期できるようになりました。",
+  "browserServerPort": "サーバーポート",
+  "browserServerPortDesc": "ローカルサーバーがリッスンするポート。ポート46000がすでに使用中の場合は変更してください。",
+  "browserServerPortSaved": "ポートを更新しました — 拡張機能が再接続中",
+  "browserServerPortInvalid": "1024〜65535の間のポートを入力してください",
+  "browserDisableServer": "拡張機能サーバーを無効化",
+  "browserEditSiteName": "表示名を編集",
+  "browserSiteNameHint": "表示名（例：YouTube）"
 }

@@ -1872,5 +1872,150 @@
         "type": "String"
       }
     }
-  }
+  },
+  "navBrowser": "ब्राउज़र",
+  "browserExtensionTitle": "ब्राउज़र एक्सटेंशन",
+  "browserExtensionDescription": "Scolect ब्राउज़र एक्सटेंशन को वेबसाइट उपयोग डेटा कनेक्ट और सिंक करने की अनुमति दें",
+  "browserTitle": "ब्राउज़र",
+  "browserWebsiteTracking": "वेबसाइट ट्रैकिंग",
+  "browserSubtitle": "अपनी वेबसाइट उपयोग को ट्रैक और प्रबंधित करें",
+  "browserToday": "आज",
+  "browserSites": "साइटें",
+  "browserExtensionSettings": "एक्सटेंशन सेटिंग्स",
+  "browserSyncing": "सिंक हो रहा है",
+  "browserTabOverview": "अवलोकन",
+  "browserTabWebsites": "वेबसाइटें",
+  "browserTabCategories": "श्रेणियाँ",
+  "browserTabLimits": "सीमाएँ",
+  "browserTabHistory": "इतिहास",
+  "browserHistoryTitle": "साप्ताहिक अवलोकन",
+  "browserHistorySubtitle": "पिछले 7 दिनों में आपका ब्राउज़िंग समय",
+  "browserHistoryNoData": "अभी तक कोई ब्राउज़िंग डेटा नहीं",
+  "browserHistoryAvgPerDay": "औसत / दिन",
+  "browserHistoryPeakDay": "सर्वाधिक दिन",
+  "browserHistoryTotalWeek": "इस सप्ताह कुल",
+  "browserHistoryTopSites": "इस सप्ताह शीर्ष साइटें",
+  "browserTodayWebTime": "आज का वेब समय",
+  "browserSitesVisited": "विज़िट की गई साइटें",
+  "browserPageVisits": "पेज विज़िट",
+  "browserTopSitesToday": "आज की शीर्ष साइटें",
+  "browserViewAll": "सभी देखें →",
+  "browserNoWebActivityTitle": "आज अभी तक कोई वेब गतिविधि नहीं",
+  "browserNoActivityWebSubtitle": "अपना समय ट्रैक करना शुरू करने के लिए वेब ब्राउज़ करें",
+  "browserNoActivityDesktopSubtitle": "ट्रैकिंग शुरू करने के लिए ब्राउज़र एक्सटेंशन इंस्टॉल करें",
+  "browserNoCategoriesTitle": "अभी तक कोई श्रेणी नहीं",
+  "browserNoCategoriesSubtitle": "वेबसाइटें ट्रैक होने के बाद श्रेणियाँ दिखाई देंगी",
+  "browserByCategory": "श्रेणी के अनुसार",
+  "browserVisitCount": "{count, plural, =1{1 विज़िट} other{{count} विज़िट}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserSearchPlaceholder": "वेबसाइट या डोमेन खोजें…",
+  "browserFilterAllTracking": "सभी ट्रैकिंग",
+  "browserFilterTracked": "ट्रैक किया गया",
+  "browserFilterUntracked": "ट्रैक नहीं किया गया",
+  "browserFilterAllTypes": "सभी प्रकार",
+  "browserFilterUnproductive": "अनुत्पादक",
+  "browserWebsiteCount": "{count, plural, =1{1 वेबसाइट} other{{count} वेबसाइटें}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserColumnDomain": "डोमेन",
+  "browserColumnTimeToday": "आज का समय",
+  "browserColumnVisits": "विज़िट",
+  "browserColumnTracking": "ट्रैकिंग",
+  "browserNoWebsitesTitle": "कोई वेबसाइट नहीं मिली",
+  "browserNoWebsitesWebSubtitle": "वेब ब्राउज़ करें — आपकी साइटें यहाँ दिखाई देंगी।",
+  "browserNoWebsitesDesktopSubtitle": "अपने फ़िल्टर समायोजित करें या एक्सटेंशन के\nडेटा सिंक करने की प्रतीक्षा करें।",
+  "browserTimeDistribution": "समय वितरण",
+  "browserSiteCount": "{count, plural, =1{1 साइट} other{{count} साइटें}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserActiveLimits": "सक्रिय सीमाएँ",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 वेबसाइट की दैनिक सीमाएँ} other{{count} वेबसाइटों की दैनिक सीमाएँ}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "browserNoLimitsTitle": "कोई सीमा निर्धारित नहीं",
+  "browserNoLimitsSubtitle": "नीचे दैनिक समय सीमाएँ निर्धारित करें",
+  "browserAllWebsites": "सभी वेबसाइटें",
+  "browserAllWebsitesSubtitle": "दैनिक सीमा सेट या बदलने के लिए किसी साइट पर टैप करें",
+  "browserAllSitesHaveLimits": "सभी साइटों की सीमाएँ हैं",
+  "browserNoWebsitesTrackedTitle": "अभी तक कोई वेबसाइट ट्रैक नहीं हुई",
+  "browserNoWebsitesTrackedWebSubtitle": "अपनी साइटें यहाँ देखने के लिए वेब ब्राउज़ करें",
+  "browserNoWebsitesTrackedDesktopSubtitle": "शुरू करने के लिए एक्सटेंशन इंस्टॉल करें और ब्राउज़ करें",
+  "browserDailyLimitDialog": "दैनिक सीमा – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": { "type": "String" }
+    }
+  },
+  "browserDailyLimitDialogDesc": "निर्धारित करें कि आप प्रतिदिन इस साइट पर कितना समय बिता सकते हैं।",
+  "browserHours": "घंटे",
+  "browserRemoveLimit": "सीमा हटाएँ",
+  "browserTimeUsed": "{time} उपयोग किया गया",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "browserSetLimit": "सीमा निर्धारित करें",
+  "browserExtensionMode": "एक्सटेंशन मोड",
+  "browserDesktopAppUrl": "डेस्कटॉप ऐप URL",
+  "browserDesktopAppUrlDesc": "वह URL जहाँ Scolect डेस्कटॉप ऐप अपना स्थानीय सर्वर चला रहा है।",
+  "browserAbout": "के बारे में",
+  "browserAboutExtension": "एक्सटेंशन",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "संस्करण",
+  "browserAboutStorage": "संग्रहण",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "इतिहास",
+  "browserAboutHistoryValue": "अंतिम 30 दिन सुरक्षित",
+  "browserDangerZone": "खतरा क्षेत्र",
+  "browserClearDataTitle": "सभी वेबसाइट डेटा साफ़ करें",
+  "browserClearDataDesc": "सभी ट्रैक किए गए वेबसाइट इतिहास को स्थायी रूप से हटाता है। इसे पूर्ववत नहीं किया जा सकता।",
+  "browserClearDataButton": "डेटा साफ़ करें",
+  "browserAreYouSure": "क्या आप सुनिश्चित हैं?",
+  "browserYesDelete": "हाँ, हटाएँ",
+  "browserDesktopUrlSaved": "डेस्कटॉप URL सहेजा गया",
+  "browserDataCleared": "सभी वेबसाइट डेटा साफ़ किया गया",
+  "browserTrackingActive": "ट्रैकिंग सक्रिय",
+  "browserTrackingActiveDesc": "आपकी ब्राउज़र गतिविधि ट्रैक की जा रही है और\nScolect डेस्कटॉप ऐप के साथ सिंक हो रही है।",
+  "browserConnectedToDesktop": "Scolect डेस्कटॉप से जुड़ा हुआ",
+  "browserDesktopNotReachable": "Scolect डेस्कटॉप पहुँच योग्य नहीं",
+  "browserRefreshSyncStatus": "सिंक स्थिति रीफ्रेश करें",
+  "browserSwitchToStandalone": "स्टैंडअलोन मोड पर स्विच करें →",
+  "browserSetupTitle": "ब्राउज़र एक्सटेंशन कनेक्ट करें",
+  "browserSetupSubtitle": "स्थानीय सर्वर सक्षम करें ताकि Scolect ब्राउज़र एक्सटेंशन आपकी वेब गतिविधि को डेस्कटॉप एप्लिकेशन के साथ सिंक कर सके।",
+  "browserSetupEnableServer": "एक्सटेंशन सर्वर सक्षम करें",
+  "browserSetupServerRunning": "सर्वर चल रहा है · पोर्ट {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "सर्वर अक्षम",
+  "browserSetupStep1": "ऊपर दिए टॉगल से सर्वर सक्षम करें",
+  "browserSetupStep2": "अपने ब्राउज़र में Scolect एक्सटेंशन इंस्टॉल करें",
+  "browserSetupStep3": "अपना ब्राउज़र खोलें और कोई भी साइट विज़िट करें",
+  "browserSetupStep4": "वेब गतिविधि यहाँ स्वचालित रूप से दिखाई देगी",
+  "browserSetupHowTo": "शुरू कैसे करें",
+  "browserSetupServerActive": "सर्वर सक्रिय",
+  "browserSetupServerActiveDesc": "आपका ब्राउज़र एक्सटेंशन अब कनेक्ट और डेटा सिंक कर सकता है।",
+  "browserServerPort": "सर्वर पोर्ट",
+  "browserServerPortDesc": "स्थानीय सर्वर जिस पोर्ट पर सुनता है। यदि पोर्ट 46000 पहले से उपयोग में है तो इसे बदलें।",
+  "browserServerPortSaved": "पोर्ट अपडेट किया गया — एक्सटेंशन पुनः कनेक्ट हो रहा है",
+  "browserServerPortInvalid": "1024 और 65535 के बीच पोर्ट दर्ज करें",
+  "browserDisableServer": "एक्सटेंशन सर्वर अक्षम करें",
+  "browserEditSiteName": "प्रदर्शन नाम संपादित करें",
+  "browserSiteNameHint": "प्रदर्शन नाम (जैसे YouTube)"
 }

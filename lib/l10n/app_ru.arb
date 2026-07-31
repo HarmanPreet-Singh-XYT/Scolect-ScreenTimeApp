@@ -1872,5 +1872,161 @@
         "type": "String"
       }
     }
-  }
+  },
+  "browserExtensionTitle": "Расширение браузера",
+  "browserExtensionDescription": "Разрешить расширению браузера Scolect подключаться и синхронизировать данные об использовании сайтов",
+  "browserTitle": "Браузер",
+  "browserWebsiteTracking": "Отслеживание сайтов",
+  "browserSubtitle": "Отслеживайте и управляйте использованием сайтов",
+  "browserToday": "Сегодня",
+  "browserSites": "Сайты",
+  "browserExtensionSettings": "Настройки расширения",
+  "browserSyncing": "Синхронизация",
+  "browserTabOverview": "Обзор",
+  "browserTabWebsites": "Сайты",
+  "browserTabCategories": "Категории",
+  "browserTabLimits": "Лимиты",
+  "browserTabHistory": "История",
+  "browserHistoryTitle": "Недельный обзор",
+  "browserHistorySubtitle": "Время в браузере за последние 7 дней",
+  "browserHistoryNoData": "Данных о браузере пока нет",
+  "browserHistoryAvgPerDay": "Ср. / день",
+  "browserHistoryPeakDay": "Пиковый день",
+  "browserHistoryTotalWeek": "Всего за неделю",
+  "browserHistoryTopSites": "Топ сайтов за неделю",
+  "browserTodayWebTime": "Время в интернете сегодня",
+  "browserSitesVisited": "Посещённых сайтов",
+  "browserPageVisits": "Просмотров страниц",
+  "browserTopSitesToday": "Топ сайтов сегодня",
+  "browserViewAll": "Показать все →",
+  "browserNoWebActivityTitle": "Нет активности в интернете сегодня",
+  "browserNoActivityWebSubtitle": "Откройте браузер, чтобы начать отслеживание",
+  "browserNoActivityDesktopSubtitle": "Установите расширение браузера для начала отслеживания",
+  "browserNoCategoriesTitle": "Категорий пока нет",
+  "browserNoCategoriesSubtitle": "Категории появятся после отслеживания сайтов",
+  "browserByCategory": "По категориям",
+  "browserVisitCount": "{count, plural, =1{1 посещение} other{{count} посещений}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSearchPlaceholder": "Поиск сайта или домена…",
+  "browserFilterAllTracking": "Все отслеживания",
+  "browserFilterTracked": "Отслеживается",
+  "browserFilterUntracked": "Не отслеживается",
+  "browserFilterAllTypes": "Все типы",
+  "browserFilterUnproductive": "Непродуктивные",
+  "browserWebsiteCount": "{count, plural, =1{1 сайт} other{{count} сайтов}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserColumnDomain": "Домен",
+  "browserColumnTimeToday": "Время сегодня",
+  "browserColumnVisits": "Посещения",
+  "browserColumnTracking": "Отслеживание",
+  "browserNoWebsitesTitle": "Сайты не найдены",
+  "browserNoWebsitesWebSubtitle": "Откройте браузер — ваши сайты появятся здесь.",
+  "browserNoWebsitesDesktopSubtitle": "Попробуйте изменить фильтры или подождите,\nпока расширение синхронизирует данные.",
+  "browserTimeDistribution": "Распределение времени",
+  "browserSiteCount": "{count, plural, =1{1 сайт} other{{count} сайтов}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserActiveLimits": "Активные лимиты",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 сайт с дневным лимитом} other{{count} сайтов с дневными лимитами}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserNoLimitsTitle": "Лимиты не установлены",
+  "browserNoLimitsSubtitle": "Установите дневные лимиты ниже",
+  "browserAllWebsites": "Все сайты",
+  "browserAllWebsitesSubtitle": "Нажмите на сайт, чтобы установить или изменить дневной лимит",
+  "browserAllSitesHaveLimits": "Все сайты имеют лимиты",
+  "browserNoWebsitesTrackedTitle": "Сайтов пока не отслеживается",
+  "browserNoWebsitesTrackedWebSubtitle": "Откройте браузер, чтобы увидеть свои сайты здесь",
+  "browserNoWebsitesTrackedDesktopSubtitle": "Установите расширение и начните browsing для старта",
+  "browserDailyLimitDialog": "Дневной лимит – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "browserDailyLimitDialogDesc": "Установите, сколько времени в день можно посещать этот сайт.",
+  "browserHours": "Часы",
+  "browserRemoveLimit": "Удалить лимит",
+  "browserTimeUsed": "{time} использовано",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSetLimit": "Установить лимит",
+  "browserExtensionMode": "Режим расширения",
+  "browserDesktopAppUrl": "URL десктопного приложения",
+  "browserDesktopAppUrlDesc": "URL, по которому десктопное приложение Scolect запускает локальный сервер.",
+  "browserAbout": "О приложении",
+  "browserAboutExtension": "Расширение",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "Версия",
+  "browserAboutStorage": "Хранилище",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "История",
+  "browserAboutHistoryValue": "Хранится 30 дней",
+  "browserDangerZone": "Опасная зона",
+  "browserClearDataTitle": "Очистить все данные сайтов",
+  "browserClearDataDesc": "Навсегда удаляет всю историю отслеживаемых сайтов. Это действие нельзя отменить.",
+  "browserClearDataButton": "Очистить данные",
+  "browserAreYouSure": "Вы уверены?",
+  "browserYesDelete": "Да, удалить",
+  "browserDesktopUrlSaved": "URL десктопа сохранён",
+  "browserDataCleared": "Все данные сайтов очищены",
+  "browserTrackingActive": "Отслеживание активно",
+  "browserTrackingActiveDesc": "Ваша активность в браузере отслеживается и\nсинхронизируется с десктопным приложением Scolect.",
+  "browserConnectedToDesktop": "Подключено к Scolect Desktop",
+  "browserDesktopNotReachable": "Scolect Desktop недоступен",
+  "browserRefreshSyncStatus": "Обновить статус синхронизации",
+  "browserSwitchToStandalone": "Переключиться в автономный режим →",
+  "browserSetupTitle": "Подключить расширение браузера",
+  "browserSetupSubtitle": "Включите локальный сервер, чтобы расширение браузера Scolect могло синхронизировать вашу веб-активность с десктопным приложением.",
+  "browserSetupEnableServer": "Включить сервер расширения",
+  "browserSetupServerRunning": "Сервер работает · порт {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "Сервер отключён",
+  "browserSetupStep1": "Включите сервер с помощью переключателя выше",
+  "browserSetupStep2": "Установите расширение Scolect в свой браузер",
+  "browserSetupStep3": "Откройте браузер и зайдите на любой сайт",
+  "browserSetupStep4": "Веб-активность появится здесь автоматически",
+  "browserSetupHowTo": "Как начать",
+  "browserSetupServerActive": "Сервер активен",
+  "browserSetupServerActiveDesc": "Ваше расширение браузера теперь может подключиться и синхронизировать данные.",
+  "browserServerPort": "Порт сервера",
+  "browserServerPortDesc": "Порт, который прослушивает локальный сервер. Измените, если порт 46000 уже занят.",
+  "browserServerPortSaved": "Порт обновлён — расширение переподключается",
+  "browserServerPortInvalid": "Введите порт от 1024 до 65535",
+  "browserDisableServer": "Отключить сервер расширения",
+  "browserEditSiteName": "Изменить отображаемое имя",
+  "browserSiteNameHint": "Отображаемое имя (например, YouTube)"
 }

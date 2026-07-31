@@ -1872,5 +1872,161 @@
         "type": "String"
       }
     }
-  }
+  },
+  "browserExtensionTitle": "浏览器扩展",
+  "browserExtensionDescription": "允许 Scolect 浏览器扩展连接并同步网站使用数据",
+  "browserTitle": "浏览器",
+  "browserWebsiteTracking": "网站追踪",
+  "browserSubtitle": "追踪并管理您的网站使用情况",
+  "browserToday": "今天",
+  "browserSites": "网站",
+  "browserExtensionSettings": "扩展设置",
+  "browserSyncing": "同步中",
+  "browserTabOverview": "概览",
+  "browserTabWebsites": "网站",
+  "browserTabCategories": "分类",
+  "browserTabLimits": "限制",
+  "browserTabHistory": "历史",
+  "browserHistoryTitle": "每周概览",
+  "browserHistorySubtitle": "过去7天的浏览时间",
+  "browserHistoryNoData": "暂无浏览数据",
+  "browserHistoryAvgPerDay": "平均 / 天",
+  "browserHistoryPeakDay": "峰值日",
+  "browserHistoryTotalWeek": "本周总计",
+  "browserHistoryTopSites": "本周热门网站",
+  "browserTodayWebTime": "今日网络时间",
+  "browserSitesVisited": "访问网站数",
+  "browserPageVisits": "页面访问量",
+  "browserTopSitesToday": "今日热门网站",
+  "browserViewAll": "查看全部 →",
+  "browserNoWebActivityTitle": "今天暂无网络活动",
+  "browserNoActivityWebSubtitle": "浏览网页以开始追踪您的时间",
+  "browserNoActivityDesktopSubtitle": "安装浏览器扩展以开始追踪",
+  "browserNoCategoriesTitle": "暂无分类",
+  "browserNoCategoriesSubtitle": "追踪网站后分类将在此显示",
+  "browserByCategory": "按分类",
+  "browserVisitCount": "{count, plural, =1{1 次访问} other{{count} 次访问}}",
+  "@browserVisitCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSearchPlaceholder": "搜索网站或域名…",
+  "browserFilterAllTracking": "全部追踪",
+  "browserFilterTracked": "已追踪",
+  "browserFilterUntracked": "未追踪",
+  "browserFilterAllTypes": "全部类型",
+  "browserFilterUnproductive": "非生产性",
+  "browserWebsiteCount": "{count, plural, =1{1 个网站} other{{count} 个网站}}",
+  "@browserWebsiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserColumnDomain": "域名",
+  "browserColumnTimeToday": "今日时间",
+  "browserColumnVisits": "访问次数",
+  "browserColumnTracking": "追踪",
+  "browserNoWebsitesTitle": "未找到网站",
+  "browserNoWebsitesWebSubtitle": "浏览网页 — 您的网站将在此显示。",
+  "browserNoWebsitesDesktopSubtitle": "尝试调整筛选条件或等待\n扩展同步一些数据。",
+  "browserTimeDistribution": "时间分布",
+  "browserSiteCount": "{count, plural, =1{1 个网站} other{{count} 个网站}}",
+  "@browserSiteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserActiveLimits": "活跃限制",
+  "browserActiveLimitsSubtitle": "{count, plural, =1{1 个设有每日限制的网站} other{{count} 个设有每日限制的网站}}",
+  "@browserActiveLimitsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserNoLimitsTitle": "未设置限制",
+  "browserNoLimitsSubtitle": "在下方设置每日时间限制",
+  "browserAllWebsites": "全部网站",
+  "browserAllWebsitesSubtitle": "点击网站以设置或更改每日限制",
+  "browserAllSitesHaveLimits": "所有网站均已设置限制",
+  "browserNoWebsitesTrackedTitle": "暂无已追踪网站",
+  "browserNoWebsitesTrackedWebSubtitle": "浏览网页即可在此查看您的网站",
+  "browserNoWebsitesTrackedDesktopSubtitle": "安装扩展并开始浏览以入门",
+  "browserDailyLimitDialog": "每日限制 – {domain}",
+  "@browserDailyLimitDialog": {
+    "placeholders": {
+      "domain": {
+        "type": "String"
+      }
+    }
+  },
+  "browserDailyLimitDialogDesc": "设置每天可访问此网站的时长。",
+  "browserHours": "小时",
+  "browserRemoveLimit": "移除限制",
+  "browserTimeUsed": "已使用 {time}",
+  "@browserTimeUsed": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSetLimit": "设置限制",
+  "browserExtensionMode": "扩展模式",
+  "browserDesktopAppUrl": "桌面应用 URL",
+  "browserDesktopAppUrlDesc": "Scolect 桌面应用运行本地服务器的 URL。",
+  "browserAbout": "关于",
+  "browserAboutExtension": "扩展",
+  "browserAboutExtensionValue": "Scolect – Web Time Tracker",
+  "browserAboutVersion": "版本",
+  "browserAboutStorage": "存储",
+  "browserAboutStorageValue": "chrome.storage.local",
+  "browserAboutHistory": "历史",
+  "browserAboutHistoryValue": "保留最近30天",
+  "browserDangerZone": "危险区域",
+  "browserClearDataTitle": "清除所有网站数据",
+  "browserClearDataDesc": "永久删除所有已追踪网站的历史记录。此操作无法撤销。",
+  "browserClearDataButton": "清除数据",
+  "browserAreYouSure": "您确定吗？",
+  "browserYesDelete": "是的，删除",
+  "browserDesktopUrlSaved": "桌面 URL 已保存",
+  "browserDataCleared": "所有网站数据已清除",
+  "browserTrackingActive": "追踪进行中",
+  "browserTrackingActiveDesc": "您的浏览器活动正在被追踪并\n同步到 Scolect 桌面应用。",
+  "browserConnectedToDesktop": "已连接到 Scolect 桌面版",
+  "browserDesktopNotReachable": "Scolect 桌面版不可达",
+  "browserRefreshSyncStatus": "刷新同步状态",
+  "browserSwitchToStandalone": "切换到独立模式 →",
+  "browserSetupTitle": "连接浏览器扩展",
+  "browserSetupSubtitle": "启用本地服务器，以便 Scolect 浏览器扩展可以将您的网络活动同步到桌面应用。",
+  "browserSetupEnableServer": "启用扩展服务器",
+  "browserSetupServerRunning": "服务器运行中 · 端口 {port}",
+  "@browserSetupServerRunning": {
+    "placeholders": {
+      "port": { "type": "int" }
+    }
+  },
+  "browserSetupServerOff": "服务器已禁用",
+  "browserSetupStep1": "使用上方的开关启用服务器",
+  "browserSetupStep2": "在浏览器中安装 Scolect 扩展",
+  "browserSetupStep3": "打开浏览器并访问任意网站",
+  "browserSetupStep4": "网络活动将自动显示在此处",
+  "browserSetupHowTo": "如何开始",
+  "browserSetupServerActive": "服务器已激活",
+  "browserSetupServerActiveDesc": "您的浏览器扩展现在可以连接并同步数据。",
+  "browserServerPort": "服务器端口",
+  "browserServerPortDesc": "本地服务器监听的端口。如果端口 46000 已被占用，请更改此项。",
+  "browserServerPortSaved": "端口已更新 — 扩展正在重新连接",
+  "browserServerPortInvalid": "请输入 1024 到 65535 之间的端口",
+  "browserDisableServer": "禁用扩展服务器",
+  "browserEditSiteName": "编辑显示名称",
+  "browserSiteNameHint": "显示名称（例如：YouTube）"
 }
