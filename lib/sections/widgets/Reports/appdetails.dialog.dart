@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'dart:math';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart';
+import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import '../../controller/data_controllers/reports_controller.dart';
 import '../../controller/data_controllers/alerts_limits_data_controller.dart'
     as app_summary_data;
@@ -101,6 +102,160 @@ List<String> _sortedDateKeys(Map<String, Duration> data) => data.keys.toList()
       return 0;
     }
   });
+
+/// Shows the same rich AppDetailsDialog for a website on the web extension,
+/// building the required data objects from BrowserDataProvider.
+Future<void> showWebsiteDetailsDialog(
+  BuildContext context, {
+  required String displayName,
+  required String category,
+  required Duration timeSpent,
+  required bool isProductive,
+}) async {
+  final l10n = AppLocalizations.of(context)!;
+  final provider = BrowserDataProvider();
+
+  // Fetch full site detail (limit, visits, tracking) and 7-day history in parallel
+  final results = await Future.wait([
+    provider.fetchAllWebsites(),
+    provider.fetchHistory(days: 7),
+  ]);
+
+  final allSites = results[0] as List<WebsiteBasicDetail>;
+  final history = results[1] as List<({String date, Duration totalTime, int siteCount})>;
+
+  // Find the matching site record (may not exist if data was cleared)
+  final site = allSites.cast<WebsiteBasicDetail?>().firstWhere(
+        (s) => s!.displayName == displayName || s.domain == displayName,
+        orElse: () => null,
+      ) ??
+      WebsiteBasicDetail(
+        domain: displayName,
+        category: category,
+        timeSpent: timeSpent,
+        isTracking: true,
+        isHidden: false,
+        isProductive: isProductive,
+        dailyLimit: Duration.zero,
+        limitStatus: false,
+        visits: 0,
+      );
+
+  // Build weekly trend map from history (keyed MM/dd like the desktop does)
+  final Map<String, Duration> weeklyDaily = {};
+  for (final entry in history) {
+    try {
+      final parts = entry.date.split('-');
+      final key = '${parts[1]}/${parts[2]}'; // YYYY-MM-DD → MM/DD
+      // history gives total web time per day; we use the site's proportion of today
+      // We can only show today's exact value — other days are totals, not per-site.
+      // So we leave the daily trend empty except for today, which avoids misleading data.
+      weeklyDaily[key] = Duration.zero;
+    } catch (_) {}
+  }
+  // Fill today with the actual value
+  final now = DateTime.now();
+  final todayKey =
+      '${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
+  weeklyDaily[todayKey] = site.timeSpent;
+
+  final sortedDates = _sortedDateKeys(weeklyDaily);
+
+  double xCoord = 0;
+  final dateToX = <String, double>{};
+  final spots = <FlSpot>[];
+  double maxUsage = 0;
+  for (final date in sortedDates) {
+    final mins = (weeklyDaily[date] ?? Duration.zero).inMinutes.toDouble();
+    maxUsage = max(maxUsage, mins);
+    dateToX.putIfAbsent(date, () => xCoord++);
+    spots.add(FlSpot(dateToX[date]!, mins));
+  }
+
+  // Build the data objects AppDetailsDialog expects
+  final appSummary = app_summary_data.AppUsageSummary(
+    appName: site.domain,
+    siteName: site.siteName,
+    category: site.category,
+    dailyLimit: site.dailyLimit,
+    currentUsage: site.timeSpent,
+    limitStatus: site.limitStatus,
+    isProductive: site.isProductive,
+    isAboutToReachLimit: site.dailyLimit > Duration.zero &&
+        site.timeSpent.inSeconds / site.dailyLimit.inSeconds >= 0.8,
+    percentageOfLimitUsed: site.dailyLimit > Duration.zero
+        ? (site.timeSpent.inSeconds / site.dailyLimit.inSeconds * 100)
+            .clamp(0.0, 100.0)
+        : 0.0,
+    trend: app_summary_data.UsageTrend.noData,
+  );
+
+  final appBasicDetails = ApplicationBasicDetail(
+    name: site.domain,
+    siteName: site.siteName,
+    category: site.category,
+    screenTime: site.timeSpent,
+    isTracking: site.isTracking,
+    isHidden: site.isHidden,
+    isProductive: site.isProductive,
+    dailyLimit: site.dailyLimit,
+    limitStatus: site.limitStatus,
+  );
+
+  final appDetails = ApplicationDetailedData(
+    usageTrends: UsageTrendsData(
+      daily: weeklyDaily,
+      weekly: {},
+      monthly: {},
+    ),
+    hourlyBreakdown: {},
+    categoryUsage: {site.category: site.timeSpent},
+    usageInsights: UsageInsights(
+      mostActiveHours: [],
+      longestSession: Duration.zero,
+      averageDailyUsage: site.timeSpent,
+    ),
+    comparisons: UsageComparisons(
+      currentPeriodUsage: site.timeSpent,
+      previousPeriodUsage: Duration.zero,
+      growthPercentage: 0,
+      similarAppsComparison: [],
+    ),
+    sessionBreakdown: SessionBreakdown(
+      averageSessionDuration: Duration.zero,
+      longestSessionDuration: Duration.zero,
+      shortestSessionDuration: Duration.zero,
+      totalSessions: site.visits,
+      averageLaunchesPerDay: site.visits.toDouble(),
+      maxLaunchesPerDay: site.visits,
+      lastUsedTimestamp: null,
+    ),
+  );
+
+  if (!context.mounted) return;
+
+  showDialog(
+    context: context,
+    builder: (_) => AppDetailsDialog(
+      app: AppUsageSummary(
+        appName: site.displayName,
+        category: site.category,
+        totalTime: site.timeSpent,
+        isProductive: site.isProductive,
+        isVisible: true,
+      ),
+      l10n: l10n,
+      appSummary: appSummary,
+      appBasicDetails: appBasicDetails,
+      appDetails: appDetails,
+      dailyUsageSpots: spots,
+      sortedDates: sortedDates,
+      maxUsage: maxUsage,
+      dateToXCoordinate: dateToX,
+      timeOfDayUsage: generateTimeOfDayData({}),
+    ),
+  );
+}
 
 class AppDetailsDialog extends StatefulWidget {
   final AppUsageSummary app;

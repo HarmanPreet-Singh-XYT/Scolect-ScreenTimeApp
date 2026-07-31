@@ -37,6 +37,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   BrowserTab _currentTab = BrowserTab.overview;
   bool _isLoading = true;
+  int _refreshKey = 0;
   ({Duration totalTime, int siteCount, int visitCount})? _summary;
 
   // Web-only: extension mode state
@@ -80,7 +81,10 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   Future<void> _refreshData() async {
     _animationController.reset();
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _refreshKey++;
+    });
     await _loadSummary();
   }
 
@@ -287,23 +291,23 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
     return switch (_currentTab) {
       BrowserTab.overview => BrowserOverview(
-          key: const ValueKey('browser_overview'),
+          key: ValueKey('browser_overview_$_refreshKey'),
           onTabChange: _switchTab,
         ),
       BrowserTab.websites => BrowserWebsites(
-          key: const ValueKey('browser_websites'),
+          key: ValueKey('browser_websites_$_refreshKey'),
           onTabChange: _switchTab,
         ),
       BrowserTab.categories => BrowserCategories(
-          key: const ValueKey('browser_categories'),
+          key: ValueKey('browser_categories_$_refreshKey'),
           onTabChange: _switchTab,
         ),
       BrowserTab.limits => BrowserLimits(
-          key: const ValueKey('browser_limits'),
+          key: ValueKey('browser_limits_$_refreshKey'),
           onTabChange: _switchTab,
         ),
-      BrowserTab.history => const BrowserHistory(
-          key: ValueKey('browser_history'),
+      BrowserTab.history => BrowserHistory(
+          key: ValueKey('browser_history_$_refreshKey'),
         ),
       BrowserTab.settings => kIsWeb
           ? BrowserExtensionSettings(key: const ValueKey('ext_settings'), onModeChanged: _onModeChanged)

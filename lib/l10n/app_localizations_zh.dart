@@ -74,7 +74,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navFocusMode => '专注模式';
 
   @override
-  String get navBrowser => 'Browser';
+  String get navBrowser => '浏览器';
 
   @override
   String get navSettings => '设置';
@@ -955,11 +955,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get launchMinimizedDescription => '在系统托盘中启动应用程序（推荐Windows 10用户使用）';
 
   @override
-  String get browserExtensionTitle => 'Browser Extension';
+  String get browserExtensionTitle => '浏览器扩展';
 
   @override
   String get browserExtensionDescription =>
-      'Allow the Scolect browser extension to connect and sync website usage data';
+      '允许 Scolect 浏览器扩展连接并同步网站使用数据';
 
   @override
   String get crashReportingTitle => '崩溃报告';
@@ -3139,378 +3139,378 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weekdayNameUnknown => '那天';
 
   @override
-  String get browserTitle => 'Browser';
+  String get browserTitle => '浏览器';
 
   @override
-  String get browserWebsiteTracking => 'Website tracking';
+  String get browserWebsiteTracking => '网站追踪';
 
   @override
-  String get browserSubtitle => 'Track and manage your website usage';
+  String get browserSubtitle => '追踪并管理您的网站使用情况';
 
   @override
-  String get browserToday => 'Today';
+  String get browserToday => '今天';
 
   @override
-  String get browserSites => 'Sites';
+  String get browserSites => '网站';
 
   @override
-  String get browserExtensionSettings => 'Extension Settings';
+  String get browserExtensionSettings => '扩展设置';
 
   @override
-  String get browserSyncing => 'Syncing';
+  String get browserSyncing => '同步中';
 
   @override
-  String get browserTabOverview => 'Overview';
+  String get browserTabOverview => '概览';
 
   @override
-  String get browserTabWebsites => 'Websites';
+  String get browserTabWebsites => '网站';
 
   @override
-  String get browserTabCategories => 'Categories';
+  String get browserTabCategories => '分类';
 
   @override
-  String get browserTabLimits => 'Limits';
+  String get browserTabLimits => '限制';
 
   @override
-  String get browserTabHistory => 'History';
+  String get browserTabHistory => '历史';
 
   @override
-  String get browserHistoryTitle => 'Weekly Overview';
+  String get browserHistoryTitle => '每周概览';
 
   @override
   String get browserHistorySubtitle =>
-      'Your browsing time over the last 7 days';
+      '过去7天的浏览时间';
 
   @override
-  String get browserHistoryNoData => 'No browsing data yet';
+  String get browserHistoryNoData => '暂无浏览数据';
 
   @override
-  String get browserHistoryAvgPerDay => 'Avg / day';
+  String get browserHistoryAvgPerDay => '平均 / 天';
 
   @override
-  String get browserHistoryPeakDay => 'Peak day';
+  String get browserHistoryPeakDay => '峰值日';
 
   @override
-  String get browserHistoryTotalWeek => 'Total this week';
+  String get browserHistoryTotalWeek => '本周总计';
 
   @override
-  String get browserHistoryTopSites => 'Top sites this week';
+  String get browserHistoryTopSites => '本周热门网站';
 
   @override
-  String get browserTodayWebTime => 'Today\'s Web Time';
+  String get browserTodayWebTime => '今日网络时间';
 
   @override
-  String get browserSitesVisited => 'Sites Visited';
+  String get browserSitesVisited => '访问网站数';
 
   @override
-  String get browserPageVisits => 'Page Visits';
+  String get browserPageVisits => '页面访问量';
 
   @override
-  String get browserTopSitesToday => 'Top Sites Today';
+  String get browserTopSitesToday => '今日热门网站';
 
   @override
-  String get browserViewAll => 'View all →';
+  String get browserViewAll => '查看全部 →';
 
   @override
-  String get browserNoWebActivityTitle => 'No web activity yet today';
+  String get browserNoWebActivityTitle => '今天暂无网络活动';
 
   @override
   String get browserNoActivityWebSubtitle =>
-      'Browse the web to start tracking your time';
+      '浏览网页以开始追踪您的时间';
 
   @override
   String get browserNoActivityDesktopSubtitle =>
-      'Install the browser extension to start tracking';
+      '安装浏览器扩展以开始追踪';
 
   @override
-  String get browserNoCategoriesTitle => 'No categories yet';
+  String get browserNoCategoriesTitle => '暂无分类';
 
   @override
   String get browserNoCategoriesSubtitle =>
-      'Categories appear once websites are tracked';
+      '追踪网站后分类将在此显示';
 
   @override
-  String get browserByCategory => 'By Category';
+  String get browserByCategory => '按分类';
 
   @override
   String browserVisitCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count visits',
-      one: '1 visit',
+      other: '$count 次访问',
+      one: '1 次访问',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserSearchPlaceholder => 'Search website or domain…';
+  String get browserSearchPlaceholder => '搜索网站或域名…';
 
   @override
-  String get browserFilterAllTracking => 'All Tracking';
+  String get browserFilterAllTracking => '全部追踪';
 
   @override
-  String get browserFilterTracked => 'Tracked';
+  String get browserFilterTracked => '已追踪';
 
   @override
-  String get browserFilterUntracked => 'Untracked';
+  String get browserFilterUntracked => '未追踪';
 
   @override
-  String get browserFilterAllTypes => 'All Types';
+  String get browserFilterAllTypes => '全部类型';
 
   @override
-  String get browserFilterUnproductive => 'Unproductive';
+  String get browserFilterUnproductive => '非生产性';
 
   @override
   String browserWebsiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites',
-      one: '1 website',
+      other: '$count 个网站',
+      one: '1 个网站',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserColumnDomain => 'Domain';
+  String get browserColumnDomain => '域名';
 
   @override
-  String get browserColumnTimeToday => 'Time Today';
+  String get browserColumnTimeToday => '今日时间';
 
   @override
-  String get browserColumnVisits => 'Visits';
+  String get browserColumnVisits => '访问次数';
 
   @override
-  String get browserColumnTracking => 'Tracking';
+  String get browserColumnTracking => '追踪';
 
   @override
-  String get browserNoWebsitesTitle => 'No websites found';
+  String get browserNoWebsitesTitle => '未找到网站';
 
   @override
   String get browserNoWebsitesWebSubtitle =>
-      'Browse the web — your sites will appear here.';
+      '浏览网页 — 您的网站将在此显示。';
 
   @override
   String get browserNoWebsitesDesktopSubtitle =>
-      'Try adjusting your filters or wait for the\nextension to sync some data.';
+      '尝试调整筛选条件或等待\n扩展同步一些数据。';
 
   @override
-  String get browserTimeDistribution => 'Time Distribution';
+  String get browserTimeDistribution => '时间分布';
 
   @override
   String browserSiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count sites',
-      one: '1 site',
+      other: '$count 个网站',
+      one: '1 个网站',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserActiveLimits => 'Active Limits';
+  String get browserActiveLimits => '活跃限制';
 
   @override
   String browserActiveLimitsSubtitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites with daily limits',
-      one: '1 website with daily limits',
+      other: '$count 个设有每日限制的网站',
+      one: '1 个设有每日限制的网站',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserNoLimitsTitle => 'No limits set';
+  String get browserNoLimitsTitle => '未设置限制';
 
   @override
-  String get browserNoLimitsSubtitle => 'Set daily time limits below';
+  String get browserNoLimitsSubtitle => '在下方设置每日时间限制';
 
   @override
-  String get browserAllWebsites => 'All Websites';
+  String get browserAllWebsites => '全部网站';
 
   @override
   String get browserAllWebsitesSubtitle =>
-      'Tap a site to set or change its daily limit';
+      '点击网站以设置或更改每日限制';
 
   @override
-  String get browserAllSitesHaveLimits => 'All sites have limits';
+  String get browserAllSitesHaveLimits => '所有网站均已设置限制';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'No websites tracked yet';
+  String get browserNoWebsitesTrackedTitle => '暂无已追踪网站';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
-      'Browse the web to see your sites here';
+      '浏览网页即可在此查看您的网站';
 
   @override
   String get browserNoWebsitesTrackedDesktopSubtitle =>
-      'Install the extension and browse to get started';
+      '安装扩展并开始浏览以入门';
 
   @override
   String browserDailyLimitDialog(String domain) {
-    return 'Daily Limit – $domain';
+    return '每日限制 – $domain';
   }
 
   @override
   String get browserDailyLimitDialogDesc =>
-      'Set how long you can visit this site per day.';
+      '设置每天可访问此网站的时长。';
 
   @override
-  String get browserHours => 'Hours';
+  String get browserHours => '小时';
 
   @override
-  String get browserRemoveLimit => 'Remove Limit';
+  String get browserRemoveLimit => '移除限制';
 
   @override
   String browserTimeUsed(String time) {
-    return '$time used';
+    return '已使用 $time';
   }
 
   @override
-  String get browserSetLimit => 'Set limit';
+  String get browserSetLimit => '设置限制';
 
   @override
-  String get browserExtensionMode => 'Extension Mode';
+  String get browserExtensionMode => '扩展模式';
 
   @override
-  String get browserDesktopAppUrl => 'Desktop App URL';
+  String get browserDesktopAppUrl => '桌面应用 URL';
 
   @override
   String get browserDesktopAppUrlDesc =>
-      'The URL where the Scolect desktop app is running its local server.';
+      'Scolect 桌面应用运行本地服务器的 URL。';
 
   @override
-  String get browserAbout => 'About';
+  String get browserAbout => '关于';
 
   @override
-  String get browserAboutExtension => 'Extension';
+  String get browserAboutExtension => '扩展';
 
   @override
   String get browserAboutExtensionValue => 'Scolect – Web Time Tracker';
 
   @override
-  String get browserAboutVersion => 'Version';
+  String get browserAboutVersion => '版本';
 
   @override
-  String get browserAboutStorage => 'Storage';
+  String get browserAboutStorage => '存储';
 
   @override
   String get browserAboutStorageValue => 'chrome.storage.local';
 
   @override
-  String get browserAboutHistory => 'History';
+  String get browserAboutHistory => '历史';
 
   @override
-  String get browserAboutHistoryValue => 'Last 30 days retained';
+  String get browserAboutHistoryValue => '保留最近30天';
 
   @override
-  String get browserDangerZone => 'Danger Zone';
+  String get browserDangerZone => '危险区域';
 
   @override
-  String get browserClearDataTitle => 'Clear All Website Data';
+  String get browserClearDataTitle => '清除所有网站数据';
 
   @override
   String get browserClearDataDesc =>
-      'Permanently deletes all tracked website history. This cannot be undone.';
+      '永久删除所有已追踪网站的历史记录。此操作无法撤销。';
 
   @override
-  String get browserClearDataButton => 'Clear Data';
+  String get browserClearDataButton => '清除数据';
 
   @override
-  String get browserAreYouSure => 'Are you sure?';
+  String get browserAreYouSure => '您确定吗？';
 
   @override
-  String get browserYesDelete => 'Yes, Delete';
+  String get browserYesDelete => '是的，删除';
 
   @override
-  String get browserDesktopUrlSaved => 'Desktop URL saved';
+  String get browserDesktopUrlSaved => '桌面 URL 已保存';
 
   @override
-  String get browserDataCleared => 'All website data cleared';
+  String get browserDataCleared => '所有网站数据已清除';
 
   @override
-  String get browserTrackingActive => 'Tracking Active';
+  String get browserTrackingActive => '追踪进行中';
 
   @override
   String get browserTrackingActiveDesc =>
-      'Your browser activity is being tracked and\nsynced to the Scolect desktop app.';
+      '您的浏览器活动正在被追踪并\n同步到 Scolect 桌面应用。';
 
   @override
-  String get browserConnectedToDesktop => 'Connected to Scolect Desktop';
+  String get browserConnectedToDesktop => '已连接到 Scolect 桌面版';
 
   @override
-  String get browserDesktopNotReachable => 'Scolect Desktop not reachable';
+  String get browserDesktopNotReachable => 'Scolect 桌面版不可达';
 
   @override
-  String get browserRefreshSyncStatus => 'Refresh sync status';
+  String get browserRefreshSyncStatus => '刷新同步状态';
 
   @override
-  String get browserSwitchToStandalone => 'Switch to Standalone mode →';
+  String get browserSwitchToStandalone => '切换到独立模式 →';
 
   @override
-  String get browserSetupTitle => 'Connect Browser Extension';
+  String get browserSetupTitle => '连接浏览器扩展';
 
   @override
   String get browserSetupSubtitle =>
-      'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.';
+      '启用本地服务器，以便 Scolect 浏览器扩展可以将您的网络活动同步到桌面应用。';
 
   @override
-  String get browserSetupEnableServer => 'Enable Extension Server';
+  String get browserSetupEnableServer => '启用扩展服务器';
 
   @override
   String browserSetupServerRunning(int port) {
-    return 'Server running · port $port';
+    return '服务器运行中 · 端口 $port';
   }
 
   @override
-  String get browserSetupServerOff => 'Server disabled';
+  String get browserSetupServerOff => '服务器已禁用';
 
   @override
-  String get browserSetupStep1 => 'Enable the server using the toggle above';
+  String get browserSetupStep1 => '使用上方的开关启用服务器';
 
   @override
   String get browserSetupStep2 =>
-      'Install the Scolect extension in your browser';
+      '在浏览器中安装 Scolect 扩展';
 
   @override
-  String get browserSetupStep3 => 'Open your browser and visit any site';
+  String get browserSetupStep3 => '打开浏览器并访问任意网站';
 
   @override
-  String get browserSetupStep4 => 'Web activity will appear here automatically';
+  String get browserSetupStep4 => '网络活动将自动显示在此处';
 
   @override
-  String get browserSetupHowTo => 'How to get started';
+  String get browserSetupHowTo => '如何开始';
 
   @override
-  String get browserSetupServerActive => 'Server Active';
+  String get browserSetupServerActive => '服务器已激活';
 
   @override
   String get browserSetupServerActiveDesc =>
-      'Your browser extension can now connect and sync data.';
+      '您的浏览器扩展现在可以连接并同步数据。';
 
   @override
-  String get browserServerPort => 'Server Port';
+  String get browserServerPort => '服务器端口';
 
   @override
   String get browserServerPortDesc =>
-      'Port the local server listens on. Change this if port 46000 is already in use.';
+      '本地服务器监听的端口。如果端口 46000 已被占用，请更改此项。';
 
   @override
-  String get browserServerPortSaved => 'Port updated — extension reconnecting';
+  String get browserServerPortSaved => '端口已更新 — 扩展正在重新连接';
 
   @override
-  String get browserServerPortInvalid => 'Enter a port between 1024 and 65535';
+  String get browserServerPortInvalid => '请输入 1024 到 65535 之间的端口';
 
   @override
-  String get browserDisableServer => 'Disable Extension Server';
+  String get browserDisableServer => '禁用扩展服务器';
 
   @override
-  String get browserEditSiteName => 'Edit display name';
+  String get browserEditSiteName => '编辑显示名称';
 
   @override
-  String get browserSiteNameHint => 'Display name (e.g. YouTube)';
+  String get browserSiteNameHint => '显示名称（例如：YouTube）';
 }

@@ -75,7 +75,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get navFocusMode => 'Modo Foco';
 
   @override
-  String get navBrowser => 'Browser';
+  String get navBrowser => 'Navegador';
 
   @override
   String get navSettings => 'Configurações';
@@ -991,11 +991,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'Iniciar o aplicativo na Bandeja do Sistema (Recomendado para Windows 10)';
 
   @override
-  String get browserExtensionTitle => 'Browser Extension';
+  String get browserExtensionTitle => 'Extensão do Navegador';
 
   @override
   String get browserExtensionDescription =>
-      'Allow the Scolect browser extension to connect and sync website usage data';
+      'Permitir que a extensão do navegador Scolect se conecte e sincronize os dados de uso do site';
 
   @override
   String get crashReportingTitle => 'Relatórios de falhas';
@@ -3299,164 +3299,164 @@ class AppLocalizationsPt extends AppLocalizations {
   String get weekdayNameUnknown => 'aquele dia';
 
   @override
-  String get browserTitle => 'Browser';
+  String get browserTitle => 'Navegador';
 
   @override
-  String get browserWebsiteTracking => 'Website tracking';
+  String get browserWebsiteTracking => 'Rastreamento de sites';
 
   @override
-  String get browserSubtitle => 'Track and manage your website usage';
+  String get browserSubtitle => 'Acompanhe e gerencie o uso dos seus sites';
 
   @override
-  String get browserToday => 'Today';
+  String get browserToday => 'Hoje';
 
   @override
   String get browserSites => 'Sites';
 
   @override
-  String get browserExtensionSettings => 'Extension Settings';
+  String get browserExtensionSettings => 'Configurações da Extensão';
 
   @override
-  String get browserSyncing => 'Syncing';
+  String get browserSyncing => 'Sincronizando';
 
   @override
-  String get browserTabOverview => 'Overview';
+  String get browserTabOverview => 'Visão Geral';
 
   @override
-  String get browserTabWebsites => 'Websites';
+  String get browserTabWebsites => 'Sites';
 
   @override
-  String get browserTabCategories => 'Categories';
+  String get browserTabCategories => 'Categorias';
 
   @override
-  String get browserTabLimits => 'Limits';
+  String get browserTabLimits => 'Limites';
 
   @override
-  String get browserTabHistory => 'History';
+  String get browserTabHistory => 'Histórico';
 
   @override
-  String get browserHistoryTitle => 'Weekly Overview';
+  String get browserHistoryTitle => 'Visão Geral Semanal';
 
   @override
   String get browserHistorySubtitle =>
-      'Your browsing time over the last 7 days';
+      'Seu tempo de navegação nos últimos 7 dias';
 
   @override
-  String get browserHistoryNoData => 'No browsing data yet';
+  String get browserHistoryNoData => 'Nenhum dado de navegação ainda';
 
   @override
-  String get browserHistoryAvgPerDay => 'Avg / day';
+  String get browserHistoryAvgPerDay => 'Média / dia';
 
   @override
-  String get browserHistoryPeakDay => 'Peak day';
+  String get browserHistoryPeakDay => 'Dia de pico';
 
   @override
-  String get browserHistoryTotalWeek => 'Total this week';
+  String get browserHistoryTotalWeek => 'Total esta semana';
 
   @override
-  String get browserHistoryTopSites => 'Top sites this week';
+  String get browserHistoryTopSites => 'Sites mais acessados esta semana';
 
   @override
-  String get browserTodayWebTime => 'Today\'s Web Time';
+  String get browserTodayWebTime => 'Tempo na Web Hoje';
 
   @override
-  String get browserSitesVisited => 'Sites Visited';
+  String get browserSitesVisited => 'Sites Visitados';
 
   @override
-  String get browserPageVisits => 'Page Visits';
+  String get browserPageVisits => 'Visitas a Páginas';
 
   @override
-  String get browserTopSitesToday => 'Top Sites Today';
+  String get browserTopSitesToday => 'Sites Mais Acessados Hoje';
 
   @override
-  String get browserViewAll => 'View all →';
+  String get browserViewAll => 'Ver todos →';
 
   @override
-  String get browserNoWebActivityTitle => 'No web activity yet today';
+  String get browserNoWebActivityTitle => 'Nenhuma atividade na web hoje ainda';
 
   @override
   String get browserNoActivityWebSubtitle =>
-      'Browse the web to start tracking your time';
+      'Navegue na web para começar a rastrear seu tempo';
 
   @override
   String get browserNoActivityDesktopSubtitle =>
-      'Install the browser extension to start tracking';
+      'Instale a extensão do navegador para começar a rastrear';
 
   @override
-  String get browserNoCategoriesTitle => 'No categories yet';
+  String get browserNoCategoriesTitle => 'Nenhuma categoria ainda';
 
   @override
   String get browserNoCategoriesSubtitle =>
-      'Categories appear once websites are tracked';
+      'As categorias aparecem assim que os sites forem rastreados';
 
   @override
-  String get browserByCategory => 'By Category';
+  String get browserByCategory => 'Por Categoria';
 
   @override
   String browserVisitCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count visits',
-      one: '1 visit',
+      other: '$count visitas',
+      one: '1 visita',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserSearchPlaceholder => 'Search website or domain…';
+  String get browserSearchPlaceholder => 'Pesquisar site ou domínio…';
 
   @override
-  String get browserFilterAllTracking => 'All Tracking';
+  String get browserFilterAllTracking => 'Todos os Rastreamentos';
 
   @override
-  String get browserFilterTracked => 'Tracked';
+  String get browserFilterTracked => 'Rastreado';
 
   @override
-  String get browserFilterUntracked => 'Untracked';
+  String get browserFilterUntracked => 'Não Rastreado';
 
   @override
-  String get browserFilterAllTypes => 'All Types';
+  String get browserFilterAllTypes => 'Todos os Tipos';
 
   @override
-  String get browserFilterUnproductive => 'Unproductive';
+  String get browserFilterUnproductive => 'Improdutivo';
 
   @override
   String browserWebsiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites',
-      one: '1 website',
+      other: '$count sites',
+      one: '1 site',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserColumnDomain => 'Domain';
+  String get browserColumnDomain => 'Domínio';
 
   @override
-  String get browserColumnTimeToday => 'Time Today';
+  String get browserColumnTimeToday => 'Tempo Hoje';
 
   @override
-  String get browserColumnVisits => 'Visits';
+  String get browserColumnVisits => 'Visitas';
 
   @override
-  String get browserColumnTracking => 'Tracking';
+  String get browserColumnTracking => 'Rastreamento';
 
   @override
-  String get browserNoWebsitesTitle => 'No websites found';
+  String get browserNoWebsitesTitle => 'Nenhum site encontrado';
 
   @override
   String get browserNoWebsitesWebSubtitle =>
-      'Browse the web — your sites will appear here.';
+      'Navegue na web — seus sites aparecerão aqui.';
 
   @override
   String get browserNoWebsitesDesktopSubtitle =>
-      'Try adjusting your filters or wait for the\nextension to sync some data.';
+      'Tente ajustar os filtros ou aguarde a\nextensão sincronizar alguns dados.';
 
   @override
-  String get browserTimeDistribution => 'Time Distribution';
+  String get browserTimeDistribution => 'Distribuição de Tempo';
 
   @override
   String browserSiteCount(int count) {
@@ -3470,207 +3470,207 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
-  String get browserActiveLimits => 'Active Limits';
+  String get browserActiveLimits => 'Limites Ativos';
 
   @override
   String browserActiveLimitsSubtitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites with daily limits',
-      one: '1 website with daily limits',
+      other: '$count sites com limites diários',
+      one: '1 site com limite diário',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserNoLimitsTitle => 'No limits set';
+  String get browserNoLimitsTitle => 'Nenhum limite definido';
 
   @override
-  String get browserNoLimitsSubtitle => 'Set daily time limits below';
+  String get browserNoLimitsSubtitle => 'Defina limites de tempo diários abaixo';
 
   @override
-  String get browserAllWebsites => 'All Websites';
+  String get browserAllWebsites => 'Todos os Sites';
 
   @override
   String get browserAllWebsitesSubtitle =>
-      'Tap a site to set or change its daily limit';
+      'Toque em um site para definir ou alterar seu limite diário';
 
   @override
-  String get browserAllSitesHaveLimits => 'All sites have limits';
+  String get browserAllSitesHaveLimits => 'Todos os sites têm limites';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'No websites tracked yet';
+  String get browserNoWebsitesTrackedTitle => 'Nenhum site rastreado ainda';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
-      'Browse the web to see your sites here';
+      'Navegue na web para ver seus sites aqui';
 
   @override
   String get browserNoWebsitesTrackedDesktopSubtitle =>
-      'Install the extension and browse to get started';
+      'Instale a extensão e navegue para começar';
 
   @override
   String browserDailyLimitDialog(String domain) {
-    return 'Daily Limit – $domain';
+    return 'Limite Diário – $domain';
   }
 
   @override
   String get browserDailyLimitDialogDesc =>
-      'Set how long you can visit this site per day.';
+      'Defina por quanto tempo você pode visitar este site por dia.';
 
   @override
-  String get browserHours => 'Hours';
+  String get browserHours => 'Horas';
 
   @override
-  String get browserRemoveLimit => 'Remove Limit';
+  String get browserRemoveLimit => 'Remover Limite';
 
   @override
   String browserTimeUsed(String time) {
-    return '$time used';
+    return '$time usado';
   }
 
   @override
-  String get browserSetLimit => 'Set limit';
+  String get browserSetLimit => 'Definir limite';
 
   @override
-  String get browserExtensionMode => 'Extension Mode';
+  String get browserExtensionMode => 'Modo de Extensão';
 
   @override
-  String get browserDesktopAppUrl => 'Desktop App URL';
+  String get browserDesktopAppUrl => 'URL do App Desktop';
 
   @override
   String get browserDesktopAppUrlDesc =>
-      'The URL where the Scolect desktop app is running its local server.';
+      'A URL onde o app desktop do Scolect está executando seu servidor local.';
 
   @override
-  String get browserAbout => 'About';
+  String get browserAbout => 'Sobre';
 
   @override
-  String get browserAboutExtension => 'Extension';
+  String get browserAboutExtension => 'Extensão';
 
   @override
   String get browserAboutExtensionValue => 'Scolect – Web Time Tracker';
 
   @override
-  String get browserAboutVersion => 'Version';
+  String get browserAboutVersion => 'Versão';
 
   @override
-  String get browserAboutStorage => 'Storage';
+  String get browserAboutStorage => 'Armazenamento';
 
   @override
   String get browserAboutStorageValue => 'chrome.storage.local';
 
   @override
-  String get browserAboutHistory => 'History';
+  String get browserAboutHistory => 'Histórico';
 
   @override
-  String get browserAboutHistoryValue => 'Last 30 days retained';
+  String get browserAboutHistoryValue => 'Últimos 30 dias retidos';
 
   @override
-  String get browserDangerZone => 'Danger Zone';
+  String get browserDangerZone => 'Zona de Perigo';
 
   @override
-  String get browserClearDataTitle => 'Clear All Website Data';
+  String get browserClearDataTitle => 'Limpar Todos os Dados de Sites';
 
   @override
   String get browserClearDataDesc =>
-      'Permanently deletes all tracked website history. This cannot be undone.';
+      'Exclui permanentemente todo o histórico de sites rastreados. Isso não pode ser desfeito.';
 
   @override
-  String get browserClearDataButton => 'Clear Data';
+  String get browserClearDataButton => 'Limpar Dados';
 
   @override
-  String get browserAreYouSure => 'Are you sure?';
+  String get browserAreYouSure => 'Tem certeza?';
 
   @override
-  String get browserYesDelete => 'Yes, Delete';
+  String get browserYesDelete => 'Sim, Excluir';
 
   @override
-  String get browserDesktopUrlSaved => 'Desktop URL saved';
+  String get browserDesktopUrlSaved => 'URL do desktop salva';
 
   @override
-  String get browserDataCleared => 'All website data cleared';
+  String get browserDataCleared => 'Todos os dados de sites foram limpos';
 
   @override
-  String get browserTrackingActive => 'Tracking Active';
+  String get browserTrackingActive => 'Rastreamento Ativo';
 
   @override
   String get browserTrackingActiveDesc =>
-      'Your browser activity is being tracked and\nsynced to the Scolect desktop app.';
+      'Sua atividade no navegador está sendo rastreada e\nsincronizada com o app desktop do Scolect.';
 
   @override
-  String get browserConnectedToDesktop => 'Connected to Scolect Desktop';
+  String get browserConnectedToDesktop => 'Conectado ao Scolect Desktop';
 
   @override
-  String get browserDesktopNotReachable => 'Scolect Desktop not reachable';
+  String get browserDesktopNotReachable => 'Scolect Desktop inacessível';
 
   @override
-  String get browserRefreshSyncStatus => 'Refresh sync status';
+  String get browserRefreshSyncStatus => 'Atualizar status de sincronização';
 
   @override
-  String get browserSwitchToStandalone => 'Switch to Standalone mode →';
+  String get browserSwitchToStandalone => 'Mudar para modo Standalone →';
 
   @override
-  String get browserSetupTitle => 'Connect Browser Extension';
+  String get browserSetupTitle => 'Conectar Extensão do Navegador';
 
   @override
   String get browserSetupSubtitle =>
-      'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.';
+      'Ative o servidor local para que a extensão do navegador Scolect possa sincronizar sua atividade web com o aplicativo desktop.';
 
   @override
-  String get browserSetupEnableServer => 'Enable Extension Server';
+  String get browserSetupEnableServer => 'Ativar Servidor da Extensão';
 
   @override
   String browserSetupServerRunning(int port) {
-    return 'Server running · port $port';
+    return 'Servidor em execução · porta $port';
   }
 
   @override
-  String get browserSetupServerOff => 'Server disabled';
+  String get browserSetupServerOff => 'Servidor desativado';
 
   @override
-  String get browserSetupStep1 => 'Enable the server using the toggle above';
+  String get browserSetupStep1 => 'Ative o servidor usando o botão acima';
 
   @override
   String get browserSetupStep2 =>
-      'Install the Scolect extension in your browser';
+      'Instale a extensão do Scolect no seu navegador';
 
   @override
-  String get browserSetupStep3 => 'Open your browser and visit any site';
+  String get browserSetupStep3 => 'Abra o navegador e acesse qualquer site';
 
   @override
-  String get browserSetupStep4 => 'Web activity will appear here automatically';
+  String get browserSetupStep4 => 'A atividade web aparecerá aqui automaticamente';
 
   @override
-  String get browserSetupHowTo => 'How to get started';
+  String get browserSetupHowTo => 'Como começar';
 
   @override
-  String get browserSetupServerActive => 'Server Active';
+  String get browserSetupServerActive => 'Servidor Ativo';
 
   @override
   String get browserSetupServerActiveDesc =>
-      'Your browser extension can now connect and sync data.';
+      'Sua extensão do navegador agora pode conectar e sincronizar dados.';
 
   @override
-  String get browserServerPort => 'Server Port';
+  String get browserServerPort => 'Porta do Servidor';
 
   @override
   String get browserServerPortDesc =>
-      'Port the local server listens on. Change this if port 46000 is already in use.';
+      'Porta em que o servidor local escuta. Mude se a porta 46000 já estiver em uso.';
 
   @override
-  String get browserServerPortSaved => 'Port updated — extension reconnecting';
+  String get browserServerPortSaved => 'Porta atualizada — extensão reconectando';
 
   @override
-  String get browserServerPortInvalid => 'Enter a port between 1024 and 65535';
+  String get browserServerPortInvalid => 'Insira uma porta entre 1024 e 65535';
 
   @override
-  String get browserDisableServer => 'Disable Extension Server';
+  String get browserDisableServer => 'Desativar Servidor da Extensão';
 
   @override
-  String get browserEditSiteName => 'Edit display name';
+  String get browserEditSiteName => 'Editar nome de exibição';
 
   @override
-  String get browserSiteNameHint => 'Display name (e.g. YouTube)';
+  String get browserSiteNameHint => 'Nome de exibição (ex.: YouTube)';
 }

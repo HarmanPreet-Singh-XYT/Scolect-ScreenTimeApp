@@ -8,6 +8,10 @@ import './controller/categories_controller.dart';
 import 'dart:async';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:provider/provider.dart';
+import 'package:screentime/sections/settings.dart' show SettingsProvider;
+import '../web/extension_settings.dart'
+    if (dart.library.io) '../web/extension_settings_stub.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -106,6 +110,8 @@ class _ApplicationsState extends State<Applications>
   bool _isLoading = true;
   Timer? _debounce;
 
+  SettingsProvider? _settingsProvider;
+
   @override
   void initState() {
     super.initState();
@@ -114,6 +120,10 @@ class _ApplicationsState extends State<Applications>
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
+      if (kIsWeb && mounted) {
+        _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+        _settingsProvider!.addListener(_loadData);
+      }
     });
     _loadData();
   }
@@ -213,6 +223,7 @@ class _ApplicationsState extends State<Applications>
   void dispose() {
     _debounce?.cancel();
     _animationController.dispose();
+    _settingsProvider?.removeListener(_loadData);
     super.dispose();
   }
 
@@ -1058,6 +1069,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
   late int _limitMinutes;
   late bool _isCustomCategory;
   late TextEditingController _customCategoryController;
+  late TextEditingController _siteNameController;
 
   @override
   void initState() {
@@ -1075,11 +1087,13 @@ class _EditAppDialogState extends State<_EditAppDialog> {
     _customCategoryController = TextEditingController(
       text: _isCustomCategory ? _selectedCategory : '',
     );
+    _siteNameController = TextEditingController(text: app.siteName);
   }
 
   @override
   void dispose() {
     _customCategoryController.dispose();
+    _siteNameController.dispose();
     super.dispose();
   }
 
@@ -1094,15 +1108,26 @@ class _EditAppDialogState extends State<_EditAppDialog> {
         ? Duration(hours: _limitHours, minutes: _limitMinutes)
         : Duration.zero;
 
-    await AppDataStore().updateAppMetadata(
-      widget.app.name,
-      category: finalCategory,
-      isProductive: _isProductive,
-      isTracking: _isTracking,
-      isVisible: _isVisible,
-      dailyLimit: effectiveLimit,
-      limitStatus: _limitStatus,
-    );
+    if (kIsWeb) {
+      await ExtensionSettings().updateMetadata(
+        widget.app.name,
+        category: finalCategory,
+        isProductive: _isProductive,
+        isTracking: _isTracking,
+        dailyLimit: effectiveLimit,
+        siteName: _siteNameController.text.trim(),
+      );
+    } else {
+      await AppDataStore().updateAppMetadata(
+        widget.app.name,
+        category: finalCategory,
+        isProductive: _isProductive,
+        isTracking: _isTracking,
+        isVisible: _isVisible,
+        dailyLimit: effectiveLimit,
+        limitStatus: _limitStatus,
+      );
+    }
 
     await widget.refreshData();
     if (mounted) Navigator.pop(context);
@@ -1155,6 +1180,20 @@ class _EditAppDialogState extends State<_EditAppDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display Name (web extension only)
+            if (kIsWeb) ...[
+              _DialogSection(
+                icon: FluentIcons.edit,
+                title: 'Display Name',
+                iconColor: _kPurpleColor,
+                child: TextBox(
+                  controller: _siteNameController,
+                  placeholder: widget.app.name,
+                  style: const TextStyle(fontSize: 13),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
             // Category Section
             _DialogSection(
               icon: FluentIcons.tag,

@@ -185,12 +185,45 @@ class ExtensionSettings {
   }
 
   Future<void> clearAllData() async {
-    // Remove all scolect_day_* keys
     final all = await chromeStorageGetAll();
-    final toRemove = all.keys.where((k) => k.startsWith('scolect_day_')).toList();
+    // Remove all daily usage keys and any cached state that references them.
+    // Also clear the active tracking session so the SW doesn't re-write the
+    // just-deleted data on its next tick.
+    final toRemove = all.keys.where((k) =>
+      k.startsWith('scolect_day_') ||
+      k == 'scolect_active' ||
+      k == 'scolect_app_metadata' ||
+      k == 'scolect_focus_sessions' ||
+      k == 'scolect_local_focus' ||
+      k == 'scolect_blocked_domains' ||
+      k == 'scolect_unblocked_today'
+    ).toList();
     for (final key in toRemove) {
       await chromeStorageRemove(key);
     }
+    // Clear per-domain metadata from scolect_settings and the in-memory cache.
+    _metadata.clear();
+    _loaded = false;
+    await chromeStorageSet({
+      _kSettingsKey: {
+        'mode': _mode.key,
+        'desktopUrl': _desktopUrl,
+        'metadata': <String, dynamic>{},
+      },
+    });
+    // Reset the app_state domains list so the popup and provider show empty immediately.
+    final stateRaw = all['scolect_app_state'] as Map<String, dynamic>? ?? {};
+    await chromeStorageSet({
+      'scolect_app_state': {
+        ...stateRaw,
+        'todayDomains': <dynamic>[],
+        'activeDomain': null,
+        'totalSeconds': 0,
+        'focusActive': false,
+        'sessionLabel': null,
+        'endTimeEpochMs': null,
+      },
+    });
   }
 
   // ── Persist ─────────────────────────────────────────────────────────────────

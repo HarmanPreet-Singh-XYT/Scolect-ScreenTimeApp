@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,12 +8,17 @@ import '../sections/controller/app_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
 import '../sections/controller/focus_mode_controller.dart';
 
-/// Lightweight HTTP server on port 46000 for the Scolect browser extension.
+/// Lightweight server on port 46000 for the Scolect browser extension.
 ///
-/// Routes:
+/// HTTP routes (unchanged for backwards compat):
 ///   GET  /ping   → health check + focus state summary
 ///   POST /usage  → ingest domain-level usage data from the extension
 ///   GET  /focus  → full focus state for the extension's blocker
+///
+/// WebSocket route:
+///   GET  /ws     → upgrade to WebSocket; desktop pushes focus_state on connect
+///                  and on every timer state change; extension pushes usage data
+///                  every 5 s instead of polling once per minute.
 class BrowserExtensionServer {
   static const int defaultPort = 46000;
   static const String _version = '1.0';
@@ -20,6 +26,12 @@ class BrowserExtensionServer {
   static HttpServer? _server;
   static int _currentPort = defaultPort;
   static final AppDataStore _dataStore = AppDataStore();
+
+  // ─── WebSocket state ─────────────────────────────────────────────────────
+  static final Set<WebSocket> _clients = {};
+  static StreamSubscription<TimerUpdate>? _timerSubscription;
+  static TimerState? _lastBroadcastState;
+  static bool? _lastBroadcastRunning;
 
   static int get currentPort => _currentPort;
 
@@ -30,6 +42,19 @@ class BrowserExtensionServer {
       debugPrint('✅ Extension server started on port $_currentPort');
       _server!.listen(_handleRequest, onError: (e) {
         debugPrint('⚠️ Extension server error: $e');
+      });
+
+      // Push focus_state to extension whenever the timer transitions state.
+      // Only broadcast on actual transitions, not every second tick.
+      _timerSubscription =
+          PomodoroTimerService.instance.timerUpdates.listen((update) {
+        final stateChanged = update.state != _lastBroadcastState;
+        final runningChanged = update.isRunning != _lastBroadcastRunning;
+        if (stateChanged || runningChanged) {
+          _lastBroadcastState = update.state;
+          _lastBroadcastRunning = update.isRunning;
+          _broadcastFocusState();
+        }
       });
     } catch (e) {
       debugPrint('⚠️ Extension server bind failed (port $_currentPort in use?): $e');
@@ -42,6 +67,16 @@ class BrowserExtensionServer {
   }
 
   static Future<void> dispose() async {
+    await _timerSubscription?.cancel();
+    _timerSubscription = null;
+    _lastBroadcastState = null;
+    _lastBroadcastRunning = null;
+
+    for (final ws in List.of(_clients)) {
+      await ws.close(WebSocketStatus.goingAway).catchError((_) {});
+    }
+    _clients.clear();
+
     await _server?.close(force: true);
     _server = null;
     debugPrint('🛑 Extension server closed');
@@ -50,19 +85,10 @@ class BrowserExtensionServer {
   // ─── Request dispatcher ──────────────────────────────────────────────────
 
   static Future<void> _handleRequest(HttpRequest req) async {
-    // ─── CORS origin check ─────────────────────────────────────────
-    // Only allow requests from the Scolect Chrome Extension.
-    // The server binds to 127.0.0.1 so it's local-only, but any webpage
-    // open in the browser could fetch http://localhost:46000/focus and
-    // read the user's blocked domain list. Restrict to chrome-extension://
-    // origins to prevent that.
     final origin = req.headers.value('origin') ?? '';
     final isExtension = origin.startsWith('chrome-extension://');
 
     if (!isExtension && req.method != 'OPTIONS') {
-      // Allow requests with no Origin header (e.g., curl, same-process tests)
-      // only if they genuinely have no origin — browsers always set it for
-      // cross-origin fetch. Blank origin = direct/non-browser caller = OK.
       if (origin.isNotEmpty) {
         req.response.statusCode = HttpStatus.forbidden;
         req.response.write(jsonEncode({'error': 'Forbidden: extension-only endpoint'}));
@@ -73,7 +99,6 @@ class BrowserExtensionServer {
 
     _setCors(req.response, origin);
 
-    // Pre-flight
     if (req.method == 'OPTIONS') {
       req.response.statusCode = HttpStatus.noContent;
       await req.response.close();
@@ -84,6 +109,8 @@ class BrowserExtensionServer {
       switch ('${req.method} ${req.uri.path}') {
         case 'GET /ping':
           await _handlePing(req);
+        case 'GET /ws':
+          await _handleWsUpgrade(req);
         case 'POST /usage':
         case 'POST /api/browser-sync':
           await _handleUsage(req);
@@ -107,6 +134,88 @@ class BrowserExtensionServer {
       'version': _version,
       'focusActive': timer.isRunning && timer.currentState != TimerState.idle,
     });
+  }
+
+  // ─── GET /ws  (WebSocket upgrade) ────────────────────────────────────────
+
+  static Future<void> _handleWsUpgrade(HttpRequest req) async {
+    WebSocket ws;
+    try {
+      ws = await WebSocketTransformer.upgrade(req);
+    } catch (e) {
+      debugPrint('⚠️ WS upgrade failed: $e');
+      return;
+    }
+
+    _clients.add(ws);
+    debugPrint('🔌 WS client connected (${_clients.length} total)');
+
+    // Immediately push current focus state so the extension is in sync.
+    _broadcastFocusState(target: ws);
+
+    ws.listen(
+      (data) => _handleWsMessage(ws, data),
+      onDone: () {
+        _clients.remove(ws);
+        debugPrint('🔌 WS client disconnected (${_clients.length} remaining)');
+      },
+      onError: (e) {
+        _clients.remove(ws);
+        debugPrint('⚠️ WS client error: $e');
+      },
+      cancelOnError: true,
+    );
+  }
+
+  // ─── WebSocket incoming message handler ──────────────────────────────────
+
+  static Future<void> _handleWsMessage(WebSocket ws, dynamic data) async {
+    try {
+      final msg = jsonDecode(data as String) as Map<String, dynamic>;
+
+      if (msg['type'] == 'usage') {
+        final dateStr = msg['date'] as String?;
+        final domains = msg['domains'] as List<dynamic>?;
+        if (dateStr == null || domains == null) return;
+        final date = DateTime.tryParse(dateStr);
+        if (date == null) return;
+        await _ingestDomains(date, domains);
+        return;
+      }
+
+      if (msg['type'] == 'focus_control') {
+        final action = msg['action'] as String?;
+        final timer = PomodoroTimerService.instance;
+        switch (action) {
+          case 'start':
+            timer.startWorkSession();
+          case 'pause':
+            timer.pauseTimer();
+          case 'resume':
+            timer.resumeTimer();
+          case 'reset':
+            timer.resetTimer();
+          case 'skip_forward':
+            timer.navigateForward();
+          case 'skip_backward':
+            timer.navigateBackward();
+          case 'phase_work':
+            timer.resetTimer();
+            timer.startWorkSession();
+          case 'phase_shortBreak':
+            timer.resetTimer();
+            timer.startShortBreak();
+          case 'phase_longBreak':
+            timer.resetTimer();
+            timer.startLongBreak();
+        }
+        // Push updated state back to all clients immediately so the popup
+        // reflects the new timer state without waiting for the next tick.
+        _broadcastFocusState();
+      }
+    } catch (e) {
+      debugPrint('⚠️ WS message error: $e');
+    }
   }
 
   // ─── POST /usage ─────────────────────────────────────────────────────────
@@ -135,6 +244,13 @@ class BrowserExtensionServer {
       return;
     }
 
+    await _ingestDomains(date, domains);
+    await _sendJson(req.response, HttpStatus.ok, {'ok': true});
+  }
+
+  // ─── Shared domain ingestion (used by both HTTP and WebSocket paths) ──────
+
+  static Future<void> _ingestDomains(DateTime date, List<dynamic> domains) async {
     for (final raw in domains) {
       final entry = raw as Map<String, dynamic>;
       final domain = entry['domain'] as String?;
@@ -142,7 +258,6 @@ class BrowserExtensionServer {
       final visits = (entry['visits'] as num?)?.toInt() ?? 0;
       final siteName = entry['siteName'] as String? ?? '';
 
-      // Extension-pushed metadata fields (new in sync protocol v2)
       final extLimitSecs = (entry['dailyLimitSeconds'] as num?)?.toInt();
       final extIsTracking = entry['isTracking'] as bool?;
       final extIsProductive = entry['isProductive'] as bool?;
@@ -154,29 +269,19 @@ class BrowserExtensionServer {
       final timeSpent = Duration(seconds: seconds);
       final now = DateTime.now();
 
-      // ─── Max-wins usage merge ───────────────────────────────────────
-      // The extension sends cumulative day totals; only overwrite if the
-      // incoming value is strictly larger than what's already stored.
-      // This prevents a stale push (e.g. after a SW restart mid-day) from
-      // overwriting a more recent record.
       final existingUsage = _dataStore.getAppUsage(appName, date);
-      final shouldUpdate = existingUsage == null ||
-          timeSpent > existingUsage.timeSpent;
+      final shouldUpdate = existingUsage == null || timeSpent > existingUsage.timeSpent;
 
       if (shouldUpdate) {
-        // Preserve existing usage periods if they're richer than the
-        // synthetic single-block we'd generate from the cumulative total.
         final existingPeriods = existingUsage?.usagePeriods ?? [];
         final usagePeriods = existingPeriods.isNotEmpty
-            ? existingPeriods // keep real timeline data already on desktop
+            ? existingPeriods
             : (seconds > 0
                 ? [TimeRange(startTime: now.subtract(timeSpent), endTime: now)]
                 : <TimeRange>[]);
         await _dataStore.setAppUsage(appName, date, timeSpent, visits, usagePeriods);
       }
 
-      // ─── Metadata sync (extension is authority) ──────────────────────
-      // Ensure metadata exists for this domain (first-time setup)
       final existingMeta = _dataStore.getAppMetadata(appName);
       if (existingMeta == null) {
         final category = (extCategory != null && extCategory.isNotEmpty)
@@ -198,7 +303,6 @@ class BrowserExtensionServer {
               : null,
         );
       } else {
-        // Retroactively categorize domains that were saved with a placeholder
         if (WebsiteCategories.isDefaultCategory(existingMeta.category)) {
           final category = (extCategory != null && extCategory.isNotEmpty)
               ? extCategory
@@ -207,20 +311,15 @@ class BrowserExtensionServer {
             await _dataStore.updateAppMetadata(appName, category: category);
           }
         }
-        // Update siteName if we now have one and the stored one is still empty
         if (siteName.isNotEmpty && existingMeta.siteName.isEmpty) {
           await _dataStore.updateAppMetadata(appName, siteName: siteName);
         }
-        // Sync limit from extension into Hive (extension wins).
-        // Only update if the extension explicitly sent a non-zero limit AND
-        // the desktop's stored limit differs — avoids pointless Hive writes.
         if (extLimitSecs != null && extLimitSecs > 0) {
           final extDuration = Duration(seconds: extLimitSecs);
           if (existingMeta.dailyLimit != extDuration) {
             await _dataStore.updateAppMetadata(appName, dailyLimit: extDuration);
           }
         }
-        // Sync isTracking / isProductive if extension sent explicit values
         if (extIsTracking != null && extIsTracking != existingMeta.isTracking) {
           await _dataStore.updateAppMetadata(appName, isTracking: extIsTracking);
         }
@@ -229,13 +328,19 @@ class BrowserExtensionServer {
         }
       }
     }
-
-    await _sendJson(req.response, HttpStatus.ok, {'ok': true});
   }
 
   // ─── GET /focus ──────────────────────────────────────────────────────────
 
   static Future<void> _handleFocus(HttpRequest req) async {
+    final payload = Map<String, dynamic>.from(_buildFocusStatePayload())
+      ..remove('type');
+    await _sendJson(req.response, HttpStatus.ok, payload);
+  }
+
+  // ─── Focus state builder (shared by HTTP and WS push) ────────────────────
+
+  static Map<String, dynamic> _buildFocusStatePayload() {
     final timer = PomodoroTimerService.instance;
     final isActive = timer.isRunning && timer.currentState != TimerState.idle;
 
@@ -244,23 +349,18 @@ class BrowserExtensionServer {
 
     if (isActive) {
       sessionLabel = switch (timer.currentState) {
-        TimerState.work => 'Work Session',
+        TimerState.work       => 'Work Session',
         TimerState.shortBreak => 'Short Break',
-        TimerState.longBreak => 'Long Break',
-        TimerState.idle => null,
+        TimerState.longBreak  => 'Long Break',
+        TimerState.idle       => null,
       };
       endTimeEpochMs =
           DateTime.now().millisecondsSinceEpoch + (timer.secondsRemaining * 1000);
     }
 
-    // Collect blocked domains (limit exceeded)
-    final now2 = DateTime.now();
-    final startOfDay = DateTime(now2.year, now2.month, now2.day);
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
     final blockedDomains = <String>[];
-
-    // Build domainLimits map — returned to the extension so it can merge
-    // desktop-only limits into scolect_settings.metadata (fills gaps only;
-    // extension values always win, which is handled on the extension side).
     final domainLimits = <String, Map<String, dynamic>>{};
 
     for (final appName in _dataStore.allAppNames) {
@@ -269,8 +369,6 @@ class BrowserExtensionServer {
       final meta = _dataStore.getAppMetadata(appName);
       if (meta == null) continue;
 
-      // Add to domainLimits regardless of whether a limit is set, so the
-      // extension can sync metadata fields (category, isTracking, etc.) too.
       domainLimits[domain] = {
         'dailyLimitSeconds': meta.dailyLimit.inSeconds,
         'isTracking':        meta.isTracking,
@@ -286,26 +384,38 @@ class BrowserExtensionServer {
       }
     }
 
-    await _sendJson(req.response, HttpStatus.ok, {
+    return {
+      'type': 'focus_state',
       'active': isActive,
       'blockedDomains': blockedDomains,
       'allowedDomains': <String>[],
       'endTimeEpochMs': endTimeEpochMs,
       'sessionLabel': sessionLabel,
-      // New in sync protocol v2: lets the extension merge desktop-only limits
-      // and metadata into scolect_settings.metadata (gaps-fill, extension wins).
       'domainLimits': domainLimits,
-    });
+    };
+  }
+
+  // ─── Broadcast focus state to WS clients ─────────────────────────────────
+
+  static void _broadcastFocusState({WebSocket? target}) {
+    if (target == null && _clients.isEmpty) return;
+    final payload = jsonEncode(_buildFocusStatePayload());
+    final targets = target != null ? [target] : List.of(_clients);
+    for (final ws in targets) {
+      try {
+        ws.add(payload);
+      } catch (e) {
+        debugPrint('⚠️ WS send error: $e');
+      }
+    }
   }
 
   // ─── Helpers ─────────────────────────────────────────────────────────────
 
   static void _setCors(HttpResponse response, [String origin = '']) {
-    // Echo back the extension origin rather than '*' so browsers enforce
-    // the same-origin policy against non-extension callers.
     final allowedOrigin = origin.startsWith('chrome-extension://')
         ? origin
-        : 'null'; // 'null' deliberately blocks non-extension browser fetches
+        : 'null';
     response.headers
       ..add('Access-Control-Allow-Origin', allowedOrigin)
       ..add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')

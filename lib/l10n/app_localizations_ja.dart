@@ -74,7 +74,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navFocusMode => '集中モード';
 
   @override
-  String get navBrowser => 'Browser';
+  String get navBrowser => 'ブラウザ';
 
   @override
   String get navSettings => '設定';
@@ -964,11 +964,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get launchMinimizedDescription => 'システムトレイでアプリケーションを起動（Windows 10に推奨）';
 
   @override
-  String get browserExtensionTitle => 'Browser Extension';
+  String get browserExtensionTitle => 'ブラウザ拡張機能';
 
   @override
   String get browserExtensionDescription =>
-      'Allow the Scolect browser extension to connect and sync website usage data';
+      'Scolectブラウザ拡張機能の接続とウェブサイト利用データの同期を許可します';
 
   @override
   String get crashReportingTitle => 'クラッシュレポート';
@@ -3168,378 +3168,378 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weekdayNameUnknown => 'その日';
 
   @override
-  String get browserTitle => 'Browser';
+  String get browserTitle => 'ブラウザ';
 
   @override
-  String get browserWebsiteTracking => 'Website tracking';
+  String get browserWebsiteTracking => 'ウェブサイト追跡';
 
   @override
-  String get browserSubtitle => 'Track and manage your website usage';
+  String get browserSubtitle => 'ウェブサイトの利用状況を追跡・管理する';
 
   @override
-  String get browserToday => 'Today';
+  String get browserToday => '今日';
 
   @override
-  String get browserSites => 'Sites';
+  String get browserSites => 'サイト';
 
   @override
-  String get browserExtensionSettings => 'Extension Settings';
+  String get browserExtensionSettings => '拡張機能の設定';
 
   @override
-  String get browserSyncing => 'Syncing';
+  String get browserSyncing => '同期中';
 
   @override
-  String get browserTabOverview => 'Overview';
+  String get browserTabOverview => '概要';
 
   @override
-  String get browserTabWebsites => 'Websites';
+  String get browserTabWebsites => 'ウェブサイト';
 
   @override
-  String get browserTabCategories => 'Categories';
+  String get browserTabCategories => 'カテゴリ';
 
   @override
-  String get browserTabLimits => 'Limits';
+  String get browserTabLimits => '制限';
 
   @override
-  String get browserTabHistory => 'History';
+  String get browserTabHistory => '履歴';
 
   @override
-  String get browserHistoryTitle => 'Weekly Overview';
+  String get browserHistoryTitle => '週間概要';
 
   @override
   String get browserHistorySubtitle =>
-      'Your browsing time over the last 7 days';
+      '過去7日間のブラウジング時間';
 
   @override
-  String get browserHistoryNoData => 'No browsing data yet';
+  String get browserHistoryNoData => 'ブラウジングデータがありません';
 
   @override
-  String get browserHistoryAvgPerDay => 'Avg / day';
+  String get browserHistoryAvgPerDay => '平均 / 日';
 
   @override
-  String get browserHistoryPeakDay => 'Peak day';
+  String get browserHistoryPeakDay => 'ピーク日';
 
   @override
-  String get browserHistoryTotalWeek => 'Total this week';
+  String get browserHistoryTotalWeek => '今週の合計';
 
   @override
-  String get browserHistoryTopSites => 'Top sites this week';
+  String get browserHistoryTopSites => '今週のトップサイト';
 
   @override
-  String get browserTodayWebTime => 'Today\'s Web Time';
+  String get browserTodayWebTime => '今日のウェブ時間';
 
   @override
-  String get browserSitesVisited => 'Sites Visited';
+  String get browserSitesVisited => '訪問サイト数';
 
   @override
-  String get browserPageVisits => 'Page Visits';
+  String get browserPageVisits => 'ページ閲覧数';
 
   @override
-  String get browserTopSitesToday => 'Top Sites Today';
+  String get browserTopSitesToday => '今日のトップサイト';
 
   @override
-  String get browserViewAll => 'View all →';
+  String get browserViewAll => 'すべて表示 →';
 
   @override
-  String get browserNoWebActivityTitle => 'No web activity yet today';
+  String get browserNoWebActivityTitle => '本日のウェブ活動はまだありません';
 
   @override
   String get browserNoActivityWebSubtitle =>
-      'Browse the web to start tracking your time';
+      'ウェブを閲覧して時間の追跡を開始しましょう';
 
   @override
   String get browserNoActivityDesktopSubtitle =>
-      'Install the browser extension to start tracking';
+      'ブラウザ拡張機能をインストールして追跡を開始しましょう';
 
   @override
-  String get browserNoCategoriesTitle => 'No categories yet';
+  String get browserNoCategoriesTitle => 'カテゴリはまだありません';
 
   @override
   String get browserNoCategoriesSubtitle =>
-      'Categories appear once websites are tracked';
+      'ウェブサイトが追跡されるとカテゴリが表示されます';
 
   @override
-  String get browserByCategory => 'By Category';
+  String get browserByCategory => 'カテゴリ別';
 
   @override
   String browserVisitCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count visits',
-      one: '1 visit',
+      other: '$count 回訪問',
+      one: '1 回訪問',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserSearchPlaceholder => 'Search website or domain…';
+  String get browserSearchPlaceholder => 'ウェブサイトまたはドメインを検索…';
 
   @override
-  String get browserFilterAllTracking => 'All Tracking';
+  String get browserFilterAllTracking => 'すべての追跡';
 
   @override
-  String get browserFilterTracked => 'Tracked';
+  String get browserFilterTracked => '追跡中';
 
   @override
-  String get browserFilterUntracked => 'Untracked';
+  String get browserFilterUntracked => '未追跡';
 
   @override
-  String get browserFilterAllTypes => 'All Types';
+  String get browserFilterAllTypes => 'すべての種類';
 
   @override
-  String get browserFilterUnproductive => 'Unproductive';
+  String get browserFilterUnproductive => '非生産的';
 
   @override
   String browserWebsiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites',
-      one: '1 website',
+      other: '$count 件のウェブサイト',
+      one: '1 件のウェブサイト',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserColumnDomain => 'Domain';
+  String get browserColumnDomain => 'ドメイン';
 
   @override
-  String get browserColumnTimeToday => 'Time Today';
+  String get browserColumnTimeToday => '本日の時間';
 
   @override
-  String get browserColumnVisits => 'Visits';
+  String get browserColumnVisits => '訪問回数';
 
   @override
-  String get browserColumnTracking => 'Tracking';
+  String get browserColumnTracking => '追跡';
 
   @override
-  String get browserNoWebsitesTitle => 'No websites found';
+  String get browserNoWebsitesTitle => 'ウェブサイトが見つかりません';
 
   @override
   String get browserNoWebsitesWebSubtitle =>
-      'Browse the web — your sites will appear here.';
+      'ウェブを閲覧すると、サイトがここに表示されます。';
 
   @override
   String get browserNoWebsitesDesktopSubtitle =>
-      'Try adjusting your filters or wait for the\nextension to sync some data.';
+      'フィルターを調整するか、\n拡張機能がデータを同期するまでお待ちください。';
 
   @override
-  String get browserTimeDistribution => 'Time Distribution';
+  String get browserTimeDistribution => '時間の分布';
 
   @override
   String browserSiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count sites',
-      one: '1 site',
+      other: '$count 件のサイト',
+      one: '1 件のサイト',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserActiveLimits => 'Active Limits';
+  String get browserActiveLimits => 'アクティブな制限';
 
   @override
   String browserActiveLimitsSubtitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites with daily limits',
-      one: '1 website with daily limits',
+      other: '1日の制限があるウェブサイト $count 件',
+      one: '1日の制限があるウェブサイト 1 件',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserNoLimitsTitle => 'No limits set';
+  String get browserNoLimitsTitle => '制限が設定されていません';
 
   @override
-  String get browserNoLimitsSubtitle => 'Set daily time limits below';
+  String get browserNoLimitsSubtitle => '以下で1日の時間制限を設定してください';
 
   @override
-  String get browserAllWebsites => 'All Websites';
+  String get browserAllWebsites => 'すべてのウェブサイト';
 
   @override
   String get browserAllWebsitesSubtitle =>
-      'Tap a site to set or change its daily limit';
+      'サイトをタップして1日の制限を設定または変更する';
 
   @override
-  String get browserAllSitesHaveLimits => 'All sites have limits';
+  String get browserAllSitesHaveLimits => 'すべてのサイトに制限があります';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'No websites tracked yet';
+  String get browserNoWebsitesTrackedTitle => 'まだウェブサイトが追跡されていません';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
-      'Browse the web to see your sites here';
+      'ウェブを閲覧してサイトをここに表示する';
 
   @override
   String get browserNoWebsitesTrackedDesktopSubtitle =>
-      'Install the extension and browse to get started';
+      '拡張機能をインストールしてブラウジングを開始しましょう';
 
   @override
   String browserDailyLimitDialog(String domain) {
-    return 'Daily Limit – $domain';
+    return '1日の制限 – $domain';
   }
 
   @override
   String get browserDailyLimitDialogDesc =>
-      'Set how long you can visit this site per day.';
+      '1日にこのサイトを訪問できる時間を設定します。';
 
   @override
-  String get browserHours => 'Hours';
+  String get browserHours => '時間';
 
   @override
-  String get browserRemoveLimit => 'Remove Limit';
+  String get browserRemoveLimit => '制限を削除';
 
   @override
   String browserTimeUsed(String time) {
-    return '$time used';
+    return '$time 使用済み';
   }
 
   @override
-  String get browserSetLimit => 'Set limit';
+  String get browserSetLimit => '制限を設定';
 
   @override
-  String get browserExtensionMode => 'Extension Mode';
+  String get browserExtensionMode => '拡張機能モード';
 
   @override
-  String get browserDesktopAppUrl => 'Desktop App URL';
+  String get browserDesktopAppUrl => 'デスクトップアプリのURL';
 
   @override
   String get browserDesktopAppUrlDesc =>
-      'The URL where the Scolect desktop app is running its local server.';
+      'Scolectデスクトップアプリがローカルサーバーとして実行中のURL。';
 
   @override
-  String get browserAbout => 'About';
+  String get browserAbout => '情報';
 
   @override
-  String get browserAboutExtension => 'Extension';
+  String get browserAboutExtension => '拡張機能';
 
   @override
   String get browserAboutExtensionValue => 'Scolect – Web Time Tracker';
 
   @override
-  String get browserAboutVersion => 'Version';
+  String get browserAboutVersion => 'バージョン';
 
   @override
-  String get browserAboutStorage => 'Storage';
+  String get browserAboutStorage => 'ストレージ';
 
   @override
   String get browserAboutStorageValue => 'chrome.storage.local';
 
   @override
-  String get browserAboutHistory => 'History';
+  String get browserAboutHistory => '履歴';
 
   @override
-  String get browserAboutHistoryValue => 'Last 30 days retained';
+  String get browserAboutHistoryValue => '過去30日間保持';
 
   @override
-  String get browserDangerZone => 'Danger Zone';
+  String get browserDangerZone => '危険ゾーン';
 
   @override
-  String get browserClearDataTitle => 'Clear All Website Data';
+  String get browserClearDataTitle => 'すべてのウェブサイトデータを削除';
 
   @override
   String get browserClearDataDesc =>
-      'Permanently deletes all tracked website history. This cannot be undone.';
+      '追跡されたすべてのウェブサイト履歴を完全に削除します。この操作は元に戻せません。';
 
   @override
-  String get browserClearDataButton => 'Clear Data';
+  String get browserClearDataButton => 'データを削除';
 
   @override
-  String get browserAreYouSure => 'Are you sure?';
+  String get browserAreYouSure => '本当によろしいですか？';
 
   @override
-  String get browserYesDelete => 'Yes, Delete';
+  String get browserYesDelete => 'はい、削除します';
 
   @override
-  String get browserDesktopUrlSaved => 'Desktop URL saved';
+  String get browserDesktopUrlSaved => 'デスクトップURLを保存しました';
 
   @override
-  String get browserDataCleared => 'All website data cleared';
+  String get browserDataCleared => 'すべてのウェブサイトデータを削除しました';
 
   @override
-  String get browserTrackingActive => 'Tracking Active';
+  String get browserTrackingActive => '追跡中';
 
   @override
   String get browserTrackingActiveDesc =>
-      'Your browser activity is being tracked and\nsynced to the Scolect desktop app.';
+      'ブラウザの活動が追跡され、\nScolectデスクトップアプリに同期されています。';
 
   @override
-  String get browserConnectedToDesktop => 'Connected to Scolect Desktop';
+  String get browserConnectedToDesktop => 'Scolectデスクトップに接続済み';
 
   @override
-  String get browserDesktopNotReachable => 'Scolect Desktop not reachable';
+  String get browserDesktopNotReachable => 'Scolectデスクトップに接続できません';
 
   @override
-  String get browserRefreshSyncStatus => 'Refresh sync status';
+  String get browserRefreshSyncStatus => '同期状況を更新';
 
   @override
-  String get browserSwitchToStandalone => 'Switch to Standalone mode →';
+  String get browserSwitchToStandalone => 'スタンドアロンモードに切り替え →';
 
   @override
-  String get browserSetupTitle => 'Connect Browser Extension';
+  String get browserSetupTitle => 'ブラウザ拡張機能を接続';
 
   @override
   String get browserSetupSubtitle =>
-      'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.';
+      'ローカルサーバーを有効にして、Scolectブラウザ拡張機能がウェブ活動をデスクトップアプリに同期できるようにします。';
 
   @override
-  String get browserSetupEnableServer => 'Enable Extension Server';
+  String get browserSetupEnableServer => '拡張機能サーバーを有効化';
 
   @override
   String browserSetupServerRunning(int port) {
-    return 'Server running · port $port';
+    return 'サーバー実行中 · ポート $port';
   }
 
   @override
-  String get browserSetupServerOff => 'Server disabled';
+  String get browserSetupServerOff => 'サーバー無効';
 
   @override
-  String get browserSetupStep1 => 'Enable the server using the toggle above';
+  String get browserSetupStep1 => '上のトグルでサーバーを有効にする';
 
   @override
   String get browserSetupStep2 =>
-      'Install the Scolect extension in your browser';
+      'ブラウザにScolect拡張機能をインストールする';
 
   @override
-  String get browserSetupStep3 => 'Open your browser and visit any site';
+  String get browserSetupStep3 => 'ブラウザを開いて任意のサイトにアクセスする';
 
   @override
-  String get browserSetupStep4 => 'Web activity will appear here automatically';
+  String get browserSetupStep4 => 'ウェブ活動が自動的にここに表示されます';
 
   @override
-  String get browserSetupHowTo => 'How to get started';
+  String get browserSetupHowTo => '始め方';
 
   @override
-  String get browserSetupServerActive => 'Server Active';
+  String get browserSetupServerActive => 'サーバーアクティブ';
 
   @override
   String get browserSetupServerActiveDesc =>
-      'Your browser extension can now connect and sync data.';
+      'ブラウザ拡張機能が接続してデータを同期できるようになりました。';
 
   @override
-  String get browserServerPort => 'Server Port';
+  String get browserServerPort => 'サーバーポート';
 
   @override
   String get browserServerPortDesc =>
-      'Port the local server listens on. Change this if port 46000 is already in use.';
+      'ローカルサーバーがリッスンするポート。ポート46000がすでに使用中の場合は変更してください。';
 
   @override
-  String get browserServerPortSaved => 'Port updated — extension reconnecting';
+  String get browserServerPortSaved => 'ポートを更新しました — 拡張機能が再接続中';
 
   @override
-  String get browserServerPortInvalid => 'Enter a port between 1024 and 65535';
+  String get browserServerPortInvalid => '1024〜65535の間のポートを入力してください';
 
   @override
-  String get browserDisableServer => 'Disable Extension Server';
+  String get browserDisableServer => '拡張機能サーバーを無効化';
 
   @override
-  String get browserEditSiteName => 'Edit display name';
+  String get browserEditSiteName => '表示名を編集';
 
   @override
-  String get browserSiteNameHint => 'Display name (e.g. YouTube)';
+  String get browserSiteNameHint => '表示名（例：YouTube）';
 }

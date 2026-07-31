@@ -280,15 +280,19 @@ class SettingsProvider extends ChangeNotifier {
   int getReminderFrequency() => _reminderFrequency;
 
   Future<void> clearData() async {
-    final dataStore = AppDataStore();
-    await dataStore.init();
-    await dataStore.clearAllData();
-    await _tracker.reanchorTracking();
+    if (kIsWeb) {
+      await ExtensionSettings().clearAllData();
+    } else {
+      final dataStore = AppDataStore();
+      await dataStore.init();
+      await dataStore.clearAllData();
+      await _tracker.reanchorTracking();
+    }
   }
 
   Future<void> resetSettings() async {
     await _settingsManager.resetSettings();
-    if (PlatformUtils.isMacOS) {
+    if (!kIsWeb && PlatformUtils.isMacOS) {
       await launchAtStartup.enable();
     }
     _loadSettings();

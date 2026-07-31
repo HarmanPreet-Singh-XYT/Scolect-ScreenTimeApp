@@ -185,14 +185,12 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
             ),
 
             // Skip button
-            Positioned(
-              top: 20,
-              right: 24,
-              child: AnimatedOpacity(
-                opacity: isLast ? 0.0 : 1.0,
-                duration: AppDesignLegacy.animMedium,
+            if (!isLast)
+              Positioned(
+                top: 20,
+                right: 24,
                 child: HyperlinkButton(
-                  onPressed: isLast ? null : () => _goToPage(_slides.length - 1),
+                  onPressed: _complete,
                   child: Text(
                     'Skip',
                     style: TextStyle(
@@ -204,7 +202,6 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                   ),
                 ),
               ),
-            ),
 
             // Page content
             PageView.builder(

@@ -207,16 +207,26 @@ class TopApplicationsList extends StatelessWidget {
                     final app = filteredData[index];
                     return GestureDetector(
                       onTap: () {
-                        showAppDetailsDialog(
-                          context,
-                          AppUsageSummary(
-                            appName: app['name'] ?? '',
+                        if (kIsWeb) {
+                          showWebsiteDetailsDialog(
+                            context,
+                            displayName: app['name'] ?? '',
                             category: app['category'] ?? '',
-                            totalTime: app['duration'] ?? Duration.zero,
+                            timeSpent: app['duration'] ?? Duration.zero,
                             isProductive: app['isProductive'] ?? false,
-                            isVisible: app['isVisible'] ?? true,
-                          ),
-                        );
+                          );
+                        } else {
+                          showAppDetailsDialog(
+                            context,
+                            AppUsageSummary(
+                              appName: app['name'] ?? '',
+                              category: app['category'] ?? '',
+                              totalTime: app['duration'] ?? Duration.zero,
+                              isProductive: app['isProductive'] ?? false,
+                              isVisible: app['isVisible'] ?? true,
+                            ),
+                          );
+                        }
                       },
                       child: _ApplicationItemContent(
                         name: app['name'] ?? l10n.unknownApp,
@@ -476,3 +486,4 @@ class _CategoryItemContent extends StatelessWidget {
     );
   }
 }
+

@@ -1,10 +1,9 @@
-import 'dart:io';
 import 'package:excel/excel.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
+import '_xlsx_save_web.dart' if (dart.library.io) '_xlsx_save_io.dart';
 
 class AnalyticsXLSXExporter {
   final UsageAnalyticsController _analyticsController;
@@ -31,18 +30,6 @@ class AnalyticsXLSXExporter {
     DateTime? endDate,
   }) async {
     try {
-      // Ask user for save location
-      String? outputPath = await FilePicker.platform.saveFile(
-        dialogTitle: l10n.saveAnalyticsReport,
-        fileName: 'analytics_report_${_getFileTimestamp()}.xlsx',
-        type: FileType.custom,
-        allowedExtensions: ['xlsx'],
-      );
-
-      if (outputPath == null) {
-        return false; // User cancelled
-      }
-
       // Create Excel workbook
       var excel = Excel.createExcel();
 
@@ -57,16 +44,11 @@ class AnalyticsXLSXExporter {
         excel.delete('Sheet1');
       }
 
-      // Save file
-      var fileBytes = excel.save();
-      if (fileBytes != null) {
-        File(outputPath)
-          ..createSync(recursive: true)
-          ..writeAsBytesSync(fileBytes);
-        return true;
-      }
+      final fileBytes = excel.save();
+      if (fileBytes == null) return false;
 
-      return false;
+      final fileName = 'analytics_report_${_getFileTimestamp()}.xlsx';
+      return await saveXlsxFile(fileBytes, fileName, l10n.saveAnalyticsReport);
     } catch (e) {
       debugPrint('Error exporting Excel: $e');
       return false;

@@ -74,7 +74,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navFocusMode => 'وضع التركيز';
 
   @override
-  String get navBrowser => 'Browser';
+  String get navBrowser => 'المتصفح';
 
   @override
   String get navSettings => 'الإعدادات';
@@ -973,11 +973,11 @@ class AppLocalizationsAr extends AppLocalizations {
       'بدء التطبيق في شريط النظام (موصى به لويندوز 10)';
 
   @override
-  String get browserExtensionTitle => 'Browser Extension';
+  String get browserExtensionTitle => 'امتداد المتصفح';
 
   @override
   String get browserExtensionDescription =>
-      'Allow the Scolect browser extension to connect and sync website usage data';
+      'السماح لامتداد متصفح Scolect بالاتصال ومزامنة بيانات استخدام المواقع';
 
   @override
   String get crashReportingTitle => 'الإبلاغ عن الأعطال';
@@ -3216,378 +3216,378 @@ class AppLocalizationsAr extends AppLocalizations {
   String get weekdayNameUnknown => 'ذلك اليوم';
 
   @override
-  String get browserTitle => 'Browser';
+  String get browserTitle => 'المتصفح';
 
   @override
-  String get browserWebsiteTracking => 'Website tracking';
+  String get browserWebsiteTracking => 'تتبع المواقع';
 
   @override
-  String get browserSubtitle => 'Track and manage your website usage';
+  String get browserSubtitle => 'تتبع استخدامك للمواقع وإدارته';
 
   @override
-  String get browserToday => 'Today';
+  String get browserToday => 'اليوم';
 
   @override
-  String get browserSites => 'Sites';
+  String get browserSites => 'المواقع';
 
   @override
-  String get browserExtensionSettings => 'Extension Settings';
+  String get browserExtensionSettings => 'إعدادات الامتداد';
 
   @override
-  String get browserSyncing => 'Syncing';
+  String get browserSyncing => 'جارٍ المزامنة';
 
   @override
-  String get browserTabOverview => 'Overview';
+  String get browserTabOverview => 'نظرة عامة';
 
   @override
-  String get browserTabWebsites => 'Websites';
+  String get browserTabWebsites => 'المواقع';
 
   @override
-  String get browserTabCategories => 'Categories';
+  String get browserTabCategories => 'الفئات';
 
   @override
-  String get browserTabLimits => 'Limits';
+  String get browserTabLimits => 'الحدود';
 
   @override
-  String get browserTabHistory => 'History';
+  String get browserTabHistory => 'السجل';
 
   @override
-  String get browserHistoryTitle => 'Weekly Overview';
+  String get browserHistoryTitle => 'نظرة أسبوعية';
 
   @override
   String get browserHistorySubtitle =>
-      'Your browsing time over the last 7 days';
+      'وقت تصفحك خلال الأيام السبعة الماضية';
 
   @override
-  String get browserHistoryNoData => 'No browsing data yet';
+  String get browserHistoryNoData => 'لا توجد بيانات تصفح بعد';
 
   @override
-  String get browserHistoryAvgPerDay => 'Avg / day';
+  String get browserHistoryAvgPerDay => 'المتوسط / يوم';
 
   @override
-  String get browserHistoryPeakDay => 'Peak day';
+  String get browserHistoryPeakDay => 'ذروة اليوم';
 
   @override
-  String get browserHistoryTotalWeek => 'Total this week';
+  String get browserHistoryTotalWeek => 'إجمالي هذا الأسبوع';
 
   @override
-  String get browserHistoryTopSites => 'Top sites this week';
+  String get browserHistoryTopSites => 'أكثر المواقع زيارةً هذا الأسبوع';
 
   @override
-  String get browserTodayWebTime => 'Today\'s Web Time';
+  String get browserTodayWebTime => 'وقت الويب اليوم';
 
   @override
-  String get browserSitesVisited => 'Sites Visited';
+  String get browserSitesVisited => 'المواقع المُزارة';
 
   @override
-  String get browserPageVisits => 'Page Visits';
+  String get browserPageVisits => 'زيارات الصفحات';
 
   @override
-  String get browserTopSitesToday => 'Top Sites Today';
+  String get browserTopSitesToday => 'أكثر المواقع زيارةً اليوم';
 
   @override
-  String get browserViewAll => 'View all →';
+  String get browserViewAll => 'عرض الكل →';
 
   @override
-  String get browserNoWebActivityTitle => 'No web activity yet today';
+  String get browserNoWebActivityTitle => 'لا نشاط على الويب اليوم بعد';
 
   @override
   String get browserNoActivityWebSubtitle =>
-      'Browse the web to start tracking your time';
+      'تصفح الويب لبدء تتبع وقتك';
 
   @override
   String get browserNoActivityDesktopSubtitle =>
-      'Install the browser extension to start tracking';
+      'ثبّت امتداد المتصفح لبدء التتبع';
 
   @override
-  String get browserNoCategoriesTitle => 'No categories yet';
+  String get browserNoCategoriesTitle => 'لا توجد فئات بعد';
 
   @override
   String get browserNoCategoriesSubtitle =>
-      'Categories appear once websites are tracked';
+      'تظهر الفئات بعد تتبع المواقع';
 
   @override
-  String get browserByCategory => 'By Category';
+  String get browserByCategory => 'حسب الفئة';
 
   @override
   String browserVisitCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count visits',
-      one: '1 visit',
+      other: '$count زيارة',
+      one: 'زيارة واحدة',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserSearchPlaceholder => 'Search website or domain…';
+  String get browserSearchPlaceholder => 'ابحث عن موقع أو نطاق…';
 
   @override
-  String get browserFilterAllTracking => 'All Tracking';
+  String get browserFilterAllTracking => 'جميع التتبع';
 
   @override
-  String get browserFilterTracked => 'Tracked';
+  String get browserFilterTracked => 'مُتتبَّع';
 
   @override
-  String get browserFilterUntracked => 'Untracked';
+  String get browserFilterUntracked => 'غير مُتتبَّع';
 
   @override
-  String get browserFilterAllTypes => 'All Types';
+  String get browserFilterAllTypes => 'جميع الأنواع';
 
   @override
-  String get browserFilterUnproductive => 'Unproductive';
+  String get browserFilterUnproductive => 'غير منتج';
 
   @override
   String browserWebsiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites',
-      one: '1 website',
+      other: '$count موقع',
+      one: 'موقع واحد',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserColumnDomain => 'Domain';
+  String get browserColumnDomain => 'النطاق';
 
   @override
-  String get browserColumnTimeToday => 'Time Today';
+  String get browserColumnTimeToday => 'الوقت اليوم';
 
   @override
-  String get browserColumnVisits => 'Visits';
+  String get browserColumnVisits => 'الزيارات';
 
   @override
-  String get browserColumnTracking => 'Tracking';
+  String get browserColumnTracking => 'التتبع';
 
   @override
-  String get browserNoWebsitesTitle => 'No websites found';
+  String get browserNoWebsitesTitle => 'لا توجد مواقع';
 
   @override
   String get browserNoWebsitesWebSubtitle =>
-      'Browse the web — your sites will appear here.';
+      'تصفح الويب — ستظهر مواقعك هنا.';
 
   @override
   String get browserNoWebsitesDesktopSubtitle =>
-      'Try adjusting your filters or wait for the\nextension to sync some data.';
+      'حاول تعديل الفلاتر أو انتظر حتى\nتزامن الامتداد بعض البيانات.';
 
   @override
-  String get browserTimeDistribution => 'Time Distribution';
+  String get browserTimeDistribution => 'توزيع الوقت';
 
   @override
   String browserSiteCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count sites',
-      one: '1 site',
+      other: '$count مواقع',
+      one: 'موقع واحد',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserActiveLimits => 'Active Limits';
+  String get browserActiveLimits => 'الحدود النشطة';
 
   @override
   String browserActiveLimitsSubtitle(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count websites with daily limits',
-      one: '1 website with daily limits',
+      other: '$count موقع بحدود يومية',
+      one: 'موقع واحد بحدود يومية',
     );
     return '$_temp0';
   }
 
   @override
-  String get browserNoLimitsTitle => 'No limits set';
+  String get browserNoLimitsTitle => 'لم يتم تعيين حدود';
 
   @override
-  String get browserNoLimitsSubtitle => 'Set daily time limits below';
+  String get browserNoLimitsSubtitle => 'اضبط الحدود اليومية للوقت أدناه';
 
   @override
-  String get browserAllWebsites => 'All Websites';
+  String get browserAllWebsites => 'جميع المواقع';
 
   @override
   String get browserAllWebsitesSubtitle =>
-      'Tap a site to set or change its daily limit';
+      'اضغط على موقع لتعيين حده اليومي أو تغييره';
 
   @override
-  String get browserAllSitesHaveLimits => 'All sites have limits';
+  String get browserAllSitesHaveLimits => 'جميع المواقع لديها حدود';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'No websites tracked yet';
+  String get browserNoWebsitesTrackedTitle => 'لا توجد مواقع مُتتبَّعة بعد';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
-      'Browse the web to see your sites here';
+      'تصفح الويب لرؤية مواقعك هنا';
 
   @override
   String get browserNoWebsitesTrackedDesktopSubtitle =>
-      'Install the extension and browse to get started';
+      'ثبّت الامتداد وابدأ التصفح للبدء';
 
   @override
   String browserDailyLimitDialog(String domain) {
-    return 'Daily Limit – $domain';
+    return 'الحد اليومي – $domain';
   }
 
   @override
   String get browserDailyLimitDialogDesc =>
-      'Set how long you can visit this site per day.';
+      'اضبط المدة التي يمكنك فيها زيارة هذا الموقع يومياً.';
 
   @override
-  String get browserHours => 'Hours';
+  String get browserHours => 'ساعات';
 
   @override
-  String get browserRemoveLimit => 'Remove Limit';
+  String get browserRemoveLimit => 'إزالة الحد';
 
   @override
   String browserTimeUsed(String time) {
-    return '$time used';
+    return '$time مستخدم';
   }
 
   @override
-  String get browserSetLimit => 'Set limit';
+  String get browserSetLimit => 'تعيين الحد';
 
   @override
-  String get browserExtensionMode => 'Extension Mode';
+  String get browserExtensionMode => 'وضع الامتداد';
 
   @override
-  String get browserDesktopAppUrl => 'Desktop App URL';
+  String get browserDesktopAppUrl => 'عنوان URL لتطبيق سطح المكتب';
 
   @override
   String get browserDesktopAppUrlDesc =>
-      'The URL where the Scolect desktop app is running its local server.';
+      'عنوان URL حيث يعمل تطبيق Scolect لسطح المكتب على خادمه المحلي.';
 
   @override
-  String get browserAbout => 'About';
+  String get browserAbout => 'حول';
 
   @override
-  String get browserAboutExtension => 'Extension';
+  String get browserAboutExtension => 'الامتداد';
 
   @override
   String get browserAboutExtensionValue => 'Scolect – Web Time Tracker';
 
   @override
-  String get browserAboutVersion => 'Version';
+  String get browserAboutVersion => 'الإصدار';
 
   @override
-  String get browserAboutStorage => 'Storage';
+  String get browserAboutStorage => 'التخزين';
 
   @override
   String get browserAboutStorageValue => 'chrome.storage.local';
 
   @override
-  String get browserAboutHistory => 'History';
+  String get browserAboutHistory => 'السجل';
 
   @override
-  String get browserAboutHistoryValue => 'Last 30 days retained';
+  String get browserAboutHistoryValue => 'الاحتفاظ بآخر 30 يوماً';
 
   @override
-  String get browserDangerZone => 'Danger Zone';
+  String get browserDangerZone => 'منطقة الخطر';
 
   @override
-  String get browserClearDataTitle => 'Clear All Website Data';
+  String get browserClearDataTitle => 'مسح جميع بيانات المواقع';
 
   @override
   String get browserClearDataDesc =>
-      'Permanently deletes all tracked website history. This cannot be undone.';
+      'يحذف نهائياً جميع سجلات المواقع المُتتبَّعة. لا يمكن التراجع عن هذا.';
 
   @override
-  String get browserClearDataButton => 'Clear Data';
+  String get browserClearDataButton => 'مسح البيانات';
 
   @override
-  String get browserAreYouSure => 'Are you sure?';
+  String get browserAreYouSure => 'هل أنت متأكد؟';
 
   @override
-  String get browserYesDelete => 'Yes, Delete';
+  String get browserYesDelete => 'نعم، احذف';
 
   @override
-  String get browserDesktopUrlSaved => 'Desktop URL saved';
+  String get browserDesktopUrlSaved => 'تم حفظ عنوان URL لسطح المكتب';
 
   @override
-  String get browserDataCleared => 'All website data cleared';
+  String get browserDataCleared => 'تم مسح جميع بيانات المواقع';
 
   @override
-  String get browserTrackingActive => 'Tracking Active';
+  String get browserTrackingActive => 'التتبع نشط';
 
   @override
   String get browserTrackingActiveDesc =>
-      'Your browser activity is being tracked and\nsynced to the Scolect desktop app.';
+      'يتم تتبع نشاط متصفحك ومزامنته\nمع تطبيق Scolect لسطح المكتب.';
 
   @override
-  String get browserConnectedToDesktop => 'Connected to Scolect Desktop';
+  String get browserConnectedToDesktop => 'متصل بـ Scolect Desktop';
 
   @override
-  String get browserDesktopNotReachable => 'Scolect Desktop not reachable';
+  String get browserDesktopNotReachable => 'Scolect Desktop غير متاح';
 
   @override
-  String get browserRefreshSyncStatus => 'Refresh sync status';
+  String get browserRefreshSyncStatus => 'تحديث حالة المزامنة';
 
   @override
-  String get browserSwitchToStandalone => 'Switch to Standalone mode →';
+  String get browserSwitchToStandalone => 'التبديل إلى وضع مستقل →';
 
   @override
-  String get browserSetupTitle => 'Connect Browser Extension';
+  String get browserSetupTitle => 'ربط امتداد المتصفح';
 
   @override
   String get browserSetupSubtitle =>
-      'Enable the local server so the Scolect browser extension can sync your web activity to the desktop application.';
+      'فعّل الخادم المحلي حتى يتمكن امتداد متصفح Scolect من مزامنة نشاطك على الويب مع تطبيق سطح المكتب.';
 
   @override
-  String get browserSetupEnableServer => 'Enable Extension Server';
+  String get browserSetupEnableServer => 'تفعيل خادم الامتداد';
 
   @override
   String browserSetupServerRunning(int port) {
-    return 'Server running · port $port';
+    return 'الخادم يعمل · المنفذ $port';
   }
 
   @override
-  String get browserSetupServerOff => 'Server disabled';
+  String get browserSetupServerOff => 'الخادم معطّل';
 
   @override
-  String get browserSetupStep1 => 'Enable the server using the toggle above';
+  String get browserSetupStep1 => 'فعّل الخادم باستخدام الزر أعلاه';
 
   @override
   String get browserSetupStep2 =>
-      'Install the Scolect extension in your browser';
+      'ثبّت امتداد Scolect في متصفحك';
 
   @override
-  String get browserSetupStep3 => 'Open your browser and visit any site';
+  String get browserSetupStep3 => 'افتح متصفحك وزر أي موقع';
 
   @override
-  String get browserSetupStep4 => 'Web activity will appear here automatically';
+  String get browserSetupStep4 => 'سيظهر نشاط الويب هنا تلقائياً';
 
   @override
-  String get browserSetupHowTo => 'How to get started';
+  String get browserSetupHowTo => 'كيفية البدء';
 
   @override
-  String get browserSetupServerActive => 'Server Active';
+  String get browserSetupServerActive => 'الخادم نشط';
 
   @override
   String get browserSetupServerActiveDesc =>
-      'Your browser extension can now connect and sync data.';
+      'يمكن لامتداد المتصفح الآن الاتصال ومزامنة البيانات.';
 
   @override
-  String get browserServerPort => 'Server Port';
+  String get browserServerPort => 'منفذ الخادم';
 
   @override
   String get browserServerPortDesc =>
-      'Port the local server listens on. Change this if port 46000 is already in use.';
+      'المنفذ الذي يستمع إليه الخادم المحلي. غيّره إذا كان المنفذ 46000 قيد الاستخدام بالفعل.';
 
   @override
-  String get browserServerPortSaved => 'Port updated — extension reconnecting';
+  String get browserServerPortSaved => 'تم تحديث المنفذ — جارٍ إعادة اتصال الامتداد';
 
   @override
-  String get browserServerPortInvalid => 'Enter a port between 1024 and 65535';
+  String get browserServerPortInvalid => 'أدخل منفذاً بين 1024 و 65535';
 
   @override
-  String get browserDisableServer => 'Disable Extension Server';
+  String get browserDisableServer => 'تعطيل خادم الامتداد';
 
   @override
-  String get browserEditSiteName => 'Edit display name';
+  String get browserEditSiteName => 'تعديل اسم العرض';
 
   @override
-  String get browserSiteNameHint => 'Display name (e.g. YouTube)';
+  String get browserSiteNameHint => 'اسم العرض (مثال: YouTube)';
 }

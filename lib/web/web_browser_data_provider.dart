@@ -53,6 +53,7 @@ class WebBrowserDataProvider {
               seconds: (d['seconds'] as num?)?.toInt() ?? 0,
               visits: (d['visits'] as num?)?.toInt() ?? 0,
               lastSeen: (d['lastSeen'] as num?)?.toInt() ?? 0,
+              siteName: d['siteName'] as String? ?? '',
             ))
         .where((d) => d.domain.isNotEmpty)
         .toList();
@@ -80,9 +81,12 @@ class WebBrowserDataProvider {
     final sites = <WebsiteBasicDetail>[];
     for (final d in domains) {
       final meta = metaMap[d.domain] ?? const WebsiteMetadata();
+      // Priority: user-set name (scolect_settings) > day-record name (background-cleaned title) > app_metadata fallback
       final siteName = meta.siteName.isNotEmpty
           ? meta.siteName
-          : (siteNames[d.domain] ?? '');
+          : d.siteName.isNotEmpty
+              ? d.siteName
+              : (siteNames[d.domain] ?? '');
       final rawCat = meta.category;
       final displayName = siteName.isNotEmpty ? siteName : d.domain;
       final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
@@ -274,11 +278,13 @@ class _RawDomain {
   final int seconds;
   final int visits;
   final int lastSeen;
+  final String siteName;
 
   const _RawDomain({
     required this.domain,
     required this.seconds,
     required this.visits,
     required this.lastSeen,
+    this.siteName = '',
   });
 }
