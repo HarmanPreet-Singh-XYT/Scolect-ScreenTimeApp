@@ -240,13 +240,12 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
   }
 
   void _showDetailsFlyout(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     displayInfoBar(
       context,
       builder: (context, close) {
         return InfoBar(
           title: Text(widget.item.title),
-          content: Text(l10n.valueLabel(widget.item.value)),
+          content: Text(widget.item.value),
           severity: InfoBarSeverity.info,
           isLong: false,
         );

@@ -105,6 +105,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get faqCategorySettings => 'Pengaturan & Kustomisasi';
 
   @override
+  String get faqCategoryBrowser => 'Browser Extension';
+
+  @override
   String get faqCategoryTroubleshooting => 'Pemecahan Masalah';
 
   @override
@@ -145,6 +148,14 @@ class AppLocalizationsId extends AppLocalizations {
       'Aplikasi menawarkan wawasan komprehensif termasuk Skor Produktif, pola penggunaan berdasarkan waktu, penggunaan aplikasi terperinci, pelacakan sesi fokus, dan analitik visual seperti grafik dan diagram lingkaran untuk membantu Anda memahami dan meningkatkan kebiasaan digital Anda.';
 
   @override
+  String get faqGeneralQ6 =>
+      'Which languages are supported and how do I change language?';
+
+  @override
+  String get faqGeneralA6 =>
+      'Language can be changed in Settings under the General section — all available languages are listed there. Translations are AI-generated from English, so some may be imperfect. If you spot an error you can report it via the Report Bug button in Settings, or open an issue on GitHub. Translation contributions are welcome!';
+
+  @override
   String get faqAppsQ1 =>
       'Bagaimana cara menyembunyikan aplikasi tertentu dari pelacakan?';
 
@@ -172,6 +183,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get faqAppsA4 =>
       'Kategori awal disarankan oleh sistem, tetapi Anda memiliki kontrol penuh untuk membuat, memodifikasi, dan menetapkan kategori khusus berdasarkan alur kerja dan preferensi Anda.';
+
+  @override
+  String get faqAppsQ5 => 'Why is an app showing a very short or zero time?';
+
+  @override
+  String get faqAppsA5 =>
+      'Tracking starts from the moment the app is first detected in the foreground. If you just installed Scolect, historical usage is not available — only time going forward is recorded. Very short times usually mean you briefly switched to that app and away again.';
 
   @override
   String get faqReportsQ1 => 'Jenis laporan apa yang tersedia?';
@@ -222,6 +240,13 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get faqAlertsA3 =>
       'Ya, Anda dapat menyesuaikan frekuensi peringatan, mengaktifkan/menonaktifkan jenis peringatan tertentu, dan menetapkan batasan berbeda untuk waktu layar keseluruhan dan aplikasi individual.';
+
+  @override
+  String get faqAlertsQ4 => 'Can I set different limits for different apps?';
+
+  @override
+  String get faqAlertsA4 =>
+      'Yes. In the Applications section, open any app\'s edit panel and set a per-app daily limit. You can also set limits directly from the Alerts & Limits section. Each app has its own independent limit and reset cycle.';
 
   @override
   String get faqFocusQ1 => 'Jenis Mode Fokus apa yang tersedia?';
@@ -275,6 +300,58 @@ class AppLocalizationsId extends AppLocalizations {
       'Menghapus data akan mengatur ulang semua statistik penggunaan Anda, riwayat sesi fokus, dan pengaturan khusus. Ini berguna untuk memulai dari awal atau pemecahan masalah.';
 
   @override
+  String get faqSettingsQ4 => 'How do I report a bug or send feedback?';
+
+  @override
+  String get faqSettingsA4 =>
+      'Scroll to the bottom of the Settings section — you will find buttons to Report a Bug, Submit Feedback, and Contact Support. These open the relevant links in your browser. You can also open an issue directly on the Scolect GitHub repository.';
+
+  @override
+  String get faqBrowserQ1 => 'What does the browser extension track?';
+
+  @override
+  String get faqBrowserA1 =>
+      'The extension tracks the domain of every website you visit and how long you spend on it, including a visit count per domain per day. All data is stored locally in your browser\'s storage — nothing leaves your device.';
+
+  @override
+  String get faqBrowserQ2 =>
+      'What are the extension modes (Standalone, Tracker Only, Hybrid)?';
+
+  @override
+  String get faqBrowserA2 =>
+      'Standalone mode runs the extension independently with its own dashboard and no connection to the desktop app. Tracker Only mode sends your browser usage data to the Scolect desktop app to merge with native app tracking, but the extension dashboard is not used. Hybrid mode does both — the extension has its own dashboard and also syncs data to the desktop app.';
+
+  @override
+  String get faqBrowserQ3 =>
+      'How does the extension connect to the desktop app?';
+
+  @override
+  String get faqBrowserA3 =>
+      'The desktop app runs a local HTTP server on port 46000 (configurable in Settings). When the extension is in Tracker Only or Hybrid mode it periodically sends your browsing data to that address. Both apps must be running on the same machine. If the desktop app is not open, the extension still tracks locally and will sync the next time a connection is established.';
+
+  @override
+  String get faqBrowserQ4 => 'Why is a website being blocked?';
+
+  @override
+  String get faqBrowserA4 =>
+      'A site is blocked when it has reached its daily time limit and blocking is enabled for that limit. You will see a blocked page with a countdown to midnight when the limit resets. To unblock immediately, go to Alerts & Limits in the desktop app and raise or remove the limit for that site, or disable blocking.';
+
+  @override
+  String get faqBrowserQ5 =>
+      'Does the extension track in incognito / private mode?';
+
+  @override
+  String get faqBrowserA5 =>
+      'No. By default Chrome extensions do not have access to incognito tabs. If you explicitly grant the extension access to incognito in Chrome\'s extension settings, it will track those tabs too — but this is off by default to respect your privacy.';
+
+  @override
+  String get faqBrowserQ6 => 'Where can I see my website usage data?';
+
+  @override
+  String get faqBrowserA6 =>
+      'Open the extension dashboard by clicking the Scolect icon in your browser toolbar and selecting Open Dashboard. The Websites tab shows all tracked domains with time spent, visit counts, and a 7-day history chart for each site. You can also export this data to Excel.';
+
+  @override
   String get faqTroubleQ1 => 'Data tidak muncul, kesalahan hive tidak terbuka';
 
   @override
@@ -288,6 +365,21 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get faqTroubleA2 =>
       'Ini adalah masalah yang diketahui yang terjadi pada Windows 10, perbaikan sementara adalah mengaktifkan Luncurkan sebagai Diminimalkan di pengaturan sehingga diluncurkan sebagai Diminimalkan.';
+
+  @override
+  String get faqTroubleQ3 =>
+      'The browser extension is not showing any website data';
+
+  @override
+  String get faqTroubleA3 =>
+      'Make sure you have visited at least one website since installing the extension — there is no historical data before installation. Check that the extension has the required permissions (it needs access to all URLs to track time). If the dashboard is open but empty, try closing and reopening the dashboard tab. If the issue persists, try removing and reinstalling the extension.';
+
+  @override
+  String get faqTroubleQ4 => 'Extension and desktop app are not syncing';
+
+  @override
+  String get faqTroubleA4 =>
+      'Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app\'s Settings and the extension\'s Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test.';
 
   @override
   String get usageAnalytics => 'Analitik Penggunaan';
@@ -1547,30 +1639,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get skippedLabel => 'Dilewati';
-
-  @override
-  String get faqSettingsQ4 =>
-      'Bagaimana cara memulihkan atau mengekspor data saya?';
-
-  @override
-  String get faqSettingsA4 =>
-      'Anda dapat pergi ke pengaturan, dan di sana Anda akan menemukan bagian Cadangan & Pemulihan. Anda dapat mengekspor atau mengimpor data dari sini, perhatikan bahwa file data yang diekspor disimpan di Dokumen pada Folder Scolect-Backups dan hanya file ini yang dapat digunakan untuk memulihkan data, bukan file lain.';
-
-  @override
-  String get faqGeneralQ6 =>
-      'Bagaimana cara mengubah bahasa dan bahasa apa yang tersedia, juga bagaimana jika saya menemukan terjemahan yang salah?';
-
-  @override
-  String get faqGeneralA6 =>
-      'Bahasa dapat diubah melalui bagian Pengaturan Umum, semua bahasa yang tersedia tercantum di sana, Anda dapat meminta terjemahan dengan mengklik Kontak dan mengirim permintaan Anda dengan bahasa yang diberikan. Ketahuilah bahwa terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
-
-  @override
-  String get faqGeneralQ7 =>
-      'Bagaimana jika saya menemukan terjemahan yang salah?';
-
-  @override
-  String get faqGeneralA7 =>
-      'Terjemahan bisa salah karena dihasilkan oleh AI dari bahasa Inggris dan jika Anda ingin melaporkan maka Anda dapat melaporkan melalui laporkan bug, atau kontak, atau jika Anda seorang pengembang maka buka issue di Github. Kontribusi mengenai bahasa juga diterima!';
 
   @override
   String get activityTrackingSection => 'Pelacakan Aktivitas';
@@ -3437,7 +3505,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserAllSitesHaveLimits => 'Semua situs memiliki batas';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'Belum ada situs web yang dilacak';
+  String get browserNoWebsitesTrackedTitle =>
+      'Belum ada situs web yang dilacak';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
@@ -3540,7 +3609,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserConnectedToDesktop => 'Terhubung ke Scolect Desktop';
 
   @override
-  String get browserDesktopNotReachable => 'Scolect Desktop tidak dapat dijangkau';
+  String get browserDesktopNotReachable =>
+      'Scolect Desktop tidak dapat dijangkau';
 
   @override
   String get browserRefreshSyncStatus => 'Segarkan status sinkronisasi';
@@ -3570,14 +3640,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserSetupStep1 => 'Aktifkan server menggunakan tombol di atas';
 
   @override
-  String get browserSetupStep2 =>
-      'Instal ekstensi Scolect di peramban Anda';
+  String get browserSetupStep2 => 'Instal ekstensi Scolect di peramban Anda';
 
   @override
-  String get browserSetupStep3 => 'Buka peramban Anda dan kunjungi situs mana saja';
+  String get browserSetupStep3 =>
+      'Buka peramban Anda dan kunjungi situs mana saja';
 
   @override
-  String get browserSetupStep4 => 'Aktivitas web akan muncul di sini secara otomatis';
+  String get browserSetupStep4 =>
+      'Aktivitas web akan muncul di sini secara otomatis';
 
   @override
   String get browserSetupHowTo => 'Cara memulai';
@@ -3597,7 +3668,8 @@ class AppLocalizationsId extends AppLocalizations {
       'Port yang didengarkan server lokal. Ubah ini jika port 46000 sudah digunakan.';
 
   @override
-  String get browserServerPortSaved => 'Port diperbarui — ekstensi menyambung kembali';
+  String get browserServerPortSaved =>
+      'Port diperbarui — ekstensi menyambung kembali';
 
   @override
   String get browserServerPortInvalid => 'Masukkan port antara 1024 dan 65535';

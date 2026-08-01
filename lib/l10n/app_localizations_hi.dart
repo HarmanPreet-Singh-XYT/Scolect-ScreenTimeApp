@@ -104,6 +104,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get faqCategorySettings => 'सेटिंग्स और अनुकूलन';
 
   @override
+  String get faqCategoryBrowser => 'Browser Extension';
+
+  @override
   String get faqCategoryTroubleshooting => 'समस्या निवारण';
 
   @override
@@ -143,6 +146,14 @@ class AppLocalizationsHi extends AppLocalizations {
       'ऐप व्यापक जानकारी प्रदान करता है जिसमें उत्पादकता स्कोर, दिन के समय के अनुसार उपयोग पैटर्न, विस्तृत एप्लिकेशन उपयोग, फोकस सेशन ट्रैकिंग, और आपकी डिजिटल आदतों को समझने और सुधारने में मदद करने के लिए ग्राफ और पाई चार्ट जैसे विजुअल एनालिटिक्स शामिल हैं।';
 
   @override
+  String get faqGeneralQ6 =>
+      'Which languages are supported and how do I change language?';
+
+  @override
+  String get faqGeneralA6 =>
+      'Language can be changed in Settings under the General section — all available languages are listed there. Translations are AI-generated from English, so some may be imperfect. If you spot an error you can report it via the Report Bug button in Settings, or open an issue on GitHub. Translation contributions are welcome!';
+
+  @override
   String get faqAppsQ1 => 'मैं विशिष्ट ऐप्स को ट्रैकिंग से कैसे छिपाऊं?';
 
   @override
@@ -169,6 +180,13 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get faqAppsA4 =>
       'प्रारंभिक श्रेणियां सिस्टम-सुझाई गई हैं, लेकिन आपके पास अपने वर्कफ्लो और प्राथमिकताओं के आधार पर कस्टम श्रेणियां बनाने, संशोधित करने और असाइन करने का पूर्ण नियंत्रण है।';
+
+  @override
+  String get faqAppsQ5 => 'Why is an app showing a very short or zero time?';
+
+  @override
+  String get faqAppsA5 =>
+      'Tracking starts from the moment the app is first detected in the foreground. If you just installed Scolect, historical usage is not available — only time going forward is recorded. Very short times usually mean you briefly switched to that app and away again.';
 
   @override
   String get faqReportsQ1 => 'किस प्रकार की रिपोर्ट उपलब्ध हैं?';
@@ -219,6 +237,13 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get faqAlertsA3 =>
       'हां, आप अलर्ट की आवृत्ति को अनुकूलित कर सकते हैं, विशिष्ट प्रकार के अलर्ट को सक्षम/अक्षम कर सकते हैं, और समग्र स्क्रीन टाइम और व्यक्तिगत एप्लिकेशन के लिए अलग-अलग सीमाएं सेट कर सकते हैं।';
+
+  @override
+  String get faqAlertsQ4 => 'Can I set different limits for different apps?';
+
+  @override
+  String get faqAlertsA4 =>
+      'Yes. In the Applications section, open any app\'s edit panel and set a per-app daily limit. You can also set limits directly from the Alerts & Limits section. Each app has its own independent limit and reset cycle.';
 
   @override
   String get faqFocusQ1 => 'किस प्रकार के फोकस मोड उपलब्ध हैं?';
@@ -273,6 +298,58 @@ class AppLocalizationsHi extends AppLocalizations {
       'डेटा क्लियर करने से आपके सभी उपयोग आंकड़े, फोकस सेशन हिस्ट्री, और कस्टम सेटिंग्स रीसेट हो जाएंगी। यह फ्रेश स्टार्ट या समस्या निवारण के लिए उपयोगी है।';
 
   @override
+  String get faqSettingsQ4 => 'How do I report a bug or send feedback?';
+
+  @override
+  String get faqSettingsA4 =>
+      'Scroll to the bottom of the Settings section — you will find buttons to Report a Bug, Submit Feedback, and Contact Support. These open the relevant links in your browser. You can also open an issue directly on the Scolect GitHub repository.';
+
+  @override
+  String get faqBrowserQ1 => 'What does the browser extension track?';
+
+  @override
+  String get faqBrowserA1 =>
+      'The extension tracks the domain of every website you visit and how long you spend on it, including a visit count per domain per day. All data is stored locally in your browser\'s storage — nothing leaves your device.';
+
+  @override
+  String get faqBrowserQ2 =>
+      'What are the extension modes (Standalone, Tracker Only, Hybrid)?';
+
+  @override
+  String get faqBrowserA2 =>
+      'Standalone mode runs the extension independently with its own dashboard and no connection to the desktop app. Tracker Only mode sends your browser usage data to the Scolect desktop app to merge with native app tracking, but the extension dashboard is not used. Hybrid mode does both — the extension has its own dashboard and also syncs data to the desktop app.';
+
+  @override
+  String get faqBrowserQ3 =>
+      'How does the extension connect to the desktop app?';
+
+  @override
+  String get faqBrowserA3 =>
+      'The desktop app runs a local HTTP server on port 46000 (configurable in Settings). When the extension is in Tracker Only or Hybrid mode it periodically sends your browsing data to that address. Both apps must be running on the same machine. If the desktop app is not open, the extension still tracks locally and will sync the next time a connection is established.';
+
+  @override
+  String get faqBrowserQ4 => 'Why is a website being blocked?';
+
+  @override
+  String get faqBrowserA4 =>
+      'A site is blocked when it has reached its daily time limit and blocking is enabled for that limit. You will see a blocked page with a countdown to midnight when the limit resets. To unblock immediately, go to Alerts & Limits in the desktop app and raise or remove the limit for that site, or disable blocking.';
+
+  @override
+  String get faqBrowserQ5 =>
+      'Does the extension track in incognito / private mode?';
+
+  @override
+  String get faqBrowserA5 =>
+      'No. By default Chrome extensions do not have access to incognito tabs. If you explicitly grant the extension access to incognito in Chrome\'s extension settings, it will track those tabs too — but this is off by default to respect your privacy.';
+
+  @override
+  String get faqBrowserQ6 => 'Where can I see my website usage data?';
+
+  @override
+  String get faqBrowserA6 =>
+      'Open the extension dashboard by clicking the Scolect icon in your browser toolbar and selecting Open Dashboard. The Websites tab shows all tracked domains with time spent, visit counts, and a 7-day history chart for each site. You can also export this data to Excel.';
+
+  @override
   String get faqTroubleQ1 => 'डेटा नहीं दिख रहा, hive नहीं खुल रहा एरर';
 
   @override
@@ -285,6 +362,21 @@ class AppLocalizationsHi extends AppLocalizations {
   @override
   String get faqTroubleA2 =>
       'यह एक ज्ञात समस्या है जो Windows 10 पर होती है, अस्थायी समाधान है सेटिंग्स में Launch as Minimized को सक्षम करना ताकि यह Minimized के रूप में लॉन्च हो।';
+
+  @override
+  String get faqTroubleQ3 =>
+      'The browser extension is not showing any website data';
+
+  @override
+  String get faqTroubleA3 =>
+      'Make sure you have visited at least one website since installing the extension — there is no historical data before installation. Check that the extension has the required permissions (it needs access to all URLs to track time). If the dashboard is open but empty, try closing and reopening the dashboard tab. If the issue persists, try removing and reinstalling the extension.';
+
+  @override
+  String get faqTroubleQ4 => 'Extension and desktop app are not syncing';
+
+  @override
+  String get faqTroubleA4 =>
+      'Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app\'s Settings and the extension\'s Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test.';
 
   @override
   String get usageAnalytics => 'उपयोग विश्लेषण';
@@ -1545,29 +1637,6 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get skippedLabel => 'छोड़ा गया';
-
-  @override
-  String get faqSettingsQ4 =>
-      'मैं अपना डेटा कैसे पुनर्स्थापित या निर्यात कर सकता हूं?';
-
-  @override
-  String get faqSettingsA4 =>
-      'आप सेटिंग्स में जा सकते हैं, और वहां आपको बैकअप और पुनर्स्थापना सेक्शन मिलेगा। आप यहां से डेटा निर्यात या आयात कर सकते हैं, ध्यान दें कि निर्यात की गई डेटा फाइल Documents में Scolect-Backups फोल्डर में संग्रहीत है और केवल इस फाइल का उपयोग डेटा पुनर्स्थापित करने के लिए किया जा सकता है, कोई अन्य फाइल नहीं।';
-
-  @override
-  String get faqGeneralQ6 =>
-      'मैं भाषा कैसे बदल सकता हूं और कौन सी भाषाएं उपलब्ध हैं, अगर मुझे लगे कि अनुवाद गलत है तो क्या करूं?';
-
-  @override
-  String get faqGeneralA6 =>
-      'भाषा को सेटिंग्स सामान्य सेक्शन के माध्यम से बदला जा सकता है, सभी उपलब्ध भाषाएं वहां सूचीबद्ध हैं, आप संपर्क पर क्लिक करके और दी गई भाषा के साथ अपना अनुरोध भेजकर अनुवाद का अनुरोध कर सकते हैं। बस जान लें कि अनुवाद गलत हो सकता है क्योंकि यह AI द्वारा अंग्रेजी से उत्पन्न किया गया है और यदि आप रिपोर्ट करना चाहते हैं तो आप बग रिपोर्ट करें, या संपर्क के माध्यम से रिपोर्ट कर सकते हैं, या यदि आप डेवलपर हैं तो Github पर इश्यू खोलें। भाषा के संबंध में योगदान का भी स्वागत है!';
-
-  @override
-  String get faqGeneralQ7 => 'अगर मुझे लगे कि अनुवाद गलत है तो क्या करूं?';
-
-  @override
-  String get faqGeneralA7 =>
-      'अनुवाद गलत हो सकता है क्योंकि यह AI द्वारा अंग्रेजी से उत्पन्न किया गया है और यदि आप रिपोर्ट करना चाहते हैं तो आप बग रिपोर्ट करें, या संपर्क के माध्यम से रिपोर्ट कर सकते हैं, या यदि आप डेवलपर हैं तो Github पर इश्यू खोलें। भाषा के संबंध में योगदान का भी स्वागत है!';
 
   @override
   String get activityTrackingSection => 'गतिविधि ट्रैकिंग';
@@ -3268,8 +3337,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get browserHistoryTitle => 'साप्ताहिक अवलोकन';
 
   @override
-  String get browserHistorySubtitle =>
-      'पिछले 7 दिनों में आपका ब्राउज़िंग समय';
+  String get browserHistorySubtitle => 'पिछले 7 दिनों में आपका ब्राउज़िंग समय';
 
   @override
   String get browserHistoryNoData => 'अभी तक कोई ब्राउज़िंग डेटा नहीं';
@@ -3430,7 +3498,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get browserAllSitesHaveLimits => 'सभी साइटों की सीमाएँ हैं';
 
   @override
-  String get browserNoWebsitesTrackedTitle => 'अभी तक कोई वेबसाइट ट्रैक नहीं हुई';
+  String get browserNoWebsitesTrackedTitle =>
+      'अभी तक कोई वेबसाइट ट्रैक नहीं हुई';
 
   @override
   String get browserNoWebsitesTrackedWebSubtitle =>
@@ -3567,7 +3636,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'अपने ब्राउज़र में Scolect एक्सटेंशन इंस्टॉल करें';
 
   @override
-  String get browserSetupStep3 => 'अपना ब्राउज़र खोलें और कोई भी साइट विज़िट करें';
+  String get browserSetupStep3 =>
+      'अपना ब्राउज़र खोलें और कोई भी साइट विज़िट करें';
 
   @override
   String get browserSetupStep4 => 'वेब गतिविधि यहाँ स्वचालित रूप से दिखाई देगी';
@@ -3590,7 +3660,8 @@ class AppLocalizationsHi extends AppLocalizations {
       'स्थानीय सर्वर जिस पोर्ट पर सुनता है। यदि पोर्ट 46000 पहले से उपयोग में है तो इसे बदलें।';
 
   @override
-  String get browserServerPortSaved => 'पोर्ट अपडेट किया गया — एक्सटेंशन पुनः कनेक्ट हो रहा है';
+  String get browserServerPortSaved =>
+      'पोर्ट अपडेट किया गया — एक्सटेंशन पुनः कनेक्ट हो रहा है';
 
   @override
   String get browserServerPortInvalid => '1024 और 65535 के बीच पोर्ट दर्ज करें';

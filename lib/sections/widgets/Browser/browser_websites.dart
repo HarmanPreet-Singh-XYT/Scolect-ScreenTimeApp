@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:math' show max;
+import 'package:fl_chart/fl_chart.dart';
+import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart' show DurationFormatter;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
@@ -66,6 +69,13 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
     _debounce = Timer(const Duration(milliseconds: 300), () {
       if (mounted) setState(() => _search = v);
     });
+  }
+
+  void _showSiteDetail(BuildContext context, WebsiteBasicDetail site) {
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => _WebsiteDetailDialog(site: site),
+    );
   }
 
   List<WebsiteBasicDetail> get _filtered => _allSites
@@ -229,6 +239,7 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
                                 site: filtered[i],
                                 showDivider: i < filtered.length - 1,
                                 onMetadataChanged: _loadData,
+                                onTap: () => _showSiteDetail(context, filtered[i]),
                               ),
                             ),
                     ),
@@ -323,11 +334,13 @@ class _WebsiteRow extends StatefulWidget {
   final WebsiteBasicDetail site;
   final bool showDivider;
   final VoidCallback onMetadataChanged;
+  final VoidCallback onTap;
 
   const _WebsiteRow({
     required this.site,
     required this.showDivider,
     required this.onMetadataChanged,
+    required this.onTap,
   });
 
   @override
@@ -500,7 +513,10 @@ class _WebsiteRowState extends State<_WebsiteRow> {
 
     return Column(
       children: [
-        MouseRegion(
+        GestureDetector(
+          onTap: widget.onTap,
+          child: MouseRegion(
+          cursor: SystemMouseCursors.click,
           onEnter: (_) => setState(() => _hovered = true),
           onExit: (_) => setState(() => _hovered = false),
           child: AnimatedContainer(
@@ -747,6 +763,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
               ],
             ),
           ),
+          ),
         ),
         if (widget.showDivider)
           Divider(
@@ -766,6 +783,498 @@ class _WebsiteRowState extends State<_WebsiteRow> {
     if (h > 0 && m > 0) return '${h}h ${m}m';
     if (h > 0) return '${h}h';
     return '${m}m';
+  }
+}
+
+// ─── Website detail dialog ────────────────────────────────────────────────────
+
+class _WebsiteDetailDialog extends StatefulWidget {
+  final WebsiteBasicDetail site;
+  const _WebsiteDetailDialog({required this.site});
+
+  @override
+  State<_WebsiteDetailDialog> createState() => _WebsiteDetailDialogState();
+}
+
+class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
+  final _provider = BrowserDataProvider();
+  List<({String date, Duration timeSpent, int visits})>? _history;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final h = await _provider.fetchSiteHistory(widget.site.domain, days: 7);
+    if (mounted) setState(() => _history = h);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final site = widget.site;
+    final captionColor = theme.typography.caption?.color;
+    final history = _history;
+
+    // Limit progress
+    final hasLimit = site.dailyLimit > Duration.zero;
+    double limitProgress = 0;
+    if (hasLimit && site.timeSpent > Duration.zero) {
+      limitProgress = (site.timeSpent.inSeconds / site.dailyLimit.inSeconds).clamp(0.0, 1.0);
+    }
+    final overLimit = limitProgress >= 1.0;
+    final limitColor = overLimit
+        ? kBrowserRed
+        : limitProgress > 0.75
+            ? kBrowserAmber
+            : kBrowserGreen;
+
+    return ContentDialog(
+      constraints: const BoxConstraints(maxWidth: 560),
+      title: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: theme.accentColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(FluentIcons.globe, size: 16, color: theme.accentColor),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  site.displayName,
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                if (site.siteName.isNotEmpty && site.siteName != site.domain)
+                  Text(
+                    site.domain,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: captionColor?.withValues(alpha: 0.5),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          BrowserStatChip(
+            label: site.category,
+            color: theme.accentColor.withValues(alpha: 0.12),
+            textColor: theme.accentColor,
+          ),
+        ],
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ── Today stats ──────────────────────────────────────────────
+            Row(
+              children: [
+                _DetailStatCard(
+                  icon: FluentIcons.timer,
+                  label: 'Time today',
+                  value: site.formattedTimeSpent,
+                  color: kBrowserBlue,
+                ),
+                const SizedBox(width: 10),
+                _DetailStatCard(
+                  icon: FluentIcons.view,
+                  label: 'Visits today',
+                  value: '${site.visits}',
+                  color: kBrowserPurple,
+                ),
+                const SizedBox(width: 10),
+                _DetailStatCard(
+                  icon: FluentIcons.time_picker,
+                  label: 'Daily limit',
+                  value: hasLimit
+                      ? _formatLimit(site.dailyLimit)
+                      : 'No limit',
+                  color: hasLimit ? limitColor : (captionColor ?? kBrowserBlue).withValues(alpha: 0.4),
+                ),
+              ],
+            ),
+            if (hasLimit) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Container(
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: theme.inactiveBackgroundColor,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                        FractionallySizedBox(
+                          widthFactor: limitProgress,
+                          child: Container(
+                            height: 5,
+                            decoration: BoxDecoration(
+                              color: limitColor,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '${(limitProgress * 100).toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: limitColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            const SizedBox(height: 18),
+
+            // ── 7-day chart ───────────────────────────────────────────────
+            Text(
+              '7-Day Activity',
+              style: theme.typography.bodyStrong?.copyWith(fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            if (history == null)
+              const SizedBox(
+                height: 140,
+                child: Center(child: ProgressRing()),
+              )
+            else
+              _SiteHistoryChart(history: history),
+
+            const SizedBox(height: 4),
+          ],
+        ),
+      ),
+      actions: [
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Close'),
+        ),
+      ],
+    );
+  }
+
+  String _formatLimit(Duration d) {
+    final h = d.inHours;
+    final m = d.inMinutes % 60;
+    if (h > 0 && m > 0) return '${h}h ${m}m';
+    if (h > 0) return '${h}h';
+    return '${m}m';
+  }
+}
+
+// ─── Detail stat card (inside dialog) ────────────────────────────────────────
+
+class _DetailStatCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _DetailStatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.15)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: theme.typography.body?.color,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                color: theme.typography.caption?.color?.withValues(alpha: 0.6),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── 7-day site history chart ─────────────────────────────────────────────────
+
+class _SiteHistoryChart extends StatefulWidget {
+  final List<({String date, Duration timeSpent, int visits})> history;
+  const _SiteHistoryChart({required this.history});
+
+  @override
+  State<_SiteHistoryChart> createState() => _SiteHistoryChartState();
+}
+
+class _SiteHistoryChartState extends State<_SiteHistoryChart> {
+  int _touchedIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final captionColor = theme.typography.caption?.color;
+
+    final maxSecs = widget.history
+        .fold<int>(0, (m, e) => max(m, e.timeSpent.inSeconds));
+    final maxVisits = widget.history
+        .fold<int>(0, (m, e) => max(m, e.visits));
+
+    // Normalize visits to same scale as time for dual bar
+    // We'll show them as two bars side-by-side using BarChartGroupData
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 160,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: maxSecs > 0 ? maxSecs.toDouble() * 1.2 : 60,
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipColor: (_) => theme.micaBackgroundColor,
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    final entry = widget.history[groupIndex];
+                    if (rodIndex == 0) {
+                      return BarTooltipItem(
+                        entry.timeSpent.toHourMinuteFormat(),
+                        TextStyle(
+                          color: kBrowserBlue,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      );
+                    } else {
+                      return BarTooltipItem(
+                        '${entry.visits} visits',
+                        TextStyle(
+                          color: kBrowserPurple,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      );
+                    }
+                  },
+                ),
+                touchCallback: (event, response) {
+                  setState(() {
+                    _touchedIndex = response?.spot?.touchedBarGroupIndex ?? -1;
+                  });
+                },
+              ),
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) {
+                      final i = value.toInt();
+                      if (i < 0 || i >= widget.history.length) {
+                        return const SizedBox.shrink();
+                      }
+                      final dateStr = widget.history[i].date;
+                      // Show abbreviated day: "Mon", "Tue", etc.
+                      final parts = dateStr.split('-');
+                      if (parts.length == 3) {
+                        final dt = DateTime(
+                          int.parse(parts[0]),
+                          int.parse(parts[1]),
+                          int.parse(parts[2]),
+                        );
+                        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                        final label = days[dt.weekday - 1];
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            label,
+                            style: TextStyle(
+                              fontSize: 10,
+                              color: captionColor?.withValues(alpha: 0.6),
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                    reservedSize: 22,
+                  ),
+                ),
+                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              ),
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: false,
+                getDrawingHorizontalLine: (_) => FlLine(
+                  color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                  strokeWidth: 1,
+                ),
+              ),
+              borderData: FlBorderData(show: false),
+              barGroups: List.generate(widget.history.length, (i) {
+                final entry = widget.history[i];
+                final isTouched = i == _touchedIndex;
+                // Scale visits to time-axis: visits * (maxSecs / max(maxVisits,1))
+                final visitScaled = maxVisits > 0 && maxSecs > 0
+                    ? (entry.visits * maxSecs / maxVisits).toDouble()
+                    : entry.visits.toDouble();
+                return BarChartGroupData(
+                  x: i,
+                  barRods: [
+                    BarChartRodData(
+                      toY: entry.timeSpent.inSeconds.toDouble(),
+                      color: isTouched
+                          ? kBrowserBlue
+                          : kBrowserBlue.withValues(alpha: 0.7),
+                      width: 8,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(4),
+                      ),
+                    ),
+                    BarChartRodData(
+                      toY: visitScaled,
+                      color: isTouched
+                          ? kBrowserPurple
+                          : kBrowserPurple.withValues(alpha: 0.7),
+                      width: 8,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(4),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        // Legend
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _ChartLegend(color: kBrowserBlue, label: 'Time'),
+            const SizedBox(width: 16),
+            _ChartLegend(color: kBrowserPurple, label: 'Visits'),
+          ],
+        ),
+        // Raw data row for the touched day
+        if (_touchedIndex >= 0 && _touchedIndex < widget.history.length) ...[
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.history[_touchedIndex].date,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: captionColor?.withValues(alpha: 0.6),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  widget.history[_touchedIndex].timeSpent.toHourMinuteFormat(),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: kBrowserBlue,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '${widget.history[_touchedIndex].visits} visits',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: kBrowserPurple,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ChartLegend extends StatelessWidget {
+  final Color color;
+  final String label;
+  const _ChartLegend({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            color: FluentTheme.of(context).typography.caption?.color?.withValues(alpha: 0.7),
+          ),
+        ),
+      ],
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:screentime/utils/platform_utils.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -174,6 +175,71 @@ class _TrackingSectionState extends State<TrackingSection>
               : CrossFadeState.showSecond,
           duration: _kExpandDuration,
         ),
+      ],
+    );
+  }
+
+  Future<void> _showIdleTimeoutDialog(
+    BuildContext context,
+    SettingsProvider settings,
+    AppLocalizations l10n,
+  ) async {
+    final result = await showDialog<int>(
+      context: context,
+      builder: (_) => IdleTimeoutDialog(
+        currentValue: settings.idleTimeout,
+        presets: settings.idleTimeoutPresets,
+        l10n: l10n,
+      ),
+    );
+    if (result != null) {
+      settings.updateSetting('idleTimeout', result);
+    }
+  }
+}
+
+// ============== WEB TRACKING SECTION ==============
+// Shown only in the web extension settings page (kIsWeb). Provides idle
+// detection controls equivalent to the desktop TrackingSection.
+
+class WebTrackingSection extends StatelessWidget {
+  const WebTrackingSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!kIsWeb) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
+    final settings = context.watch<SettingsProvider>();
+
+    return SettingsCard(
+      title: l10n.activityTrackingSection,
+      icon: FluentIcons.view,
+      iconColor: Colors.teal,
+      trailing: StatusBadge(
+        isActive: settings.idleDetectionEnabled,
+        activeText: l10n.active,
+        inactiveText: l10n.disabled,
+      ),
+      children: [
+        SettingRow(
+          title: l10n.idleDetectionTitle,
+          description: l10n.idleDetectionDescription,
+          control: ToggleSwitch(
+            checked: settings.idleDetectionEnabled,
+            onChanged: (v) => settings.updateSetting('idleDetectionEnabled', v),
+          ),
+        ),
+        if (settings.idleDetectionEnabled)
+          SettingRow(
+            title: l10n.idleTimeoutTitle,
+            description: l10n.idleTimeoutDescription(
+              settings.getFormattedIdleTimeout(l10n),
+            ),
+            control: TimeoutButton(
+              value: settings.getFormattedIdleTimeout(l10n),
+              onPressed: () => _showIdleTimeoutDialog(context, settings, l10n),
+            ),
+          ),
       ],
     );
   }

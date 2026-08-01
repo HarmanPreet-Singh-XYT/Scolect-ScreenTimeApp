@@ -246,9 +246,23 @@ class SettingsProvider extends ChangeNotifier {
             : TrackingMode.polling;
         await _tracker.setTrackingMode(mode);
       case 'idleDetectionEnabled':
-        await _tracker.updateIdleDetection(value);
+        if (kIsWeb) {
+          await ExtensionSettings().setIdleDetection(
+            enabled: value as bool,
+            timeoutSeconds: _idleTimeout,
+          );
+        } else {
+          await _tracker.updateIdleDetection(value);
+        }
       case 'idleTimeout':
-        await _tracker.updateIdleTimeout(value);
+        if (kIsWeb) {
+          await ExtensionSettings().setIdleDetection(
+            enabled: _idleDetectionEnabled,
+            timeoutSeconds: value as int,
+          );
+        } else {
+          await _tracker.updateIdleTimeout(value);
+        }
       case 'monitorAudio':
         await _tracker.updateAudioMonitoring(value);
       case 'monitorControllers':
@@ -510,7 +524,10 @@ class _SettingsContentState extends State<SettingsContent> {
           Expanded(
             child: Column(
               children: [
-                if (!kIsWeb) ...[
+                if (kIsWeb) ...[
+                  const WebTrackingSection(),
+                  _kSectionSpacing,
+                ] else ...[
                   const TrackingSection(),
                   _kSectionSpacing,
                   const ied.BackupRestoreSection(),
@@ -530,7 +547,10 @@ class _SettingsContentState extends State<SettingsContent> {
       children: [
         GeneralSection(setLocale: widget.setLocale),
         _kSectionSpacing,
-        if (!kIsWeb) ...[
+        if (kIsWeb) ...[
+          const WebTrackingSection(),
+          _kSectionSpacing,
+        ] else ...[
           const TrackingSection(),
           _kSectionSpacing,
         ],

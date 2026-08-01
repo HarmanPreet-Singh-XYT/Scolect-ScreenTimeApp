@@ -103,9 +103,17 @@ class ExtensionSettings {
   String _desktopUrl = 'http://localhost:46000';
   final Map<String, WebsiteMetadata> _metadata = {};
   bool _loaded = false;
+  int _overallLimitSeconds = 0;
+  bool _overallLimitEnabled = false;
+  bool _idleDetection = true;
+  int _idleTimeoutSeconds = 60;
 
   ExtensionMode get mode => _mode;
   String get desktopUrl => _desktopUrl;
+  int get overallLimitSeconds => _overallLimitSeconds;
+  bool get overallLimitEnabled => _overallLimitEnabled;
+  bool get idleDetection => _idleDetection;
+  int get idleTimeoutSeconds => _idleTimeoutSeconds;
 
   // ── Load ────────────────────────────────────────────────────────────────────
 
@@ -114,6 +122,10 @@ class ExtensionSettings {
     final raw = all[_kSettingsKey] as Map<String, dynamic>? ?? {};
     _mode = ExtensionModeExt.fromKey(raw['mode'] as String? ?? 'standalone');
     _desktopUrl = raw['desktopUrl'] as String? ?? 'http://localhost:46000';
+    _overallLimitSeconds = raw['overallLimitSeconds'] as int? ?? 0;
+    _overallLimitEnabled = raw['overallLimitEnabled'] as bool? ?? false;
+    _idleDetection = raw['idleDetection'] as bool? ?? true;
+    _idleTimeoutSeconds = raw['idleTimeoutSeconds'] as int? ?? 60;
 
     final metaRaw = raw['metadata'] as Map<String, dynamic>? ?? {};
     _metadata.clear();
@@ -160,6 +172,20 @@ class ExtensionSettings {
     await _persist();
   }
 
+  Future<void> setOverallLimit({required int seconds, required bool enabled}) async {
+    await _ensureLoaded();
+    _overallLimitSeconds = seconds;
+    _overallLimitEnabled = enabled;
+    await _persist();
+  }
+
+  Future<void> setIdleDetection({required bool enabled, required int timeoutSeconds}) async {
+    await _ensureLoaded();
+    _idleDetection = enabled;
+    _idleTimeoutSeconds = timeoutSeconds;
+    await _persist();
+  }
+
   Future<void> updateMetadata(
     String domain, {
     String? category,
@@ -203,11 +229,19 @@ class ExtensionSettings {
     }
     // Clear per-domain metadata from scolect_settings and the in-memory cache.
     _metadata.clear();
+    _overallLimitSeconds = 0;
+    _overallLimitEnabled = false;
+    _idleDetection = true;
+    _idleTimeoutSeconds = 60;
     _loaded = false;
     await chromeStorageSet({
       _kSettingsKey: {
         'mode': _mode.key,
         'desktopUrl': _desktopUrl,
+        'overallLimitSeconds': 0,
+        'overallLimitEnabled': false,
+        'idleDetection': true,
+        'idleTimeoutSeconds': 60,
         'metadata': <String, dynamic>{},
       },
     });
@@ -233,6 +267,10 @@ class ExtensionSettings {
       _kSettingsKey: {
         'mode': _mode.key,
         'desktopUrl': _desktopUrl,
+        'overallLimitSeconds': _overallLimitSeconds,
+        'overallLimitEnabled': _overallLimitEnabled,
+        'idleDetection': _idleDetection,
+        'idleTimeoutSeconds': _idleTimeoutSeconds,
         'metadata': {
           for (final e in _metadata.entries) e.key: e.value.toMap(),
         },

@@ -104,6 +104,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqCategorySettings => '设置与个性化';
 
   @override
+  String get faqCategoryBrowser => 'Browser Extension';
+
+  @override
   String get faqCategoryTroubleshooting => '故障排除';
 
   @override
@@ -141,6 +144,14 @@ class AppLocalizationsZh extends AppLocalizations {
       '该应用提供全面的洞察，包括高效分数、按时间段的使用模式、详细的应用使用情况、专注会话追踪，以及图表和饼图等可视化分析，帮助您了解和改善您的数字习惯。';
 
   @override
+  String get faqGeneralQ6 =>
+      'Which languages are supported and how do I change language?';
+
+  @override
+  String get faqGeneralA6 =>
+      'Language can be changed in Settings under the General section — all available languages are listed there. Translations are AI-generated from English, so some may be imperfect. If you spot an error you can report it via the Report Bug button in Settings, or open an issue on GitHub. Translation contributions are welcome!';
+
+  @override
   String get faqAppsQ1 => '如何隐藏特定应用的追踪？';
 
   @override
@@ -163,6 +174,13 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get faqAppsA4 => '初始类别由系统建议，但您可以完全控制根据您的工作流程和偏好创建、修改和分配自定义类别。';
+
+  @override
+  String get faqAppsQ5 => 'Why is an app showing a very short or zero time?';
+
+  @override
+  String get faqAppsA5 =>
+      'Tracking starts from the moment the app is first detected in the foreground. If you just installed Scolect, historical usage is not available — only time going forward is recorded. Very short times usually mean you briefly switched to that app and away again.';
 
   @override
   String get faqReportsQ1 => '有哪些类型的报告？';
@@ -212,6 +230,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqAlertsA3 => '是的，您可以自定义提醒频率、启用/禁用特定类型的提醒，并为整体屏幕时间和单个应用设置不同的限制。';
 
   @override
+  String get faqAlertsQ4 => 'Can I set different limits for different apps?';
+
+  @override
+  String get faqAlertsA4 =>
+      'Yes. In the Applications section, open any app\'s edit panel and set a per-app daily limit. You can also set limits directly from the Alerts & Limits section. Each app has its own independent limit and reset cycle.';
+
+  @override
   String get faqFocusQ1 => '有哪些类型的专注模式？';
 
   @override
@@ -259,6 +284,58 @@ class AppLocalizationsZh extends AppLocalizations {
   String get faqSettingsA3 => '清除数据将重置所有使用统计、专注会话历史和自定义设置。这对于重新开始或故障排除很有用。';
 
   @override
+  String get faqSettingsQ4 => 'How do I report a bug or send feedback?';
+
+  @override
+  String get faqSettingsA4 =>
+      'Scroll to the bottom of the Settings section — you will find buttons to Report a Bug, Submit Feedback, and Contact Support. These open the relevant links in your browser. You can also open an issue directly on the Scolect GitHub repository.';
+
+  @override
+  String get faqBrowserQ1 => 'What does the browser extension track?';
+
+  @override
+  String get faqBrowserA1 =>
+      'The extension tracks the domain of every website you visit and how long you spend on it, including a visit count per domain per day. All data is stored locally in your browser\'s storage — nothing leaves your device.';
+
+  @override
+  String get faqBrowserQ2 =>
+      'What are the extension modes (Standalone, Tracker Only, Hybrid)?';
+
+  @override
+  String get faqBrowserA2 =>
+      'Standalone mode runs the extension independently with its own dashboard and no connection to the desktop app. Tracker Only mode sends your browser usage data to the Scolect desktop app to merge with native app tracking, but the extension dashboard is not used. Hybrid mode does both — the extension has its own dashboard and also syncs data to the desktop app.';
+
+  @override
+  String get faqBrowserQ3 =>
+      'How does the extension connect to the desktop app?';
+
+  @override
+  String get faqBrowserA3 =>
+      'The desktop app runs a local HTTP server on port 46000 (configurable in Settings). When the extension is in Tracker Only or Hybrid mode it periodically sends your browsing data to that address. Both apps must be running on the same machine. If the desktop app is not open, the extension still tracks locally and will sync the next time a connection is established.';
+
+  @override
+  String get faqBrowserQ4 => 'Why is a website being blocked?';
+
+  @override
+  String get faqBrowserA4 =>
+      'A site is blocked when it has reached its daily time limit and blocking is enabled for that limit. You will see a blocked page with a countdown to midnight when the limit resets. To unblock immediately, go to Alerts & Limits in the desktop app and raise or remove the limit for that site, or disable blocking.';
+
+  @override
+  String get faqBrowserQ5 =>
+      'Does the extension track in incognito / private mode?';
+
+  @override
+  String get faqBrowserA5 =>
+      'No. By default Chrome extensions do not have access to incognito tabs. If you explicitly grant the extension access to incognito in Chrome\'s extension settings, it will track those tabs too — but this is off by default to respect your privacy.';
+
+  @override
+  String get faqBrowserQ6 => 'Where can I see my website usage data?';
+
+  @override
+  String get faqBrowserA6 =>
+      'Open the extension dashboard by clicking the Scolect icon in your browser toolbar and selecting Open Dashboard. The Websites tab shows all tracked domains with time spent, visit counts, and a 7-day history chart for each site. You can also export this data to Excel.';
+
+  @override
   String get faqTroubleQ1 => '数据不显示，hive无法打开错误';
 
   @override
@@ -271,6 +348,21 @@ class AppLocalizationsZh extends AppLocalizations {
   @override
   String get faqTroubleA2 =>
       '这是Windows 10上的一个已知问题，临时解决方案是在设置中启用\"启动时最小化\"，这样它将以最小化方式启动。';
+
+  @override
+  String get faqTroubleQ3 =>
+      'The browser extension is not showing any website data';
+
+  @override
+  String get faqTroubleA3 =>
+      'Make sure you have visited at least one website since installing the extension — there is no historical data before installation. Check that the extension has the required permissions (it needs access to all URLs to track time). If the dashboard is open but empty, try closing and reopening the dashboard tab. If the issue persists, try removing and reinstalling the extension.';
+
+  @override
+  String get faqTroubleQ4 => 'Extension and desktop app are not syncing';
+
+  @override
+  String get faqTroubleA4 =>
+      'Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app\'s Settings and the extension\'s Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test.';
 
   @override
   String get usageAnalytics => '使用分析';
@@ -958,8 +1050,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserExtensionTitle => '浏览器扩展';
 
   @override
-  String get browserExtensionDescription =>
-      '允许 Scolect 浏览器扩展连接并同步网站使用数据';
+  String get browserExtensionDescription => '允许 Scolect 浏览器扩展连接并同步网站使用数据';
 
   @override
   String get crashReportingTitle => '崩溃报告';
@@ -1506,27 +1597,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get skippedLabel => '已跳过';
-
-  @override
-  String get faqSettingsQ4 => '我如何恢复或导出我的数据？';
-
-  @override
-  String get faqSettingsA4 =>
-      '您可以进入设置，在那里您会找到备份与恢复部分。您可以在这里导出或导入数据。请注意，导出的数据文件存储在文档的 Scolect-Backups 文件夹中，只有这个文件可以用于恢复数据，其他文件不可以。';
-
-  @override
-  String get faqGeneralQ6 => '我如何更改语言？有哪些可用的语言？如果我发现翻译有误怎么办？';
-
-  @override
-  String get faqGeneralA6 =>
-      '语言可以在设置的通用部分进行更改，所有可用的语言都列在那里。您可以点击联系并发送您的请求和所需语言来请求翻译。请注意，翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
-
-  @override
-  String get faqGeneralQ7 => '如果我发现翻译有误怎么办？';
-
-  @override
-  String get faqGeneralA7 =>
-      '翻译可能存在错误，因为它是由人工智能从英语生成的。如果您想报告问题，可以通过报告错误、联系我们，或者如果您是开发者，可以在 Github 上提交问题。我们也欢迎关于语言的贡献！';
 
   @override
   String get activityTrackingSection => '活动追踪';
@@ -3178,8 +3248,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserHistoryTitle => '每周概览';
 
   @override
-  String get browserHistorySubtitle =>
-      '过去7天的浏览时间';
+  String get browserHistorySubtitle => '过去7天的浏览时间';
 
   @override
   String get browserHistoryNoData => '暂无浏览数据';
@@ -3215,19 +3284,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserNoWebActivityTitle => '今天暂无网络活动';
 
   @override
-  String get browserNoActivityWebSubtitle =>
-      '浏览网页以开始追踪您的时间';
+  String get browserNoActivityWebSubtitle => '浏览网页以开始追踪您的时间';
 
   @override
-  String get browserNoActivityDesktopSubtitle =>
-      '安装浏览器扩展以开始追踪';
+  String get browserNoActivityDesktopSubtitle => '安装浏览器扩展以开始追踪';
 
   @override
   String get browserNoCategoriesTitle => '暂无分类';
 
   @override
-  String get browserNoCategoriesSubtitle =>
-      '追踪网站后分类将在此显示';
+  String get browserNoCategoriesSubtitle => '追踪网站后分类将在此显示';
 
   @override
   String get browserByCategory => '按分类';
@@ -3288,12 +3354,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserNoWebsitesTitle => '未找到网站';
 
   @override
-  String get browserNoWebsitesWebSubtitle =>
-      '浏览网页 — 您的网站将在此显示。';
+  String get browserNoWebsitesWebSubtitle => '浏览网页 — 您的网站将在此显示。';
 
   @override
-  String get browserNoWebsitesDesktopSubtitle =>
-      '尝试调整筛选条件或等待\n扩展同步一些数据。';
+  String get browserNoWebsitesDesktopSubtitle => '尝试调整筛选条件或等待\n扩展同步一些数据。';
 
   @override
   String get browserTimeDistribution => '时间分布';
@@ -3333,8 +3397,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserAllWebsites => '全部网站';
 
   @override
-  String get browserAllWebsitesSubtitle =>
-      '点击网站以设置或更改每日限制';
+  String get browserAllWebsitesSubtitle => '点击网站以设置或更改每日限制';
 
   @override
   String get browserAllSitesHaveLimits => '所有网站均已设置限制';
@@ -3343,12 +3406,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserNoWebsitesTrackedTitle => '暂无已追踪网站';
 
   @override
-  String get browserNoWebsitesTrackedWebSubtitle =>
-      '浏览网页即可在此查看您的网站';
+  String get browserNoWebsitesTrackedWebSubtitle => '浏览网页即可在此查看您的网站';
 
   @override
-  String get browserNoWebsitesTrackedDesktopSubtitle =>
-      '安装扩展并开始浏览以入门';
+  String get browserNoWebsitesTrackedDesktopSubtitle => '安装扩展并开始浏览以入门';
 
   @override
   String browserDailyLimitDialog(String domain) {
@@ -3356,8 +3417,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get browserDailyLimitDialogDesc =>
-      '设置每天可访问此网站的时长。';
+  String get browserDailyLimitDialogDesc => '设置每天可访问此网站的时长。';
 
   @override
   String get browserHours => '小时';
@@ -3380,8 +3440,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserDesktopAppUrl => '桌面应用 URL';
 
   @override
-  String get browserDesktopAppUrlDesc =>
-      'Scolect 桌面应用运行本地服务器的 URL。';
+  String get browserDesktopAppUrlDesc => 'Scolect 桌面应用运行本地服务器的 URL。';
 
   @override
   String get browserAbout => '关于';
@@ -3414,8 +3473,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserClearDataTitle => '清除所有网站数据';
 
   @override
-  String get browserClearDataDesc =>
-      '永久删除所有已追踪网站的历史记录。此操作无法撤销。';
+  String get browserClearDataDesc => '永久删除所有已追踪网站的历史记录。此操作无法撤销。';
 
   @override
   String get browserClearDataButton => '清除数据';
@@ -3436,8 +3494,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserTrackingActive => '追踪进行中';
 
   @override
-  String get browserTrackingActiveDesc =>
-      '您的浏览器活动正在被追踪并\n同步到 Scolect 桌面应用。';
+  String get browserTrackingActiveDesc => '您的浏览器活动正在被追踪并\n同步到 Scolect 桌面应用。';
 
   @override
   String get browserConnectedToDesktop => '已连接到 Scolect 桌面版';
@@ -3473,8 +3530,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserSetupStep1 => '使用上方的开关启用服务器';
 
   @override
-  String get browserSetupStep2 =>
-      '在浏览器中安装 Scolect 扩展';
+  String get browserSetupStep2 => '在浏览器中安装 Scolect 扩展';
 
   @override
   String get browserSetupStep3 => '打开浏览器并访问任意网站';
@@ -3489,15 +3545,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserSetupServerActive => '服务器已激活';
 
   @override
-  String get browserSetupServerActiveDesc =>
-      '您的浏览器扩展现在可以连接并同步数据。';
+  String get browserSetupServerActiveDesc => '您的浏览器扩展现在可以连接并同步数据。';
 
   @override
   String get browserServerPort => '服务器端口';
 
   @override
-  String get browserServerPortDesc =>
-      '本地服务器监听的端口。如果端口 46000 已被占用，请更改此项。';
+  String get browserServerPortDesc => '本地服务器监听的端口。如果端口 46000 已被占用，请更改此项。';
 
   @override
   String get browserServerPortSaved => '端口已更新 — 扩展正在重新连接';

@@ -304,6 +304,12 @@ abstract class AppLocalizations {
   /// **'Settings & Customization'**
   String get faqCategorySettings;
 
+  /// No description provided for @faqCategoryBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser Extension'**
+  String get faqCategoryBrowser;
+
   /// No description provided for @faqCategoryTroubleshooting.
   ///
   /// In en, this message translates to:
@@ -313,73 +319,85 @@ abstract class AppLocalizations {
   /// No description provided for @faqGeneralQ1.
   ///
   /// In en, this message translates to:
-  /// **'How does this app track screen time?'**
+  /// **'How does Scolect track screen time?'**
   String get faqGeneralQ1;
 
   /// No description provided for @faqGeneralA1.
   ///
   /// In en, this message translates to:
-  /// **'The app monitors your device\'s usage in real-time, tracking the time spent on different applications. It provides comprehensive insights into your digital habits, including total screen time, productive time, and application-specific usage.'**
+  /// **'Scolect has two tracking surfaces. The desktop app monitors which native application is in the foreground on macOS or Windows and measures how long you spend in it. The browser extension tracks time spent on each website domain you visit in Chrome. Both surfaces store data locally on your device — nothing is sent to any server.'**
   String get faqGeneralA1;
 
   /// No description provided for @faqGeneralQ2.
   ///
   /// In en, this message translates to:
-  /// **'What makes an app \'Productive\'?'**
+  /// **'What makes an app or website \'Productive\'?'**
   String get faqGeneralQ2;
 
   /// No description provided for @faqGeneralA2.
   ///
   /// In en, this message translates to:
-  /// **'You can manually mark apps as productive in the \'Applications\' section. Productive apps contribute to your Productive Score, which calculates the percentage of screen time spent on work-related or beneficial applications.'**
+  /// **'You decide. In the Applications section you can toggle any app as productive. Productive apps count toward your Productive Time metric in Reports, which shows you the share of your screen time spent on work-related or beneficial apps.'**
   String get faqGeneralA2;
 
   /// No description provided for @faqGeneralQ3.
   ///
   /// In en, this message translates to:
-  /// **'How accurate is the screen time tracking?'**
+  /// **'How accurate is the tracking?'**
   String get faqGeneralQ3;
 
   /// No description provided for @faqGeneralA3.
   ///
   /// In en, this message translates to:
-  /// **'The app uses system-level tracking to provide precise measurement of your device usage. It captures foreground time for each application with minimal battery impact.'**
+  /// **'The desktop app uses OS-level foreground window detection, so it only counts time while an app is the active window — idle time or locked screens are not counted. The browser extension starts a timer when you switch to a tab and pauses it when you switch away or close the tab, so visit time reflects actual attention, not just open tabs.'**
   String get faqGeneralA3;
 
   /// No description provided for @faqGeneralQ4.
   ///
   /// In en, this message translates to:
-  /// **'Can I customize my app categorization?'**
+  /// **'Can I customize how apps are categorized?'**
   String get faqGeneralQ4;
 
   /// No description provided for @faqGeneralA4.
   ///
   /// In en, this message translates to:
-  /// **'Absolutely! You can create custom categories, assign apps to specific categories, and easily modify these assignments in the \'Applications\' section. This helps in creating more meaningful usage analytics.'**
+  /// **'Yes. In the Applications section you can create custom categories, rename existing ones, and reassign any app to a different category. Categories flow through to your reports and charts, so organizing apps into meaningful groups makes analytics more useful.'**
   String get faqGeneralA4;
 
   /// No description provided for @faqGeneralQ5.
   ///
   /// In en, this message translates to:
-  /// **'What insights can I gain from this app?'**
+  /// **'What insights does Scolect give me?'**
   String get faqGeneralQ5;
 
   /// No description provided for @faqGeneralA5.
   ///
   /// In en, this message translates to:
-  /// **'The app offers comprehensive insights including Productive Score, usage patterns by time of day, detailed application usage, focus session tracking, and visual analytics like graphs and pie charts to help you understand and improve your digital habits.'**
+  /// **'You get: total and productive screen time, most-used apps and websites, daily and weekly usage graphs, time-of-day usage patterns (morning / afternoon / evening / night), focus session history, and per-app breakdown with trends. Reports also support Excel export for offline analysis.'**
   String get faqGeneralA5;
+
+  /// No description provided for @faqGeneralQ6.
+  ///
+  /// In en, this message translates to:
+  /// **'Which languages are supported and how do I change language?'**
+  String get faqGeneralQ6;
+
+  /// No description provided for @faqGeneralA6.
+  ///
+  /// In en, this message translates to:
+  /// **'Language can be changed in Settings under the General section — all available languages are listed there. Translations are AI-generated from English, so some may be imperfect. If you spot an error you can report it via the Report Bug button in Settings, or open an issue on GitHub. Translation contributions are welcome!'**
+  String get faqGeneralA6;
 
   /// No description provided for @faqAppsQ1.
   ///
   /// In en, this message translates to:
-  /// **'How do I hide specific apps from tracking?'**
+  /// **'How do I stop tracking a specific app?'**
   String get faqAppsQ1;
 
   /// No description provided for @faqAppsA1.
   ///
   /// In en, this message translates to:
-  /// **'In the \'Applications\' section, you can toggle the visibility of apps.'**
+  /// **'Open the Applications section, find the app, and click the edit (pencil) icon. You can toggle \'Track Usage\' off — the app will no longer accumulate screen time. You can also toggle \'Visible in Reports\' to hide it from charts without stopping tracking.'**
   String get faqAppsA1;
 
   /// No description provided for @faqAppsQ2.
@@ -391,32 +409,44 @@ abstract class AppLocalizations {
   /// No description provided for @faqAppsA2.
   ///
   /// In en, this message translates to:
-  /// **'Yes, the Applications section includes a search functionality and filtering options. You can filter apps by category, productivity status, tracking status, and visibility.'**
+  /// **'Yes. The Applications section has a search bar and filter options. You can filter by category, productivity status, tracking status, and visibility to quickly find what you are looking for.'**
   String get faqAppsA2;
 
   /// No description provided for @faqAppsQ3.
   ///
   /// In en, this message translates to:
-  /// **'What editing options are available for applications?'**
+  /// **'What can I edit per application?'**
   String get faqAppsQ3;
 
   /// No description provided for @faqAppsA3.
   ///
   /// In en, this message translates to:
-  /// **'For each application, you can edit: category assignment, productivity status, tracking usage, visibility in reports, and set individual daily time limits.'**
+  /// **'For each application you can set: category, productive or non-productive status, whether tracking is active, whether it appears in reports, and an individual daily time limit. Limits trigger a notification when the app hits the threshold.'**
   String get faqAppsA3;
 
   /// No description provided for @faqAppsQ4.
   ///
   /// In en, this message translates to:
-  /// **'How are application categories determined?'**
+  /// **'How are initial categories assigned?'**
   String get faqAppsQ4;
 
   /// No description provided for @faqAppsA4.
   ///
   /// In en, this message translates to:
-  /// **'Initial categories are system-suggested, but you have full control to create, modify, and assign custom categories based on your workflow and preferences.'**
+  /// **'Scolect makes a best-guess category based on the app name when it is first seen. You have full control to change this — create new categories, rename them, and reassign apps at any time.'**
   String get faqAppsA4;
+
+  /// No description provided for @faqAppsQ5.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is an app showing a very short or zero time?'**
+  String get faqAppsQ5;
+
+  /// No description provided for @faqAppsA5.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracking starts from the moment the app is first detected in the foreground. If you just installed Scolect, historical usage is not available — only time going forward is recorded. Very short times usually mean you briefly switched to that app and away again.'**
+  String get faqAppsA5;
 
   /// No description provided for @faqReportsQ1.
   ///
@@ -427,31 +457,31 @@ abstract class AppLocalizations {
   /// No description provided for @faqReportsA1.
   ///
   /// In en, this message translates to:
-  /// **'Reports include: Total screen time, Productive time, Most used apps, Focus sessions, Daily screen time graph, Category breakdown pie chart, Detailed application usage, Weekly usage trends, and Usage pattern analysis by time of day.'**
+  /// **'Reports include: summary cards (total screen time, productive time, most used app, focus sessions), a daily usage bar chart, weekly usage trends with comparisons, detailed per-app usage table, and a time-of-day usage pattern breakdown. You can also export all data to an Excel file.'**
   String get faqReportsA1;
 
   /// No description provided for @faqReportsQ2.
   ///
   /// In en, this message translates to:
-  /// **'How detailed are the application usage reports?'**
+  /// **'How do I export my data?'**
   String get faqReportsQ2;
 
   /// No description provided for @faqReportsA2.
   ///
   /// In en, this message translates to:
-  /// **'Detailed application usage reports show: App name, Category, Total time spent, Productivity status, and offer an \'Actions\' section with deeper insights like usage summary, daily limits, usage trends, and productivity metrics.'**
+  /// **'In the Reports section, look for the Export button in the top-right area. This generates an Excel (.xlsx) file with your usage data. The file is saved to your Downloads folder. The browser extension dashboard also has an export option for website usage.'**
   String get faqReportsA2;
 
   /// No description provided for @faqReportsQ3.
   ///
   /// In en, this message translates to:
-  /// **'Can I analyze my usage trends over time?'**
+  /// **'Can I compare usage across different time periods?'**
   String get faqReportsQ3;
 
   /// No description provided for @faqReportsA3.
   ///
   /// In en, this message translates to:
-  /// **'Yes! The app provides week-over-week comparisons, showing graphs of usage over past weeks, average daily usage, longest sessions, and weekly totals to help you track your digital habits.'**
+  /// **'Yes. The Reports section lets you switch between Last 7 Days, Last 30 Days, and custom date ranges. The weekly trend graph shows week-over-week changes, and the summary cards display a percentage change compared to the previous period.'**
   String get faqReportsA3;
 
   /// No description provided for @faqReportsQ4.
@@ -463,67 +493,79 @@ abstract class AppLocalizations {
   /// No description provided for @faqReportsA4.
   ///
   /// In en, this message translates to:
-  /// **'Usage Pattern breaks down your screen time into morning, afternoon, evening, and night segments. This helps you understand when you\'re most active on your device and identify potential areas for improvement.'**
+  /// **'Usage Pattern splits your screen time into four day segments: morning (6 AM–12 PM), afternoon (12 PM–6 PM), evening (6 PM–10 PM), and night (10 PM–6 AM). This helps you see when you are most active on your device.'**
   String get faqReportsA4;
 
   /// No description provided for @faqAlertsQ1.
   ///
   /// In en, this message translates to:
-  /// **'How granular are the screen time limits?'**
+  /// **'How do screen time limits work?'**
   String get faqAlertsQ1;
 
   /// No description provided for @faqAlertsA1.
   ///
   /// In en, this message translates to:
-  /// **'You can set overall daily screen time limits and individual app limits. Limits can be configured in hours and minutes, with options to reset or adjust as needed.'**
+  /// **'You can set a daily overall screen time limit and individual limits per app. When you hit a limit, Scolect sends a desktop notification. Optionally, apps can be blocked when their limit is reached — the app will be prevented from taking focus. Limits reset each day at midnight.'**
   String get faqAlertsA1;
 
   /// No description provided for @faqAlertsQ2.
   ///
   /// In en, this message translates to:
-  /// **'What notification options are available?'**
+  /// **'What happens when an app is blocked after hitting its limit?'**
   String get faqAlertsQ2;
 
   /// No description provided for @faqAlertsA2.
   ///
   /// In en, this message translates to:
-  /// **'The app offers multiple notification types: System alerts when you exceed screen time, Frequent alerts at customizable intervals (1, 5, 15, 30, or 60 minutes), and toggles for focus mode, screen time, and application-specific notifications.'**
+  /// **'When blocking is enabled and an app reaches its daily limit, Scolect will attempt to bring focus away from it and notify you. On macOS this redirects you back to the previous app. You can always go to Alerts & Limits and temporarily disable blocking or raise the limit if needed.'**
   String get faqAlertsA2;
 
   /// No description provided for @faqAlertsQ3.
   ///
   /// In en, this message translates to:
-  /// **'Can I customize limit alerts?'**
+  /// **'What notification options are available?'**
   String get faqAlertsQ3;
 
   /// No description provided for @faqAlertsA3.
   ///
   /// In en, this message translates to:
-  /// **'Yes, you can customize alert frequency, enable/disable specific types of alerts, and set different limits for overall screen time and individual applications.'**
+  /// **'You can enable or disable notifications for: screen time limit reached, individual app limits, focus session start/end, and frequent reminder alerts. Reminder alerts fire at a configurable interval (1, 5, 15, 30, or 60 minutes) to keep you aware of ongoing usage.'**
   String get faqAlertsA3;
+
+  /// No description provided for @faqAlertsQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I set different limits for different apps?'**
+  String get faqAlertsQ4;
+
+  /// No description provided for @faqAlertsA4.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. In the Applications section, open any app\'s edit panel and set a per-app daily limit. You can also set limits directly from the Alerts & Limits section. Each app has its own independent limit and reset cycle.'**
+  String get faqAlertsA4;
 
   /// No description provided for @faqFocusQ1.
   ///
   /// In en, this message translates to:
-  /// **'What types of Focus Modes are available?'**
+  /// **'What Focus Modes are available?'**
   String get faqFocusQ1;
 
   /// No description provided for @faqFocusA1.
   ///
   /// In en, this message translates to:
-  /// **'Available modes include Deep Work (longer focused sessions), Quick Tasks (short bursts of work), and Reading Mode. Each mode helps you structure your work and break times effectively.'**
+  /// **'Three preset modes are available: Deep Work (longer focused sessions for complex tasks), Quick Tasks (shorter bursts for lightweight work), and Reading Mode (relaxed timing for reading or research). Each mode pre-fills the Pomodoro timer with sensible defaults, and you can customize all durations manually.'**
   String get faqFocusA1;
 
   /// No description provided for @faqFocusQ2.
   ///
   /// In en, this message translates to:
-  /// **'How flexible is the Pomodoro Timer?'**
+  /// **'How do I customize the Pomodoro timer?'**
   String get faqFocusQ2;
 
   /// No description provided for @faqFocusA2.
   ///
   /// In en, this message translates to:
-  /// **'The timer is highly customizable. You can adjust work duration, short break length, and long break duration. Additional options include auto-start for next sessions and notification settings.'**
+  /// **'In the Focus Mode section, open the settings icon on the timer card. You can set work duration, short break length, long break duration, the number of sessions before a long break, and whether the next session auto-starts. Changes apply immediately to the current timer.'**
   String get faqFocusA2;
 
   /// No description provided for @faqFocusQ3.
@@ -535,80 +577,188 @@ abstract class AppLocalizations {
   /// No description provided for @faqFocusA3.
   ///
   /// In en, this message translates to:
-  /// **'Focus Mode history tracks daily focus sessions, showing the number of sessions per day, trends graph, average session duration, total focus time, and a time distribution pie chart breaking down work sessions, short breaks, and long breaks.'**
+  /// **'The history tab shows daily session counts, a trend graph over the past weeks, average session duration, total accumulated focus time, and a breakdown of how your time was split between work, short breaks, and long breaks.'**
   String get faqFocusA3;
 
   /// No description provided for @faqFocusQ4.
   ///
   /// In en, this message translates to:
-  /// **'Can I track my focus session progress?'**
+  /// **'Does Focus Mode block distracting apps?'**
   String get faqFocusQ4;
 
   /// No description provided for @faqFocusA4.
   ///
   /// In en, this message translates to:
-  /// **'The app features a circular timer UI with play/pause, reload, and settings buttons. You can easily track and manage your focus sessions with intuitive controls.'**
+  /// **'Not automatically by default, but you can combine Focus Mode with app limits. Set a very short limit on distracting apps and enable blocking — they will be prevented from taking focus while your session is running. A future update may add direct integration between Focus Mode and app blocking.'**
   String get faqFocusA4;
 
   /// No description provided for @faqSettingsQ1.
   ///
   /// In en, this message translates to:
-  /// **'What customization options are available?'**
+  /// **'What can I customize in Settings?'**
   String get faqSettingsQ1;
 
   /// No description provided for @faqSettingsA1.
   ///
   /// In en, this message translates to:
-  /// **'Customization includes theme selection (System, Light, Dark), language settings, startup behavior, comprehensive notification controls, and data management options like clearing data or resetting settings.'**
+  /// **'Settings covers: appearance (theme — system, light, or dark; accent color), language, startup behavior (launch on login, start minimized), notification toggles, idle detection timeout, browser extension server port, and data management (clear data, backup and restore).'**
   String get faqSettingsA1;
 
   /// No description provided for @faqSettingsQ2.
   ///
   /// In en, this message translates to:
-  /// **'How do I provide feedback or report issues?'**
+  /// **'How do I back up or restore my data?'**
   String get faqSettingsQ2;
 
   /// No description provided for @faqSettingsA2.
   ///
   /// In en, this message translates to:
-  /// **'At the bottom of the Settings section, you\'ll find buttons to Report a Bug, Submit Feedback, or Contact Support. These will redirect you to the appropriate support channels.'**
+  /// **'Go to Settings and find the Backup & Restore section. Tap Export to save a backup file to your Documents folder inside a Scolect-Backups subfolder. To restore, tap Import and select that same file. Only files exported by Scolect can be restored — no other format is supported.'**
   String get faqSettingsA2;
 
   /// No description provided for @faqSettingsQ3.
   ///
   /// In en, this message translates to:
-  /// **'What happens when I clear my data?'**
+  /// **'What does \'Clear Data\' delete?'**
   String get faqSettingsQ3;
 
   /// No description provided for @faqSettingsA3.
   ///
   /// In en, this message translates to:
-  /// **'Clearing data will reset all your usage statistics, focus session history, and custom settings. This is useful for starting fresh or troubleshooting.'**
+  /// **'Clear Data removes all recorded usage statistics and focus session history. Your settings and preferences (theme, language, limits, categories) are not affected. This is useful for starting fresh or if you are troubleshooting a data issue.'**
   String get faqSettingsA3;
+
+  /// No description provided for @faqSettingsQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I report a bug or send feedback?'**
+  String get faqSettingsQ4;
+
+  /// No description provided for @faqSettingsA4.
+  ///
+  /// In en, this message translates to:
+  /// **'Scroll to the bottom of the Settings section — you will find buttons to Report a Bug, Submit Feedback, and Contact Support. These open the relevant links in your browser. You can also open an issue directly on the Scolect GitHub repository.'**
+  String get faqSettingsA4;
+
+  /// No description provided for @faqBrowserQ1.
+  ///
+  /// In en, this message translates to:
+  /// **'What does the browser extension track?'**
+  String get faqBrowserQ1;
+
+  /// No description provided for @faqBrowserA1.
+  ///
+  /// In en, this message translates to:
+  /// **'The extension tracks the domain of every website you visit and how long you spend on it, including a visit count per domain per day. All data is stored locally in your browser\'s storage — nothing leaves your device.'**
+  String get faqBrowserA1;
+
+  /// No description provided for @faqBrowserQ2.
+  ///
+  /// In en, this message translates to:
+  /// **'What are the extension modes (Standalone, Tracker Only, Hybrid)?'**
+  String get faqBrowserQ2;
+
+  /// No description provided for @faqBrowserA2.
+  ///
+  /// In en, this message translates to:
+  /// **'Standalone mode runs the extension independently with its own dashboard and no connection to the desktop app. Tracker Only mode sends your browser usage data to the Scolect desktop app to merge with native app tracking, but the extension dashboard is not used. Hybrid mode does both — the extension has its own dashboard and also syncs data to the desktop app.'**
+  String get faqBrowserA2;
+
+  /// No description provided for @faqBrowserQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'How does the extension connect to the desktop app?'**
+  String get faqBrowserQ3;
+
+  /// No description provided for @faqBrowserA3.
+  ///
+  /// In en, this message translates to:
+  /// **'The desktop app runs a local HTTP server on port 46000 (configurable in Settings). When the extension is in Tracker Only or Hybrid mode it periodically POSTs your browsing data to that address. Both apps must be running on the same machine. If the desktop app is not open, the extension still tracks locally and will sync the next time a connection is established.'**
+  String get faqBrowserA3;
+
+  /// No description provided for @faqBrowserQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'Why is a website being blocked?'**
+  String get faqBrowserQ4;
+
+  /// No description provided for @faqBrowserA4.
+  ///
+  /// In en, this message translates to:
+  /// **'A site is blocked when it has reached its daily time limit and blocking is enabled for that limit. You will see a blocked page with a countdown to midnight when the limit resets. To unblock immediately, go to Alerts & Limits in the desktop app and raise or remove the limit for that site, or disable blocking.'**
+  String get faqBrowserA4;
+
+  /// No description provided for @faqBrowserQ5.
+  ///
+  /// In en, this message translates to:
+  /// **'Does the extension track in incognito / private mode?'**
+  String get faqBrowserQ5;
+
+  /// No description provided for @faqBrowserA5.
+  ///
+  /// In en, this message translates to:
+  /// **'No. By default Chrome extensions do not have access to incognito tabs. If you explicitly grant the extension access to incognito in Chrome\'s extension settings, it will track those tabs too — but this is off by default to respect your privacy.'**
+  String get faqBrowserA5;
+
+  /// No description provided for @faqBrowserQ6.
+  ///
+  /// In en, this message translates to:
+  /// **'Where can I see my website usage data?'**
+  String get faqBrowserQ6;
+
+  /// No description provided for @faqBrowserA6.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the extension dashboard by clicking the Scolect icon in your browser toolbar and selecting \'Open Dashboard\', or by navigating to the extension\'s index page. The Websites tab shows all tracked domains with time spent, visit counts, and a 7-day history chart for each site. You can also export this data to Excel.'**
+  String get faqBrowserA6;
 
   /// No description provided for @faqTroubleQ1.
   ///
   /// In en, this message translates to:
-  /// **'Data is not showing, hive is not opening error'**
+  /// **'No data is showing in the desktop app'**
   String get faqTroubleQ1;
 
   /// No description provided for @faqTroubleA1.
   ///
   /// In en, this message translates to:
-  /// **'The issue is known, the temporary fix is to clear data through settings and if it doesn\'t work then go to Documents and delete the following files if they exist - harman_screentime_app_usage_box.hive and harman_screentime_app_usage.lock, you are also suggested to update the app to the latest version.'**
+  /// **'First try closing and reopening the app. If data still does not appear, go to Settings and use Clear Data to reset the database, then restart. If you see a \'hive not opening\' error, navigate to your Documents folder and delete harman_screentime_app_usage_box.hive and harman_screentime_app_usage_box.lock if they exist, then relaunch. Updating to the latest version also resolves most database issues.'**
   String get faqTroubleA1;
 
   /// No description provided for @faqTroubleQ2.
   ///
   /// In en, this message translates to:
-  /// **'App opens on every startup, what to do?'**
+  /// **'The app opens automatically on every startup'**
   String get faqTroubleQ2;
 
   /// No description provided for @faqTroubleA2.
   ///
   /// In en, this message translates to:
-  /// **'This is a known issue that occurs on Windows 10, the temporary fix is to enable Launch as Minimized in settings so it launches as Minimized.'**
+  /// **'This is a known issue on Windows 10. As a workaround, enable \'Launch as Minimized\' in Settings so the app starts in the background without an intrusive window. On macOS you can control this from the Login Items section in System Settings.'**
   String get faqTroubleA2;
+
+  /// No description provided for @faqTroubleQ3.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser extension is not showing any website data'**
+  String get faqTroubleQ3;
+
+  /// No description provided for @faqTroubleA3.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure you have visited at least one website since installing the extension — there is no historical data before installation. Check that the extension has the required permissions (it needs access to all URLs to track time). If the dashboard is open but empty, try closing and reopening the dashboard tab. If the issue persists, try removing and reinstalling the extension.'**
+  String get faqTroubleA3;
+
+  /// No description provided for @faqTroubleQ4.
+  ///
+  /// In en, this message translates to:
+  /// **'Extension and desktop app are not syncing'**
+  String get faqTroubleQ4;
+
+  /// No description provided for @faqTroubleA4.
+  ///
+  /// In en, this message translates to:
+  /// **'Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app\'s Settings and the extension\'s Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test. The extension will show a connection indicator when sync is active.'**
+  String get faqTroubleA4;
 
   /// Main page title for the analytics/reports section
   ///
@@ -2943,42 +3093,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skipped'**
   String get skippedLabel;
-
-  /// No description provided for @faqSettingsQ4.
-  ///
-  /// In en, this message translates to:
-  /// **'How can i restore or export my data?'**
-  String get faqSettingsQ4;
-
-  /// No description provided for @faqSettingsA4.
-  ///
-  /// In en, this message translates to:
-  /// **'You can go to settings, and there you\'ll find Backup & Restore section. You can export or import data from here, note that Exported data file is stored in Documents at Scolect-Backups Folder and only this file can be used to restore data, no other file.'**
-  String get faqSettingsA4;
-
-  /// No description provided for @faqGeneralQ6.
-  ///
-  /// In en, this message translates to:
-  /// **'How can I change language and which languages are available, also what if I found that translation is wrong?'**
-  String get faqGeneralQ6;
-
-  /// No description provided for @faqGeneralA6.
-  ///
-  /// In en, this message translates to:
-  /// **'Language can be changed through Settings General section, all the available languages are listed there, you can request translation by clicking on Contact and sending your request with given language. Just know that translation can be wrong as It is generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!'**
-  String get faqGeneralA6;
-
-  /// No description provided for @faqGeneralQ7.
-  ///
-  /// In en, this message translates to:
-  /// **'What if I found that translation is wrong?'**
-  String get faqGeneralQ7;
-
-  /// No description provided for @faqGeneralA7.
-  ///
-  /// In en, this message translates to:
-  /// **'Translation can be wrong as It is Generated by AI from English and if you want to report then either you can report through report bug, or contact, or if you are a developer then open issue on Github. Contributions regarding language are also welcome!'**
-  String get faqGeneralA7;
 
   /// No description provided for @activityTrackingSection.
   ///

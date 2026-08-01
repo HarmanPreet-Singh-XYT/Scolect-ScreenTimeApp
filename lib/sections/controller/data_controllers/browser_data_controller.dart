@@ -218,6 +218,30 @@ class BrowserDataProvider {
       ..sort((a, b) => b.totalTime.compareTo(a.totalTime));
   }
 
+  // ─── Per-site history (last N days) ──────────────────────────────────────
+
+  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
+      String domain, {int days = 7}) async {
+    await _ensureInitialized();
+
+    final result = <({String date, Duration timeSpent, int visits})>[];
+    final now = DateTime.now();
+
+    for (int i = days - 1; i >= 0; i--) {
+      final date = now.subtract(Duration(days: i));
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final dateKey =
+          '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      final record = _dataStore.getAppUsage('$_kWebPrefix$domain', startOfDay);
+      result.add((
+        date: dateKey,
+        timeSpent: record?.timeSpent ?? Duration.zero,
+        visits: record?.openCount ?? 0,
+      ));
+    }
+    return result;
+  }
+
   // ─── History (last N days) ────────────────────────────────────────────────
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async {
@@ -308,6 +332,11 @@ class _WebDelegatingProvider extends BrowserDataProvider {
 
   @override
   Future<List<String>> fetchAllCategories() => _web.fetchAllCategories();
+
+  @override
+  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
+          String domain, {int days = 7}) =>
+      _web.fetchSiteHistory(domain, days: days);
 
   @override
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) =>

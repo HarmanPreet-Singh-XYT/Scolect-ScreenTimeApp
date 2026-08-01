@@ -1,8 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/web/extension_settings.dart'
+    if (dart.library.io) 'package:screentime/web/extension_settings_stub.dart';
 import 'widgets/AlertsLimits/applicationlimit.dart';
 import 'widgets/AlertsLimits/notificationCard.dart';
 import 'widgets/AlertsLimits/overalllimit.dart';
@@ -159,6 +162,9 @@ class _AlertsLimitsState extends State<AlertsLimits> {
       _syncOverallLimit();
     } else {
       _controller.updateOverallLimit(Duration.zero, false);
+      if (kIsWeb) {
+        ExtensionSettings().setOverallLimit(seconds: 0, enabled: false);
+      }
     }
   }
 
@@ -182,6 +188,13 @@ class _AlertsLimitsState extends State<AlertsLimits> {
     _settings.updateSetting(_Keys.overallHours, _overallLimitHours.round());
     _settings.updateSetting(_Keys.overallMinutes, roundedMinutes);
     _controller.updateOverallLimit(duration, _overallLimitEnabled);
+
+    if (kIsWeb) {
+      ExtensionSettings().setOverallLimit(
+        seconds: duration.inSeconds,
+        enabled: _overallLimitEnabled,
+      );
+    }
   }
 
   // ──────────────── reset ────────────────
@@ -203,6 +216,9 @@ class _AlertsLimitsState extends State<AlertsLimits> {
       _settings.updateSetting(_Keys.overallHours, 2);
       _settings.updateSetting(_Keys.overallMinutes, 0);
       _controller.updateOverallLimit(Duration.zero, false);
+      if (kIsWeb) {
+        ExtensionSettings().setOverallLimit(seconds: 0, enabled: false);
+      }
       _loadData();
     } catch (e) {
       if (mounted) {

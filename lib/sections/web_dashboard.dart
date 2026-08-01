@@ -16,6 +16,7 @@ import 'package:screentime/app_design.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart' show ThemeOptions, SettingsManager;
 
 import 'package:screentime/sections/overview.dart';
 import 'package:screentime/sections/applications.dart';
@@ -23,6 +24,7 @@ import 'package:screentime/sections/reports.dart';
 import 'package:screentime/sections/alerts_limits.dart';
 import 'package:screentime/sections/focus_mode.dart';
 import 'package:screentime/sections/settings.dart' as native_settings;
+import 'package:screentime/sections/help.dart';
 import 'widgets/Browser/browser_extension_status.dart';
 import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_shared.dart';
@@ -54,9 +56,9 @@ class _WebDashboardState extends State<WebDashboard>
 
   // Extension status state
   ExtensionMode _mode = ExtensionMode.standalone;
-  String? _activeDomain;
   bool _isLoading = true;
   bool _showOnboarding = false;
+  bool _everConnected = false;
 
   StreamSubscription? _hashSub;
 
@@ -106,18 +108,20 @@ class _WebDashboardState extends State<WebDashboard>
       }
     }
     bool showOnboarding = false;
+    bool everConnected = false;
     if (kIsWeb) {
-      final stored = await chromeStorageGet(['onboarding_completed']);
+      final stored = await chromeStorageGet(['onboarding_completed', 'scolect_ever_connected']);
       showOnboarding = stored['onboarding_completed'] != true;
+      everConnected = stored['scolect_ever_connected'] == true;
     }
 
     if (!mounted) return;
     setState(() {
       _mode = mode;
-      _activeDomain = state?['activeDomain'] as String?;
       _selectedIndex = initialIndex;
       _isLoading = false;
       _showOnboarding = showOnboarding;
+      _everConnected = everConnected;
     });
   }
 
@@ -174,7 +178,6 @@ class _WebDashboardState extends State<WebDashboard>
         // ── Top App Bar (Enhanced Title Bar styled) ─────────────────────────
         _WebTitleBar(
           mode: _mode,
-          activeDomain: _activeDomain,
           onToggleSidebar: _toggleSidebar,
           isSidebarExpanded: _isSidebarExpanded,
         ),
@@ -205,6 +208,7 @@ class _WebDashboardState extends State<WebDashboard>
                           setState(() => _selectedIndex = idx),
                       isDark: isDark,
                       customTheme: customTheme,
+                      everConnected: _everConnected,
                     ),
                   );
                 },
@@ -254,6 +258,8 @@ class _WebDashboardState extends State<WebDashboard>
           key: const ValueKey('native_settings'),
           setLocale: widget.setLocale,
         );
+      case 6:
+        return const Help(key: ValueKey('native_help'));
       default:
         return const SizedBox.shrink();
     }
@@ -264,13 +270,11 @@ class _WebDashboardState extends State<WebDashboard>
 
 class _WebTitleBar extends StatelessWidget {
   final ExtensionMode mode;
-  final String? activeDomain;
   final VoidCallback onToggleSidebar;
   final bool isSidebarExpanded;
 
   const _WebTitleBar({
     required this.mode,
-    required this.activeDomain,
     required this.onToggleSidebar,
     required this.isSidebarExpanded,
   });
@@ -322,34 +326,6 @@ class _WebTitleBar extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 16),
-
-          // Active Tracking Indicator
-          if (activeDomain != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: kBrowserGreen.withValues(alpha: 0.08),
-                borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: kBrowserGreen.withValues(alpha: 0.15)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _PulseDot(),
-                  const SizedBox(width: 6),
-                  Text(
-                    activeDomain!,
-                    style: TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w500,
-                      color: kBrowserGreen.withValues(alpha: 0.9),
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
           const Spacer(),
 
@@ -360,48 +336,6 @@ class _WebTitleBar extends StatelessWidget {
           // Theme Toggle
           _ThemeToggleButton(),
         ],
-      ),
-    );
-  }
-}
-
-class _PulseDot extends StatefulWidget {
-  @override
-  State<_PulseDot> createState() => _PulseDotState();
-}
-
-class _PulseDotState extends State<_PulseDot>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  late Animation<double> _anim;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1500),
-    )..repeat(reverse: true);
-    _anim = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _anim,
-      builder: (_, __) => Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: kBrowserGreen.withValues(alpha: 0.4 + _anim.value * 0.6),
-        ),
       ),
     );
   }
@@ -443,6 +377,7 @@ class _ThemeToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final themeProvider = context.watch<ThemeCustomizationProvider>();
 
     return Tooltip(
       message: isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode',
@@ -450,9 +385,8 @@ class _ThemeToggleButton extends StatelessWidget {
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           onTap: () {
-            try {
-              FluentAdaptiveTheme.of(context).toggleThemeMode();
-            } catch (_) {}
+            final next = isDark ? ThemeOptions.light : ThemeOptions.dark;
+            themeProvider.setThemeMode(next);
           },
           child: Container(
             width: 32,
@@ -483,6 +417,7 @@ class _WebSidebar extends StatelessWidget {
   final ValueChanged<int> onItemSelected;
   final bool isDark;
   final CustomThemeData customTheme;
+  final bool everConnected;
 
   const _WebSidebar({
     required this.width,
@@ -492,6 +427,7 @@ class _WebSidebar extends StatelessWidget {
     required this.onItemSelected,
     required this.isDark,
     required this.customTheme,
+    required this.everConnected,
   });
 
   List<_WebNavItem> _buildNavItems() {
@@ -505,6 +441,7 @@ class _WebSidebar extends StatelessWidget {
       _WebNavItem(icon: FluentIcons.focus, label: 'Focus Mode', index: 4),
       _WebNavItem.separator(),
       _WebNavItem(icon: FluentIcons.settings, label: 'Settings', index: 5),
+      _WebNavItem(icon: FluentIcons.chat_bot, label: 'Help', index: 6),
     ];
   }
 
@@ -580,8 +517,8 @@ class _WebSidebar extends StatelessWidget {
             ),
           ),
 
-          // "Get Desktop App" promo card at bottom of Web Sidebar (shown if NOT connected to Desktop App)
-          if (!isCompact) ...[
+          // "Get Desktop App" promo card (hidden once user has connected desktop app at least once)
+          if (!isCompact && !everConnected) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: Container(
@@ -665,7 +602,7 @@ class _WebSidebar extends StatelessWidget {
             child: Opacity(
               opacity: isCompact ? 0 : 0.4,
               child: Text(
-                'v2.1.3 Stable',
+                'v${SettingsManager().versionInfo["version"]} Stable',
                 style: TextStyle(
                   fontSize: 10,
                   color: isDark ? Colors.white : Colors.black,
@@ -719,11 +656,18 @@ class _SidebarLogo extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: design.primaryGradient,
               borderRadius: BorderRadius.circular(AppDesign.radiusMd),
+              boxShadow: [
+                BoxShadow(
+                  color: design.primaryAccent.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Icon(
-              FluentIcons.globe,
-              size: 14,
-              color: Colors.white,
+            child: Image.asset(
+              'assets/icons/tray_icon_mac.png',
+              width: 20,
+              height: 20,
             ),
           ),
           if (!isCompact) ...[

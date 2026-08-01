@@ -17,6 +17,10 @@ let _ws = null;
 // so refreshBlockedDomains() can apply the last known state without a network call.
 let _pendingFocusState = null;
 
+// ─── Idle detection state ─────────────────────────────────────────────────────
+// True while the system is idle or locked — tick() skips time accumulation.
+let _isIdle = false;
+
 function getWs() {
   if (_ws && (_ws.readyState === WebSocket.OPEN || _ws.readyState === WebSocket.CONNECTING)) {
     return _ws;
@@ -123,6 +127,7 @@ async function _applyFocusState(focusJson) {
       sessionLabel:   focusJson.sessionLabel  ?? null,
       endTimeEpochMs: focusJson.endTimeEpochMs ?? null,
     },
+    [`${STORAGE_PREFIX}ever_connected`]: true,
   });
 
   // Apply blocked set (excluding manually unblocked domains)
@@ -138,12 +143,18 @@ let _blockedDomains = new Set();
 
 let _warned90 = new Set();
 let _warned90Date = '';
+let _overallLimitWarned = false;
+let _overallLimitWarnedDate = '';
 
 function _resetWarningsIfNewDay() {
   const today = getTodayKey();
   if (_warned90Date !== today) {
     _warned90 = new Set();
     _warned90Date = today;
+  }
+  if (_overallLimitWarnedDate !== today) {
+    _overallLimitWarned = false;
+    _overallLimitWarnedDate = today;
   }
 }
 
@@ -161,7 +172,12 @@ async function _redirectBlockedDomainTabs(domain) {
   try {
     const tabs = await chrome.tabs.query({});
     for (const tab of tabs) {
-      if (tab.url && !tab.url.startsWith(chrome.runtime.getURL('blocked.html'))) {
+      if (
+        tab.url &&
+        !tab.url.startsWith(chrome.runtime.getURL('')) &&
+        !tab.url.startsWith('chrome-extension://') &&
+        !tab.url.startsWith('moz-extension://')
+      ) {
         const d = extractDomain(tab.url);
         if (d === domain) {
           const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
@@ -218,6 +234,71 @@ const IGNORED_DOMAINS = new Set([
   '', 'newtab', 'extensions', 'settings', 'history',
   'localhost', '127.0.0.1', 'chrome', 'about',
 ]);
+
+// ─── Overall screen time limit ────────────────────────────────────────────────
+// Checks total usage across all tracked domains against the overall daily limit.
+// When exceeded, blocks every tracked domain for the rest of the day.
+
+async function checkOverallLimitNotifications(totalSeconds, settings) {
+  _resetWarningsIfNewDay();
+  const limit = settings.overallLimitSeconds;
+  if (!settings.overallLimitEnabled || !limit || limit <= 0) return;
+
+  const ratio = totalSeconds / limit;
+
+  if (ratio >= 0.9 && ratio < 1.0 && !_overallLimitWarned) {
+    _overallLimitWarned = true;
+    const remaining = Math.ceil((limit - totalSeconds) / 60);
+    _showNotification(
+      'scolect_warn_overall',
+      'Daily screen time limit approaching',
+      `${remaining} min left of your daily overall screen time limit.`,
+    );
+  }
+
+  if (ratio >= 1.0) {
+    await _enforceOverallLimit(settings);
+  }
+}
+
+async function _enforceOverallLimit(settings) {
+  const unblockedToday = await getUnblockedToday();
+  const today = getTodayKey();
+  const day = await getDayData(today);
+
+  // Collect all domains tracked today that aren't manually unblocked.
+  const domainsToBlock = day.domains
+    .map(e => e.domain)
+    .filter(d => !IGNORED_DOMAINS.has(d) && !unblockedToday.has(d));
+
+  let changed = false;
+  const bKey = `${STORAGE_PREFIX}blocked_domains`;
+  const bResult = await chrome.storage.local.get([bKey]);
+  const bList = new Set(bResult[bKey] || []);
+
+  for (const domain of domainsToBlock) {
+    if (!_blockedDomains.has(domain)) {
+      _blockedDomains.add(domain);
+      changed = true;
+    }
+    if (!bList.has(domain)) {
+      bList.add(domain);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    await chrome.storage.local.set({ [bKey]: [...bList] });
+    _showNotification(
+      'scolect_blocked_overall',
+      'Daily screen time limit reached',
+      'All websites have been blocked for today.',
+    );
+    for (const domain of domainsToBlock) {
+      await _redirectBlockedDomainTabs(domain);
+    }
+  }
+}
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
 
@@ -372,6 +453,12 @@ async function tick() {
     await _tickLocalFocus();
   }
 
+  // Skip time accumulation while the user is idle.
+  if (_isIdle) {
+    await refreshAppState();
+    return;
+  }
+
   const current = await getActive();
   if (!current) {
     await refreshAppState();
@@ -388,6 +475,7 @@ async function tick() {
     await chrome.storage.local.set({ [`${STORAGE_PREFIX}blocked_domains`]: [] });
     _blockedDomains = new Set();
     _warned90 = new Set();
+    _overallLimitWarned = false;
   }
 
   current.pendingSeconds = (current.pendingSeconds || 0) + 1;
@@ -401,6 +489,10 @@ async function tick() {
     if (domainEntry) {
       await checkLimitNotifications(current.domain, domainEntry.seconds);
     }
+
+    // Check overall daily limit against total usage across all domains.
+    const totalSecondsToday = day.domains.reduce((s, e) => s + e.seconds, 0);
+    await checkOverallLimitNotifications(totalSecondsToday, settings);
 
     // Push usage to desktop over WebSocket (replaces 1-min ALARM_SYNC poll).
     // Fire-and-forget so a slow/absent desktop never delays the tick.
@@ -503,12 +595,27 @@ async function refreshBlockedDomains() {
     const today = getTodayKey();
     const day = await getDayData(today);
     const meta = settings.metadata ?? {};
+    const totalSeconds = day.domains.reduce((s, e) => s + e.seconds, 0);
+
+    // Check per-domain limits.
     for (const entry of day.domains) {
       const m = meta[entry.domain];
       if (m && m.dailyLimitSeconds > 0 && entry.seconds >= m.dailyLimitSeconds) {
         blocked.push(entry.domain);
       }
     }
+
+    // Check overall daily limit — if exceeded, block all tracked domains.
+    if (settings.overallLimitEnabled && settings.overallLimitSeconds > 0
+        && totalSeconds >= settings.overallLimitSeconds) {
+      const overallBlocked = day.domains
+        .map(e => e.domain)
+        .filter(d => !IGNORED_DOMAINS.has(d));
+      for (const d of overallBlocked) {
+        if (!blocked.includes(d)) blocked.push(d);
+      }
+    }
+
     await chrome.storage.local.set({ [`${STORAGE_PREFIX}blocked_domains`]: blocked });
 
   } else {
@@ -702,9 +809,9 @@ async function runSync() {
   const stateKey = `${STORAGE_PREFIX}app_state`;
   const existing = await chrome.storage.local.get(stateKey);
   const prev = existing[stateKey] ?? {};
-  await chrome.storage.local.set({
-    [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt },
-  });
+  const update = { [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt } };
+  if (connected) update[`${STORAGE_PREFIX}ever_connected`] = true;
+  await chrome.storage.local.set(update);
 }
 
 // ─── Alarms ───────────────────────────────────────────────────────────────────
@@ -719,6 +826,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== 'local') return;
   if (changes['scolect_settings']) {
     refreshBlockedDomains().catch(console.error);
+    setupIdleDetection().catch(console.error);
   }
 });
 
@@ -727,6 +835,53 @@ function setupAlarms() {
     if (!a) chrome.alarms.create(ALARM_TICK, { periodInMinutes: TICK_PERIOD });
   });
 }
+
+// ─── Idle detection ───────────────────────────────────────────────────────────
+// Uses chrome.idle API to pause time tracking when the user is away.
+// The detection threshold is read from scolect_settings.idleTimeoutSeconds
+// (set by the Flutter dashboard). Chrome requires a minimum of 15 seconds.
+
+const IDLE_THRESHOLD_MIN = 15;
+const IDLE_THRESHOLD_DEFAULT = 60;
+
+async function setupIdleDetection() {
+  const settings = await getSettings();
+  if (!settings.idleDetection) {
+    // Idle detection disabled — treat system as always active.
+    _isIdle = false;
+    return;
+  }
+  const threshold = Math.max(
+    IDLE_THRESHOLD_MIN,
+    settings.idleTimeoutSeconds ?? IDLE_THRESHOLD_DEFAULT,
+  );
+  chrome.idle.setDetectionInterval(threshold);
+
+  // Query current idle state so that if the SW restarts while the user is away
+  // we don't start counting time immediately.
+  chrome.idle.queryState(threshold, state => {
+    _isIdle = state !== 'active';
+    if (_isIdle) pauseTracking().catch(console.error);
+  });
+}
+
+chrome.idle.onStateChanged.addListener(async state => {
+  const settings = await getSettings();
+  if (!settings.idleDetection) return;
+
+  const wasIdle = _isIdle;
+  _isIdle = state !== 'active';
+
+  if (_isIdle && !wasIdle) {
+    // Just went idle — stop accumulating time.
+    await pauseTracking();
+  } else if (!_isIdle && wasIdle) {
+    // Returned from idle — resume tracking the current active tab.
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      if (tabs[0]?.url) startTracking(tabs[0].url, tabs[0].title).catch(console.error);
+    });
+  }
+});
 
 // ─── Tab / window events ──────────────────────────────────────────────────────
 
@@ -740,7 +895,12 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (!tab.url) return;
 
-  if (info.status === 'loading' && !tab.url.startsWith(chrome.runtime.getURL('blocked.html'))) {
+  if (
+    info.status === 'loading' &&
+    !tab.url.startsWith(chrome.runtime.getURL('')) &&
+    !tab.url.startsWith('chrome-extension://') &&
+    !tab.url.startsWith('moz-extension://')
+  ) {
     const domain = extractDomain(tab.url);
     if (domain && _blockedDomains.has(domain)) {
       const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
@@ -823,12 +983,15 @@ chrome.runtime.onInstalled.addListener(() => {
   setupAlarms();
   refreshAppState().catch(console.error);
   refreshBlockedDomains().catch(console.error);
+  setupIdleDetection().catch(console.error);
 });
 
 chrome.runtime.onStartup.addListener(() => {
   setupAlarms();
   refreshBlockedDomains().catch(console.error);
+  setupIdleDetection().catch(console.error);
 });
 
 setupAlarms();
 refreshBlockedDomains().catch(console.error);
+setupIdleDetection().catch(console.error);

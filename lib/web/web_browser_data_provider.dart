@@ -236,6 +236,43 @@ class WebBrowserDataProvider {
     }
   }
 
+  // ── Per-site history (last N days) ───────────────────────────────────────
+
+  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
+      String domain, {int days = 7}) async {
+    final result = <({String date, Duration timeSpent, int visits})>[];
+    final now = DateTime.now();
+
+    for (int i = days - 1; i >= 0; i--) {
+      final date = now.subtract(Duration(days: i));
+      final y = date.year;
+      final m = date.month.toString().padLeft(2, '0');
+      final d = date.day.toString().padLeft(2, '0');
+      final dateKey = '$y-$m-$d';
+      final storageKey = _storageKey(dateKey);
+
+      final data = await chromeStorageGet([storageKey]);
+      final day = data[storageKey] as Map<String, dynamic>?;
+      if (day == null) {
+        result.add((date: dateKey, timeSpent: Duration.zero, visits: 0));
+        continue;
+      }
+      final domains = (day['domains'] as List<dynamic>? ?? [])
+          .whereType<Map<String, dynamic>>()
+          .toList();
+      final entry = domains.firstWhere(
+        (d) => d['domain'] == domain,
+        orElse: () => <String, dynamic>{},
+      );
+      result.add((
+        date: dateKey,
+        timeSpent: Duration(seconds: (entry['seconds'] as num?)?.toInt() ?? 0),
+        visits: (entry['visits'] as num?)?.toInt() ?? 0,
+      ));
+    }
+    return result;
+  }
+
   // ── Historical data (last N days) ─────────────────────────────────────────
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async {

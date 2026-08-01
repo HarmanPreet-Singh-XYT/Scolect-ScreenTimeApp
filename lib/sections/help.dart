@@ -88,7 +88,6 @@ class _HelpState extends State<Help> {
         FaqEntry(question: l10n.faqGeneralQ4, answer: l10n.faqGeneralA4),
         FaqEntry(question: l10n.faqGeneralQ5, answer: l10n.faqGeneralA5),
         FaqEntry(question: l10n.faqGeneralQ6, answer: l10n.faqGeneralA6),
-        FaqEntry(question: l10n.faqGeneralQ7, answer: l10n.faqGeneralA7),
       ]),
       FaqCategory(
           name: l10n.faqCategoryApplications,
@@ -98,6 +97,7 @@ class _HelpState extends State<Help> {
             FaqEntry(question: l10n.faqAppsQ2, answer: l10n.faqAppsA2),
             FaqEntry(question: l10n.faqAppsQ3, answer: l10n.faqAppsA3),
             FaqEntry(question: l10n.faqAppsQ4, answer: l10n.faqAppsA4),
+            FaqEntry(question: l10n.faqAppsQ5, answer: l10n.faqAppsA5),
           ]),
       FaqCategory(
           name: l10n.faqCategoryReports,
@@ -115,6 +115,7 @@ class _HelpState extends State<Help> {
             FaqEntry(question: l10n.faqAlertsQ1, answer: l10n.faqAlertsA1),
             FaqEntry(question: l10n.faqAlertsQ2, answer: l10n.faqAlertsA2),
             FaqEntry(question: l10n.faqAlertsQ3, answer: l10n.faqAlertsA3),
+            FaqEntry(question: l10n.faqAlertsQ4, answer: l10n.faqAlertsA4),
           ]),
       FaqCategory(
           name: l10n.faqCategoryFocusMode,
@@ -135,11 +136,24 @@ class _HelpState extends State<Help> {
             FaqEntry(question: l10n.faqSettingsQ4, answer: l10n.faqSettingsA4),
           ]),
       FaqCategory(
+          name: l10n.faqCategoryBrowser,
+          icon: FluentIcons.edge_logo,
+          faqs: [
+            FaqEntry(question: l10n.faqBrowserQ1, answer: l10n.faqBrowserA1),
+            FaqEntry(question: l10n.faqBrowserQ2, answer: l10n.faqBrowserA2),
+            FaqEntry(question: l10n.faqBrowserQ3, answer: l10n.faqBrowserA3),
+            FaqEntry(question: l10n.faqBrowserQ4, answer: l10n.faqBrowserA4),
+            FaqEntry(question: l10n.faqBrowserQ5, answer: l10n.faqBrowserA5),
+            FaqEntry(question: l10n.faqBrowserQ6, answer: l10n.faqBrowserA6),
+          ]),
+      FaqCategory(
           name: l10n.faqCategoryTroubleshooting,
           icon: FluentIcons.repair,
           faqs: [
             FaqEntry(question: l10n.faqTroubleQ1, answer: l10n.faqTroubleA1),
             FaqEntry(question: l10n.faqTroubleQ2, answer: l10n.faqTroubleA2),
+            FaqEntry(question: l10n.faqTroubleQ3, answer: l10n.faqTroubleA3),
+            FaqEntry(question: l10n.faqTroubleQ4, answer: l10n.faqTroubleA4),
           ]),
     ];
     return _cachedFaqData!;

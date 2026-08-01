@@ -184,7 +184,20 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
               isDark: isDark,
             ),
 
-            // Skip button
+            // Page content
+            PageView.builder(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _slides.length,
+              itemBuilder: (context, index) {
+                return _WebOnboardingSlide(
+                  slide: _slides[index],
+                  isDark: isDark,
+                );
+              },
+            ),
+
+            // Skip button (must be after PageView in stack to receive taps)
             if (!isLast)
               Positioned(
                 top: 20,
@@ -202,19 +215,6 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                   ),
                 ),
               ),
-
-            // Page content
-            PageView.builder(
-              controller: _pageController,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _slides.length,
-              itemBuilder: (context, index) {
-                return _WebOnboardingSlide(
-                  slide: _slides[index],
-                  isDark: isDark,
-                );
-              },
-            ),
 
             // Bottom controls
             Positioned(
