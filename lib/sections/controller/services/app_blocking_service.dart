@@ -3,6 +3,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../settings_data_controller.dart';
+// foreground_window_plugin_windows.dart is only used on Windows at runtime,
+// but it's safe to import unconditionally on any non-web platform since it
+// only references dart:ffi which is available on all desktop targets.
+import '../../../foreground_window_plugin_windows.dart';
 
 enum BlockingBehavior { none, soft, hard }
 
@@ -62,7 +66,7 @@ class AppBlockingService {
     _activeAppName = appName;
     _activePid = pid;
 
-    if (!Platform.isMacOS) return;
+    if (!Platform.isMacOS && !Platform.isWindows) return;
 
     // Show native floating panel, then listen for the user's button choice
     _showNativeOverlay(
@@ -186,20 +190,26 @@ class AppBlockingService {
   // ── Native calls ──────────────────────────────────────────────────────────
 
   Future<void> hideOtherApp(int pid) async {
-    if (!Platform.isMacOS) return;
     try {
-      await _fwChannel.invokeMethod('hideOtherApp', {'pid': pid});
+      if (Platform.isMacOS) {
+        await _fwChannel.invokeMethod('hideOtherApp', {'pid': pid});
+      } else if (Platform.isWindows) {
+        await ForegroundWindowPlugin.hideOtherApp(pid);
+      }
     } catch (e) {
-      debugPrint('⚠️ hideOtherApp failed: $e');
+      debugPrint('hideOtherApp failed: $e');
     }
   }
 
   Future<void> terminateOtherApp(int pid) async {
-    if (!Platform.isMacOS) return;
     try {
-      await _fwChannel.invokeMethod('terminateOtherApp', {'pid': pid});
+      if (Platform.isMacOS) {
+        await _fwChannel.invokeMethod('terminateOtherApp', {'pid': pid});
+      } else if (Platform.isWindows) {
+        await ForegroundWindowPlugin.terminateOtherApp(pid);
+      }
     } catch (e) {
-      debugPrint('⚠️ terminateOtherApp failed: $e');
+      debugPrint('terminateOtherApp failed: $e');
     }
   }
 

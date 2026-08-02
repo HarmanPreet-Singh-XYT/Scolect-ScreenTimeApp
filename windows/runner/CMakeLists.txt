@@ -38,3 +38,24 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 
 # Run the Flutter tool portions of the build. This must not be removed.
 add_dependencies(${BINARY_NAME} flutter_assemble)
+
+# ── block_overlay Rust DLL ────────────────────────────────────────────────────
+# The DLL is compiled separately with `cargo build --release` inside
+# windows/block_overlay/ before (or as part of) the Flutter Windows build.
+# We copy it next to the executable so LoadLibraryA("block_overlay.dll") works.
+set(BLOCK_OVERLAY_DLL
+    "${CMAKE_SOURCE_DIR}/../block_overlay/target/release/block_overlay.dll")
+
+if(EXISTS "${BLOCK_OVERLAY_DLL}")
+  add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      "${BLOCK_OVERLAY_DLL}"
+      "$<TARGET_FILE_DIR:${BINARY_NAME}>/block_overlay.dll"
+    COMMENT "Copying block_overlay.dll to output directory"
+  )
+else()
+  message(WARNING
+    "block_overlay.dll not found at ${BLOCK_OVERLAY_DLL}. "
+    "Run 'cargo build --release' inside windows/block_overlay/ first. "
+    "The overlay feature will be unavailable until the DLL is present.")
+endif()

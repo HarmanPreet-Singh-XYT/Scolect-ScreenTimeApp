@@ -8,6 +8,10 @@ const int _kMaxPath = 260;
 const int _kMaxTitle = 512; // increased from 256 for longer titles
 const int _kProcessQueryInformation = 0x0400;
 const int _kProcessVMRead = 0x0010;
+const int _kProcessTerminate = 0x0001;
+const int _kSwHide = 0;
+const int _kSwMinimize = 6;
+const int _kSwShowNoActivate = 4;
 const int _kTh32csSnapProcess = 0x00000002;
 const int _kInvalidHandleValue = -1;
 
@@ -55,6 +59,17 @@ typedef _VerQueryValueAN = Int32 Function(
     Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
 typedef _VerQueryValueAD = int Function(
     Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
+
+typedef _ShowWindowN = Int32 Function(Pointer<Void>, Int32);
+typedef _ShowWindowD = int Function(Pointer<Void>, int);
+
+typedef _EnumWindowsN = Int32 Function(
+    Pointer<NativeFunction<Int32 Function(Pointer<Void>, IntPtr)>>, IntPtr);
+typedef _EnumWindowsD = int Function(
+    Pointer<NativeFunction<Int32 Function(Pointer<Void>, IntPtr)>>, int);
+
+typedef _TerminateProcessN = Int32 Function(Pointer<Void>, Uint32);
+typedef _TerminateProcessD = int Function(Pointer<Void>, int);
 
 // ─── Structs ──────────────────────────────────────────────────────────────────
 
@@ -224,6 +239,26 @@ class ForegroundWindowPlugin {
       .lookupFunction<_VerQueryValueAN, _VerQueryValueAD>('VerQueryValueA');
 
   // ── Public API ────────────────────────────────────────────────────────────
+
+  /// Minimizes all visible windows belonging to [pid].
+  /// Used by [AppBlockingService.hideOtherApp] on Windows.
+  static Future<void> hideOtherApp(int pid) async {
+    try {
+      await compute(_minimizeProcessWindows, pid);
+    } catch (e) {
+      debugPrint('ForegroundWindowPlugin.hideOtherApp: $e');
+    }
+  }
+
+  /// Forcibly terminates the process with [pid].
+  /// Used by [AppBlockingService.terminateOtherApp] on Windows.
+  static Future<void> terminateOtherApp(int pid) async {
+    try {
+      await compute(_killProcess, pid);
+    } catch (e) {
+      debugPrint('ForegroundWindowPlugin.terminateOtherApp: $e');
+    }
+  }
 
   /// Returns foreground window info. Uses a two-step strategy to avoid
   /// repeated disk I/O (version resource reads) and expensive process snapshots
@@ -419,6 +454,109 @@ class ForegroundWindowPlugin {
   }
 
   // ── Compute targets ───────────────────────────────────────────────────────
+
+  /// Minimizes all visible top-level windows owned by [pid].
+  /// Runs in a compute isolate; uses static FFI bindings loaded fresh there.
+  static void _minimizeProcessWindows(int pid) {
+    // We need our own DLL references inside the isolate.
+    final user32 = DynamicLibrary.open('user32.dll');
+    final kernel32 = DynamicLibrary.open('kernel32.dll');
+
+    final getWindowThreadProcessId = user32.lookupFunction<
+        Int32 Function(Pointer<Void>, Pointer<Uint32>),
+        int Function(Pointer<Void>, Pointer<Uint32>)>('GetWindowThreadProcessId');
+
+    final showWindow = user32.lookupFunction<
+        Int32 Function(Pointer<Void>, Int32),
+        int Function(Pointer<Void>, int)>('ShowWindow');
+
+    final isWindowVisible = user32.lookupFunction<
+        Int32 Function(Pointer<Void>),
+        int Function(Pointer<Void>)>('IsWindowVisible');
+
+    // Callback closure for EnumWindows — Dart FFI requires a top-level or static
+    // function for NativeCallable. Use EnumWindows-style manual approach instead.
+    //
+    // Since Dart FFI closures can't be passed as EnumWindows callbacks portably
+    // in a compute isolate, we fall back to finding the HWND by PID via a
+    // process snapshot and then calling ShowWindow on it.
+    final createSnapshot = kernel32.lookupFunction<
+        Pointer<Void> Function(Uint32, Uint32),
+        Pointer<Void> Function(int, int)>('CreateToolhelp32Snapshot');
+
+    final process32First = kernel32.lookupFunction<
+        Int32 Function(Pointer<Void>, Pointer<PROCESSENTRY32>),
+        int Function(Pointer<Void>, Pointer<PROCESSENTRY32>)>('Process32First');
+
+    final process32Next = kernel32.lookupFunction<
+        Int32 Function(Pointer<Void>, Pointer<PROCESSENTRY32>),
+        int Function(Pointer<Void>, Pointer<PROCESSENTRY32>)>('Process32Next');
+
+    final closeHandle = kernel32.lookupFunction<
+        Int32 Function(Pointer<Void>),
+        int Function(Pointer<Void>)>('CloseHandle');
+
+    // Enumerate all windows via GetWindow chain (TH32CS_SNAPPROCESS is process-
+    // level; for windows we need a different approach). Use EnumWindows with a
+    // NativeCallable.
+    //
+    // Dart 3 NativeCallable.isolateLocal can be used from a compute isolate.
+    // Wrap the logic:
+    final pidBox = calloc<Uint32>();
+    final getForeground = user32.lookupFunction<
+        Pointer<Void> Function(),
+        Pointer<Void> Function()>('GetForegroundWindow');
+
+    // Walk visible windows: we use GetTopWindow / GetNextWindow (GetWindow).
+    final getTopWindow = user32.lookupFunction<
+        Pointer<Void> Function(Pointer<Void>),
+        Pointer<Void> Function(Pointer<Void>)>('GetTopWindow');
+
+    final getNextWindow = user32.lookupFunction<
+        Pointer<Void> Function(Pointer<Void>, Uint32),
+        Pointer<Void> Function(Pointer<Void>, int)>('GetWindow');
+
+    const gwHwndNext = 2; // GW_HWNDNEXT
+
+    try {
+      var hwnd = getTopWindow(nullptr);
+      while (hwnd.address != 0) {
+        pidBox.value = 0;
+        getWindowThreadProcessId(hwnd, pidBox);
+        if (pidBox.value == pid && isWindowVisible(hwnd) != 0) {
+          showWindow(hwnd, _kSwMinimize);
+        }
+        hwnd = getNextWindow(hwnd, gwHwndNext);
+      }
+    } finally {
+      calloc.free(pidBox);
+    }
+  }
+
+  /// Opens [pid] and calls TerminateProcess on it.
+  static void _killProcess(int pid) {
+    final kernel32 = DynamicLibrary.open('kernel32.dll');
+
+    final openProcess = kernel32.lookupFunction<
+        Pointer<Void> Function(Uint32, Int32, Uint32),
+        Pointer<Void> Function(int, int, int)>('OpenProcess');
+
+    final terminateProcess = kernel32.lookupFunction<
+        Int32 Function(Pointer<Void>, Uint32),
+        int Function(Pointer<Void>, int)>('TerminateProcess');
+
+    final closeHandle = kernel32.lookupFunction<
+        Int32 Function(Pointer<Void>),
+        int Function(Pointer<Void>)>('CloseHandle');
+
+    final hProcess = openProcess(_kProcessTerminate, 0, pid);
+    if (hProcess.address == 0) return;
+    try {
+      terminateProcess(hProcess, 1);
+    } finally {
+      closeHandle(hProcess);
+    }
+  }
 
   /// Step 1 (cheap): returns raw window/process info with NO disk I/O.
   /// Only calls Win32 APIs that are in-memory (no version resource reads,
