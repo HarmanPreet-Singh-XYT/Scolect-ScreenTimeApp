@@ -56,16 +56,13 @@ class AppBlockingService {
     if (_isUnblockedToday(appName)) return;
     if (_isInGracePeriod(appName)) return;
     if (_isInCooldown(appName)) return;
+    // Already showing overlay for this app — don't re-trigger
+    if (_activeAppName == appName && _activePid != null) return;
 
     _activeAppName = appName;
     _activePid = pid;
 
     if (!Platform.isMacOS) return;
-
-    // Hard block: hide the app immediately before showing the overlay
-    if (behavior == BlockingBehavior.hard) {
-      hideOtherApp(pid);
-    }
 
     // Show native floating panel, then listen for the user's button choice
     _showNativeOverlay(
@@ -74,6 +71,7 @@ class AppBlockingService {
       usedSeconds: usedTime.inSeconds,
       limitSeconds: limitTime.inSeconds,
     );
+
   }
 
   // ── Native overlay ────────────────────────────────────────────────────────
@@ -92,6 +90,7 @@ class AppBlockingService {
         'appName': appName,
         'usedSeconds': usedSeconds,
         'limitSeconds': limitSeconds,
+        'hardBlock': behavior == BlockingBehavior.hard,
       });
     } catch (e) {
       debugPrint('⚠️ showNativeOverlay failed: $e');

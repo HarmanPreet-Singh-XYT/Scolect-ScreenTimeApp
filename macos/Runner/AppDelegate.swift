@@ -82,8 +82,10 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
               let used  = args["usedSeconds"]   as? Int,
               let limit = args["limitSeconds"]  as? Int
         else { result(FlutterError(code: "INVALID_ARGS", message: nil, details: nil)); return }
+        let hard = args["hardBlock"] as? Bool ?? false
         BlockOverlayPanel.shared.show(pid: Int32(pid), appName: name,
-                                      usedSeconds: used, limitSeconds: limit)
+                                      usedSeconds: used, limitSeconds: limit,
+                                      hardBlock: hard)
         result(nil)
       case "dismiss":
         BlockOverlayPanel.shared.dismiss()

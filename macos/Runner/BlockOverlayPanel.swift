@@ -2,19 +2,32 @@ import Cocoa
 
 // MARK: - BlockOverlayPanel
 //
-// Two-panel design:
-//  1. scrimPanel  — full-size borderless panel at normalWindow level, semi-transparent dark fill
-//  2. cardPanel   — small borderless panel above the scrim, hosts the NSVisualEffectView card
+// Soft block — two-panel design (original):
+//   scrimPanel  — full-size borderless panel at normalWindow level, semi-transparent dark fill
+//   cardPanel   — small borderless panel at floatingWindow level, hosts the NSVisualEffectView card
+//   Clicking the scrim activates the blocked app so it comes back to front.
 //
-// Both panels sit at the same level as the blocked app's window.
-// When another app gains focus, its windows naturally rise above ours — no always-on-top.
-// Clicking the scrim activates the blocked app so it comes back to front.
+// Hard block — single-panel design:
+//   scrimPanel  — full-screen panel at screenSaverWindow level
+//   Card embedded as a subview inside the scrim (avoids z-order conflict on click)
+//   Blocked app is hidden after 0.3s; observer watches for intentional app switch to dismiss.
 
 private class ScrimView: NSView {
     var onTap: (() -> Void)?
+    weak var cardPanel: NSPanel?   // soft block only — re-raised on every click
 
-    override func mouseDown(with event: NSEvent) { onTap?() }
-    override func rightMouseDown(with event: NSEvent) { onTap?() }
+    override func mouseDown(with event: NSEvent) {
+        if let cp = cardPanel, let sp = self.window {
+            cp.order(.above, relativeTo: sp.windowNumber)
+        }
+        onTap?()
+    }
+    override func rightMouseDown(with event: NSEvent) {
+        if let cp = cardPanel, let sp = self.window {
+            cp.order(.above, relativeTo: sp.windowNumber)
+        }
+        onTap?()
+    }
     override var acceptsFirstResponder: Bool { true }
 
     override func draw(_ dirtyRect: NSRect) {
@@ -32,41 +45,39 @@ final class BlockOverlayPanel {
     // ── State ─────────────────────────────────────────────────────────────
 
     private var scrimPanel: NSPanel?
-    private var cardPanel: NSPanel?
-    private var trackingTimer: Timer?
+    private var cardPanel: NSPanel?        // nil in hard block (card is a subview)
+    private var trackingTimer: Timer?      // soft block only
     private var targetPid: pid_t = 0
     private var graceTimer: Timer?
     private var graceSecondsLeft: Int = 0
+    private var hideWorkItem: DispatchWorkItem?   // hard block only
+    private var appSwitchObserver: Any?           // hard block only
 
     private var graceBadge: NSTextField?
     private var graceRow: NSView?
     private var graceButton: NSButton?
-    // After a scrim tap we pause re-ordering briefly so the blocked app can come to front
-    private var reorderPausedUntil: Date = .distantPast
+    private var reorderPausedUntil: Date = .distantPast   // soft block only
+    private var isHardBlock: Bool = false
 
     var onAction: ((_ action: String) -> Void)?
 
     // ── Public API ────────────────────────────────────────────────────────
 
-    func show(pid: Int32, appName: String, usedSeconds: Int, limitSeconds: Int) {
+    func show(pid: Int32, appName: String, usedSeconds: Int, limitSeconds: Int, hardBlock: Bool = false) {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            // Don't re-trigger if already showing for this same app
+            if self.scrimPanel != nil && self.targetPid == pid_t(pid) { return }
             self.dismiss(animated: false)
             self.targetPid = pid_t(pid)
+            self.isHardBlock = hardBlock
 
-            // Bring the limited app to front so our overlay appears over it
-            if let app = NSRunningApplication(processIdentifier: pid_t(pid)) {
-                app.activate(options: [.activateIgnoringOtherApps])
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-                guard let self else { return }
-                let frame = self.targetWindowFrame(forPid: pid_t(pid))
-                    ?? NSScreen.main?.visibleFrame
-                    ?? CGRect(x: 0, y: 0, width: 1280, height: 800)
-                self.buildAndShow(targetFrame: frame, appName: appName,
-                                  usedSeconds: usedSeconds, limitSeconds: limitSeconds)
-                self.startTracking()
+            if hardBlock {
+                self.showHardBlock(pid: pid, appName: appName,
+                                   usedSeconds: usedSeconds, limitSeconds: limitSeconds)
+            } else {
+                self.showSoftBlock(pid: pid, appName: appName,
+                                   usedSeconds: usedSeconds, limitSeconds: limitSeconds)
             }
         }
     }
@@ -74,12 +85,17 @@ final class BlockOverlayPanel {
     func dismiss(animated: Bool = true) {
         trackingTimer?.invalidate(); trackingTimer = nil
         graceTimer?.invalidate(); graceTimer = nil
+        hideWorkItem?.cancel(); hideWorkItem = nil
+        if let obs = appSwitchObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(obs)
+            appSwitchObserver = nil
+        }
 
         let sp = scrimPanel
         let cp = cardPanel
         scrimPanel = nil; cardPanel = nil
         graceBadge = nil; graceRow = nil; graceButton = nil
-        targetPid = 0
+        targetPid = 0; isHardBlock = false
 
         if animated {
             NSAnimationContext.runAnimationGroup({ ctx in
@@ -108,20 +124,36 @@ final class BlockOverlayPanel {
         }
     }
 
-    // ── Build ─────────────────────────────────────────────────────────────
+    // ── Soft block ────────────────────────────────────────────────────────
+    // Original two-panel design: scrim tracks the blocked app window,
+    // card floats above. Clicking scrim brings the blocked app to front.
 
-    private func buildAndShow(targetFrame: CGRect, appName: String,
-                               usedSeconds: Int, limitSeconds: Int) {
+    private func showSoftBlock(pid: Int32, appName: String, usedSeconds: Int, limitSeconds: Int) {
+        // Bring the limited app to front so our overlay appears over it
+        if let app = NSRunningApplication(processIdentifier: pid_t(pid)) {
+            app.activate(options: [.activateIgnoringOtherApps])
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+            guard let self else { return }
+            let frame = self.targetWindowFrame(forPid: pid_t(pid))
+                ?? NSScreen.main?.visibleFrame
+                ?? CGRect(x: 0, y: 0, width: 1280, height: 800)
+            self.buildSoftBlock(targetFrame: frame, appName: appName,
+                                usedSeconds: usedSeconds, limitSeconds: limitSeconds)
+            self.startTracking()
+        }
+    }
 
+    private func buildSoftBlock(targetFrame: CGRect, appName: String,
+                                 usedSeconds: Int, limitSeconds: Int) {
         let normalLevel = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.normalWindow)))
         let isDark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
 
-        // ── 1. Scrim panel — full target window size ──────────────────────
+        // ── 1. Scrim panel ────────────────────────────────────────────────
         let sp = NSPanel(
             contentRect: targetFrame,
             styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
+            backing: .buffered, defer: false
         )
         sp.isOpaque = false
         sp.backgroundColor = .clear
@@ -137,25 +169,22 @@ final class BlockOverlayPanel {
         scrimView.layer?.masksToBounds = true
         scrimView.onTap = { [weak self] in
             guard let self, self.targetPid != 0 else { return }
-            // Pause re-ordering for 1 s so Notes can come to front and stay there
             self.reorderPausedUntil = Date().addingTimeInterval(1.0)
             NSRunningApplication(processIdentifier: self.targetPid)?
                 .activate(options: [.activateIgnoringOtherApps])
         }
         sp.contentView = scrimView
 
-        // ── 2. Card panel — centered, floats above scrim ─────────────────
+        // ── 2. Card panel ─────────────────────────────────────────────────
         let cardW: CGFloat = 400
         let cardH: CGFloat = 390
         let cardX = targetFrame.midX - cardW / 2
         let cardY = targetFrame.midY - cardH / 2
-        let cardFrame = CGRect(x: cardX, y: cardY, width: cardW, height: cardH)
 
         let cp = NSPanel(
-            contentRect: cardFrame,
+            contentRect: CGRect(x: cardX, y: cardY, width: cardW, height: cardH),
             styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
+            backing: .buffered, defer: false
         )
         cp.isOpaque = false
         cp.backgroundColor = .clear
@@ -165,8 +194,117 @@ final class BlockOverlayPanel {
         cp.alphaValue = 0
         cp.isMovable = false
 
-        // NSVisualEffectView with .behindWindow blurs the scrim beneath it
-        let ve = NSVisualEffectView(frame: CGRect(origin: .zero, size: cardFrame.size))
+        let ve = makeCardView(width: cardW, height: cardH, isDark: isDark)
+        buildCard(in: ve, appName: appName,
+                  usedSeconds: usedSeconds, limitSeconds: limitSeconds, isDark: isDark)
+        cp.contentView = ve
+
+        // Wire scrim → re-raises card on click
+        scrimView.cardPanel = cp
+
+        // Stack card above scrim. Both start hidden (alpha 0).
+        // repositionIfNeeded() reveals them only when the blocked app is frontmost.
+        cp.order(.above, relativeTo: sp.windowNumber)
+
+        scrimPanel = sp
+        cardPanel  = cp
+    }
+
+    // ── Hard block ────────────────────────────────────────────────────────
+    // Full-screen single panel at screenSaverWindow level, anchored to Scolect.
+    // Card is embedded as a subview to avoid z-order conflicts on click.
+    // Blocked app hidden after 0.3s; observer dismisses on intentional app switch.
+
+    private func showHardBlock(pid: Int32, appName: String, usedSeconds: Int, limitSeconds: Int) {
+        let screen = NSScreen.main?.frame ?? CGRect(x: 0, y: 0, width: 1280, height: 800)
+        buildHardBlock(targetFrame: screen, appName: appName,
+                       usedSeconds: usedSeconds, limitSeconds: limitSeconds)
+
+        // Hide blocked app after overlay is visible.
+        // Register the app-switch observer AFTER hide settles (0.7s total) so
+        // the focus shift caused by app.hide() doesn't trigger premature dismissal.
+        let scolectPid = NSRunningApplication.current.processIdentifier
+        let work = DispatchWorkItem { [weak self] in
+            guard let self else { return }
+            if let app = NSRunningApplication(processIdentifier: pid_t(pid)),
+               !app.isHidden {
+                app.hide()
+            }
+            // Wait for hide-induced focus-shift noise to settle, then watch for
+            // intentional switches to other regular user-facing apps.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+                guard let self, self.scrimPanel != nil else { return }
+                self.appSwitchObserver = NSWorkspace.shared.notificationCenter.addObserver(
+                    forName: NSWorkspace.didActivateApplicationNotification,
+                    object: nil, queue: .main) { [weak self] note in
+                        guard let self else { return }
+                        guard let activeApp = note.userInfo?[NSWorkspace.applicationUserInfoKey]
+                            as? NSRunningApplication else { return }
+                        let activePid = activeApp.processIdentifier
+                        // Only dismiss for regular user-facing apps, not Dock / app-switcher UI.
+                        guard activeApp.activationPolicy == .regular else { return }
+                        if activePid != self.targetPid && activePid != scolectPid {
+                            self.onAction?("dismiss")
+                            self.dismiss()
+                        }
+                }
+            }
+        }
+        hideWorkItem = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: work)
+    }
+
+    private func buildHardBlock(targetFrame: CGRect, appName: String,
+                                 usedSeconds: Int, limitSeconds: Int) {
+        let ssLevel = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.screenSaverWindow)))
+        let isDark  = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+
+        // ── Scrim panel (full screen) ─────────────────────────────────────
+        let sp = NSPanel(
+            contentRect: targetFrame,
+            styleMask: [.borderless, .nonactivatingPanel],
+            backing: .buffered, defer: false
+        )
+        sp.isOpaque = false
+        sp.backgroundColor = .clear
+        sp.hasShadow = false
+        sp.level = ssLevel
+        sp.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        sp.alphaValue = 0
+        sp.isMovable = false
+
+        let scrimView = ScrimView(frame: CGRect(origin: .zero, size: targetFrame.size))
+        scrimView.wantsLayer = true
+        // Hard block scrim: no rounded corners, no tap handler
+        sp.contentView = scrimView
+
+        // ── Card embedded as subview ──────────────────────────────────────
+        let cardW: CGFloat = 400
+        let cardH: CGFloat = 390
+        let cardX = targetFrame.midX - cardW / 2 - targetFrame.minX
+        let cardY = targetFrame.midY - cardH / 2 - targetFrame.minY
+
+        let ve = makeCardView(width: cardW, height: cardH, isDark: isDark)
+        ve.frame = CGRect(x: cardX, y: cardY, width: cardW, height: cardH)
+        buildCard(in: ve, appName: appName,
+                  usedSeconds: usedSeconds, limitSeconds: limitSeconds, isDark: isDark)
+        scrimView.addSubview(ve)
+
+        // ── Show ──────────────────────────────────────────────────────────
+        sp.orderFront(nil)
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.22
+            sp.animator().alphaValue = 1
+        }
+
+        scrimPanel = sp
+        cardPanel  = nil   // card is a subview, not a separate panel
+    }
+
+    // ── Shared card helpers ───────────────────────────────────────────────
+
+    private func makeCardView(width: CGFloat, height: CGFloat, isDark: Bool) -> NSVisualEffectView {
+        let ve = NSVisualEffectView(frame: CGRect(x: 0, y: 0, width: width, height: height))
         ve.blendingMode = .behindWindow
         ve.material = isDark ? .hudWindow : .sidebar
         ve.state = .active
@@ -178,47 +316,25 @@ final class BlockOverlayPanel {
             ? NSColor.white.withAlphaComponent(0.14)
             : NSColor.black.withAlphaComponent(0.1)
         ).cgColor
-        cp.contentView = ve
-
-        buildCard(in: ve, appName: appName,
-                  usedSeconds: usedSeconds, limitSeconds: limitSeconds, isDark: isDark)
-
-        // ── Order: target → scrim → card ──────────────────────────────────
-        if let targetNum = targetWindowNumber(forPid: targetPid) {
-            sp.order(.above, relativeTo: targetNum)
-            cp.order(.above, relativeTo: sp.windowNumber)
-        } else {
-            sp.orderFront(nil)
-            cp.order(.above, relativeTo: sp.windowNumber)
-        }
-
-        NSAnimationContext.runAnimationGroup { ctx in
-            ctx.duration = 0.22
-            sp.animator().alphaValue = 1
-            cp.animator().alphaValue = 1
-        }
-
-        scrimPanel = sp
-        cardPanel  = cp
+        return ve
     }
 
     // MARK: - Card UI
 
     private func buildCard(in card: NSView, appName: String,
                             usedSeconds: Int, limitSeconds: Int, isDark: Bool) {
-        let W   = card.bounds.width
-        let H   = card.bounds.height
+        let W      = card.bounds.width
+        let H      = card.bounds.height
         let pad: CGFloat = 20
         let innerW = W - pad * 2
 
-        // ── Header band (top colored strip) ──────────────────────────────
+        // ── Header band ───────────────────────────────────────────────────
         let headerH: CGFloat = 88
         let header = NSView(frame: CGRect(x: 0, y: H - headerH, width: W, height: headerH))
         header.wantsLayer = true
         header.layer?.backgroundColor = NSColor.systemRed.withAlphaComponent(isDark ? 0.18 : 0.1).cgColor
         card.addSubview(header)
 
-        // SF Symbol icon centered in header
         let iconSize: CGFloat = 32
         let iconImg = NSImage(systemSymbolName: "hourglass.tophalf.filled",
                                accessibilityDescription: nil)?
@@ -237,7 +353,6 @@ final class BlockOverlayPanel {
         titleLbl.frame = CGRect(x: pad, y: titleY, width: innerW, height: 20)
         card.addSubview(titleLbl)
 
-        // Short name: strip common suffixes for display
         let displayName = appName.replacingOccurrences(of: ".app", with: "")
         let subtitleY = titleY - 3 - 15
         let subtitleLbl = labelView(displayName,
@@ -246,23 +361,18 @@ final class BlockOverlayPanel {
         subtitleLbl.frame = CGRect(x: pad, y: subtitleY, width: innerW, height: 15)
         card.addSubview(subtitleLbl)
 
-        // ── Usage stats row ───────────────────────────────────────────────
+        // ── Usage stats ───────────────────────────────────────────────────
         let statsY = subtitleY - 14 - 44
         let halfW  = (innerW - 8) / 2
 
-        // "Used" box
-        let usedBox = statBox(
+        card.addSubview(statBox(
             value: formatDuration(usedSeconds), label: "Used today",
             color: .systemRed, frame: CGRect(x: pad, y: statsY, width: halfW, height: 44),
-            isDark: isDark)
-        card.addSubview(usedBox)
-
-        // "Limit" box
-        let limitBox = statBox(
+            isDark: isDark))
+        card.addSubview(statBox(
             value: formatDuration(limitSeconds), label: "Daily limit",
             color: .secondaryLabelColor, frame: CGRect(x: pad + halfW + 8, y: statsY, width: halfW, height: 44),
-            isDark: isDark)
-        card.addSubview(limitBox)
+            isDark: isDark))
 
         // ── Divider ───────────────────────────────────────────────────────
         let divY = statsY - 14
@@ -276,7 +386,6 @@ final class BlockOverlayPanel {
         let graceBox = roundedView(
             frame: CGRect(x: pad, y: graceY, width: innerW, height: graceH),
             color: NSColor.systemOrange.withAlphaComponent(0.12), radius: 8)
-        // Orange left accent bar
         let accentBar = NSView(frame: CGRect(x: 0, y: 0, width: 3, height: graceH))
         accentBar.wantsLayer = true
         accentBar.layer?.backgroundColor = NSColor.systemOrange.cgColor
@@ -292,23 +401,21 @@ final class BlockOverlayPanel {
         graceRow   = graceBox
         graceBadge = graceLbl
 
-        // ── Primary action buttons (2-column grid) ────────────────────────
+        // ── Primary buttons (2-col) ───────────────────────────────────────
         let btnH: CGFloat = 42
         let halfBtnW = (innerW - 8) / 2
         let primaryBtnY = divY - 10 - btnH
 
-        let minimizeBtn = primaryButton(
-            title: "Minimize", sfIcon: "arrow.down.to.line",
-            action: "minimize", color: isDark ? .white.withAlphaComponent(0.08) : .black.withAlphaComponent(0.05),
-            frame: CGRect(x: pad, y: primaryBtnY, width: halfBtnW, height: btnH), isDark: isDark)
-        card.addSubview(minimizeBtn)
-
-        let quitBtn = primaryButton(
-            title: "Quit", sfIcon: "xmark.circle.fill",
-            action: "quit", color: NSColor.systemRed.withAlphaComponent(isDark ? 0.2 : 0.1),
+        card.addSubview(primaryButton(
+            title: "Minimize", sfIcon: "arrow.down.to.line", action: "minimize",
+            color: isDark ? .white.withAlphaComponent(0.08) : .black.withAlphaComponent(0.05),
+            frame: CGRect(x: pad, y: primaryBtnY, width: halfBtnW, height: btnH),
+            isDark: isDark))
+        card.addSubview(primaryButton(
+            title: "Quit", sfIcon: "xmark.circle.fill", action: "quit",
+            color: NSColor.systemRed.withAlphaComponent(isDark ? 0.2 : 0.1),
             frame: CGRect(x: pad + halfBtnW + 8, y: primaryBtnY, width: halfBtnW, height: btnH),
-            isDark: isDark, textColor: .systemRed)
-        card.addSubview(quitBtn)
+            isDark: isDark, textColor: .systemRed))
 
         // ── Secondary buttons (full-width) ────────────────────────────────
         let secBtnH: CGFloat = 36
@@ -324,12 +431,11 @@ final class BlockOverlayPanel {
         graceButton = graceBtn
         secY -= secBtnH + gap
 
-        let unblockBtn = fullWidthButton(
+        card.addSubview(fullWidthButton(
             title: "Unblock for today",
             sfIcon: "lock.open.fill", action: "unblock",
             frame: CGRect(x: pad, y: secY, width: innerW, height: secBtnH),
-            accent: .systemGreen, isDark: isDark)
-        card.addSubview(unblockBtn)
+            accent: .systemGreen, isDark: isDark))
 
         // ── Branding footer ───────────────────────────────────────────────
         let brandLbl = labelView("Scolect", font: .systemFont(ofSize: 10, weight: .medium),
@@ -338,7 +444,8 @@ final class BlockOverlayPanel {
         card.addSubview(brandLbl)
     }
 
-    // Two-stat box used in the header area
+    // MARK: - UI helpers
+
     private func statBox(value: String, label: String, color: NSColor,
                           frame: CGRect, isDark: Bool) -> NSView {
         let box = NSView(frame: frame)
@@ -348,48 +455,37 @@ final class BlockOverlayPanel {
             : NSColor.black.withAlphaComponent(0.04)
         ).cgColor
         box.layer?.cornerRadius = 8
-
         let valLbl = labelView(value,
                                 font: .monospacedDigitSystemFont(ofSize: 17, weight: .semibold),
                                 color: color, align: .center)
         valLbl.frame = CGRect(x: 4, y: 20, width: frame.width - 8, height: 20)
         box.addSubview(valLbl)
-
         let capLbl = labelView(label,
                                 font: .systemFont(ofSize: 10, weight: .regular),
                                 color: .tertiaryLabelColor, align: .center)
         capLbl.frame = CGRect(x: 4, y: 4, width: frame.width - 8, height: 13)
         box.addSubview(capLbl)
-
         return box
     }
 
-    // Filled tile-style button (for 2-col primary actions)
-    // Layout: icon + label centered horizontally as a row
     private func primaryButton(title: String, sfIcon: String, action: String,
                                 color: NSColor, frame: CGRect, isDark: Bool,
                                 textColor: NSColor? = nil) -> NSView {
         let fgColor = textColor ?? (isDark ? NSColor.white.withAlphaComponent(0.85) : NSColor.labelColor)
-
         let tile = NSView(frame: frame)
         tile.wantsLayer = true
         tile.layer?.backgroundColor = color.cgColor
         tile.layer?.cornerRadius = 10
 
-        // Measure text width to center icon+label together
         let iconPt: CGFloat = 13
         let gap: CGFloat = 5
-        let attrs: [NSAttributedString.Key: Any] = [
-            .font: NSFont.systemFont(ofSize: 12, weight: .medium)
-        ]
+        let attrs: [NSAttributedString.Key: Any] = [.font: NSFont.systemFont(ofSize: 12, weight: .medium)]
         let textW = (title as NSString).size(withAttributes: attrs).width
         let totalW = iconPt + gap + textW
         let startX = (frame.width - totalW) / 2
         let midY   = frame.height / 2
 
-        let iconView = NSImageView(frame: CGRect(
-            x: startX, y: midY - iconPt / 2,
-            width: iconPt, height: iconPt))
+        let iconView = NSImageView(frame: CGRect(x: startX, y: midY - iconPt / 2, width: iconPt, height: iconPt))
         if let img = NSImage(systemSymbolName: sfIcon, accessibilityDescription: nil) {
             iconView.image = img.withSymbolConfiguration(
                 NSImage.SymbolConfiguration(pointSize: iconPt, weight: .medium))
@@ -399,22 +495,18 @@ final class BlockOverlayPanel {
 
         let lbl = labelView(title, font: .systemFont(ofSize: 12, weight: .medium),
                              color: fgColor, align: .left)
-        lbl.frame = CGRect(x: startX + iconPt + gap, y: midY - 8,
-                           width: textW + 4, height: 16)
+        lbl.frame = CGRect(x: startX + iconPt + gap, y: midY - 8, width: textW + 4, height: 16)
         tile.addSubview(lbl)
 
-        // Transparent clickable overlay
         let btn = NSButton(frame: CGRect(origin: .zero, size: frame.size))
         btn.title = ""; btn.bezelStyle = .rounded
         btn.isBordered = false; btn.isTransparent = true
         objc_setAssociatedObject(btn, &ActionKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         btn.target = self; btn.action = #selector(buttonTapped(_:))
         tile.addSubview(btn)
-
         return tile
     }
 
-    // Full-width button with left icon + text
     private func fullWidthButton(title: String, sfIcon: String, action: String,
                                   frame: CGRect, accent: NSColor, isDark: Bool) -> NSButton {
         let btn = NSButton(frame: frame)
@@ -434,8 +526,6 @@ final class BlockOverlayPanel {
         return btn
     }
 
-    // MARK: - UI helpers
-
     private func labelView(_ text: String, font: NSFont,
                             color: NSColor = .labelColor,
                             align: NSTextAlignment = .left) -> NSTextField {
@@ -454,25 +544,6 @@ final class BlockOverlayPanel {
         return v
     }
 
-    private func actionButton(title: String, sfIcon: String, action: String,
-                               x: CGFloat, y: CGFloat, w: CGFloat, h: CGFloat,
-                               accent: NSColor? = nil) -> NSButton {
-        let btn = NSButton(frame: CGRect(x: x, y: y, width: w, height: h))
-        btn.title = title
-        btn.bezelStyle = .rounded
-        btn.isBordered = true
-        if let c = accent { btn.contentTintColor = c }
-        btn.imagePosition = .imageLeft
-        if let img = NSImage(systemSymbolName: sfIcon, accessibilityDescription: nil) {
-            btn.image = img.withSymbolConfiguration(
-                NSImage.SymbolConfiguration(pointSize: 13, weight: .medium))
-        }
-        objc_setAssociatedObject(btn, &ActionKey, action, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        btn.target = self
-        btn.action = #selector(buttonTapped(_:))
-        return btn
-    }
-
     @objc private func buttonTapped(_ sender: NSButton) {
         handleAction(objc_getAssociatedObject(sender, &ActionKey) as? String ?? "")
     }
@@ -483,9 +554,6 @@ final class BlockOverlayPanel {
             onAction?("grace")
             graceButton?.isEnabled = false
             graceButton?.title = "Grace period active"
-        case "dismiss":
-            onAction?("dismiss")
-            dismiss()
         default:
             onAction?(action)
             dismiss()
@@ -509,7 +577,7 @@ final class BlockOverlayPanel {
         return "\(seconds)s"
     }
 
-    // MARK: - Window Tracking
+    // MARK: - Soft block window tracking
 
     private func startTracking() {
         trackingTimer?.invalidate()
@@ -534,19 +602,26 @@ final class BlockOverlayPanel {
             cp.setFrameOrigin(CGPoint(x: frame.midX - cw / 2, y: frame.midY - ch / 2))
         }
 
-        // Pause re-ordering after a scrim tap so the blocked app can visibly come
-        // to front. Also pause when another app is frontmost — don't fight for focus.
-        guard Date() >= reorderPausedUntil else { return }
         let frontmostPid = NSWorkspace.shared.frontmostApplication?.processIdentifier
-        guard frontmostPid == targetPid else { return }
 
-        if let targetNum = targetWindowNumber(forPid: targetPid) {
-            sp.order(.above, relativeTo: targetNum)
+        if frontmostPid == targetPid && Date() >= reorderPausedUntil {
+            // Blocked app is frontmost — assert overlay above it
+            if let targetNum = targetWindowNumber(forPid: targetPid) {
+                sp.order(.above, relativeTo: targetNum)
+            }
+            cp.order(.above, relativeTo: sp.windowNumber)
+            if sp.alphaValue == 0 {
+                sp.alphaValue = 1
+                cp.alphaValue = 1
+            }
+        } else if frontmostPid != targetPid {
+            // Another app is frontmost — pull overlay behind everything so it's not visible
+            sp.order(.below, relativeTo: 0)
+            cp.order(.below, relativeTo: 0)
         }
-        cp.order(.above, relativeTo: sp.windowNumber)
     }
 
-    // MARK: - CGWindow Helpers
+    // MARK: - CGWindow helpers
 
     private func targetWindowFrame(forPid pid: pid_t) -> CGRect? {
         guard let list = CGWindowListCopyWindowInfo(
