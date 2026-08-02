@@ -21,13 +21,13 @@ use std::sync::{Mutex, OnceLock};
 use std::thread;
 
 use windows::core::PCSTR;
-use windows::Win32::Foundation::{COLORREF, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM};
+use windows::Win32::Foundation::{COLORREF, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM, HINSTANCE};
 use windows::Win32::Graphics::Gdi::{
     BeginPaint, BitBlt, CreateCompatibleBitmap, CreateCompatibleDC, CreateFontA, CreatePen,
     CreateSolidBrush, DeleteDC, DeleteObject, DrawTextA, EndPaint, FillRect,
     GetStockObject, LineTo, MoveToEx, RoundRect, SelectObject, SetBkMode,
     SetTextColor, HBITMAP, HDC, HPEN, PAINTSTRUCT, PS_SOLID, SRCCOPY,
-    TRANSPARENT, DT_CENTER, DT_SINGLELINE, DT_VCENTER,
+    TRANSPARENT, DT_CENTER, DT_SINGLELINE, DT_VCENTER, HFONT,
 };
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::System::Registry::{
@@ -36,7 +36,7 @@ use windows::Win32::System::Registry::{
 use windows::Win32::UI::WindowsAndMessaging::{
     CreateWindowExA, DefWindowProcA, DestroyWindow, DispatchMessageA, EnumWindows,
     GetClientRect, GetForegroundWindow, GetMessageA, GetSystemMetrics, GetWindowRect,
-    GetWindowThreadProcessId, LoadCursorW, PostThreadMessage,
+    GetWindowThreadProcessId, LoadCursorW, PostThreadMessageA,
     RegisterClassExA, SetLayeredWindowAttributes, SetTimer, SetWindowPos, ShowWindow,
     TranslateMessage, CS_HREDRAW, CS_VREDRAW, GWLP_USERDATA,
     HWND_TOPMOST, IDC_ARROW, LWA_ALPHA, MSG, SM_CXSCREEN, SM_CYSCREEN, SWP_NOMOVE,
@@ -75,7 +75,7 @@ fn is_dark_mode() -> bool {
         let r = RegOpenKeyExA(
             HKEY_CURRENT_USER,
             PCSTR(subkey.as_ptr()),
-            0,
+            Some(0),
             KEY_READ,
             &mut hkey,
         );
@@ -244,7 +244,7 @@ fn post_to_thread(msg: u32) {
     let tid = global().lock().unwrap().thread_id;
     if tid != 0 {
         unsafe {
-            let _ = PostThreadMessage(tid, msg, WPARAM(0), LPARAM(0));
+            let _ = PostThreadMessageA(tid, msg, WPARAM(0), LPARAM(0));
         }
     }
 }
@@ -362,7 +362,7 @@ unsafe fn handle_cmd_show() {
         wh,
         None,
         None,
-        hinstance,
+        Some(HINSTANCE(hinstance.0)),
         None,
     )
     .unwrap_or_default();
@@ -399,7 +399,7 @@ unsafe fn handle_cmd_show() {
     // Bring to absolute top.
     let _ = SetWindowPos(
         hwnd,
-        HWND_TOPMOST,
+        Some(HWND_TOPMOST),
         0,
         0,
         0,
@@ -409,10 +409,10 @@ unsafe fn handle_cmd_show() {
 
     if args.hard_block {
         // Hide blocked app after 300ms.
-        let _ = SetTimer(hwnd, TIMER_HIDE_APP, 300, None);
+        let _ = SetTimer(Some(hwnd), TIMER_HIDE_APP, 300, None);
     } else {
         // Reposition scrim over blocked app every 100ms.
-        let _ = SetTimer(hwnd, TIMER_REPOSITION, 100, None);
+        let _ = SetTimer(Some(hwnd), TIMER_REPOSITION, 100, None);
     }
 }
 
@@ -447,10 +447,10 @@ unsafe fn handle_cmd_grace() {
     ws.grace_seconds_left = seconds;
 
     // Tick every second.
-    let _ = SetTimer(hwnd, TIMER_GRACE, 1000, None);
+    let _ = SetTimer(Some(hwnd), TIMER_GRACE, 1000, None);
 
     // Force repaint to show grace badge.
-    let _ = windows::Win32::Graphics::Gdi::InvalidateRect(hwnd, None, false);
+    let _ = windows::Win32::Graphics::Gdi::InvalidateRect(Some(hwnd), None, false);
 }
 
 unsafe fn destroy_overlay_window() {
@@ -478,7 +478,7 @@ struct FindByPid {
     result: HWND,
 }
 
-unsafe extern "system" fn enum_windows_find_pid(hwnd: HWND, lparam: LPARAM) -> windows::Win32::Foundation::BOOL {
+unsafe extern "system" fn enum_windows_find_pid(hwnd: HWND, lparam: LPARAM) -> windows::core::BOOL {
     let ctx = &mut *(lparam.0 as *mut FindByPid);
     let mut win_pid: u32 = 0;
     GetWindowThreadProcessId(hwnd, Some(&mut win_pid));
@@ -563,9 +563,9 @@ unsafe fn on_paint(hwnd: HWND) {
     let hdc = BeginPaint(hwnd, &mut ps);
 
     // Use a back-buffer to avoid flicker.
-    let mem_dc: HDC = CreateCompatibleDC(hdc);
+    let mem_dc: HDC = CreateCompatibleDC(Some(hdc));
     let bmp: HBITMAP = CreateCompatibleBitmap(hdc, cw, ch);
-    let old_bmp = SelectObject(mem_dc, bmp);
+    let old_bmp = SelectObject(mem_dc, bmp.into());
 
     // ── Colors ────────────────────────────────────────────────────────────────
     let (bg_card, text_primary, text_secondary, separator_color, btn_secondary_bg, btn_secondary_txt) =
@@ -596,7 +596,7 @@ unsafe fn on_paint(hwnd: HWND) {
     // ── Scrim background (semi-transparent dark) ──────────────────────────────
     let scrim_brush = CreateSolidBrush(rgb(0, 0, 0));
     FillRect(mem_dc, &client, scrim_brush);
-    DeleteObject(scrim_brush);
+    DeleteObject(scrim_brush.into());
 
     // ── Card rect ─────────────────────────────────────────────────────────────
     let cx = (cw - CARD_W) / 2;
@@ -621,7 +621,7 @@ unsafe fn on_paint(hwnd: HWND) {
         mem_dc,
         GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN),
     );
-    SelectObject(mem_dc, shadow_brush);
+    SelectObject(mem_dc, shadow_brush.into());
     RoundRect(
         mem_dc,
         shadow_rect.left,
@@ -632,13 +632,13 @@ unsafe fn on_paint(hwnd: HWND) {
         16,
     );
     SelectObject(mem_dc, old_pen_null);
-    DeleteObject(shadow_brush);
+    DeleteObject(shadow_brush.into());
 
     // Card background.
     let card_brush = CreateSolidBrush(bg_card);
     let null_pen = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
     let old_pen = SelectObject(mem_dc, null_pen);
-    SelectObject(mem_dc, card_brush);
+    SelectObject(mem_dc, card_brush.into());
     RoundRect(
         mem_dc,
         card_rect.left,
@@ -649,7 +649,7 @@ unsafe fn on_paint(hwnd: HWND) {
         16,
     );
     SelectObject(mem_dc, old_pen);
-    DeleteObject(card_brush);
+    DeleteObject(card_brush.into());
 
     // ── Red header band (88px) ────────────────────────────────────────────────
     let header_rect = RECT {
@@ -662,7 +662,7 @@ unsafe fn on_paint(hwnd: HWND) {
     let red_brush = CreateSolidBrush(color_red);
     let null_pen2 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
     let op2 = SelectObject(mem_dc, null_pen2);
-    SelectObject(mem_dc, red_brush);
+    SelectObject(mem_dc, red_brush.into());
     // Draw slightly taller rounded rect so bottom corners of header are square.
     RoundRect(
         mem_dc,
@@ -674,7 +674,7 @@ unsafe fn on_paint(hwnd: HWND) {
         16,
     );
     SelectObject(mem_dc, op2);
-    DeleteObject(red_brush);
+    DeleteObject(red_brush.into());
 
     // Icon in header — GDI doesn't render emoji glyphs reliably so use an
     // ASCII stand-in that is universally legible.
@@ -688,7 +688,7 @@ unsafe fn on_paint(hwnd: HWND) {
     SetBkMode(mem_dc, TRANSPARENT);
     SetTextColor(mem_dc, color_white);
     let icon_font = make_font(mem_dc, 22, true);
-    let old_font_icon = SelectObject(mem_dc, icon_font);
+    let old_font_icon = SelectObject(mem_dc, icon_font.into());
     DrawTextA(
         mem_dc,
         &mut hg_fallback.to_vec(),
@@ -696,11 +696,11 @@ unsafe fn on_paint(hwnd: HWND) {
         DT_CENTER | DT_SINGLELINE | DT_VCENTER,
     );
     SelectObject(mem_dc, old_font_icon);
-    DeleteObject(icon_font);
+    DeleteObject(icon_font.into());
 
     // ── "Time limit reached" title ────────────────────────────────────────────
     let title_font = make_font(mem_dc, 15, true);
-    let old_tf = SelectObject(mem_dc, title_font);
+    let old_tf = SelectObject(mem_dc, title_font.into());
     SetTextColor(mem_dc, text_primary);
     SetBkMode(mem_dc, TRANSPARENT);
     let title_rect = RECT {
@@ -717,11 +717,11 @@ unsafe fn on_paint(hwnd: HWND) {
         DT_CENTER | DT_SINGLELINE | DT_VCENTER,
     );
     SelectObject(mem_dc, old_tf);
-    DeleteObject(title_font);
+    DeleteObject(title_font.into());
 
     // ── App name subtitle ─────────────────────────────────────────────────────
     let sub_font = make_font(mem_dc, 12, false);
-    let old_sf = SelectObject(mem_dc, sub_font);
+    let old_sf = SelectObject(mem_dc, sub_font.into());
     SetTextColor(mem_dc, text_secondary);
     let sub_rect = RECT {
         left: card_rect.left + 16,
@@ -738,7 +738,7 @@ unsafe fn on_paint(hwnd: HWND) {
         DT_CENTER | DT_SINGLELINE | DT_VCENTER,
     );
     SelectObject(mem_dc, old_sf);
-    DeleteObject(sub_font);
+    DeleteObject(sub_font.into());
 
     // ── Stat boxes ────────────────────────────────────────────────────────────
     let stat_y = card_rect.top + 152;
@@ -757,13 +757,13 @@ unsafe fn on_paint(hwnd: HWND) {
     let stat_bg_brush = CreateSolidBrush(btn_secondary_bg);
     let np = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
     let op3 = SelectObject(mem_dc, np);
-    SelectObject(mem_dc, stat_bg_brush);
+    SelectObject(mem_dc, stat_bg_brush.into());
     RoundRect(mem_dc, used_box.left, used_box.top, used_box.right, used_box.bottom, 8, 8);
     SelectObject(mem_dc, op3);
-    DeleteObject(stat_bg_brush);
+    DeleteObject(stat_bg_brush.into());
 
     let mono_font = make_font(mem_dc, 11, true);
-    let old_mf = SelectObject(mem_dc, mono_font);
+    let old_mf = SelectObject(mem_dc, mono_font.into());
     SetBkMode(mem_dc, TRANSPARENT);
     SetTextColor(mem_dc, color_red);
     let used_label_rect = RECT {
@@ -785,7 +785,7 @@ unsafe fn on_paint(hwnd: HWND) {
     };
     DrawTextA(mem_dc, &mut used_val_bytes, &mut { used_val_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
     SelectObject(mem_dc, old_mf);
-    DeleteObject(mono_font);
+    DeleteObject(mono_font.into());
 
     // "Daily limit" box (right).
     let limit_box = RECT {
@@ -797,13 +797,13 @@ unsafe fn on_paint(hwnd: HWND) {
     let stat_bg_brush2 = CreateSolidBrush(btn_secondary_bg);
     let np2 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
     let op4 = SelectObject(mem_dc, np2);
-    SelectObject(mem_dc, stat_bg_brush2);
+    SelectObject(mem_dc, stat_bg_brush2.into());
     RoundRect(mem_dc, limit_box.left, limit_box.top, limit_box.right, limit_box.bottom, 8, 8);
     SelectObject(mem_dc, op4);
-    DeleteObject(stat_bg_brush2);
+    DeleteObject(stat_bg_brush2.into());
 
     let mono_font2 = make_font(mem_dc, 11, true);
-    let old_mf2 = SelectObject(mem_dc, mono_font2);
+    let old_mf2 = SelectObject(mem_dc, mono_font2.into());
     SetTextColor(mem_dc, text_secondary);
     let lim_label_rect = RECT {
         left: limit_box.left,
@@ -824,16 +824,16 @@ unsafe fn on_paint(hwnd: HWND) {
     };
     DrawTextA(mem_dc, &mut lim_val_bytes, &mut { lim_val_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
     SelectObject(mem_dc, old_mf2);
-    DeleteObject(mono_font2);
+    DeleteObject(mono_font2.into());
 
     // ── Separator ─────────────────────────────────────────────────────────────
     let sep_y = stat_y + stat_h + 10;
     let sep_pen: HPEN = CreatePen(PS_SOLID, 1, separator_color);
-    let old_sep_pen = SelectObject(mem_dc, sep_pen);
+    let old_sep_pen = SelectObject(mem_dc, sep_pen.into());
     MoveToEx(mem_dc, card_rect.left + 16, sep_y, None);
     LineTo(mem_dc, card_rect.right - 16, sep_y);
     SelectObject(mem_dc, old_sep_pen);
-    DeleteObject(sep_pen);
+    DeleteObject(sep_pen.into());
 
     // ── Grace badge (visible only when grace_active) ──────────────────────────
     let mut grace_badge_bottom = sep_y + 4;
@@ -847,13 +847,13 @@ unsafe fn on_paint(hwnd: HWND) {
         let badge_brush = CreateSolidBrush(color_orange);
         let np3 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
         let op5 = SelectObject(mem_dc, np3);
-        SelectObject(mem_dc, badge_brush);
+        SelectObject(mem_dc, badge_brush.into());
         RoundRect(mem_dc, badge_rect.left, badge_rect.top, badge_rect.right, badge_rect.bottom, 6, 6);
         SelectObject(mem_dc, op5);
-        DeleteObject(badge_brush);
+        DeleteObject(badge_brush.into());
 
         let grace_font = make_font(mem_dc, 10, true);
-        let old_gf = SelectObject(mem_dc, grace_font);
+        let old_gf = SelectObject(mem_dc, grace_font.into());
         SetTextColor(mem_dc, color_white);
         SetBkMode(mem_dc, TRANSPARENT);
         let mins = ws.grace_seconds_left / 60;
@@ -862,7 +862,7 @@ unsafe fn on_paint(hwnd: HWND) {
         let mut badge_bytes = badge_txt.into_bytes();
         DrawTextA(mem_dc, &mut badge_bytes, &mut { badge_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
         SelectObject(mem_dc, old_gf);
-        DeleteObject(grace_font);
+        DeleteObject(grace_font.into());
         grace_badge_bottom = badge_rect.bottom + 4;
     }
 
@@ -931,7 +931,7 @@ unsafe fn on_paint(hwnd: HWND) {
 
     // ── Footer ────────────────────────────────────────────────────────────────
     let footer_font = make_font(mem_dc, 9, false);
-    let old_ff = SelectObject(mem_dc, footer_font);
+    let old_ff = SelectObject(mem_dc, footer_font.into());
     SetTextColor(mem_dc, text_secondary);
     SetBkMode(mem_dc, TRANSPARENT);
     let footer_rect = RECT {
@@ -943,13 +943,13 @@ unsafe fn on_paint(hwnd: HWND) {
     let mut footer_txt = b"Scolect\0".to_vec();
     DrawTextA(mem_dc, &mut footer_txt, &mut { footer_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
     SelectObject(mem_dc, old_ff);
-    DeleteObject(footer_font);
+    DeleteObject(footer_font.into());
 
     // ── Blit back-buffer to screen ────────────────────────────────────────────
-    BitBlt(hdc, 0, 0, cw, ch, mem_dc, 0, 0, SRCCOPY);
+    BitBlt(hdc, 0, 0, cw, ch, Some(mem_dc), 0, 0, SRCCOPY);
 
     SelectObject(mem_dc, old_bmp);
-    DeleteObject(bmp);
+    DeleteObject(bmp.into());
     DeleteDC(mem_dc);
 
     EndPaint(hwnd, &ps);
@@ -962,15 +962,15 @@ unsafe fn draw_button(hdc: HDC, rect: RECT, label: &[u8], bg: COLORREF, fg: COLO
     } else {
         CreatePen(PS_SOLID, 0, bg) // no visible border for primary
     };
-    let old_pen = SelectObject(hdc, border_pen);
-    SelectObject(hdc, brush);
+    let old_pen = SelectObject(hdc, border_pen.into());
+    SelectObject(hdc, brush.into());
     RoundRect(hdc, rect.left, rect.top, rect.right, rect.bottom, 8, 8);
     SelectObject(hdc, old_pen);
-    DeleteObject(brush);
-    DeleteObject(border_pen);
+    DeleteObject(brush.into());
+    DeleteObject(border_pen.into());
 
     let font = make_font(hdc, 11, !secondary);
-    let old_font = SelectObject(hdc, font);
+    let old_font = SelectObject(hdc, font.into());
     SetTextColor(hdc, fg);
     SetBkMode(hdc, TRANSPARENT);
     let mut txt = label.to_vec();
@@ -980,14 +980,14 @@ unsafe fn draw_button(hdc: HDC, rect: RECT, label: &[u8], bg: COLORREF, fg: COLO
     }
     DrawTextA(hdc, &mut txt, &mut { rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
     SelectObject(hdc, old_font);
-    DeleteObject(font);
+    DeleteObject(font.into());
 }
 
-unsafe fn make_font(hdc: HDC, pt: i32, bold: bool) -> HFONT {
+unsafe fn make_font(_hdc: HDC, pt: i32, bold: bool) -> HFONT {
     // Convert point size to logical units.
     let dc_hdc = windows::Win32::Graphics::Gdi::GetDC(None);
     let dpi = windows::Win32::Graphics::Gdi::GetDeviceCaps(
-        dc_hdc,
+        Some(dc_hdc),
         windows::Win32::Graphics::Gdi::LOGPIXELSY,
     );
     windows::Win32::Graphics::Gdi::ReleaseDC(None, dc_hdc);
@@ -1007,7 +1007,7 @@ unsafe fn make_font(hdc: HDC, pt: i32, bold: bool) -> HFONT {
         windows::Win32::Graphics::Gdi::OUT_DEFAULT_PRECIS,
         windows::Win32::Graphics::Gdi::CLIP_DEFAULT_PRECIS,
         windows::Win32::Graphics::Gdi::CLEARTYPE_QUALITY,
-        windows::Win32::Graphics::Gdi::DEFAULT_PITCH,
+        windows::Win32::Graphics::Gdi::DEFAULT_PITCH.0 as u32,
         PCSTR(b"Segoe UI\0".as_ptr()),
     )
 }
@@ -1046,7 +1046,7 @@ unsafe fn on_click(hwnd: HWND, lparam: LPARAM) {
         ws.grace_used = true;
         fire_callback("grace");
         // Don't dismiss — let Dart handle the countdown.
-        let _ = windows::Win32::Graphics::Gdi::InvalidateRect(hwnd, None, false);
+        let _ = windows::Win32::Graphics::Gdi::InvalidateRect(Some(hwnd), None, false);
     } else if point_in_rect(pt, ws.btn_unblock) {
         fire_callback("unblock");
         destroy_overlay_window();
@@ -1100,7 +1100,7 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
                     let _ = GetWindowRect(ws.blocked_hwnd, &mut r);
                     let _ = SetWindowPos(
                         hwnd,
-                        HWND_TOPMOST,
+                        Some(HWND_TOPMOST),
                         r.left,
                         r.top,
                         r.right - r.left,
@@ -1127,17 +1127,17 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
             if ws.grace_seconds_left <= 0 {
                 ws.grace_active = false;
                 ws.grace_seconds_left = 0;
-                windows::Win32::UI::WindowsAndMessaging::KillTimer(hwnd, TIMER_GRACE);
+                windows::Win32::UI::WindowsAndMessaging::KillTimer(Some(hwnd), TIMER_GRACE);
                 // Grace expired — dismiss the overlay.
                 fire_callback("dismiss");
                 destroy_overlay_window();
             } else {
-                let _ = windows::Win32::Graphics::Gdi::InvalidateRect(hwnd, None, false);
+                let _ = windows::Win32::Graphics::Gdi::InvalidateRect(Some(hwnd), None, false);
             }
         }
         TIMER_HIDE_APP => {
             // Hard block: hide all of the blocked app's windows.
-            windows::Win32::UI::WindowsAndMessaging::KillTimer(hwnd, TIMER_HIDE_APP);
+            windows::Win32::UI::WindowsAndMessaging::KillTimer(Some(hwnd), TIMER_HIDE_APP);
             let ws_ptr = GetWindowLongPtrA(hwnd, GWLP_USERDATA) as *mut WindowState;
             if ws_ptr.is_null() {
                 return;
@@ -1146,7 +1146,7 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
             show_hide_process_windows(ws.args.pid, false);
             // Start polling for foreground changes (100ms) to detect when another
             // app sneaks through, at which point we dismiss the hard block.
-            let _ = SetTimer(hwnd, TIMER_REPOSITION, 100, None);
+            let _ = SetTimer(Some(hwnd), TIMER_REPOSITION, 100, None);
         }
         _ => {}
     }
@@ -1159,7 +1159,7 @@ struct ShowHideCtx {
     show: bool,
 }
 
-unsafe extern "system" fn enum_windows_show_hide(hwnd: HWND, lparam: LPARAM) -> windows::Win32::Foundation::BOOL {
+unsafe extern "system" fn enum_windows_show_hide(hwnd: HWND, lparam: LPARAM) -> windows::core::BOOL {
     let ctx = &*(lparam.0 as *const ShowHideCtx);
     let mut win_pid: u32 = 0;
     GetWindowThreadProcessId(hwnd, Some(&mut win_pid));
