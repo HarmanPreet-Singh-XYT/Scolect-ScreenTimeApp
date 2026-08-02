@@ -2031,7 +2031,9 @@
   "browserSetupServerRunning": "سرور چل رہا ہے · پورٹ {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "سرور غیر فعال",
@@ -2048,5 +2050,21 @@
   "browserServerPortInvalid": "1024 سے 65535 کے درمیان پورٹ درج کریں",
   "browserDisableServer": "ایکسٹینشن سرور غیر فعال کریں",
   "browserEditSiteName": "ڈسپلے نام ترمیم کریں",
-  "browserSiteNameHint": "ڈسپلے نام (مثلاً YouTube)"
+  "browserSiteNameHint": "ڈسپلے نام (مثلاً YouTube)",
+  "webExportDataDescription": "تمام ایکسٹینشن ڈیٹا کو JSON بیک اپ فائل کے طور پر ڈاؤن لوڈ کریں",
+  "webImportDataDescription": "پہلے سے ایکسپورٹ شدہ JSON فائل سے ایکسٹینشن ڈیٹا بحال کریں",
+  "webExportSuccessTitle": "ایکسپورٹ کامیاب رہا",
+  "webExportSuccessMessage": "آپ کا ڈیٹا JSON فائل کے طور پر ڈاؤن لوڈ ہو گیا ہے۔",
+  "webImportSuccessTitle": "امپورٹ کامیاب رہا",
+  "webImportSuccessMessage": "{count} اسٹوریج کیز بحال ہو گئیں۔",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "بیک اپ سے بحال کریں؟",
+  "webImportConfirmMessage": "یہ آپ کے موجودہ ایکسٹینشن ڈیٹا کو بیک اپ فائل کے مواد سے تبدیل کر دے گا۔ بحال کی گئی کیز کا موجودہ ڈیٹا تبدیل ہو جائے گا۔",
+  "webImportConfirmButton": "بحال کریں"
 }

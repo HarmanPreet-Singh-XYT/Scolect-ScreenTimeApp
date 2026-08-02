@@ -3752,4 +3752,37 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'Отображаемое имя (например, YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'Скачать все данные расширения в виде резервного файла JSON';
+
+  @override
+  String get webImportDataDescription =>
+      'Восстановить данные расширения из ранее экспортированного файла JSON';
+
+  @override
+  String get webExportSuccessTitle => 'Экспорт завершен успешно';
+
+  @override
+  String get webExportSuccessMessage =>
+      'Ваши данные загружены в виде файла JSON.';
+
+  @override
+  String get webImportSuccessTitle => 'Импорт завершен успешно';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return 'Восстановлено ключей хранилища: $count.';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'Восстановить из резервной копии?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'Это действие перезапишет текущие данные вашего расширения содержимым резервного файла. Существующие данные для восстановленных ключей будут заменены.';
+
+  @override
+  String get webImportConfirmButton => 'Восстановить';
 }

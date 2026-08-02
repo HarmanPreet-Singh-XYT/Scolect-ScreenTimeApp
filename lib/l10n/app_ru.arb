@@ -2031,7 +2031,9 @@
   "browserSetupServerRunning": "Сервер работает · порт {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "Сервер отключён",
@@ -2048,5 +2050,21 @@
   "browserServerPortInvalid": "Введите порт от 1024 до 65535",
   "browserDisableServer": "Отключить сервер расширения",
   "browserEditSiteName": "Изменить отображаемое имя",
-  "browserSiteNameHint": "Отображаемое имя (например, YouTube)"
+  "browserSiteNameHint": "Отображаемое имя (например, YouTube)",
+  "webExportDataDescription": "Скачать все данные расширения в виде резервного файла JSON",
+  "webImportDataDescription": "Восстановить данные расширения из ранее экспортированного файла JSON",
+  "webExportSuccessTitle": "Экспорт завершен успешно",
+  "webExportSuccessMessage": "Ваши данные загружены в виде файла JSON.",
+  "webImportSuccessTitle": "Импорт завершен успешно",
+  "webImportSuccessMessage": "Восстановлено ключей хранилища: {count}.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "Восстановить из резервной копии?",
+  "webImportConfirmMessage": "Это действие перезапишет текущие данные вашего расширения содержимым резервного файла. Существующие данные для восстановленных ключей будут заменены.",
+  "webImportConfirmButton": "Восстановить"
 }

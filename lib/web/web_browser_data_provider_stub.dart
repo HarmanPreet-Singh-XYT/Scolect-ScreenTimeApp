@@ -24,5 +24,7 @@ class WebBrowserDataProvider {
     String? siteName,
   }) async => false;
 
+  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(String domain, {int days = 7}) async => [];
+
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async => [];
 }

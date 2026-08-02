@@ -3674,4 +3674,37 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'प्रदर्शन नाम (जैसे YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'सभी एक्सटेंशन डेटा को JSON बैकअप फ़ाइल के रूप में डाउनलोड करें';
+
+  @override
+  String get webImportDataDescription =>
+      'पहले से निर्यात की गई JSON फ़ाइल से एक्सटेंशन डेटा पुनर्स्थापित करें';
+
+  @override
+  String get webExportSuccessTitle => 'निर्यात सफल रहा';
+
+  @override
+  String get webExportSuccessMessage =>
+      'आपका डेटा JSON फ़ाइल के रूप में डाउनलोड हो गया है।';
+
+  @override
+  String get webImportSuccessTitle => 'आयात सफल रहा';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count स्टोरेज कुंजियाँ पुनर्स्थापित की गईं।';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'बैकअप से पुनर्स्थापित करें?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'यह आपके वर्तमान एक्सटेंशन डेटा को बैकअप फ़ाइल की सामग्री से बदल देगा। पुनर्स्थापित कुंजियों का मौजूदा डेटा अधिलेखित कर दिया जाएगा।';
+
+  @override
+  String get webImportConfirmButton => 'पुनर्स्थापित करें';
 }

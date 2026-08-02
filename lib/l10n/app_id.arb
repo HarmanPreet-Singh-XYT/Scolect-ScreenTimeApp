@@ -1928,7 +1928,9 @@
   "browserVisitCount": "{count, plural, =1{1 kunjungan} other{{count} kunjungan}}",
   "@browserVisitCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserSearchPlaceholder": "Cari situs web atau domain…",
@@ -1940,7 +1942,9 @@
   "browserWebsiteCount": "{count, plural, =1{1 situs web} other{{count} situs web}}",
   "@browserWebsiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserColumnDomain": "Domain",
@@ -1954,14 +1958,18 @@
   "browserSiteCount": "{count, plural, =1{1 situs} other{{count} situs}}",
   "@browserSiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserActiveLimits": "Batas Aktif",
   "browserActiveLimitsSubtitle": "{count, plural, =1{1 situs web dengan batas harian} other{{count} situs web dengan batas harian}}",
   "@browserActiveLimitsSubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserNoLimitsTitle": "Tidak ada batas yang ditetapkan",
@@ -1975,7 +1983,9 @@
   "browserDailyLimitDialog": "Batas Harian – {domain}",
   "@browserDailyLimitDialog": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "browserDailyLimitDialogDesc": "Tetapkan berapa lama Anda dapat mengunjungi situs ini per hari.",
@@ -1984,7 +1994,9 @@
   "browserTimeUsed": "{time} digunakan",
   "@browserTimeUsed": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "browserSetLimit": "Tetapkan batas",
@@ -2019,7 +2031,9 @@
   "browserSetupServerRunning": "Server berjalan · port {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "Server dinonaktifkan",
@@ -2036,5 +2050,21 @@
   "browserServerPortInvalid": "Masukkan port antara 1024 dan 65535",
   "browserDisableServer": "Nonaktifkan Server Ekstensi",
   "browserEditSiteName": "Edit nama tampilan",
-  "browserSiteNameHint": "Nama tampilan (mis. YouTube)"
+  "browserSiteNameHint": "Nama tampilan (mis. YouTube)",
+  "webExportDataDescription": "Unduh semua data ekstensi sebagai berkas cadangan JSON",
+  "webImportDataDescription": "Pulihkan data ekstensi dari berkas JSON yang diekspor sebelumnya",
+  "webExportSuccessTitle": "Ekspor Berhasil",
+  "webExportSuccessMessage": "Data Anda telah diunduh sebagai berkas JSON.",
+  "webImportSuccessTitle": "Impor Berhasil",
+  "webImportSuccessMessage": "{count} kunci penyimpanan berhasil dipulihkan.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "Pulihkan dari Cadangan?",
+  "webImportConfirmMessage": "Tindakan ini akan menimpa data ekstensi Anda saat ini dengan konten dari berkas cadangan. Data yang ada untuk kunci yang dipulihkan akan digantikan.",
+  "webImportConfirmButton": "Pulihkan"
 }

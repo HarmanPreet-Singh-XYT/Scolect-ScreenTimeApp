@@ -3600,4 +3600,35 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => '表示名（例：YouTube）';
+
+  @override
+  String get webExportDataDescription =>
+      'すべての拡張機能データを JSON バックアップファイルとしてダウンロードします';
+
+  @override
+  String get webImportDataDescription => '以前エクスポートした JSON ファイルから拡張機能データを復元します';
+
+  @override
+  String get webExportSuccessTitle => 'エクスポート成功';
+
+  @override
+  String get webExportSuccessMessage => 'データが JSON ファイルとしてダウンロードされました。';
+
+  @override
+  String get webImportSuccessTitle => 'インポート成功';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count 個のストレージキーを復元しました。';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'バックアップから復元しますか？';
+
+  @override
+  String get webImportConfirmMessage =>
+      '現在の拡張機能データがバックアップファイルの内容で上書きされます。復元されるキーの既存データは置換されます。';
+
+  @override
+  String get webImportConfirmButton => '復元';
 }

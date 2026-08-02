@@ -3,12 +3,9 @@ import 'dart:math' show max;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart' show DurationFormatter;
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
-import '../../../web/extension_settings.dart'
-    if (dart.library.io) '../../../web/extension_settings_stub.dart';
 
 class BrowserWebsites extends StatefulWidget {
   final ValueChanged<BrowserTab> onTabChange;
@@ -21,7 +18,6 @@ class BrowserWebsites extends StatefulWidget {
 
 class _BrowserWebsitesState extends State<BrowserWebsites> {
   final _provider = BrowserDataProvider();
-  final _extSettings = ExtensionSettings();
 
   List<WebsiteBasicDetail> _allSites = [];
   List<String> _categories = ['All'];
@@ -31,7 +27,6 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
   String _trackingFilter = 'all';
   String _productivityFilter = 'all';
   Timer? _debounce;
-  bool _clearConfirm = false;
 
   @override
   void initState() {
@@ -48,20 +43,6 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
       _categories = cats;
       _isLoading = false;
     });
-  }
-
-  Future<void> _clearData() async {
-    await _extSettings.clearAllData();
-    if (!mounted) return;
-    setState(() => _clearConfirm = false);
-    final l10n = AppLocalizations.of(context)!;
-    displayInfoBar(context, builder: (ctx, close) {
-      return InfoBar(
-        title: Text(l10n.browserDataCleared),
-        action: Button(onPressed: close, child: Text(l10n.ok)),
-      );
-    });
-    _loadData();
   }
 
   void _onSearch(String v) {
@@ -156,62 +137,16 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
           ),
           const SizedBox(height: 10),
 
-          // ── Count + clear data ─────────────────────────────────────────
+          // ── Count ─────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 8),
-            child: Row(
-              children: [
-                Text(
-                  l10n.browserWebsiteCount(filtered.length),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: theme.typography.caption?.color?.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                if (kIsWeb) ...[
-                  const Spacer(),
-                  if (_clearConfirm)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          l10n.browserAreYouSure,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: theme.typography.caption?.color?.withValues(alpha: 0.6),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        FilledButton(
-                          style: ButtonStyle(
-                            backgroundColor: WidgetStateProperty.all(kBrowserRed),
-                          ),
-                          onPressed: _clearData,
-                          child: Text(l10n.browserYesDelete),
-                        ),
-                        const SizedBox(width: 6),
-                        Button(
-                          onPressed: () => setState(() => _clearConfirm = false),
-                          child: Text(l10n.cancelButton),
-                        ),
-                      ],
-                    )
-                  else
-                    Button(
-                      onPressed: () => setState(() => _clearConfirm = true),
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all(
-                          kBrowserRed.withValues(alpha: 0.1),
-                        ),
-                      ),
-                      child: Text(
-                        l10n.browserClearDataButton,
-                        style: TextStyle(color: kBrowserRed, fontSize: 12),
-                      ),
-                    ),
-                ],
-              ],
+            child: Text(
+              l10n.browserWebsiteCount(filtered.length),
+              style: TextStyle(
+                fontSize: 13,
+                color: theme.typography.caption?.color?.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
 
@@ -229,9 +164,7 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
                           ? BrowserEmptyState(
                               icon: FluentIcons.globe,
                               title: l10n.browserNoWebsitesTitle,
-                              subtitle: kIsWeb
-                                  ? l10n.browserNoWebsitesWebSubtitle
-                                  : l10n.browserNoWebsitesDesktopSubtitle,
+                              subtitle: l10n.browserNoWebsitesDesktopSubtitle,
                             )
                           : ListView.builder(
                               itemCount: filtered.length,

@@ -20,6 +20,7 @@ import 'package:screentime/sections/widgets/Settings/data.dart';
 import 'package:screentime/sections/widgets/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_section.dart';
+import 'package:screentime/sections/widgets/Settings/web_backup.dart';
 import 'package:screentime/utils/browser_extension_server.dart';
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
@@ -527,6 +528,8 @@ class _SettingsContentState extends State<SettingsContent> {
                 if (kIsWeb) ...[
                   const WebTrackingSection(),
                   _kSectionSpacing,
+                  const WebBackupSection(),
+                  _kSectionSpacing,
                 ] else ...[
                   const TrackingSection(),
                   _kSectionSpacing,
@@ -549,6 +552,8 @@ class _SettingsContentState extends State<SettingsContent> {
         _kSectionSpacing,
         if (kIsWeb) ...[
           const WebTrackingSection(),
+          _kSectionSpacing,
+          const WebBackupSection(),
           _kSectionSpacing,
         ] else ...[
           const TrackingSection(),

@@ -1928,7 +1928,9 @@
   "browserVisitCount": "{count, plural, =1{1 visita} other{{count} visitas}}",
   "@browserVisitCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserSearchPlaceholder": "Buscar sitio web o dominio…",
@@ -1940,7 +1942,9 @@
   "browserWebsiteCount": "{count, plural, =1{1 sitio web} other{{count} sitios web}}",
   "@browserWebsiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserColumnDomain": "Dominio",
@@ -1954,14 +1958,18 @@
   "browserSiteCount": "{count, plural, =1{1 sitio} other{{count} sitios}}",
   "@browserSiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserActiveLimits": "Límites Activos",
   "browserActiveLimitsSubtitle": "{count, plural, =1{1 sitio web con límites diarios} other{{count} sitios web con límites diarios}}",
   "@browserActiveLimitsSubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserNoLimitsTitle": "No hay límites establecidos",
@@ -1975,7 +1983,9 @@
   "browserDailyLimitDialog": "Límite Diario – {domain}",
   "@browserDailyLimitDialog": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "browserDailyLimitDialogDesc": "Establece cuánto tiempo puedes visitar este sitio por día.",
@@ -1984,7 +1994,9 @@
   "browserTimeUsed": "{time} usado",
   "@browserTimeUsed": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "browserSetLimit": "Establecer límite",
@@ -2019,7 +2031,9 @@
   "browserSetupServerRunning": "Servidor en ejecución · puerto {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "Servidor desactivado",
@@ -2036,5 +2050,21 @@
   "browserServerPortInvalid": "Ingresa un puerto entre 1024 y 65535",
   "browserDisableServer": "Desactivar Servidor de Extensión",
   "browserEditSiteName": "Editar nombre de visualización",
-  "browserSiteNameHint": "Nombre de visualización (ej. YouTube)"
+  "browserSiteNameHint": "Nombre de visualización (ej. YouTube)",
+  "webExportDataDescription": "Descargar todos los datos de la extensión como archivo de copia de seguridad JSON",
+  "webImportDataDescription": "Restaurar los datos de la extensión desde un archivo JSON exportado previamente",
+  "webExportSuccessTitle": "Exportación correcta",
+  "webExportSuccessMessage": "Tus datos se han descargado como un archivo JSON.",
+  "webImportSuccessTitle": "Importación correcta",
+  "webImportSuccessMessage": "Se han restaurado {count} claves de almacenamiento.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "¿Restaurar desde la copia de seguridad?",
+  "webImportConfirmMessage": "Esto sobrescribirá los datos actuales de tu extensión con el contenido del archivo de copia de seguridad. Se reemplazarán los datos existentes para las claves restauradas.",
+  "webImportConfirmButton": "Restaurar"
 }

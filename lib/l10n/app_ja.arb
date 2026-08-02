@@ -2031,7 +2031,9 @@
   "browserSetupServerRunning": "サーバー実行中 · ポート {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "サーバー無効",
@@ -2048,5 +2050,21 @@
   "browserServerPortInvalid": "1024〜65535の間のポートを入力してください",
   "browserDisableServer": "拡張機能サーバーを無効化",
   "browserEditSiteName": "表示名を編集",
-  "browserSiteNameHint": "表示名（例：YouTube）"
+  "browserSiteNameHint": "表示名（例：YouTube）",
+  "webExportDataDescription": "すべての拡張機能データを JSON バックアップファイルとしてダウンロードします",
+  "webImportDataDescription": "以前エクスポートした JSON ファイルから拡張機能データを復元します",
+  "webExportSuccessTitle": "エクスポート成功",
+  "webExportSuccessMessage": "データが JSON ファイルとしてダウンロードされました。",
+  "webImportSuccessTitle": "インポート成功",
+  "webImportSuccessMessage": "{count} 個のストレージキーを復元しました。",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "バックアップから復元しますか？",
+  "webImportConfirmMessage": "現在の拡張機能データがバックアップファイルの内容で上書きされます。復元されるキーの既存データは置換されます。",
+  "webImportConfirmButton": "復元"
 }

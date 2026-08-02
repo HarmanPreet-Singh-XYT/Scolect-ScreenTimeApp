@@ -6617,6 +6617,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Display name (e.g. YouTube)'**
   String get browserSiteNameHint;
+
+  /// No description provided for @webExportDataDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Download all extension data as a JSON backup file'**
+  String get webExportDataDescription;
+
+  /// No description provided for @webImportDataDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore extension data from a previously exported JSON file'**
+  String get webImportDataDescription;
+
+  /// No description provided for @webExportSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Successful'**
+  String get webExportSuccessTitle;
+
+  /// No description provided for @webExportSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data has been downloaded as a JSON file.'**
+  String get webExportSuccessMessage;
+
+  /// No description provided for @webImportSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Successful'**
+  String get webImportSuccessTitle;
+
+  /// No description provided for @webImportSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} storage {count, plural, =1{key} other{keys}} restored.'**
+  String webImportSuccessMessage(int count);
+
+  /// No description provided for @webImportConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from Backup?'**
+  String get webImportConfirmTitle;
+
+  /// No description provided for @webImportConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will overwrite your current extension data with the contents of the backup file. Existing data for restored keys will be replaced.'**
+  String get webImportConfirmMessage;
+
+  /// No description provided for @webImportConfirmButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get webImportConfirmButton;
 }
 
 class _AppLocalizationsDelegate

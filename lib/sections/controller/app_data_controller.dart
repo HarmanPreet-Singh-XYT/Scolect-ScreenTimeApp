@@ -1825,6 +1825,25 @@ class AppDataStore extends ChangeNotifier {
   // CLEAR ALL DATA
   // ============================================================
 
+  /// Clears only the web (browser extension) usage and metadata boxes.
+  /// Called remotely via POST /clear-web-data when the extension clears its data.
+  Future<void> clearWebData() async {
+    await _initLock.synchronized(() async {
+      if (!_ensureInitialized()) return;
+      await _runtimeCacheLock.synchronized(() async {
+        _cachedAppNames = null;
+      });
+      if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
+      if (_webMetadataBox != null && _webMetadataBox!.isOpen) await _webMetadataBox!.close();
+      await Hive.deleteBoxFromDisk(_webUsageBoxName);
+      await Hive.deleteBoxFromDisk(_webMetadataBoxName);
+      _webUsageBox = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
+      _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
+      debugPrint('✅ Web data cleared');
+      notifyListeners();
+    });
+  }
+
   Future<bool> clearAllData({Function(double)? progressCallback}) async {
     return await _initLock.synchronized(() async {
       if (!_ensureInitialized()) return false;

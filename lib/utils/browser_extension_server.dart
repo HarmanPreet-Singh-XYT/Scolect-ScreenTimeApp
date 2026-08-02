@@ -114,6 +114,8 @@ class BrowserExtensionServer {
         case 'POST /usage':
         case 'POST /api/browser-sync':
           await _handleUsage(req);
+        case 'POST /clear-web-data':
+          await _handleClearWebData(req);
         case 'GET /focus':
           await _handleFocus(req);
         default:
@@ -134,6 +136,13 @@ class BrowserExtensionServer {
       'version': _version,
       'focusActive': timer.isRunning && timer.currentState != TimerState.idle,
     });
+  }
+
+  // ─── POST /clear-web-data ────────────────────────────────────────────────
+
+  static Future<void> _handleClearWebData(HttpRequest req) async {
+    await _dataStore.clearWebData();
+    await _sendJson(req.response, HttpStatus.ok, {'ok': true});
   }
 
   // ─── GET /ws  (WebSocket upgrade) ────────────────────────────────────────

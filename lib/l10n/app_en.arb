@@ -2313,5 +2313,21 @@
   "browserServerPortInvalid": "Enter a port between 1024 and 65535",
   "browserDisableServer": "Disable Extension Server",
   "browserEditSiteName": "Edit display name",
-  "browserSiteNameHint": "Display name (e.g. YouTube)"
+  "browserSiteNameHint": "Display name (e.g. YouTube)",
+  "webExportDataDescription": "Download all extension data as a JSON backup file",
+  "webImportDataDescription": "Restore extension data from a previously exported JSON file",
+  "webExportSuccessTitle": "Export Successful",
+  "webExportSuccessMessage": "Your data has been downloaded as a JSON file.",
+  "webImportSuccessTitle": "Import Successful",
+  "webImportSuccessMessage": "{count} storage {count, plural, =1{key} other{keys}} restored.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "Restore from Backup?",
+  "webImportConfirmMessage": "This will overwrite your current extension data with the contents of the backup file. Existing data for restored keys will be replaced.",
+  "webImportConfirmButton": "Restore"
 }

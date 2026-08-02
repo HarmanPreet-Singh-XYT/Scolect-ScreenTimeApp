@@ -3767,4 +3767,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'Nombre de visualización (ej. YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'Descargar todos los datos de la extensión como archivo de copia de seguridad JSON';
+
+  @override
+  String get webImportDataDescription =>
+      'Restaurar los datos de la extensión desde un archivo JSON exportado previamente';
+
+  @override
+  String get webExportSuccessTitle => 'Exportación correcta';
+
+  @override
+  String get webExportSuccessMessage =>
+      'Tus datos se han descargado como un archivo JSON.';
+
+  @override
+  String get webImportSuccessTitle => 'Importación correcta';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return 'Se han restaurado $count claves de almacenamiento.';
+  }
+
+  @override
+  String get webImportConfirmTitle => '¿Restaurar desde la copia de seguridad?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'Esto sobrescribirá los datos actuales de tu extensión con el contenido del archivo de copia de seguridad. Se reemplazarán los datos existentes para las claves restauradas.';
+
+  @override
+  String get webImportConfirmButton => 'Restaurar';
 }

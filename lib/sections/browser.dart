@@ -1,5 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -12,13 +12,7 @@ import 'widgets/Browser/browser_overview.dart';
 import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_categories.dart';
 import 'widgets/Browser/browser_limits.dart';
-import 'widgets/Browser/browser_extension_status.dart';
-import 'widgets/Browser/browser_extension_settings.dart';
 import 'widgets/Browser/browser_history.dart';
-
-// Conditionally import extension settings (web only)
-import '../web/extension_settings.dart'
-    if (dart.library.io) '../web/extension_settings_stub.dart';
 
 // ─── Main section widget ──────────────────────────────────────────────────────
 
@@ -40,9 +34,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   int _refreshKey = 0;
   ({Duration totalTime, int siteCount, int visitCount})? _summary;
 
-  // Web-only: extension mode state
-  ExtensionMode _extensionMode = ExtensionMode.standalone;
-
   @override
   void initState() {
     super.initState();
@@ -60,7 +51,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     });
 
     _loadSummary();
-    if (kIsWeb) _loadExtensionMode();
   }
 
   Future<void> _loadSummary() async {
@@ -71,12 +61,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       _isLoading = false;
     });
     _animationController.forward();
-  }
-
-  Future<void> _loadExtensionMode() async {
-    final mode = await ExtensionSettings().getMode();
-    if (!mounted) return;
-    setState(() => _extensionMode = mode);
   }
 
   Future<void> _refreshData() async {
@@ -90,16 +74,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   void _switchTab(BrowserTab tab) {
     setState(() => _currentTab = tab);
-  }
-
-  void _onModeChanged(ExtensionMode mode) {
-    setState(() {
-      _extensionMode = mode;
-      if (mode != ExtensionMode.trackerOnly &&
-          _currentTab == BrowserTab.settings) {
-        _currentTab = BrowserTab.overview;
-      }
-    });
   }
 
   @override
@@ -123,9 +97,8 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     final l10n = AppLocalizations.of(context)!;
     final captionColor = theme.typography.caption?.color;
 
-    // Desktop: read server-enabled state from SettingsProvider
-    final settings = kIsWeb ? null : context.watch<SettingsProvider>();
-    final serverEnabled = kIsWeb ? true : (settings?.browserExtensionEnabled ?? false);
+    final settings = context.watch<SettingsProvider>();
+    final serverEnabled = settings.browserExtensionEnabled;
 
     if (_isLoading) {
       return ScaffoldPage(
@@ -134,12 +107,11 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       );
     }
 
-    // Desktop: show setup screen when server is off
-    if (!kIsWeb && !serverEnabled) {
+    if (!serverEnabled) {
       return ScaffoldPage(
         padding: EdgeInsets.zero,
         content: _DesktopSetupScreen(
-          onEnabled: () => settings?.updateSetting('browserExtensionEnabled', true),
+          onEnabled: () => settings.updateSetting('browserExtensionEnabled', true),
         ),
       );
     }
@@ -174,9 +146,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                             ),
                           ),
                           Text(
-                            kIsWeb
-                                ? '${l10n.browserWebsiteTracking} · ${_extensionMode.label}'
-                                : l10n.browserSubtitle,
+                            l10n.browserSubtitle,
                             style: TextStyle(
                               fontSize: 12,
                               color: captionColor?.withValues(alpha: 0.6),
@@ -188,11 +158,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                   ),
                   Row(
                     children: [
-                      // Web: hybrid sync badge
-                      if (kIsWeb && _extensionMode == ExtensionMode.hybrid)
-                        _SyncBadge(),
-                      // Desktop: server-running badge
-                      if (!kIsWeb && serverEnabled)
+                      if (serverEnabled)
                         _ServerBadge(),
 
                       if (_summary != null) ...[
@@ -215,8 +181,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                         icon: FluentIcons.refresh,
                         onPressed: _refreshData,
                       ),
-                      // Settings gear icon (web + desktop when enabled)
-                      if (kIsWeb || serverEnabled) ...[
+                      if (serverEnabled) ...[
                         const SizedBox(width: 8),
                         BrowserIconButton(
                           tooltip: l10n.browserExtensionSettings,
@@ -230,14 +195,12 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
               ),
             ),
 
-            // ── Tab bar (hidden in tracker-only mode) ─────────────────────
-            if (!kIsWeb || _extensionMode != ExtensionMode.trackerOnly) ...[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                child: _buildTabBar(theme, l10n),
-              ),
-              const SizedBox(height: 4),
-            ],
+            // ── Tab bar ───────────────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+              child: _buildTabBar(theme, l10n),
+            ),
+            const SizedBox(height: 4),
 
             // ── Content ──────────────────────────────────────────────────
             Expanded(
@@ -281,14 +244,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildContent() {
-    // Tracker-only mode: show status screen instead of full dashboard
-    if (kIsWeb && _extensionMode == ExtensionMode.trackerOnly) {
-      return BrowserExtensionStatus(
-        key: const ValueKey('tracker_only_status'),
-        onSwitchToStandalone: () => _onModeChanged(ExtensionMode.standalone),
-      );
-    }
-
     return switch (_currentTab) {
       BrowserTab.overview => BrowserOverview(
           key: ValueKey('browser_overview_$_refreshKey'),
@@ -309,9 +264,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       BrowserTab.history => BrowserHistory(
           key: ValueKey('browser_history_$_refreshKey'),
         ),
-      BrowserTab.settings => kIsWeb
-          ? BrowserExtensionSettings(key: const ValueKey('ext_settings'), onModeChanged: _onModeChanged)
-          : const _DesktopServerSettings(key: ValueKey('desktop_server_settings')),
+      BrowserTab.settings => const _DesktopServerSettings(key: ValueKey('desktop_server_settings')),
     };
   }
 }
@@ -919,45 +872,6 @@ class _ServerBadge extends StatelessWidget {
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color: kBrowserGreen.withValues(alpha: 0.9),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Hybrid sync badge (web) ──────────────────────────────────────────────────
-
-class _SyncBadge extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: kBrowserPurple.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: kBrowserPurple.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: kBrowserPurple,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            l10n.browserSyncing,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: kBrowserPurple.withValues(alpha: 0.9),
             ),
           ),
         ],

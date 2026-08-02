@@ -3682,4 +3682,37 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'Nama tampilan (mis. YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'Unduh semua data ekstensi sebagai berkas cadangan JSON';
+
+  @override
+  String get webImportDataDescription =>
+      'Pulihkan data ekstensi dari berkas JSON yang diekspor sebelumnya';
+
+  @override
+  String get webExportSuccessTitle => 'Ekspor Berhasil';
+
+  @override
+  String get webExportSuccessMessage =>
+      'Data Anda telah diunduh sebagai berkas JSON.';
+
+  @override
+  String get webImportSuccessTitle => 'Impor Berhasil';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count kunci penyimpanan berhasil dipulihkan.';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'Pulihkan dari Cadangan?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'Tindakan ini akan menimpa data ekstensi Anda saat ini dengan konten dari berkas cadangan. Data yang ada untuk kunci yang dipulihkan akan digantikan.';
+
+  @override
+  String get webImportConfirmButton => 'Pulihkan';
 }

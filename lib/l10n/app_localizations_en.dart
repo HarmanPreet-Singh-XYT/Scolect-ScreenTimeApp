@@ -3712,4 +3712,43 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'Display name (e.g. YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'Download all extension data as a JSON backup file';
+
+  @override
+  String get webImportDataDescription =>
+      'Restore extension data from a previously exported JSON file';
+
+  @override
+  String get webExportSuccessTitle => 'Export Successful';
+
+  @override
+  String get webExportSuccessMessage =>
+      'Your data has been downloaded as a JSON file.';
+
+  @override
+  String get webImportSuccessTitle => 'Import Successful';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'keys',
+      one: 'key',
+    );
+    return '$count storage $_temp0 restored.';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'Restore from Backup?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'This will overwrite your current extension data with the contents of the backup file. Existing data for restored keys will be replaced.';
+
+  @override
+  String get webImportConfirmButton => 'Restore';
 }

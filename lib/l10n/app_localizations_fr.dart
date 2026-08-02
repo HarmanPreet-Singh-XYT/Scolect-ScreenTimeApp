@@ -3782,4 +3782,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'Nom affiché (ex. YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'Télécharger toutes les données de l\'extension sous forme de fichier de sauvegarde JSON';
+
+  @override
+  String get webImportDataDescription =>
+      'Restaurer les données de l\'extension à partir d\'un fichier JSON précédemment exporté';
+
+  @override
+  String get webExportSuccessTitle => 'Exportation réussie';
+
+  @override
+  String get webExportSuccessMessage =>
+      'Vos données ont été téléchargées sous forme de fichier JSON.';
+
+  @override
+  String get webImportSuccessTitle => 'Importation réussie';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count clés de stockage restaurées.';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'Restaurer à partir de la sauvegarde ?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'Cette action remplacera les données actuelles de votre extension par le contenu du fichier de sauvegarde. Les données existantes pour les clés restaurées seront remplacées.';
+
+  @override
+  String get webImportConfirmButton => 'Restaurer';
 }

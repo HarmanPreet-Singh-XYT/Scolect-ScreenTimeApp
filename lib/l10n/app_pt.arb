@@ -2031,7 +2031,9 @@
   "browserSetupServerRunning": "Servidor em execução · porta {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "Servidor desativado",
@@ -2048,5 +2050,21 @@
   "browserServerPortInvalid": "Insira uma porta entre 1024 e 65535",
   "browserDisableServer": "Desativar Servidor da Extensão",
   "browserEditSiteName": "Editar nome de exibição",
-  "browserSiteNameHint": "Nome de exibição (ex.: YouTube)"
+  "browserSiteNameHint": "Nome de exibição (ex.: YouTube)",
+  "webExportDataDescription": "Baixar todos os dados da extensão como um arquivo de backup JSON",
+  "webImportDataDescription": "Restaurar os dados da extensão a partir de um arquivo JSON exportado anteriormente",
+  "webExportSuccessTitle": "Exportação concluída com sucesso",
+  "webExportSuccessMessage": "Seus dados foram baixados como um arquivo JSON.",
+  "webImportSuccessTitle": "Importação concluída com sucesso",
+  "webImportSuccessMessage": "{count} chaves de armazenamento restauradas.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "Restaurar do backup?",
+  "webImportConfirmMessage": "Isso substituirá os dados atuais da sua extensão pelo conteúdo do arquivo de backup. Os dados existentes para as chaves restauradas serão substituídos.",
+  "webImportConfirmButton": "Restaurar"
 }

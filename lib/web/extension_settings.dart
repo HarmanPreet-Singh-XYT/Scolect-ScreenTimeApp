@@ -258,6 +258,12 @@ class ExtensionSettings {
         'endTimeEpochMs': null,
       },
     });
+    // If syncing to desktop, tell the background to clear web data there too.
+    if (_mode == ExtensionMode.hybrid || _mode == ExtensionMode.trackerOnly) {
+      triggerExtensionSync(); // reuses the existing sendMessage channel
+      // Ask background to POST /clear-web-data to the desktop.
+      await chromeStorageSet({'scolect_clear_web_data': true});
+    }
   }
 
   // ── Persist ─────────────────────────────────────────────────────────────────

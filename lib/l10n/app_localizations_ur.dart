@@ -3669,4 +3669,37 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'ڈسپلے نام (مثلاً YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'تمام ایکسٹینشن ڈیٹا کو JSON بیک اپ فائل کے طور پر ڈاؤن لوڈ کریں';
+
+  @override
+  String get webImportDataDescription =>
+      'پہلے سے ایکسپورٹ شدہ JSON فائل سے ایکسٹینشن ڈیٹا بحال کریں';
+
+  @override
+  String get webExportSuccessTitle => 'ایکسپورٹ کامیاب رہا';
+
+  @override
+  String get webExportSuccessMessage =>
+      'آپ کا ڈیٹا JSON فائل کے طور پر ڈاؤن لوڈ ہو گیا ہے۔';
+
+  @override
+  String get webImportSuccessTitle => 'امپورٹ کامیاب رہا';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count اسٹوریج کیز بحال ہو گئیں۔';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'بیک اپ سے بحال کریں؟';
+
+  @override
+  String get webImportConfirmMessage =>
+      'یہ آپ کے موجودہ ایکسٹینشن ڈیٹا کو بیک اپ فائل کے مواد سے تبدیل کر دے گا۔ بحال کی گئی کیز کا موجودہ ڈیٹا تبدیل ہو جائے گا۔';
+
+  @override
+  String get webImportConfirmButton => 'بحال کریں';
 }

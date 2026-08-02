@@ -1928,7 +1928,9 @@
   "browserVisitCount": "{count, plural, =1{1 विज़िट} other{{count} विज़िट}}",
   "@browserVisitCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserSearchPlaceholder": "वेबसाइट या डोमेन खोजें…",
@@ -1940,7 +1942,9 @@
   "browserWebsiteCount": "{count, plural, =1{1 वेबसाइट} other{{count} वेबसाइटें}}",
   "@browserWebsiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserColumnDomain": "डोमेन",
@@ -1954,14 +1958,18 @@
   "browserSiteCount": "{count, plural, =1{1 साइट} other{{count} साइटें}}",
   "@browserSiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserActiveLimits": "सक्रिय सीमाएँ",
   "browserActiveLimitsSubtitle": "{count, plural, =1{1 वेबसाइट की दैनिक सीमाएँ} other{{count} वेबसाइटों की दैनिक सीमाएँ}}",
   "@browserActiveLimitsSubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserNoLimitsTitle": "कोई सीमा निर्धारित नहीं",
@@ -1975,7 +1983,9 @@
   "browserDailyLimitDialog": "दैनिक सीमा – {domain}",
   "@browserDailyLimitDialog": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "browserDailyLimitDialogDesc": "निर्धारित करें कि आप प्रतिदिन इस साइट पर कितना समय बिता सकते हैं।",
@@ -1984,7 +1994,9 @@
   "browserTimeUsed": "{time} उपयोग किया गया",
   "@browserTimeUsed": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "browserSetLimit": "सीमा निर्धारित करें",
@@ -2019,7 +2031,9 @@
   "browserSetupServerRunning": "सर्वर चल रहा है · पोर्ट {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "सर्वर अक्षम",
@@ -2036,5 +2050,21 @@
   "browserServerPortInvalid": "1024 और 65535 के बीच पोर्ट दर्ज करें",
   "browserDisableServer": "एक्सटेंशन सर्वर अक्षम करें",
   "browserEditSiteName": "प्रदर्शन नाम संपादित करें",
-  "browserSiteNameHint": "प्रदर्शन नाम (जैसे YouTube)"
+  "browserSiteNameHint": "प्रदर्शन नाम (जैसे YouTube)",
+  "webExportDataDescription": "सभी एक्सटेंशन डेटा को JSON बैकअप फ़ाइल के रूप में डाउनलोड करें",
+  "webImportDataDescription": "पहले से निर्यात की गई JSON फ़ाइल से एक्सटेंशन डेटा पुनर्स्थापित करें",
+  "webExportSuccessTitle": "निर्यात सफल रहा",
+  "webExportSuccessMessage": "आपका डेटा JSON फ़ाइल के रूप में डाउनलोड हो गया है।",
+  "webImportSuccessTitle": "आयात सफल रहा",
+  "webImportSuccessMessage": "{count} स्टोरेज कुंजियाँ पुनर्स्थापित की गईं।",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "बैकअप से पुनर्स्थापित करें?",
+  "webImportConfirmMessage": "यह आपके वर्तमान एक्सटेंशन डेटा को बैकअप फ़ाइल की सामग्री से बदल देगा। पुनर्स्थापित कुंजियों का मौजूदा डेटा अधिलेखित कर दिया जाएगा।",
+  "webImportConfirmButton": "पुनर्स्थापित करें"
 }

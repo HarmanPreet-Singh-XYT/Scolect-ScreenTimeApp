@@ -88,7 +88,10 @@ async function _applyFocusState(focusJson) {
         dailyLimitSeconds: (ext.dailyLimitSeconds ?? 0) > 0
           ? ext.dailyLimitSeconds
           : (desktopMeta.dailyLimitSeconds ?? 0),
-        siteName: ext.siteName || desktopMeta.siteName || '',
+        // siteName is always sourced from the browser (scolect_app_metadata via
+        // updateSiteName). Never import it from the desktop — desktop may have
+        // stale or wrong titles accumulated from earlier sessions.
+        siteName: ext.siteName || '',
       };
       if (JSON.stringify(ext) !== JSON.stringify(merged)) {
         currentMeta[domain] = { ...ext, ...merged };
@@ -763,6 +766,18 @@ async function runSync() {
   const settings = await getSettings();
   if (settings.mode === 'standalone') return;
 
+  // If a previous clear-data attempt failed (desktop was offline), retry it now
+  // before pushing any new usage — otherwise the desktop would receive fresh data
+  // on top of the stale entries we intended to delete.
+  const pendingClear = await chrome.storage.local.get(_PENDING_CLEAR_KEY);
+  if (pendingClear[_PENDING_CLEAR_KEY]) {
+    await _clearDesktopWebData();
+    // If still pending (desktop still offline), skip the sync entirely so we
+    // don't re-populate the very data we're trying to erase.
+    const stillPending = await chrome.storage.local.get(_PENDING_CLEAR_KEY);
+    if (stillPending[_PENDING_CLEAR_KEY]) return;
+  }
+
   const today = getTodayKey();
   const day = await getDayData(today);
   if (day.domains.length === 0) return;
@@ -828,7 +843,34 @@ chrome.storage.onChanged.addListener((changes, area) => {
     refreshBlockedDomains().catch(console.error);
     setupIdleDetection().catch(console.error);
   }
+  if (changes['scolect_clear_web_data']?.newValue === true) {
+    chrome.storage.local.remove('scolect_clear_web_data');
+    _clearDesktopWebData().catch(console.error);
+  }
 });
+
+const _PENDING_CLEAR_KEY = 'scolect_pending_desktop_clear';
+
+async function _clearDesktopWebData() {
+  const settings = await getSettings();
+  if (settings.mode === 'standalone') return;
+  const desktopUrl = settings.desktopUrl || `http://localhost:${FLUTTER_PORT}`;
+  try {
+    const resp = await fetch(`${desktopUrl}/clear-web-data`, { method: 'POST' });
+    if (resp.ok) {
+      // Clear succeeded — remove the pending flag so we don't retry.
+      await chrome.storage.local.remove(_PENDING_CLEAR_KEY);
+    } else {
+      // Desktop responded but with an error — keep the flag and retry later.
+      await chrome.storage.local.set({ [_PENDING_CLEAR_KEY]: true });
+    }
+  } catch (e) {
+    // Desktop is offline — persist the flag so runSync() retries before the
+    // next usage push, preventing stale data from surviving on the desktop.
+    await chrome.storage.local.set({ [_PENDING_CLEAR_KEY]: true });
+    console.warn('Could not clear desktop web data (will retry on next sync):', e);
+  }
+}
 
 function setupAlarms() {
   chrome.alarms.get(ALARM_TICK, a => {

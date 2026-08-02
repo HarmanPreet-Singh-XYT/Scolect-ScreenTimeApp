@@ -3656,4 +3656,36 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'اسم العرض (مثال: YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'تنزيل جميع بيانات الإضافة كملف نسخ احتياطي بصيغة JSON';
+
+  @override
+  String get webImportDataDescription =>
+      'استعادة بيانات الإضافة من ملف JSON تم تصديره سابقًا';
+
+  @override
+  String get webExportSuccessTitle => 'تم التصدير بنجاح';
+
+  @override
+  String get webExportSuccessMessage => 'تم تنزيل بياناتك كملف JSON.';
+
+  @override
+  String get webImportSuccessTitle => 'تم الاستيراد بنجاح';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return 'تمت استعادة $count من مفاتيح التخزين.';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'هل تريد الاستعادة من النسخة الاحتياطية؟';
+
+  @override
+  String get webImportConfirmMessage =>
+      'سيؤدي هذا إلى الكتابة فوق بيانات الإضافة الحالية بمحتويات ملف النسخ الاحتياطي. سيتم استبدال البيانات الحالية للمفاتيح المستعادة.';
+
+  @override
+  String get webImportConfirmButton => 'استعادة';
 }

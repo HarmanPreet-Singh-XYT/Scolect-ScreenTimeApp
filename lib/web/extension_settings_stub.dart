@@ -57,7 +57,7 @@ class ExtensionSettings {
   Future<Map<String, WebsiteMetadata>> getAllMetadata() async => {};
   Future<void> setMode(ExtensionMode mode) async {}
   Future<void> setDesktopUrl(String url) async {}
-  Future<void> updateMetadata(String domain, {String? category, bool? isTracking, bool? isProductive, Duration? dailyLimit}) async {}
+  Future<void> updateMetadata(String domain, {String? category, bool? isTracking, bool? isProductive, Duration? dailyLimit, String? siteName}) async {}
   Future<void> setOverallLimit({required int seconds, required bool enabled}) async {}
   Future<void> setIdleDetection({required bool enabled, required int timeoutSeconds}) async {}
   Future<void> clearAllData() async {}

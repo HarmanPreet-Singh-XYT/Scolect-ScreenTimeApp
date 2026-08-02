@@ -3686,4 +3686,37 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => 'প্রদর্শন নাম (যেমন: YouTube)';
+
+  @override
+  String get webExportDataDescription =>
+      'একটি JSON ব্যাকআপ ফাইল হিসেবে এক্সটেনশনের সমস্ত ডেটা ডাউনলোড করুন';
+
+  @override
+  String get webImportDataDescription =>
+      'পূর্বে এক্সপোর্ট করা JSON ফাইল থেকে এক্সটেনশন ডেটা রিস্টোর করুন';
+
+  @override
+  String get webExportSuccessTitle => 'এক্সপোর্ট সফল হয়েছে';
+
+  @override
+  String get webExportSuccessMessage =>
+      'আপনার ডেটা একটি JSON ফাইল হিসেবে ডাউনলোড করা হয়েছে।';
+
+  @override
+  String get webImportSuccessTitle => 'ইম্পোর্ট সফল হয়েছে';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '$count টি স্টোরেজ কি রিস্টোর করা হয়েছে।';
+  }
+
+  @override
+  String get webImportConfirmTitle => 'ব্যাকআপ থেকে রিস্টোর করবেন?';
+
+  @override
+  String get webImportConfirmMessage =>
+      'এটি ব্যাকআপ ফাইলের কন্টেন্ট দিয়ে আপনার বর্তমান এক্সটেনশন ডেটা পরিবর্তন করবে। রিস্টোর করা কি-গুলোর বিদ্যমান ডেটা প্রতিস্থাপিত হবে।';
+
+  @override
+  String get webImportConfirmButton => 'রিস্টোর করুন';
 }

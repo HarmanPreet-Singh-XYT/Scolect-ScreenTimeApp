@@ -1928,7 +1928,9 @@
   "browserVisitCount": "{count, plural, =1{زيارة واحدة} other{{count} زيارة}}",
   "@browserVisitCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserSearchPlaceholder": "ابحث عن موقع أو نطاق…",
@@ -1940,7 +1942,9 @@
   "browserWebsiteCount": "{count, plural, =1{موقع واحد} other{{count} موقع}}",
   "@browserWebsiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserColumnDomain": "النطاق",
@@ -1954,14 +1958,18 @@
   "browserSiteCount": "{count, plural, =1{موقع واحد} other{{count} مواقع}}",
   "@browserSiteCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserActiveLimits": "الحدود النشطة",
   "browserActiveLimitsSubtitle": "{count, plural, =1{موقع واحد بحدود يومية} other{{count} موقع بحدود يومية}}",
   "@browserActiveLimitsSubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "browserNoLimitsTitle": "لم يتم تعيين حدود",
@@ -1975,7 +1983,9 @@
   "browserDailyLimitDialog": "الحد اليومي – {domain}",
   "@browserDailyLimitDialog": {
     "placeholders": {
-      "domain": { "type": "String" }
+      "domain": {
+        "type": "String"
+      }
     }
   },
   "browserDailyLimitDialogDesc": "اضبط المدة التي يمكنك فيها زيارة هذا الموقع يومياً.",
@@ -1984,7 +1994,9 @@
   "browserTimeUsed": "{time} مستخدم",
   "@browserTimeUsed": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "browserSetLimit": "تعيين الحد",
@@ -2019,7 +2031,9 @@
   "browserSetupServerRunning": "الخادم يعمل · المنفذ {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "الخادم معطّل",
@@ -2036,5 +2050,21 @@
   "browserServerPortInvalid": "أدخل منفذاً بين 1024 و 65535",
   "browserDisableServer": "تعطيل خادم الامتداد",
   "browserEditSiteName": "تعديل اسم العرض",
-  "browserSiteNameHint": "اسم العرض (مثال: YouTube)"
+  "browserSiteNameHint": "اسم العرض (مثال: YouTube)",
+  "webExportDataDescription": "تنزيل جميع بيانات الإضافة كملف نسخ احتياطي بصيغة JSON",
+  "webImportDataDescription": "استعادة بيانات الإضافة من ملف JSON تم تصديره سابقًا",
+  "webExportSuccessTitle": "تم التصدير بنجاح",
+  "webExportSuccessMessage": "تم تنزيل بياناتك كملف JSON.",
+  "webImportSuccessTitle": "تم الاستيراد بنجاح",
+  "webImportSuccessMessage": "تمت استعادة {count} من مفاتيح التخزين.",
+  "@webImportSuccessMessage": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "webImportConfirmTitle": "هل تريد الاستعادة من النسخة الاحتياطية؟",
+  "webImportConfirmMessage": "سيؤدي هذا إلى الكتابة فوق بيانات الإضافة الحالية بمحتويات ملف النسخ الاحتياطي. سيتم استبدال البيانات الحالية للمفاتيح المستعادة.",
+  "webImportConfirmButton": "استعادة"
 }

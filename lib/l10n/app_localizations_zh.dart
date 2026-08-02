@@ -3567,4 +3567,34 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get browserSiteNameHint => '显示名称（例如：YouTube）';
+
+  @override
+  String get webExportDataDescription => '将所有扩展程序数据下载为 JSON 备份文件';
+
+  @override
+  String get webImportDataDescription => '从先前导出的 JSON 文件恢复扩展程序数据';
+
+  @override
+  String get webExportSuccessTitle => '导出成功';
+
+  @override
+  String get webExportSuccessMessage => '您的数据已下载为 JSON 文件。';
+
+  @override
+  String get webImportSuccessTitle => '导入成功';
+
+  @override
+  String webImportSuccessMessage(int count) {
+    return '已恢复 $count 个存储键。';
+  }
+
+  @override
+  String get webImportConfirmTitle => '从备份恢复？';
+
+  @override
+  String get webImportConfirmMessage =>
+      '这将使用备份文件的内容覆盖您当前的扩展程序数据。已恢复键的现有数据将被替换。';
+
+  @override
+  String get webImportConfirmButton => '恢复';
 }
