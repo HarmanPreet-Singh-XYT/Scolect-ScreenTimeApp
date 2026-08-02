@@ -6,7 +6,9 @@ import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/web/extension_settings.dart'
     if (dart.library.io) 'package:screentime/web/extension_settings_stub.dart';
+import 'package:screentime/sections/controller/services/app_blocking_service.dart';
 import 'widgets/AlertsLimits/applicationlimit.dart';
+import 'widgets/AlertsLimits/blockingBehaviorCard.dart';
 import 'widgets/AlertsLimits/notificationCard.dart';
 import 'widgets/AlertsLimits/overalllimit.dart';
 import 'widgets/AlertsLimits/quickStats.dart';
@@ -21,6 +23,7 @@ abstract final class _Keys {
   static const overallEnabled = 'limitsAlerts.overallLimit.enabled';
   static const overallHours = 'limitsAlerts.overallLimit.hours';
   static const overallMinutes = 'limitsAlerts.overallLimit.minutes';
+  static const blockingBehavior = 'limitsAlerts.blockingBehavior';
 }
 
 // ──────────────── Main Page ────────────────
@@ -48,6 +51,9 @@ class _AlertsLimitsState extends State<AlertsLimits> {
   bool _frequentAlerts = false;
   bool _soundAlerts = false;
   bool _systemAlerts = false;
+
+  // Blocking behavior state
+  BlockingBehavior _blockingBehavior = BlockingBehavior.none;
 
   // Overall limit state
   bool _overallLimitEnabled = false;
@@ -86,6 +92,12 @@ class _AlertsLimitsState extends State<AlertsLimits> {
         _settings.getSetting(_Keys.overallHours)?.toDouble() ?? 2.0;
     _overallLimitMinutes =
         _settings.getSetting(_Keys.overallMinutes)?.toDouble() ?? 0.0;
+    final blockingVal = _settings.getSetting(_Keys.blockingBehavior) as String?;
+    _blockingBehavior = blockingVal == 'soft'
+        ? BlockingBehavior.soft
+        : blockingVal == 'hard'
+            ? BlockingBehavior.hard
+            : BlockingBehavior.none;
   }
 
   // ──────────────── data loading ────────────────
@@ -197,6 +209,13 @@ class _AlertsLimitsState extends State<AlertsLimits> {
     }
   }
 
+  // ──────────────── blocking behavior ────────────────
+
+  void _onBlockingBehaviorChanged(BlockingBehavior value) {
+    setState(() => _blockingBehavior = value);
+    AppBlockingService().setBehavior(value);
+  }
+
   // ──────────────── reset ────────────────
 
   Future<void> _resetAllLimits() async {
@@ -287,6 +306,13 @@ class _AlertsLimitsState extends State<AlertsLimits> {
             onDataChanged: _loadData,
           );
 
+          final blockingCard = kIsWeb
+              ? const SizedBox.shrink()
+              : BlockingBehaviorCard(
+                  value: _blockingBehavior,
+                  onChanged: _onBlockingBehaviorChanged,
+                );
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
@@ -317,6 +343,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
                     notificationCard: notificationCard,
                     overallCard: overallCard,
                     appLimitsCard: appLimitsCard,
+                    blockingCard: blockingCard,
                   ),
                 ],
               ),
@@ -338,6 +365,7 @@ class _ContentLayout extends StatelessWidget {
   final Widget notificationCard;
   final Widget overallCard;
   final Widget appLimitsCard;
+  final Widget blockingCard;
 
   const _ContentLayout({
     required this.isWide,
@@ -345,6 +373,7 @@ class _ContentLayout extends StatelessWidget {
     required this.notificationCard,
     required this.overallCard,
     required this.appLimitsCard,
+    required this.blockingCard,
   });
 
   static const _gap16 = SizedBox(height: 16);
@@ -364,6 +393,8 @@ class _ContentLayout extends StatelessWidget {
             child: Column(
               children: [
                 notificationCard,
+                _gap16,
+                blockingCard,
                 _gap16,
                 overallCard,
               ],
@@ -389,6 +420,8 @@ class _ContentLayout extends StatelessWidget {
           _gap16,
           overallCard,
         ],
+        _gap16,
+        blockingCard,
         _gap16,
         appLimitsCard,
       ],

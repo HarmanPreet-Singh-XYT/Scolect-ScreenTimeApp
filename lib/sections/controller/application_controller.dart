@@ -10,6 +10,7 @@ import 'package:screentime/l10n/app_localizations.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:window_focus/window_focus.dart';
 import 'app_data_controller.dart';
+import 'services/app_blocking_service.dart';
 import 'categories_controller.dart';
 
 enum TrackingMode {
@@ -434,7 +435,7 @@ class BackgroundAppTracker {
     _universalHeartbeat = null;
   }
 
-  void _heartbeatCurrentApp() {
+  Future<void> _heartbeatCurrentApp() async {
     if (!_isTracking) return;
     if (_currentApp.isEmpty || _currentApp == _selfAppName) return;
     if (!_screenStateAllowsTracking) return;
@@ -451,7 +452,7 @@ class BackgroundAppTracker {
     final elapsed = now.difference(_currentAppStartTime);
     if (elapsed.inSeconds <= 0) return;
 
-    _appDataStore?.recordAppUsage(
+    await _appDataStore?.recordAppUsage(
       _currentApp,
       SettingsManager().getLogicalDate(now),
       elapsed,
@@ -460,6 +461,28 @@ class BackgroundAppTracker {
     );
     _currentAppStartTime = now;
     debugPrint('💓 Heartbeat: $_currentApp (+${elapsed.inSeconds}s)');
+
+    // Check if the app just crossed its daily limit while the user was in it.
+    // Only fires when blocking is enabled — skips the overhead otherwise.
+    if (AppBlockingService().behavior != BlockingBehavior.none &&
+        metadata != null &&
+        metadata.limitStatus &&
+        metadata.dailyLimit > Duration.zero) {
+      final today = SettingsManager().getLogicalDate(now);
+      final usage = _appDataStore?.getAppUsage(_currentApp, today);
+      final used = usage?.timeSpent ?? Duration.zero;
+      if (used >= metadata.dailyLimit) {
+        try {
+          final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
+          AppBlockingService().onLimitedAppFocused(
+            appName: _currentApp,
+            pid: info.processId,
+            usedTime: used,
+            limitTime: metadata.dailyLimit,
+          );
+        } catch (_) {}
+      }
+    }
   }
 
   void _heartbeatSelfApp() {
@@ -531,6 +554,26 @@ class BackgroundAppTracker {
         _stopSelfTrackingHeartbeat();
         _appUpdateController.add(_currentApp);
         return;
+      }
+
+      // Check if this app is over its limit — fire blocking event if needed
+      if (metadata != null &&
+          metadata.limitStatus &&
+          metadata.dailyLimit > Duration.zero) {
+        final today = SettingsManager().getLogicalDate(DateTime.now());
+        final usage = _appDataStore?.getAppUsage(newApp, today);
+        final used = usage?.timeSpent ?? Duration.zero;
+        if (used >= metadata.dailyLimit) {
+          try {
+            final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
+            AppBlockingService().onLimitedAppFocused(
+              appName: newApp,
+              pid: info.processId,
+              usedTime: used,
+              limitTime: metadata.dailyLimit,
+            );
+          } catch (_) {}
+        }
       }
 
       if (_currentApp == _selfAppName) {
