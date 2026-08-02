@@ -44,7 +44,7 @@ add_dependencies(${BINARY_NAME} flutter_assemble)
 # windows/block_overlay/ before (or as part of) the Flutter Windows build.
 # We copy it next to the executable so LoadLibraryA("block_overlay.dll") works.
 set(BLOCK_OVERLAY_DLL
-    "${CMAKE_SOURCE_DIR}/../block_overlay/target/release/block_overlay.dll")
+    "${CMAKE_SOURCE_DIR}/block_overlay/target/x86_64-pc-windows-msvc/release/block_overlay.dll")
 
 if(EXISTS "${BLOCK_OVERLAY_DLL}")
   add_custom_command(TARGET ${BINARY_NAME} POST_BUILD

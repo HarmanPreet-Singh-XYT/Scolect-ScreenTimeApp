@@ -209,8 +209,8 @@ bool FlutterWindow::OnCreate() {
         } else if (method == "startGrace") {
           if (!g_grace_fn) { result->Error("UNAVAILABLE", "block_overlay.dll not loaded"); return; }
           int seconds = 300;
-          if (auto* v = std::get_if<int32_t>(call.arguments())) seconds = *v;
-          else if (auto* v = std::get_if<int64_t>(call.arguments())) seconds = static_cast<int>(*v);
+          if (auto* v32 = std::get_if<int32_t>(call.arguments())) seconds = *v32;
+          else if (auto* v64 = std::get_if<int64_t>(call.arguments())) seconds = static_cast<int>(*v64);
           g_grace_fn(seconds);
           result->Success();
 
