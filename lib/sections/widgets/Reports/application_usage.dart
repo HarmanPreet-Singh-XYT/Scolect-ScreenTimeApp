@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
 import '../../controller/data_controllers/reports_controller.dart';
 import './appdetails.dialog.dart';
@@ -279,7 +280,21 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
 
   void _showAppDetails(BuildContext context, AppUsageSummary app) {
     if (!context.mounted) return;
-    showAppDetailsDialog(context, app);
+    if (kIsWeb) {
+      // On web the app list comes from chrome storage, not the desktop Hive
+      // store. Use showWebsiteDetailsDialog which reads limits & history from
+      // chrome.storage.local correctly.
+      showWebsiteDetailsDialog(
+        context,
+        domain: app.appName,  // always the raw domain in web reports
+        displayName: app.siteName.isNotEmpty ? app.siteName : app.appName,
+        category: app.category,
+        timeSpent: app.totalTime,
+        isProductive: app.isProductive,
+      );
+    } else {
+      showAppDetailsDialog(context, app);
+    }
   }
 }
 
@@ -494,12 +509,15 @@ class _AppListItem extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            app.siteName.isNotEmpty ? app.siteName : app.appName,
+                            app.siteName.isNotEmpty
+                                ? app.siteName
+                                : app.appName,
                             style: theme.typography.body
                                 ?.copyWith(fontWeight: FontWeight.w500),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          if (app.siteName.isNotEmpty && app.siteName != app.appName)
+                          if (app.siteName.isNotEmpty &&
+                              app.siteName != app.appName)
                             Text(
                               app.appName,
                               style: theme.typography.caption?.copyWith(

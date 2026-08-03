@@ -3800,4 +3800,42 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'Restaurar';
+
+  @override
+  String get blockOverlayBadge => 'Scolect Tiempo de Pantalla';
+
+  @override
+  String get blockOverlayTitle => 'Límite Diario Alcanzado';
+
+  @override
+  String get blockOverlayTimeSpent => 'Tiempo usado';
+
+  @override
+  String get blockOverlayDailyLimit => 'Límite diario';
+
+  @override
+  String get blockOverlayVisitsToday => 'Visitas hoy';
+
+  @override
+  String get blockOverlayResetsIn => 'Se restablece en';
+
+  @override
+  String get blockOverlayGoBack => 'Volver';
+
+  @override
+  String get blockOverlayOpenDashboard => 'Abrir panel';
+
+  @override
+  String get blockOverlayUnblockToday => 'Desbloquear por hoy';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'Escribe $siteName para desbloquear por el resto del día:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'Desbloquear';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · rastreador de tiempo de pantalla';
 }

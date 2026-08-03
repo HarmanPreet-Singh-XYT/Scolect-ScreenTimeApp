@@ -102,7 +102,7 @@ class WebBrowserDataProvider {
         isHidden: false,
         isProductive: meta.isProductive,
         dailyLimit: meta.dailyLimit,
-        limitStatus: meta.dailyLimitSeconds > 0 && d.seconds >= meta.dailyLimitSeconds,
+        limitStatus: meta.dailyLimitSeconds > 0,
         visits: d.visits,
       ));
     }

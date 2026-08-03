@@ -3719,4 +3719,42 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'রিস্টোর করুন';
+
+  @override
+  String get blockOverlayBadge => 'Scolect স্ক্রিন টাইম';
+
+  @override
+  String get blockOverlayTitle => 'দৈনিক সীমা পৌঁছেছে';
+
+  @override
+  String get blockOverlayTimeSpent => 'ব্যবহৃত সময়';
+
+  @override
+  String get blockOverlayDailyLimit => 'দৈনিক সীমা';
+
+  @override
+  String get blockOverlayVisitsToday => 'আজকের ভিজিট';
+
+  @override
+  String get blockOverlayResetsIn => 'রিসেট হবে';
+
+  @override
+  String get blockOverlayGoBack => 'ফিরে যান';
+
+  @override
+  String get blockOverlayOpenDashboard => 'ড্যাশবোর্ড খুলুন';
+
+  @override
+  String get blockOverlayUnblockToday => 'আজকের জন্য আনব্লক করুন';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'আজকের বাকি সময়ের জন্য আনব্লক করতে $siteName টাইপ করুন:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'আনব্লক';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · স্ক্রিন টাইম ট্র্যাকার';
 }

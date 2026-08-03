@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "¿Restaurar desde la copia de seguridad?",
   "webImportConfirmMessage": "Esto sobrescribirá los datos actuales de tu extensión con el contenido del archivo de copia de seguridad. Se reemplazarán los datos existentes para las claves restauradas.",
-  "webImportConfirmButton": "Restaurar"
+  "webImportConfirmButton": "Restaurar",
+  "blockOverlayBadge": "Scolect Tiempo de Pantalla",
+  "blockOverlayTitle": "Límite Diario Alcanzado",
+  "blockOverlayTimeSpent": "Tiempo usado",
+  "blockOverlayDailyLimit": "Límite diario",
+  "blockOverlayVisitsToday": "Visitas hoy",
+  "blockOverlayResetsIn": "Se restablece en",
+  "blockOverlayGoBack": "Volver",
+  "blockOverlayOpenDashboard": "Abrir panel",
+  "blockOverlayUnblockToday": "Desbloquear por hoy",
+  "blockOverlayUnblockConfirmLabel": "Escribe {siteName} para desbloquear por el resto del día:",
+  "blockOverlayUnblockButton": "Desbloquear",
+  "blockOverlayFooter": "Scolect · rastreador de tiempo de pantalla"
 }

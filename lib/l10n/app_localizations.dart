@@ -6671,6 +6671,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore'**
   String get webImportConfirmButton;
+
+  /// No description provided for @blockOverlayBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect Screen Time'**
+  String get blockOverlayBadge;
+
+  /// No description provided for @blockOverlayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Limit Reached'**
+  String get blockOverlayTitle;
+
+  /// No description provided for @blockOverlayTimeSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Time spent'**
+  String get blockOverlayTimeSpent;
+
+  /// No description provided for @blockOverlayDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily limit'**
+  String get blockOverlayDailyLimit;
+
+  /// No description provided for @blockOverlayVisitsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits today'**
+  String get blockOverlayVisitsToday;
+
+  /// No description provided for @blockOverlayResetsIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resets in'**
+  String get blockOverlayResetsIn;
+
+  /// No description provided for @blockOverlayGoBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get blockOverlayGoBack;
+
+  /// No description provided for @blockOverlayOpenDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Dashboard'**
+  String get blockOverlayOpenDashboard;
+
+  /// No description provided for @blockOverlayUnblockToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock for today'**
+  String get blockOverlayUnblockToday;
+
+  /// No description provided for @blockOverlayUnblockConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type {siteName} to unblock for the rest of today:'**
+  String blockOverlayUnblockConfirmLabel(String siteName);
+
+  /// No description provided for @blockOverlayUnblockButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock'**
+  String get blockOverlayUnblockButton;
+
+  /// No description provided for @blockOverlayFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect · screen time tracker'**
+  String get blockOverlayFooter;
 }
 
 class _AppLocalizationsDelegate

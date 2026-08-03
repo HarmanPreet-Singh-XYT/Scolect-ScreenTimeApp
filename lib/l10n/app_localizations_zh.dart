@@ -3597,4 +3597,42 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => '恢复';
+
+  @override
+  String get blockOverlayBadge => 'Scolect 屏幕时间';
+
+  @override
+  String get blockOverlayTitle => '已达到每日限制';
+
+  @override
+  String get blockOverlayTimeSpent => '已用时间';
+
+  @override
+  String get blockOverlayDailyLimit => '每日限制';
+
+  @override
+  String get blockOverlayVisitsToday => '今日访问次数';
+
+  @override
+  String get blockOverlayResetsIn => '重置于';
+
+  @override
+  String get blockOverlayGoBack => '返回';
+
+  @override
+  String get blockOverlayOpenDashboard => '打开仪表板';
+
+  @override
+  String get blockOverlayUnblockToday => '今日解除限制';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return '输入 $siteName 以解除今日剩余时间的限制：';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => '解除限制';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · 屏幕时间追踪器';
 }

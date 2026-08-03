@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "बैकअप से पुनर्स्थापित करें?",
   "webImportConfirmMessage": "यह आपके वर्तमान एक्सटेंशन डेटा को बैकअप फ़ाइल की सामग्री से बदल देगा। पुनर्स्थापित कुंजियों का मौजूदा डेटा अधिलेखित कर दिया जाएगा।",
-  "webImportConfirmButton": "पुनर्स्थापित करें"
+  "webImportConfirmButton": "पुनर्स्थापित करें",
+  "blockOverlayBadge": "Scolect स्क्रीन टाइम",
+  "blockOverlayTitle": "दैनिक सीमा पहुँच गई",
+  "blockOverlayTimeSpent": "उपयोग किया गया समय",
+  "blockOverlayDailyLimit": "दैनिक सीमा",
+  "blockOverlayVisitsToday": "आज की विज़िट",
+  "blockOverlayResetsIn": "रीसेट होगा",
+  "blockOverlayGoBack": "वापस जाएं",
+  "blockOverlayOpenDashboard": "डैशबोर्ड खोलें",
+  "blockOverlayUnblockToday": "आज के लिए अनब्लॉक करें",
+  "blockOverlayUnblockConfirmLabel": "आज के बाकी समय के लिए अनब्लॉक करने हेतु {siteName} टाइप करें:",
+  "blockOverlayUnblockButton": "अनब्लॉक",
+  "blockOverlayFooter": "Scolect · स्क्रीन टाइम ट्रैकर"
 }

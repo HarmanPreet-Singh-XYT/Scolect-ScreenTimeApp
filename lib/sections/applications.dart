@@ -121,7 +121,8 @@ class _ApplicationsState extends State<Applications>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
       if (kIsWeb && mounted) {
-        _settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
+        _settingsProvider =
+            Provider.of<SettingsProvider>(context, listen: false);
         _settingsProvider!.addListener(_loadData);
       }
     });
@@ -239,9 +240,11 @@ class _ApplicationsState extends State<Applications>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(kIsWeb ? FluentIcons.globe : FluentIcons.apps_content, size: 24, color: theme.accentColor),
+              Icon(kIsWeb ? FluentIcons.globe : FluentIcons.apps_content,
+                  size: 24, color: theme.accentColor),
               const SizedBox(width: 12),
-              Text(kIsWeb ? "Websites" : l10n.applicationsTitle, style: theme.typography.body),
+              Text(kIsWeb ? "Websites" : l10n.applicationsTitle,
+                  style: theme.typography.body),
             ],
           ),
         ),
@@ -279,7 +282,9 @@ class _ApplicationsState extends State<Applications>
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 8),
                 child: Text(
-                  kIsWeb ? '${filteredApps.length} websites' : l10n.applicationCount(filteredApps.length),
+                  kIsWeb
+                      ? '${filteredApps.length} websites'
+                      : l10n.applicationCount(filteredApps.length),
                   style: TextStyle(
                     fontSize: 13,
                     color:
@@ -340,7 +345,9 @@ class _Header extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  kIsWeb ? "Manage tracking and visibility for websites" : l10n.applicationsSubtitle,
+                  kIsWeb
+                      ? "Manage tracking and visibility for websites"
+                      : l10n.applicationsSubtitle,
                   style: TextStyle(
                     fontSize: 12,
                     color: captionColor?.withValues(alpha: 0.6),
@@ -353,7 +360,9 @@ class _Header extends StatelessWidget {
         Row(
           children: [
             _SearchBox(
-              placeholder: kIsWeb ? "Search website or domain..." : l10n.searchApplication,
+              placeholder: kIsWeb
+                  ? "Search website or domain..."
+                  : l10n.searchApplication,
               onChanged: changeSearchValue,
             ),
             const SizedBox(width: 12),
@@ -764,7 +773,9 @@ class _EmptyState extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            kIsWeb ? "No websites found matching your filters." : l10n.noApplicationsFound,
+            kIsWeb
+                ? "No websites found matching your filters."
+                : l10n.noApplicationsFound,
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -918,8 +929,8 @@ class _ApplicationRowState extends State<_ApplicationRow> {
                 children: [
                   Text(
                     app.siteName.isNotEmpty ? app.siteName : app.name,
-                    style:
-                        const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                    style: const TextStyle(
+                        fontSize: 13, fontWeight: FontWeight.w500),
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (app.siteName.isNotEmpty && app.siteName != app.name)
@@ -927,7 +938,8 @@ class _ApplicationRowState extends State<_ApplicationRow> {
                       app.name,
                       style: TextStyle(
                         fontSize: 10.5,
-                        color: theme.typography.caption?.color?.withValues(alpha: 0.5),
+                        color: theme.typography.caption?.color
+                            ?.withValues(alpha: 0.5),
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),

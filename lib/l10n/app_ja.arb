@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "バックアップから復元しますか？",
   "webImportConfirmMessage": "現在の拡張機能データがバックアップファイルの内容で上書きされます。復元されるキーの既存データは置換されます。",
-  "webImportConfirmButton": "復元"
+  "webImportConfirmButton": "復元",
+  "blockOverlayBadge": "Scolect スクリーンタイム",
+  "blockOverlayTitle": "1日の制限に達しました",
+  "blockOverlayTimeSpent": "使用時間",
+  "blockOverlayDailyLimit": "1日の制限",
+  "blockOverlayVisitsToday": "本日の訪問数",
+  "blockOverlayResetsIn": "リセットまで",
+  "blockOverlayGoBack": "戻る",
+  "blockOverlayOpenDashboard": "ダッシュボードを開く",
+  "blockOverlayUnblockToday": "今日だけブロック解除",
+  "blockOverlayUnblockConfirmLabel": "今日の残り時間のブロックを解除するには {siteName} と入力してください:",
+  "blockOverlayUnblockButton": "ブロック解除",
+  "blockOverlayFooter": "Scolect · スクリーンタイムトラッカー"
 }

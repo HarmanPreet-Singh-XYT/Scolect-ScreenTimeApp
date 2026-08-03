@@ -3631,4 +3631,42 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => '復元';
+
+  @override
+  String get blockOverlayBadge => 'Scolect スクリーンタイム';
+
+  @override
+  String get blockOverlayTitle => '1日の制限に達しました';
+
+  @override
+  String get blockOverlayTimeSpent => '使用時間';
+
+  @override
+  String get blockOverlayDailyLimit => '1日の制限';
+
+  @override
+  String get blockOverlayVisitsToday => '本日の訪問数';
+
+  @override
+  String get blockOverlayResetsIn => 'リセットまで';
+
+  @override
+  String get blockOverlayGoBack => '戻る';
+
+  @override
+  String get blockOverlayOpenDashboard => 'ダッシュボードを開く';
+
+  @override
+  String get blockOverlayUnblockToday => '今日だけブロック解除';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return '今日の残り時間のブロックを解除するには $siteName と入力してください:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'ブロック解除';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · スクリーンタイムトラッカー';
 }

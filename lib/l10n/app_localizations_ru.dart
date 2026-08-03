@@ -3785,4 +3785,42 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'Восстановить';
+
+  @override
+  String get blockOverlayBadge => 'Scolect Экранное время';
+
+  @override
+  String get blockOverlayTitle => 'Дневной лимит достигнут';
+
+  @override
+  String get blockOverlayTimeSpent => 'Время использования';
+
+  @override
+  String get blockOverlayDailyLimit => 'Дневной лимит';
+
+  @override
+  String get blockOverlayVisitsToday => 'Посещений сегодня';
+
+  @override
+  String get blockOverlayResetsIn => 'Сброс через';
+
+  @override
+  String get blockOverlayGoBack => 'Назад';
+
+  @override
+  String get blockOverlayOpenDashboard => 'Открыть панель';
+
+  @override
+  String get blockOverlayUnblockToday => 'Разблокировать на сегодня';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'Введите $siteName, чтобы разблокировать до конца дня:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'Разблокировать';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · трекер экранного времени';
 }

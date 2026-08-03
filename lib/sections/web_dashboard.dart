@@ -34,6 +34,7 @@ import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
 import '../web/chrome_storage_interop.dart'
     if (dart.library.io) '../web/chrome_storage_interop_stub.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 
 // ─── Web Dashboard Root ───────────────────────────────────────────────────────
 
@@ -80,6 +81,33 @@ class _WebDashboardState extends State<WebDashboard>
     }
 
     _load();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (kIsWeb) _syncOverlayStrings(context);
+  }
+
+  void _syncOverlayStrings(BuildContext context) {
+    final l = AppLocalizations.of(context);
+    if (l == null) return;
+    chromeStorageSet({
+      'scolect_overlay_strings': {
+        'badge': l.blockOverlayBadge,
+        'title': l.blockOverlayTitle,
+        'timeSpent': l.blockOverlayTimeSpent,
+        'dailyLimit': l.blockOverlayDailyLimit,
+        'visitsToday': l.blockOverlayVisitsToday,
+        'resetsIn': l.blockOverlayResetsIn,
+        'goBack': l.blockOverlayGoBack,
+        'openDashboard': l.blockOverlayOpenDashboard,
+        'unblockToday': l.blockOverlayUnblockToday,
+        'unblockButton': l.blockOverlayUnblockButton,
+        'footer': l.blockOverlayFooter,
+        'unblockConfirmLabel': l.blockOverlayUnblockConfirmLabel('{siteName}'),
+      },
+    });
   }
 
   @override

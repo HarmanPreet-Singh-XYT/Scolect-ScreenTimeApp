@@ -210,6 +210,7 @@ class TopApplicationsList extends StatelessWidget {
                         if (kIsWeb) {
                           showWebsiteDetailsDialog(
                             context,
+                            domain: app['domain'] as String? ?? '',
                             displayName: app['name'] ?? '',
                             category: app['category'] ?? '',
                             timeSpent: app['duration'] ?? Duration.zero,

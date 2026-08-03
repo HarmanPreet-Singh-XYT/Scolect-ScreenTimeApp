@@ -171,8 +171,53 @@ function _showNotification(id, title, message) {
   });
 }
 
-async function _redirectBlockedDomainTabs(domain) {
+async function _buildOverlayPayload(domain) {
+  const all = await chrome.storage.local.get(null);
+  const settings = all.scolect_settings || {};
+  const metadata = settings.metadata || {};
+  const appMeta = all.scolect_app_metadata || {};
+
+  const cleanDomain = domain.replace(/^www\./, '').toLowerCase();
+  const meta = metadata[domain] || metadata['www.' + cleanDomain] || metadata[cleanDomain];
+  const siteName = meta?.siteName || appMeta[domain]?.siteName || appMeta[cleanDomain]?.siteName || domain;
+  const limitSecs = meta?.dailyLimitSeconds || 0;
+
+  const todayStr = (() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  })();
+
+  const matchDomain = (d) => d && d.replace(/^www\./, '').toLowerCase() === cleanDomain;
+  let entry = null;
+  const todayData = all[`scolect_day_${todayStr}`];
+  if (todayData?.domains) entry = todayData.domains.find(d => matchDomain(d.domain));
+  if (!entry) {
+    const dayKeys = Object.keys(all).filter(k => k.startsWith('scolect_day_')).sort().reverse();
+    for (const dk of dayKeys) {
+      const dayObj = all[dk];
+      if (dayObj?.domains) { entry = dayObj.domains.find(d => matchDomain(d.domain)); if (entry) break; }
+    }
+  }
+
+  const themeColors = all.scolect_theme_colors || null;
+  const themeId = all.scolect_theme_id || null;
+  const strings = all.scolect_overlay_strings || null;
+
+  return {
+    domain,
+    siteName,
+    spentSecs: entry?.seconds || 0,
+    limitSecs,
+    visits: entry?.visits || 0,
+    themeColors,
+    themeId,
+    strings,
+  };
+}
+
+async function _showBlockOverlayOnTabs(domain) {
   try {
+    const payload = await _buildOverlayPayload(domain);
     const tabs = await chrome.tabs.query({});
     for (const tab of tabs) {
       if (
@@ -183,13 +228,12 @@ async function _redirectBlockedDomainTabs(domain) {
       ) {
         const d = extractDomain(tab.url);
         if (d === domain) {
-          const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
-          await chrome.tabs.update(tab.id, { url: blockedUrl });
+          chrome.tabs.sendMessage(tab.id, { type: 'SHOW_BLOCK_OVERLAY', ...payload }).catch(() => {});
         }
       }
     }
   } catch (e) {
-    console.error('Error redirecting tabs for domain:', domain, e);
+    console.error('Error showing block overlay for domain:', domain, e);
   }
 }
 
@@ -228,7 +272,7 @@ async function checkLimitNotifications(domain, totalSeconds) {
         'Daily limit reached',
         `${siteName} has been blocked for today.`,
       );
-      await _redirectBlockedDomainTabs(domain);
+      await _showBlockOverlayOnTabs(domain);
     }
   }
 }
@@ -298,7 +342,7 @@ async function _enforceOverallLimit(settings) {
       'All websites have been blocked for today.',
     );
     for (const domain of domainsToBlock) {
-      await _redirectBlockedDomainTabs(domain);
+      await _showBlockOverlayOnTabs(domain);
     }
   }
 }
@@ -938,16 +982,16 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (!tab.url) return;
 
   if (
-    info.status === 'loading' &&
+    info.status === 'complete' &&
     !tab.url.startsWith(chrome.runtime.getURL('')) &&
     !tab.url.startsWith('chrome-extension://') &&
     !tab.url.startsWith('moz-extension://')
   ) {
     const domain = extractDomain(tab.url);
     if (domain && _blockedDomains.has(domain)) {
-      const blockedUrl = chrome.runtime.getURL('blocked.html') + '?domain=' + encodeURIComponent(domain);
-      chrome.tabs.update(tabId, { url: blockedUrl });
-      return;
+      _buildOverlayPayload(domain).then(payload => {
+        chrome.tabs.sendMessage(tabId, { type: 'SHOW_BLOCK_OVERLAY', ...payload }).catch(() => {});
+      });
     }
   }
 
@@ -1015,6 +1059,21 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       sendResponse({ ok: false });
     });
     return true;
+  }
+  if (msg.type === 'CHECK_BLOCK_STATUS') {
+    const domain = extractDomain(msg.url || '');
+    if (domain && _blockedDomains.has(domain)) {
+      _buildOverlayPayload(domain).then(payload => {
+        sendResponse({ blocked: true, ...payload });
+      }).catch(() => sendResponse({ blocked: false }));
+      return true;
+    }
+    sendResponse({ blocked: false });
+    return false;
+  }
+  if (msg.type === 'OPEN_DASHBOARD') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
+    return false;
   }
   return false;
 });

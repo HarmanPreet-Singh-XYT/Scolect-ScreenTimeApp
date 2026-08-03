@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "بیک اپ سے بحال کریں؟",
   "webImportConfirmMessage": "یہ آپ کے موجودہ ایکسٹینشن ڈیٹا کو بیک اپ فائل کے مواد سے تبدیل کر دے گا۔ بحال کی گئی کیز کا موجودہ ڈیٹا تبدیل ہو جائے گا۔",
-  "webImportConfirmButton": "بحال کریں"
+  "webImportConfirmButton": "بحال کریں",
+  "blockOverlayBadge": "Scolect اسکرین ٹائم",
+  "blockOverlayTitle": "روزانہ کی حد پوری ہو گئی",
+  "blockOverlayTimeSpent": "استعمال شدہ وقت",
+  "blockOverlayDailyLimit": "روزانہ کی حد",
+  "blockOverlayVisitsToday": "آج کے وزٹ",
+  "blockOverlayResetsIn": "ری سیٹ ہوگا",
+  "blockOverlayGoBack": "واپس جائیں",
+  "blockOverlayOpenDashboard": "ڈیش بورڈ کھولیں",
+  "blockOverlayUnblockToday": "آج کے لیے بلاک ہٹائیں",
+  "blockOverlayUnblockConfirmLabel": "آج کے باقی وقت کے لیے {siteName} ٹائپ کریں:",
+  "blockOverlayUnblockButton": "بلاک ہٹائیں",
+  "blockOverlayFooter": "Scolect · اسکرین ٹائم ٹریکر"
 }

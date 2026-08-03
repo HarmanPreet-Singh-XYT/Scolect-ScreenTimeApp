@@ -3715,4 +3715,42 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'Pulihkan';
+
+  @override
+  String get blockOverlayBadge => 'Scolect Waktu Layar';
+
+  @override
+  String get blockOverlayTitle => 'Batas Harian Tercapai';
+
+  @override
+  String get blockOverlayTimeSpent => 'Waktu digunakan';
+
+  @override
+  String get blockOverlayDailyLimit => 'Batas harian';
+
+  @override
+  String get blockOverlayVisitsToday => 'Kunjungan hari ini';
+
+  @override
+  String get blockOverlayResetsIn => 'Direset dalam';
+
+  @override
+  String get blockOverlayGoBack => 'Kembali';
+
+  @override
+  String get blockOverlayOpenDashboard => 'Buka Dasbor';
+
+  @override
+  String get blockOverlayUnblockToday => 'Buka blokir untuk hari ini';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'Ketik $siteName untuk membuka blokir untuk sisa hari ini:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'Buka Blokir';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · pelacak waktu layar';
 }

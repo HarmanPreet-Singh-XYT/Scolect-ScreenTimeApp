@@ -105,9 +105,14 @@ List<String> _sortedDateKeys(Map<String, Duration> data) => data.keys.toList()
 
 /// Shows the same rich AppDetailsDialog for a website on the web extension,
 /// building the required data objects from BrowserDataProvider.
+///
+/// [domain]      — the raw domain key used in chrome.storage (e.g. "youtube.com").
+///                 Preferred for reliable lookup; falls back to [displayName].
+/// [displayName] — human-readable name shown in the header (siteName or domain).
 Future<void> showWebsiteDetailsDialog(
   BuildContext context, {
   required String displayName,
+  String domain = '',          // raw storage key; preferred over displayName for lookup
   required String category,
   required Duration timeSpent,
   required bool isProductive,
@@ -122,15 +127,17 @@ Future<void> showWebsiteDetailsDialog(
   ]);
 
   final allSites = results[0] as List<WebsiteBasicDetail>;
-  final history = results[1] as List<({String date, Duration totalTime, int siteCount})>;
+  final history =
+      results[1] as List<({String date, Duration totalTime, int siteCount})>;
 
-  // Find the matching site record (may not exist if data was cleared)
+  // Prefer raw domain for lookup; fall back to display name matching
+  final lookupKey = domain.isNotEmpty ? domain : displayName;
   final site = allSites.cast<WebsiteBasicDetail?>().firstWhere(
-        (s) => s!.displayName == displayName || s.domain == displayName,
-        orElse: () => null,
-      ) ??
+            (s) => s!.domain == lookupKey || s.displayName == lookupKey,
+            orElse: () => null,
+          ) ??
       WebsiteBasicDetail(
-        domain: displayName,
+        domain: lookupKey,
         category: category,
         timeSpent: timeSpent,
         isTracking: true,

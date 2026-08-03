@@ -3707,4 +3707,42 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'पुनर्स्थापित करें';
+
+  @override
+  String get blockOverlayBadge => 'Scolect स्क्रीन टाइम';
+
+  @override
+  String get blockOverlayTitle => 'दैनिक सीमा पहुँच गई';
+
+  @override
+  String get blockOverlayTimeSpent => 'उपयोग किया गया समय';
+
+  @override
+  String get blockOverlayDailyLimit => 'दैनिक सीमा';
+
+  @override
+  String get blockOverlayVisitsToday => 'आज की विज़िट';
+
+  @override
+  String get blockOverlayResetsIn => 'रीसेट होगा';
+
+  @override
+  String get blockOverlayGoBack => 'वापस जाएं';
+
+  @override
+  String get blockOverlayOpenDashboard => 'डैशबोर्ड खोलें';
+
+  @override
+  String get blockOverlayUnblockToday => 'आज के लिए अनब्लॉक करें';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'आज के बाकी समय के लिए अनब्लॉक करने हेतु $siteName टाइप करें:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'अनब्लॉक';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · स्क्रीन टाइम ट्रैकर';
 }

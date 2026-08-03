@@ -3815,4 +3815,42 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'Restaurer';
+
+  @override
+  String get blockOverlayBadge => 'Scolect Temps d\'écran';
+
+  @override
+  String get blockOverlayTitle => 'Limite quotidienne atteinte';
+
+  @override
+  String get blockOverlayTimeSpent => 'Temps utilisé';
+
+  @override
+  String get blockOverlayDailyLimit => 'Limite quotidienne';
+
+  @override
+  String get blockOverlayVisitsToday => 'Visites aujourd\'hui';
+
+  @override
+  String get blockOverlayResetsIn => 'Réinitialisation dans';
+
+  @override
+  String get blockOverlayGoBack => 'Retour';
+
+  @override
+  String get blockOverlayOpenDashboard => 'Ouvrir le tableau de bord';
+
+  @override
+  String get blockOverlayUnblockToday => 'Débloquer pour aujourd\'hui';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'Tapez $siteName pour débloquer pour le reste de la journée :';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'Débloquer';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · suivi du temps d\'écran';
 }

@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "Restaurar do backup?",
   "webImportConfirmMessage": "Isso substituirá os dados atuais da sua extensão pelo conteúdo do arquivo de backup. Os dados existentes para as chaves restauradas serão substituídos.",
-  "webImportConfirmButton": "Restaurar"
+  "webImportConfirmButton": "Restaurar",
+  "blockOverlayBadge": "Scolect Tempo de Tela",
+  "blockOverlayTitle": "Limite Diário Atingido",
+  "blockOverlayTimeSpent": "Tempo usado",
+  "blockOverlayDailyLimit": "Limite diário",
+  "blockOverlayVisitsToday": "Visitas hoje",
+  "blockOverlayResetsIn": "Reinicia em",
+  "blockOverlayGoBack": "Voltar",
+  "blockOverlayOpenDashboard": "Abrir Painel",
+  "blockOverlayUnblockToday": "Desbloquear por hoje",
+  "blockOverlayUnblockConfirmLabel": "Digite {siteName} para desbloquear pelo resto do dia:",
+  "blockOverlayUnblockButton": "Desbloquear",
+  "blockOverlayFooter": "Scolect · rastreador de tempo de tela"
 }

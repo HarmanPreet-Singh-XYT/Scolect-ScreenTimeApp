@@ -3688,4 +3688,42 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'استعادة';
+
+  @override
+  String get blockOverlayBadge => 'Scolect لتتبع وقت الشاشة';
+
+  @override
+  String get blockOverlayTitle => 'تم الوصول إلى الحد اليومي';
+
+  @override
+  String get blockOverlayTimeSpent => 'الوقت المُستخدم';
+
+  @override
+  String get blockOverlayDailyLimit => 'الحد اليومي';
+
+  @override
+  String get blockOverlayVisitsToday => 'الزيارات اليوم';
+
+  @override
+  String get blockOverlayResetsIn => 'يُعاد تعيينه خلال';
+
+  @override
+  String get blockOverlayGoBack => 'رجوع';
+
+  @override
+  String get blockOverlayOpenDashboard => 'فتح لوحة التحكم';
+
+  @override
+  String get blockOverlayUnblockToday => 'إلغاء الحظر لهذا اليوم';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'اكتب $siteName لإلغاء الحظر لبقية اليوم:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'إلغاء الحظر';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · تتبع وقت الشاشة';
 }

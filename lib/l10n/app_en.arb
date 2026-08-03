@@ -2329,5 +2329,24 @@
   },
   "webImportConfirmTitle": "Restore from Backup?",
   "webImportConfirmMessage": "This will overwrite your current extension data with the contents of the backup file. Existing data for restored keys will be replaced.",
-  "webImportConfirmButton": "Restore"
+  "webImportConfirmButton": "Restore",
+  "blockOverlayBadge": "Scolect Screen Time",
+  "blockOverlayTitle": "Daily Limit Reached",
+  "blockOverlayTimeSpent": "Time spent",
+  "blockOverlayDailyLimit": "Daily limit",
+  "blockOverlayVisitsToday": "Visits today",
+  "blockOverlayResetsIn": "Resets in",
+  "blockOverlayGoBack": "Go Back",
+  "blockOverlayOpenDashboard": "Open Dashboard",
+  "blockOverlayUnblockToday": "Unblock for today",
+  "blockOverlayUnblockConfirmLabel": "Type {siteName} to unblock for the rest of today:",
+  "@blockOverlayUnblockConfirmLabel": {
+    "placeholders": {
+      "siteName": {
+        "type": "String"
+      }
+    }
+  },
+  "blockOverlayUnblockButton": "Unblock",
+  "blockOverlayFooter": "Scolect · screen time tracker"
 }

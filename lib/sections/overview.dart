@@ -109,6 +109,7 @@ class _OverviewSnapshot {
     final topApps = data.topApplications
         .map((app) => {
               'name': app.name,
+              'domain': app.domain, // raw domain key for web lookup
               'category': app.category,
               'screenTime': app.formattedScreenTime,
               'percentageOfTotalTime': app.percentageOfTotalTime,
@@ -235,7 +236,8 @@ class _OverviewState extends State<Overview>
 
       setState(() {
         _viewState = _ViewState.error;
-        _errorMessage = AppLocalizations.of(context)!.errorLoadingData(e.toString());
+        _errorMessage =
+            AppLocalizations.of(context)!.errorLoadingData(e.toString());
       });
     }
   }
@@ -442,7 +444,9 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              kIsWeb ? "No websites tracked yet. Let's start browsing!" : l10n.startUsingApplications,
+              kIsWeb
+                  ? "No websites tracked yet. Let's start browsing!"
+                  : l10n.startUsingApplications,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.inactiveColor,
@@ -570,7 +574,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ProgressCard(
-                          title: AppLocalizations.of(context)!.screenTimeProgress,
+                          title:
+                              AppLocalizations.of(context)!.screenTimeProgress,
                           value: snapshot.screenTime,
                           color: _kPurple,
                         ),
@@ -578,7 +583,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ProgressCard(
-                          title: AppLocalizations.of(context)!.productiveScoreProgress,
+                          title: AppLocalizations.of(context)!
+                              .productiveScoreProgress,
                           value: snapshot.productiveScore,
                           color: _kGreen,
                         ),
@@ -663,7 +669,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                           children: [
                             Expanded(
                               child: ProgressCard(
-                                title: AppLocalizations.of(context)!.screenTimeProgress,
+                                title: AppLocalizations.of(context)!
+                                    .screenTimeProgress,
                                 value: snapshot.screenTime,
                                 color: _kPurple,
                               ),
@@ -671,7 +678,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                             const SizedBox(width: 16),
                             Expanded(
                               child: ProgressCard(
-                                title: AppLocalizations.of(context)!.productiveScoreProgress,
+                                title: AppLocalizations.of(context)!
+                                    .productiveScoreProgress,
                                 value: snapshot.productiveScore,
                                 color: _kGreen,
                               ),
@@ -700,7 +708,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: ProgressCard(
-                          title: AppLocalizations.of(context)!.screenTimeProgress,
+                          title:
+                              AppLocalizations.of(context)!.screenTimeProgress,
                           value: snapshot.screenTime,
                           color: _kPurple,
                         ),
@@ -709,7 +718,8 @@ class _ResponsiveOverviewContent extends StatelessWidget {
                       Expanded(
                         flex: 2,
                         child: ProgressCard(
-                          title: AppLocalizations.of(context)!.productiveScoreProgress,
+                          title: AppLocalizations.of(context)!
+                              .productiveScoreProgress,
                           value: snapshot.productiveScore,
                           color: _kGreen,
                         ),

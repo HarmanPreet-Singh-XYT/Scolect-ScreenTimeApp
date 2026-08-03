@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "Восстановить из резервной копии?",
   "webImportConfirmMessage": "Это действие перезапишет текущие данные вашего расширения содержимым резервного файла. Существующие данные для восстановленных ключей будут заменены.",
-  "webImportConfirmButton": "Восстановить"
+  "webImportConfirmButton": "Восстановить",
+  "blockOverlayBadge": "Scolect Экранное время",
+  "blockOverlayTitle": "Дневной лимит достигнут",
+  "blockOverlayTimeSpent": "Время использования",
+  "blockOverlayDailyLimit": "Дневной лимит",
+  "blockOverlayVisitsToday": "Посещений сегодня",
+  "blockOverlayResetsIn": "Сброс через",
+  "blockOverlayGoBack": "Назад",
+  "blockOverlayOpenDashboard": "Открыть панель",
+  "blockOverlayUnblockToday": "Разблокировать на сегодня",
+  "blockOverlayUnblockConfirmLabel": "Введите {siteName}, чтобы разблокировать до конца дня:",
+  "blockOverlayUnblockButton": "Разблокировать",
+  "blockOverlayFooter": "Scolect · трекер экранного времени"
 }

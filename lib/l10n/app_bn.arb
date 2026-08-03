@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "ব্যাকআপ থেকে রিস্টোর করবেন?",
   "webImportConfirmMessage": "এটি ব্যাকআপ ফাইলের কন্টেন্ট দিয়ে আপনার বর্তমান এক্সটেনশন ডেটা পরিবর্তন করবে। রিস্টোর করা কি-গুলোর বিদ্যমান ডেটা প্রতিস্থাপিত হবে।",
-  "webImportConfirmButton": "রিস্টোর করুন"
+  "webImportConfirmButton": "রিস্টোর করুন",
+  "blockOverlayBadge": "Scolect স্ক্রিন টাইম",
+  "blockOverlayTitle": "দৈনিক সীমা পৌঁছেছে",
+  "blockOverlayTimeSpent": "ব্যবহৃত সময়",
+  "blockOverlayDailyLimit": "দৈনিক সীমা",
+  "blockOverlayVisitsToday": "আজকের ভিজিট",
+  "blockOverlayResetsIn": "রিসেট হবে",
+  "blockOverlayGoBack": "ফিরে যান",
+  "blockOverlayOpenDashboard": "ড্যাশবোর্ড খুলুন",
+  "blockOverlayUnblockToday": "আজকের জন্য আনব্লক করুন",
+  "blockOverlayUnblockConfirmLabel": "আজকের বাকি সময়ের জন্য আনব্লক করতে {siteName} টাইপ করুন:",
+  "blockOverlayUnblockButton": "আনব্লক",
+  "blockOverlayFooter": "Scolect · স্ক্রিন টাইম ট্র্যাকার"
 }

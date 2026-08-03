@@ -2,7 +2,8 @@ import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../categories_controller.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
+import 'package:screentime/web/chrome_storage_interop.dart'
+    if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
 class DailyOverviewData {
   static final DailyOverviewData _instance = DailyOverviewData._internal();
@@ -165,20 +166,30 @@ class DailyOverviewData {
 
   Future<OverviewData> _fetchWebOverview() async {
     final d = SettingsManager().getLogicalDate(DateTime.now());
-    final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+    final dateKey =
+        '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
     final storageKey = 'scolect_day_$dateKey';
 
     final result = await chromeStorageGet([storageKey]);
     final dayData = result[storageKey] as Map<dynamic, dynamic>? ?? {};
     final domains = (dayData['domains'] as List<dynamic>?) ?? [];
 
-    final metaRes = await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
-    final siteMeta = (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
-    final settingsMap = (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
-    final customMeta = (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
+    final metaRes =
+        await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
+    final siteMeta =
+        (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
+    final settingsMap =
+        (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
+    final customMeta =
+        (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
 
     Duration totalTime = Duration.zero;
     List<ApplicationDetail> applications = [];
+    // Tracks domains with a configured limit: displayName → (usage, limitSecs, category)
+    final Map<String, ({Duration usage, int limitSeconds, String category})>
+        limitMap = {};
+    // Raw domain keys already processed in the first loop (prevents duplicates)
+    final Set<String> seenDomains = {};
     int maxSeconds = 0;
     String mostUsed = "None";
     Map<String, Duration> categoryTotals = {};
@@ -201,22 +212,55 @@ class DailyOverviewData {
               ? rawSiteMeta['category'] as String
               : AppCategories.categorizeApp(displayName);
 
+      // Mark domain as seen (dedup guard for the second loop)
+      seenDomains.add(domain);
+
+      // Collect domains that have a daily limit configured
+      final limitSecs = (meta['dailyLimitSeconds'] as num?)?.toInt() ?? 0;
+      if (limitSecs > 0) {
+        limitMap[displayName] =
+            (usage: duration, limitSeconds: limitSecs, category: category);
+      }
+
       if (seconds > maxSeconds) {
         maxSeconds = seconds.toInt();
         mostUsed = displayName;
       }
 
       totalTime += duration;
-      categoryTotals[category] = (categoryTotals[category] ?? Duration.zero) + duration;
+      categoryTotals[category] =
+          (categoryTotals[category] ?? Duration.zero) + duration;
 
       applications.add(ApplicationDetail(
         name: displayName,
+        domain: domain,
         category: category,
         screenTime: duration,
         percentageOfTotalTime: 0,
         isVisible: true,
         isProductive: true,
       ));
+    }
+
+    // Include domains with a limit configured but zero usage today.
+    // Guard by raw domain key to avoid duplicates when siteName resolution differs.
+    for (final entry in customMeta.entries) {
+      final domain = entry.key as String;
+      if (seenDomains.contains(domain)) continue; // already in limitMap from first loop
+      final meta = entry.value as Map<dynamic, dynamic>? ?? {};
+      final limitSecs = (meta['dailyLimitSeconds'] as num?)?.toInt() ?? 0;
+      if (limitSecs > 0) {
+        final siteName = (meta['siteName'] as String?) ?? '';
+        final displayName = siteName.isNotEmpty ? siteName : domain;
+        final category = (meta['category'] as String?)?.isNotEmpty == true
+            ? meta['category'] as String
+            : AppCategories.categorizeApp(displayName);
+        limitMap[displayName] = (
+          usage: Duration.zero,
+          limitSeconds: limitSecs,
+          category: category,
+        );
+      }
     }
 
     final totalSecs = totalTime.inSeconds;
@@ -245,8 +289,29 @@ class DailyOverviewData {
           }).toList()
         : <CategoryDetail>[];
 
+    // Build ApplicationLimitDetail list from collected limit data
+    final applicationLimits = limitMap.entries.map((e) {
+      final limitDur = Duration(seconds: e.value.limitSeconds);
+      final usageSecs = e.value.usage.inSeconds;
+      final pctOfLimit = e.value.limitSeconds > 0
+          ? (usageSecs / e.value.limitSeconds) * 100
+          : 0.0;
+      final pctOfTotal =
+          totalSecs > 0 ? (usageSecs / totalSecs) * 100 : 0.0;
+      return ApplicationLimitDetail(
+        name: e.key,
+        category: e.value.category,
+        dailyLimit: limitDur,
+        actualUsage: e.value.usage,
+        percentageOfLimit: pctOfLimit,
+        percentageOfTotalTime: pctOfTotal,
+      );
+    }).toList()
+      ..sort((a, b) => b.percentageOfLimit.compareTo(a.percentageOfLimit));
+
     applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
-    categoryBreakdown.sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
+    categoryBreakdown
+        .sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
 
     return OverviewData(
       totalScreenTime: totalTime,
@@ -259,7 +324,7 @@ class DailyOverviewData {
       totalFocusTime: Duration.zero,
       topApplications: applications,
       categoryBreakdown: categoryBreakdown,
-      applicationLimits: [],
+      applicationLimits: applicationLimits,
     );
   }
 }
@@ -318,7 +383,8 @@ class OverviewData {
 }
 
 class ApplicationDetail {
-  final String name;
+  final String name;     // display name (siteName or domain)
+  final String domain;  // raw domain key (web only; empty string on desktop)
   final String category;
   final Duration screenTime;
   final double percentageOfTotalTime;
@@ -328,6 +394,7 @@ class ApplicationDetail {
 
   ApplicationDetail({
     required this.name,
+    this.domain = '',
     required this.category,
     required this.screenTime,
     required this.percentageOfTotalTime,

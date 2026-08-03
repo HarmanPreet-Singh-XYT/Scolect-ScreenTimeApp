@@ -47,6 +47,15 @@
     "http://localhost:46000/*"
   ],
 
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content_block.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+
   "web_accessible_resources": [
     {
       "resources": [
@@ -59,7 +68,8 @@
         "icons/**",
         "favicon.png",
         "blocked.html",
-        "blocked.js"
+        "blocked.js",
+        "content_block.js"
       ],
       "matches": ["<all_urls>"]
     }

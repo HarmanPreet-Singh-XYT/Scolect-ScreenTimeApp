@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "从备份恢复？",
   "webImportConfirmMessage": "这将使用备份文件的内容覆盖您当前的扩展程序数据。已恢复键的现有数据将被替换。",
-  "webImportConfirmButton": "恢复"
+  "webImportConfirmButton": "恢复",
+  "blockOverlayBadge": "Scolect 屏幕时间",
+  "blockOverlayTitle": "已达到每日限制",
+  "blockOverlayTimeSpent": "已用时间",
+  "blockOverlayDailyLimit": "每日限制",
+  "blockOverlayVisitsToday": "今日访问次数",
+  "blockOverlayResetsIn": "重置于",
+  "blockOverlayGoBack": "返回",
+  "blockOverlayOpenDashboard": "打开仪表板",
+  "blockOverlayUnblockToday": "今日解除限制",
+  "blockOverlayUnblockConfirmLabel": "输入 {siteName} 以解除今日剩余时间的限制：",
+  "blockOverlayUnblockButton": "解除限制",
+  "blockOverlayFooter": "Scolect · 屏幕时间追踪器"
 }

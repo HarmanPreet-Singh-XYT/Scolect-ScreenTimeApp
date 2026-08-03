@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "Restaurer à partir de la sauvegarde ?",
   "webImportConfirmMessage": "Cette action remplacera les données actuelles de votre extension par le contenu du fichier de sauvegarde. Les données existantes pour les clés restaurées seront remplacées.",
-  "webImportConfirmButton": "Restaurer"
+  "webImportConfirmButton": "Restaurer",
+  "blockOverlayBadge": "Scolect Temps d'écran",
+  "blockOverlayTitle": "Limite quotidienne atteinte",
+  "blockOverlayTimeSpent": "Temps utilisé",
+  "blockOverlayDailyLimit": "Limite quotidienne",
+  "blockOverlayVisitsToday": "Visites aujourd'hui",
+  "blockOverlayResetsIn": "Réinitialisation dans",
+  "blockOverlayGoBack": "Retour",
+  "blockOverlayOpenDashboard": "Ouvrir le tableau de bord",
+  "blockOverlayUnblockToday": "Débloquer pour aujourd'hui",
+  "blockOverlayUnblockConfirmLabel": "Tapez {siteName} pour débloquer pour le reste de la journée :",
+  "blockOverlayUnblockButton": "Débloquer",
+  "blockOverlayFooter": "Scolect · suivi du temps d'écran"
 }

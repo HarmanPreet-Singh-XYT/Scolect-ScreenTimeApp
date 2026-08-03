@@ -3702,4 +3702,42 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'بحال کریں';
+
+  @override
+  String get blockOverlayBadge => 'Scolect اسکرین ٹائم';
+
+  @override
+  String get blockOverlayTitle => 'روزانہ کی حد پوری ہو گئی';
+
+  @override
+  String get blockOverlayTimeSpent => 'استعمال شدہ وقت';
+
+  @override
+  String get blockOverlayDailyLimit => 'روزانہ کی حد';
+
+  @override
+  String get blockOverlayVisitsToday => 'آج کے وزٹ';
+
+  @override
+  String get blockOverlayResetsIn => 'ری سیٹ ہوگا';
+
+  @override
+  String get blockOverlayGoBack => 'واپس جائیں';
+
+  @override
+  String get blockOverlayOpenDashboard => 'ڈیش بورڈ کھولیں';
+
+  @override
+  String get blockOverlayUnblockToday => 'آج کے لیے بلاک ہٹائیں';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'آج کے باقی وقت کے لیے $siteName ٹائپ کریں:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'بلاک ہٹائیں';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · اسکرین ٹائم ٹریکر';
 }

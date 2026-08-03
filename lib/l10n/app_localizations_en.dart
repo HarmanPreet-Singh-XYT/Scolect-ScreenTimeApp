@@ -3751,4 +3751,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get webImportConfirmButton => 'Restore';
+
+  @override
+  String get blockOverlayBadge => 'Scolect Screen Time';
+
+  @override
+  String get blockOverlayTitle => 'Daily Limit Reached';
+
+  @override
+  String get blockOverlayTimeSpent => 'Time spent';
+
+  @override
+  String get blockOverlayDailyLimit => 'Daily limit';
+
+  @override
+  String get blockOverlayVisitsToday => 'Visits today';
+
+  @override
+  String get blockOverlayResetsIn => 'Resets in';
+
+  @override
+  String get blockOverlayGoBack => 'Go Back';
+
+  @override
+  String get blockOverlayOpenDashboard => 'Open Dashboard';
+
+  @override
+  String get blockOverlayUnblockToday => 'Unblock for today';
+
+  @override
+  String blockOverlayUnblockConfirmLabel(String siteName) {
+    return 'Type $siteName to unblock for the rest of today:';
+  }
+
+  @override
+  String get blockOverlayUnblockButton => 'Unblock';
+
+  @override
+  String get blockOverlayFooter => 'Scolect · screen time tracker';
 }

@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "هل تريد الاستعادة من النسخة الاحتياطية؟",
   "webImportConfirmMessage": "سيؤدي هذا إلى الكتابة فوق بيانات الإضافة الحالية بمحتويات ملف النسخ الاحتياطي. سيتم استبدال البيانات الحالية للمفاتيح المستعادة.",
-  "webImportConfirmButton": "استعادة"
+  "webImportConfirmButton": "استعادة",
+  "blockOverlayBadge": "Scolect لتتبع وقت الشاشة",
+  "blockOverlayTitle": "تم الوصول إلى الحد اليومي",
+  "blockOverlayTimeSpent": "الوقت المُستخدم",
+  "blockOverlayDailyLimit": "الحد اليومي",
+  "blockOverlayVisitsToday": "الزيارات اليوم",
+  "blockOverlayResetsIn": "يُعاد تعيينه خلال",
+  "blockOverlayGoBack": "رجوع",
+  "blockOverlayOpenDashboard": "فتح لوحة التحكم",
+  "blockOverlayUnblockToday": "إلغاء الحظر لهذا اليوم",
+  "blockOverlayUnblockConfirmLabel": "اكتب {siteName} لإلغاء الحظر لبقية اليوم:",
+  "blockOverlayUnblockButton": "إلغاء الحظر",
+  "blockOverlayFooter": "Scolect · تتبع وقت الشاشة"
 }

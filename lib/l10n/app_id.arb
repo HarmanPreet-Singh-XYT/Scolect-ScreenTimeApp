@@ -2066,5 +2066,17 @@
   },
   "webImportConfirmTitle": "Pulihkan dari Cadangan?",
   "webImportConfirmMessage": "Tindakan ini akan menimpa data ekstensi Anda saat ini dengan konten dari berkas cadangan. Data yang ada untuk kunci yang dipulihkan akan digantikan.",
-  "webImportConfirmButton": "Pulihkan"
+  "webImportConfirmButton": "Pulihkan",
+  "blockOverlayBadge": "Scolect Waktu Layar",
+  "blockOverlayTitle": "Batas Harian Tercapai",
+  "blockOverlayTimeSpent": "Waktu digunakan",
+  "blockOverlayDailyLimit": "Batas harian",
+  "blockOverlayVisitsToday": "Kunjungan hari ini",
+  "blockOverlayResetsIn": "Direset dalam",
+  "blockOverlayGoBack": "Kembali",
+  "blockOverlayOpenDashboard": "Buka Dasbor",
+  "blockOverlayUnblockToday": "Buka blokir untuk hari ini",
+  "blockOverlayUnblockConfirmLabel": "Ketik {siteName} untuk membuka blokir untuk sisa hari ini:",
+  "blockOverlayUnblockButton": "Buka Blokir",
+  "blockOverlayFooter": "Scolect · pelacak waktu layar"
 }
