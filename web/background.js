@@ -5,7 +5,7 @@
 const STORAGE_PREFIX    = 'scolect_';
 const ALARM_TICK        = 'scolect_tick';
 const FLUTTER_PORT      = 46000;
-const TICK_PERIOD       = 1 / 60; // minutes (~1 second)
+const TICK_PERIOD       = 1; // minutes (Chrome enforces ≥1 min for published extensions)
 const WS_URL            = `ws://localhost:${FLUTTER_PORT}/ws`;
 
 // ─── WebSocket state ──────────────────────────────────────────────────────────
@@ -20,6 +20,11 @@ let _pendingFocusState = null;
 // ─── Idle detection state ─────────────────────────────────────────────────────
 // True while the system is idle or locked — tick() skips time accumulation.
 let _isIdle = false;
+// Resolves once the first queryState() callback fires after SW (re)start.
+// tick() awaits this before deciding whether to accumulate time.
+let _idleReady = false;
+let _idleReadyResolve = null;
+const _idleReadyPromise = new Promise(resolve => { _idleReadyResolve = resolve; });
 
 function getWs() {
   if (_ws && (_ws.readyState === WebSocket.OPEN || _ws.readyState === WebSocket.CONNECTING)) {
@@ -136,7 +141,7 @@ async function _applyFocusState(focusJson) {
   // Apply blocked set (excluding manually unblocked domains)
   _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
   for (const domain of _blockedDomains) {
-    await _redirectBlockedDomainTabs(domain);
+    await _showBlockOverlayOnTabs(domain);
   }
 }
 
@@ -477,7 +482,8 @@ async function startTracking(url, title) {
   if (current && current.pendingSeconds > 0) {
     await updateDomain(today, current.domain, current.pendingSeconds, 0);
   }
-  await setActive({ domain, startedAt: Date.now(), pendingSeconds: 0, date: today });
+  const nowMs = Date.now();
+  await setActive({ domain, startedAt: nowMs, lastTickAt: nowMs, pendingSeconds: 0, date: today });
   // Record a visit every time we switch to this domain (covers re-visits).
   await updateDomain(today, domain, 0, 1);
   await updateSiteName(domain, title);
@@ -499,6 +505,16 @@ async function tick() {
   if (settings.mode === 'standalone') {
     await _tickLocalFocus();
   }
+
+  // Wait for the post-restart queryState() to complete before trusting _isIdle.
+  // Without this, a SW restart resets _isIdle to false and tick() would credit
+  // time during the async window before queryState() fires its callback.
+  // The 2s timeout is a safety fallback in case setupIdleDetection() fails to
+  // resolve the promise (e.g., chrome.idle API unavailable or settings read error).
+  await Promise.race([
+    _idleReadyPromise,
+    new Promise(r => setTimeout(r, 2000)),
+  ]);
 
   // Skip time accumulation while the user is idle.
   if (_isIdle) {
@@ -525,39 +541,34 @@ async function tick() {
     _overallLimitWarned = false;
   }
 
-  current.pendingSeconds = (current.pendingSeconds || 0) + 1;
+  // Compute elapsed seconds since startedAt to handle any alarm period accurately.
+  // Chrome enforces periodInMinutes ≥ 1 for published extensions, so tick() fires
+  // once per minute rather than every second. Using wall-clock elapsed time means
+  // we accumulate the correct number of seconds regardless of how often tick() fires.
+  const now = Date.now();
+  const lastTick = current.lastTickAt ?? current.startedAt ?? now;
+  const elapsedSecs = Math.round((now - lastTick) / 1000);
+  const delta = Math.max(1, Math.min(elapsedSecs, 120)); // clamp: at least 1s, at most 2min
 
-  if (current.pendingSeconds % 5 === 0) {
-    await updateDomain(today, current.domain, current.pendingSeconds, 0);
-    current.pendingSeconds = 0;
+  current.pendingSeconds = (current.pendingSeconds || 0) + delta;
+  current.lastTickAt = now;
 
-    const day = await getDayData(today);
-    const domainEntry = day.domains.find(d => d.domain === current.domain);
-    if (domainEntry) {
-      await checkLimitNotifications(current.domain, domainEntry.seconds);
-    }
+  await updateDomain(today, current.domain, current.pendingSeconds, 0);
+  current.pendingSeconds = 0;
 
-    // Check overall daily limit against total usage across all domains.
-    const totalSecondsToday = day.domains.reduce((s, e) => s + e.seconds, 0);
-    await checkOverallLimitNotifications(totalSecondsToday, settings);
+  const day = await getDayData(today);
+  const domainEntry = day.domains.find(d => d.domain === current.domain);
+  if (domainEntry) {
+    await checkLimitNotifications(current.domain, domainEntry.seconds);
+  }
 
-    // Push usage to desktop over WebSocket (replaces 1-min ALARM_SYNC poll).
-    // Fire-and-forget so a slow/absent desktop never delays the tick.
-    if (settings.mode !== 'standalone') {
-      runSync().catch(console.error);
-    }
-  } else {
-    const meta = settings.metadata?.[current.domain];
-    if (meta?.dailyLimitSeconds > 0) {
-      const today2 = getTodayKey();
-      const day2 = await getDayData(today2);
-      const committed = day2.domains.find(d => d.domain === current.domain)?.seconds ?? 0;
-      const estimated = committed + current.pendingSeconds;
-      const ratio = estimated / meta.dailyLimitSeconds;
-      if (ratio >= 0.9) {
-        await checkLimitNotifications(current.domain, estimated);
-      }
-    }
+  // Check overall daily limit against total usage across all domains.
+  const totalSecondsToday = day.domains.reduce((s, e) => s + e.seconds, 0);
+  await checkOverallLimitNotifications(totalSecondsToday, settings);
+
+  // Push usage to desktop over WebSocket.
+  if (settings.mode !== 'standalone') {
+    runSync().catch(console.error);
   }
 
   await setActive({ ...current, date: today });
@@ -693,7 +704,7 @@ async function refreshBlockedDomains() {
 
   _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
   for (const domain of _blockedDomains) {
-    await _redirectBlockedDomainTabs(domain);
+    await _showBlockOverlayOnTabs(domain);
   }
 }
 
@@ -935,6 +946,7 @@ async function setupIdleDetection() {
   if (!settings.idleDetection) {
     // Idle detection disabled — treat system as always active.
     _isIdle = false;
+    if (!_idleReady) { _idleReady = true; _idleReadyResolve(); }
     return;
   }
   const threshold = Math.max(
@@ -944,10 +956,12 @@ async function setupIdleDetection() {
   chrome.idle.setDetectionInterval(threshold);
 
   // Query current idle state so that if the SW restarts while the user is away
-  // we don't start counting time immediately.
+  // we don't start counting time immediately. Resolves _idleReadyPromise so
+  // tick() knows _isIdle is authoritative and not the default false.
   chrome.idle.queryState(threshold, state => {
     _isIdle = state !== 'active';
     if (_isIdle) pauseTracking().catch(console.error);
+    if (!_idleReady) { _idleReady = true; _idleReadyResolve(); }
   });
 }
 
