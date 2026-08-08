@@ -554,6 +554,7 @@ async function sendFocusControl(action) {
 
 function renderFocusTab(state, settings, storageData) {
   const panel = document.getElementById('panelFocus');
+  if (!panel) return;
   const mode  = settings?.mode ?? state?.mode ?? 'standalone';
 
   // ── Parse today's completed focus sessions from storage
@@ -752,7 +753,7 @@ function renderFocusTab(state, settings, storageData) {
 
 document.getElementById('tabOverview').addEventListener('click', () => switchTab('overview'));
 document.getElementById('tabSite').addEventListener('click', () => switchTab('site'));
-document.getElementById('tabFocus').addEventListener('click', () => switchTab('focus'));
+// document.getElementById('tabFocus').addEventListener('click', () => switchTab('focus'));
 
 document.getElementById('openDashBtn').addEventListener('click', () => {
   chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });

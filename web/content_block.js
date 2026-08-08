@@ -511,7 +511,7 @@
 
   // ── Message listener ───────────────────────────────────────────────────────
 
-  chrome.runtime.onMessage.addListener((msg) => {
+  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === 'SHOW_BLOCK_OVERLAY') {
       // Don't double-inject
       if (document.getElementById(OVERLAY_ID)) return;
@@ -520,6 +520,12 @@
     }
     if (msg.type === 'HIDE_BLOCK_OVERLAY') {
       removeOverlay();
+    }
+    if (msg.type === 'CHECK_MEDIA_PLAYING') {
+      const playing = [...document.querySelectorAll('video, audio')]
+        .some(el => !el.paused && !el.ended && el.readyState > 2);
+      sendResponse({ playing });
+      return true;
     }
   });
 

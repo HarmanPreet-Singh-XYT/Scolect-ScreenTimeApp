@@ -46,17 +46,37 @@ class WebBrowserDataProvider {
     if (day == null) return [];
 
     final rawDomains = day['domains'] as List<dynamic>? ?? [];
-    return rawDomains
-        .whereType<Map<String, dynamic>>()
-        .map((d) => _RawDomain(
-              domain: d['domain'] as String? ?? '',
-              seconds: (d['seconds'] as num?)?.toInt() ?? 0,
-              visits: (d['visits'] as num?)?.toInt() ?? 0,
-              lastSeen: (d['lastSeen'] as num?)?.toInt() ?? 0,
-              siteName: d['siteName'] as String? ?? '',
-            ))
-        .where((d) => d.domain.isNotEmpty)
-        .toList();
+    // Normalize domains (strip www., lowercase) and merge any duplicates that
+    // may have been written before the write-time normalization was added.
+    final merged = <String, _RawDomain>{};
+    for (final raw in rawDomains.whereType<Map<String, dynamic>>()) {
+      final rawDomain = (raw['domain'] as String? ?? '').trim();
+      if (rawDomain.isEmpty) continue;
+      final domain = rawDomain.replaceFirst(RegExp(r'^www\.', caseSensitive: false), '').toLowerCase();
+      final seconds = (raw['seconds'] as num?)?.toInt() ?? 0;
+      final visits  = (raw['visits']  as num?)?.toInt() ?? 0;
+      final lastSeen = (raw['lastSeen'] as num?)?.toInt() ?? 0;
+      final siteName = raw['siteName'] as String? ?? '';
+      if (merged.containsKey(domain)) {
+        final existing = merged[domain]!;
+        merged[domain] = _RawDomain(
+          domain: domain,
+          seconds: existing.seconds + seconds,
+          visits: existing.visits + visits,
+          lastSeen: existing.lastSeen > lastSeen ? existing.lastSeen : lastSeen,
+          siteName: existing.siteName.isNotEmpty ? existing.siteName : siteName,
+        );
+      } else {
+        merged[domain] = _RawDomain(
+          domain: domain,
+          seconds: seconds,
+          visits: visits,
+          lastSeen: lastSeen,
+          siteName: siteName,
+        );
+      }
+    }
+    return merged.values.toList();
   }
 
   // ── fetchAllWebsites ──────────────────────────────────────────────────────

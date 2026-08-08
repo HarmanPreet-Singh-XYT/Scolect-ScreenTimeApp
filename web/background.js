@@ -431,6 +431,7 @@ async function updateSiteName(domain, rawTitle) {
 }
 
 async function updateDomain(dateKey, domain, deltaSeconds, deltaVisits) {
+  domain = domain.replace(/^www\./, '').toLowerCase();
   const day = await getDayData(dateKey);
   const idx = day.domains.findIndex(d => d.domain === domain);
   const now = Date.now();
@@ -460,6 +461,13 @@ async function setActive(entry) {
 
 // ─── Tracking logic ───────────────────────────────────────────────────────────
 
+// Last domain that was paused and the timestamp of the pause.
+// Used to detect brief focus interruptions (e.g. macOS Space transition when
+// going fullscreen) so we don't count a resume as a new visit.
+let _lastPausedDomain = null;
+let _lastPausedAt = 0;
+const RESUME_DEBOUNCE_MS = 3000; // treat same-domain refocus within 3s as a resume
+
 async function startTracking(url, title) {
   if (url && (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://'))) {
     await setActive(null);
@@ -473,8 +481,7 @@ async function startTracking(url, title) {
   const today = getTodayKey();
   const current = await getActive();
   if (current?.domain === domain) {
-    // Still on the same site — update name but also record a re-visit if the
-    // user left and came back (startedAt was reset by a previous pauseTracking).
+    // Still on the same site — update name but don't record a new visit.
     await updateSiteName(domain, title);
     return;
   }
@@ -484,8 +491,14 @@ async function startTracking(url, title) {
   }
   const nowMs = Date.now();
   await setActive({ domain, startedAt: nowMs, lastTickAt: nowMs, pendingSeconds: 0, date: today });
-  // Record a visit every time we switch to this domain (covers re-visits).
-  await updateDomain(today, domain, 0, 1);
+
+  // Only count a new visit if this isn't a quick resume after a brief focus gap
+  // (e.g. macOS Space transition when going fullscreen pauses then immediately resumes).
+  const isResume = domain === _lastPausedDomain && (nowMs - _lastPausedAt) < RESUME_DEBOUNCE_MS;
+  if (!isResume) {
+    await updateDomain(today, domain, 0, 1);
+  }
+  _lastPausedDomain = null;
   await updateSiteName(domain, title);
 }
 
@@ -495,6 +508,9 @@ async function pauseTracking() {
   if (current.pendingSeconds > 0) {
     await updateDomain(getTodayKey(), current.domain, current.pendingSeconds, 0);
   }
+  // Remember which domain was paused so startTracking() can detect a quick resume.
+  _lastPausedDomain = current.domain;
+  _lastPausedAt = Date.now();
   await setActive(null);
 }
 
@@ -965,6 +981,24 @@ async function setupIdleDetection() {
   });
 }
 
+// Returns true if the active tab is producing media (audio output or playing video/audio element).
+// Used to skip idle-pause when the user is watching/listening hands-free (e.g. Netflix, Spotify).
+// Checks tab.audible first (no message needed), then falls back to DOM query via content script.
+async function _isMediaPlayingInActiveTab() {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tabs[0]) return false;
+    // tab.audible is true when the tab is actually producing audio output.
+    if (tabs[0].audible) return true;
+    // Fall back to DOM check for silent video (e.g. muted autoplay, paused-but-buffering).
+    const response = await chrome.tabs.sendMessage(tabs[0].id, { type: 'CHECK_MEDIA_PLAYING' });
+    return response?.playing ?? false;
+  } catch {
+    // Content script not injected (e.g. chrome:// page) or tab not ready.
+    return false;
+  }
+}
+
 chrome.idle.onStateChanged.addListener(async state => {
   const settings = await getSettings();
   if (!settings.idleDetection) return;
@@ -973,8 +1007,14 @@ chrome.idle.onStateChanged.addListener(async state => {
   _isIdle = state !== 'active';
 
   if (_isIdle && !wasIdle) {
-    // Just went idle — stop accumulating time.
-    await pauseTracking();
+    // Just went idle — but don't pause if media is actively playing (e.g. Netflix).
+    const mediaPlaying = await _isMediaPlayingInActiveTab();
+    if (mediaPlaying) {
+      // Keep _isIdle false so tick() continues accumulating time.
+      _isIdle = false;
+    } else {
+      await pauseTracking();
+    }
   } else if (!_isIdle && wasIdle) {
     // Returned from idle — resume tracking the current active tab.
     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
