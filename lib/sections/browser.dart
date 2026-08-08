@@ -318,11 +318,13 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
     final settings = context.watch<SettingsProvider>();
 
     return Center(
-      child: SizedBox(
-        width: 520,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: SizedBox(
+          width: 520,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
             // Icon
             Container(
               padding: const EdgeInsets.all(20),
@@ -619,9 +621,12 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
           ],
         ),
       ),
+    ),
     );
   }
 }
+
+
 
 class _SetupStep extends StatelessWidget {
   final int number;

@@ -4,11 +4,13 @@ import '../../../controller/data_controllers/personalization/insight_models.dart
 class InsightCard extends StatelessWidget {
   final Insight insight;
   final VoidCallback onDismiss;
+  final bool isFullWidth;
 
   const InsightCard({
     super.key,
     required this.insight,
     required this.onDismiss,
+    this.isFullWidth = false,
   });
 
   Color _stripeColor(FluentThemeData theme) {
@@ -28,7 +30,7 @@ class InsightCard extends StatelessWidget {
     final stripe = _stripeColor(theme);
 
     return Container(
-      width: 300,
+      width: isFullWidth ? double.infinity : 300,
       padding: const EdgeInsets.fromLTRB(0, 12, 10, 12),
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,
@@ -54,6 +56,7 @@ class InsightCard extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   insight.title,
@@ -113,8 +116,16 @@ class InsightCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     if (insights.isEmpty) return const SizedBox.shrink();
 
+    if (insights.length == 1) {
+      return InsightCard(
+        insight: insights.first,
+        onDismiss: () => onDismiss(insights.first.id),
+        isFullWidth: true,
+      );
+    }
+
     return SizedBox(
-      height: 92,
+      height: 104,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: insights.length,
