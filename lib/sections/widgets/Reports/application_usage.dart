@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/sections/widgets/sortable_header.dart';
 import '../../controller/data_controllers/reports_controller.dart';
 import './appdetails.dialog.dart';
 
@@ -21,6 +22,7 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   String _searchQuery = '';
   String _sortBy = 'Usage';
   bool _sortAscending = false;
+  String _productivityFilter = 'All';
   int? _hoveredIndex;
   final FocusNode _searchFocusNode = FocusNode();
   final TextEditingController _searchController = TextEditingController();
@@ -55,11 +57,16 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   void _applyFilterAndSort() {
     final query = _searchQuery.toLowerCase();
 
-    _filteredAppUsageDetails = query.isEmpty
-        ? List.of(widget.appUsageDetails)
-        : widget.appUsageDetails
-            .where((app) => app.appName.toLowerCase().contains(query))
-            .toList();
+    _filteredAppUsageDetails = widget.appUsageDetails.where((app) {
+      final matchesQuery =
+          query.isEmpty || app.appName.toLowerCase().contains(query);
+      final matchesProductivity = switch (_productivityFilter) {
+        'Productive' => app.isProductive,
+        'NonProductive' => !app.isProductive,
+        _ => true,
+      };
+      return matchesQuery && matchesProductivity;
+    }).toList();
 
     _sortInPlace();
 
@@ -98,6 +105,29 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
     });
   }
 
+  void _onHeaderSort(String column) {
+    setState(() {
+      if (_sortBy == column) {
+        _sortAscending = !_sortAscending;
+      } else {
+        _sortBy = column;
+        _sortAscending = true;
+      }
+      _applyFilterAndSort();
+    });
+  }
+
+  void _cycleProductivityFilter() {
+    setState(() {
+      _productivityFilter = switch (_productivityFilter) {
+        'All' => 'Productive',
+        'Productive' => 'NonProductive',
+        _ => 'All',
+      };
+      _applyFilterAndSort();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -122,7 +152,15 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
             productiveApps: _productiveApps,
           ),
           _buildToolbar(l10n, theme),
-          _ColumnHeaders(l10n: l10n, theme: theme),
+          _ColumnHeaders(
+            l10n: l10n,
+            theme: theme,
+            sortBy: _sortBy,
+            sortAscending: _sortAscending,
+            onSort: _onHeaderSort,
+            productivityFilter: _productivityFilter,
+            onProductivityFilterCycle: _cycleProductivityFilter,
+          ),
           Expanded(
             child: _visibleApps.isEmpty
                 ? _EmptyState(
@@ -408,8 +446,27 @@ class _MiniStat extends StatelessWidget {
 class _ColumnHeaders extends StatelessWidget {
   final AppLocalizations l10n;
   final FluentThemeData theme;
+  final String sortBy;
+  final bool sortAscending;
+  final ValueChanged<String> onSort;
+  final String productivityFilter;
+  final VoidCallback onProductivityFilterCycle;
 
-  const _ColumnHeaders({required this.l10n, required this.theme});
+  const _ColumnHeaders({
+    required this.l10n,
+    required this.theme,
+    required this.sortBy,
+    required this.sortAscending,
+    required this.onSort,
+    required this.productivityFilter,
+    required this.onProductivityFilterCycle,
+  });
+
+  String _productivityLabel() => switch (productivityFilter) {
+        'Productive' => l10n.productive,
+        'NonProductive' => l10n.nonProductive,
+        _ => l10n.productivityHeader,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -419,6 +476,8 @@ class _ColumnHeaders extends StatelessWidget {
       fontSize: 11,
       letterSpacing: 0.5,
     );
+    final direction =
+        sortAscending ? SortDirection.ascending : SortDirection.descending;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -430,22 +489,61 @@ class _ColumnHeaders extends StatelessWidget {
       ),
       child: Row(
         children: [
+          SortableHeaderCell(
+            label: l10n.nameHeader,
+            flex: 3,
+            style: style,
+            isActive: sortBy == 'Name',
+            direction: direction,
+            onTap: () => onSort('Name'),
+          ),
+          SortableHeaderCell(
+            label: l10n.categoryHeader,
+            flex: 2,
+            style: style,
+            isActive: sortBy == 'Category',
+            direction: direction,
+            onTap: () => onSort('Category'),
+          ),
+          SortableHeaderCell(
+            label: l10n.totalTimeHeader,
+            flex: 2,
+            style: style,
+            isActive: sortBy == 'Usage',
+            direction: direction,
+            onTap: () => onSort('Usage'),
+          ),
           Expanded(
-              flex: 3,
-              child: Text(l10n.nameHeader,
-                  style: style, overflow: TextOverflow.ellipsis)),
-          Expanded(
-              flex: 2,
-              child: Text(l10n.categoryHeader,
-                  style: style, overflow: TextOverflow.ellipsis)),
-          Expanded(
-              flex: 2,
-              child: Text(l10n.totalTimeHeader,
-                  style: style, overflow: TextOverflow.ellipsis)),
-          Expanded(
-              flex: 2,
-              child: Text(l10n.productivityHeader,
-                  style: style, overflow: TextOverflow.ellipsis)),
+            flex: 2,
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: onProductivityFilterCycle,
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        _productivityLabel(),
+                        overflow: TextOverflow.ellipsis,
+                        style: productivityFilter != 'All'
+                            ? style?.copyWith(
+                                color: theme.accentColor,
+                                fontWeight: FontWeight.w700,
+                              )
+                            : style,
+                      ),
+                    ),
+                    if (productivityFilter != 'All') ...[
+                      const SizedBox(width: 4),
+                      Icon(FluentIcons.filter,
+                          size: 10, color: theme.accentColor),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
           const SizedBox(width: 50),
         ],
       ),

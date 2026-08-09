@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:screentime/sections/settings.dart' show SettingsProvider;
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
+import './widgets/sortable_header.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -32,6 +33,7 @@ class AppViewModel {
   final String siteName;
   final String category;
   final String screenTime;
+  final Duration screenTimeDuration;
   bool isTracking;
   bool isHidden;
   final bool isProductive;
@@ -43,6 +45,7 @@ class AppViewModel {
     this.siteName = '',
     required this.category,
     required this.screenTime,
+    required this.screenTimeDuration,
     required this.isTracking,
     required this.isHidden,
     required this.isProductive,
@@ -56,6 +59,7 @@ class AppViewModel {
       siteName: detail.siteName,
       category: detail.category,
       screenTime: detail.formattedScreenTime,
+      screenTimeDuration: detail.screenTime,
       isTracking: detail.isTracking,
       isHidden: detail.isHidden,
       isProductive: detail.isProductive,
@@ -109,6 +113,9 @@ class _ApplicationsState extends State<Applications>
   List<AppViewModel> _apps = [];
   bool _isLoading = true;
   Timer? _debounce;
+
+  String _sortColumn = 'name';
+  SortDirection _sortDirection = SortDirection.ascending;
 
   SettingsProvider? _settingsProvider;
 
@@ -187,6 +194,24 @@ class _ApplicationsState extends State<Applications>
     });
   }
 
+  void _cycleTrackingFilter() {
+    final next = switch (_trackingFilter) {
+      "all" => "tracked",
+      "tracked" => "untracked",
+      _ => "all",
+    };
+    _updateFilter("trackingFilter", next, (s) => _trackingFilter = s);
+  }
+
+  void _cycleVisibilityFilter() {
+    final next = switch (_visibilityFilter) {
+      "all" => "visible",
+      "visible" => "hidden",
+      _ => "all",
+    };
+    _updateFilter("visibilityFilter", next, (s) => _visibilityFilter = s);
+  }
+
   Future<void> _toggleAppSetting(String type, bool value, String name) async {
     final index = _apps.indexWhere((app) => app.name == name);
     if (index == -1) return;
@@ -211,14 +236,49 @@ class _ApplicationsState extends State<Applications>
     setState(() {});
   }
 
-  List<AppViewModel> get _filteredApps => _apps
-      .where((app) =>
-          app.hasData &&
-          app.matchesTracking(_trackingFilter) &&
-          app.matchesVisibility(_visibilityFilter) &&
-          app.matchesCategory(_selectedCategory) &&
-          app.matchesSearch(_searchValue))
-      .toList();
+  List<AppViewModel> get _filteredApps {
+    final filtered = _apps
+        .where((app) =>
+            app.hasData &&
+            app.matchesTracking(_trackingFilter) &&
+            app.matchesVisibility(_visibilityFilter) &&
+            app.matchesCategory(_selectedCategory) &&
+            app.matchesSearch(_searchValue))
+        .toList();
+
+    final int Function(AppViewModel, AppViewModel) comparator;
+    switch (_sortColumn) {
+      case 'category':
+        comparator = (a, b) => a.category.compareTo(b.category);
+      case 'screenTime':
+        comparator = (a, b) =>
+            a.screenTimeDuration.compareTo(b.screenTimeDuration);
+      case 'name':
+      default:
+        comparator = (a, b) => (a.siteName.isNotEmpty ? a.siteName : a.name)
+            .toLowerCase()
+            .compareTo(
+                (b.siteName.isNotEmpty ? b.siteName : b.name).toLowerCase());
+    }
+
+    filtered.sort(_sortDirection == SortDirection.ascending
+        ? comparator
+        : (a, b) => comparator(b, a));
+    return filtered;
+  }
+
+  void _toggleSort(String column) {
+    setState(() {
+      if (_sortColumn == column) {
+        _sortDirection = _sortDirection == SortDirection.ascending
+            ? SortDirection.descending
+            : SortDirection.ascending;
+      } else {
+        _sortColumn = column;
+        _sortDirection = SortDirection.ascending;
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -298,6 +358,13 @@ class _ApplicationsState extends State<Applications>
                   apps: filteredApps,
                   toggleAppSetting: _toggleAppSetting,
                   refreshData: _refreshData,
+                  sortColumn: _sortColumn,
+                  sortDirection: _sortDirection,
+                  onSort: _toggleSort,
+                  trackingFilter: _trackingFilter,
+                  onTrackingFilterCycle: _cycleTrackingFilter,
+                  visibilityFilter: _visibilityFilter,
+                  onVisibilityFilterCycle: _cycleVisibilityFilter,
                 ),
               ),
             ],
@@ -709,11 +776,25 @@ class _DataTable extends StatelessWidget {
   final List<AppViewModel> apps;
   final void Function(String type, bool value, String name) toggleAppSetting;
   final Future<void> Function() refreshData;
+  final String sortColumn;
+  final SortDirection sortDirection;
+  final ValueChanged<String> onSort;
+  final String trackingFilter;
+  final VoidCallback onTrackingFilterCycle;
+  final String visibilityFilter;
+  final VoidCallback onVisibilityFilterCycle;
 
   const _DataTable({
     required this.apps,
     required this.toggleAppSetting,
     required this.refreshData,
+    required this.sortColumn,
+    required this.sortDirection,
+    required this.onSort,
+    required this.trackingFilter,
+    required this.onTrackingFilterCycle,
+    required this.visibilityFilter,
+    required this.onVisibilityFilterCycle,
   });
 
   @override
@@ -731,7 +812,17 @@ class _DataTable extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Column(
           children: [
-            _TableHeaderRow(l10n: l10n, theme: theme),
+            _TableHeaderRow(
+              l10n: l10n,
+              theme: theme,
+              sortColumn: sortColumn,
+              sortDirection: sortDirection,
+              onSort: onSort,
+              trackingFilter: trackingFilter,
+              onTrackingFilterCycle: onTrackingFilterCycle,
+              visibilityFilter: visibilityFilter,
+              onVisibilityFilterCycle: onVisibilityFilterCycle,
+            ),
             Expanded(
               child: ListView.builder(
                 padding: EdgeInsets.zero,
@@ -799,11 +890,35 @@ class _EmptyState extends StatelessWidget {
 class _TableHeaderRow extends StatelessWidget {
   final AppLocalizations l10n;
   final FluentThemeData theme;
+  final String sortColumn;
+  final SortDirection sortDirection;
+  final ValueChanged<String> onSort;
+  final String trackingFilter;
+  final VoidCallback onTrackingFilterCycle;
+  final String visibilityFilter;
+  final VoidCallback onVisibilityFilterCycle;
 
-  const _TableHeaderRow({required this.l10n, required this.theme});
+  const _TableHeaderRow({
+    required this.l10n,
+    required this.theme,
+    required this.sortColumn,
+    required this.sortDirection,
+    required this.onSort,
+    required this.trackingFilter,
+    required this.onTrackingFilterCycle,
+    required this.visibilityFilter,
+    required this.onVisibilityFilterCycle,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      color: theme.typography.body?.color?.withValues(alpha: 0.7),
+      letterSpacing: 0.5,
+    );
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -817,13 +932,111 @@ class _TableHeaderRow extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _TableHeader(label: l10n.tableName, flex: 3),
-          _TableHeader(label: l10n.tableCategory, flex: 2),
-          _TableHeader(label: l10n.tableScreenTime, flex: 2, centered: true),
-          _TableHeader(label: l10n.tableTracking, flex: 1, centered: true),
-          _TableHeader(label: l10n.tableHidden, flex: 1, centered: true),
+          SortableHeaderCell(
+            label: l10n.tableName,
+            flex: 3,
+            style: style,
+            isActive: sortColumn == 'name',
+            direction: sortDirection,
+            onTap: () => onSort('name'),
+          ),
+          SortableHeaderCell(
+            label: l10n.tableCategory,
+            flex: 2,
+            style: style,
+            isActive: sortColumn == 'category',
+            direction: sortDirection,
+            onTap: () => onSort('category'),
+          ),
+          SortableHeaderCell(
+            label: l10n.tableScreenTime,
+            flex: 2,
+            align: TextAlign.center,
+            style: style,
+            isActive: sortColumn == 'screenTime',
+            direction: sortDirection,
+            onTap: () => onSort('screenTime'),
+          ),
+          _FilterableTableHeader(
+            label: switch (trackingFilter) {
+              "tracked" => l10n.tracking,
+              "untracked" => l10n.notTracking,
+              _ => l10n.tableTracking,
+            },
+            flex: 1,
+            isActive: trackingFilter != "all",
+            style: style,
+            theme: theme,
+            onTap: onTrackingFilterCycle,
+          ),
+          _FilterableTableHeader(
+            label: switch (visibilityFilter) {
+              "visible" => l10n.visible,
+              "hidden" => l10n.hidden,
+              _ => l10n.tableHidden,
+            },
+            flex: 1,
+            isActive: visibilityFilter != "all",
+            style: style,
+            theme: theme,
+            onTap: onVisibilityFilterCycle,
+          ),
           _TableHeader(label: l10n.tableEdit, flex: 1, centered: true),
         ],
+      ),
+    );
+  }
+}
+
+class _FilterableTableHeader extends StatelessWidget {
+  final String label;
+  final int flex;
+  final bool isActive;
+  final TextStyle style;
+  final FluentThemeData theme;
+  final VoidCallback onTap;
+
+  const _FilterableTableHeader({
+    required this.label,
+    required this.flex,
+    required this.isActive,
+    required this.style,
+    required this.theme,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  label,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: isActive
+                      ? style.copyWith(
+                          color: theme.accentColor,
+                          fontWeight: FontWeight.w700,
+                        )
+                      : style,
+                ),
+              ),
+              if (isActive) ...[
+                const SizedBox(width: 4),
+                Icon(FluentIcons.filter, size: 10, color: theme.accentColor),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

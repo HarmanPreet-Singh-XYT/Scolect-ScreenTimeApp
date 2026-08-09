@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/sections/widgets/sortable_header.dart';
 
 // ─── Constants ────────────────────────────────────────────────────
 
@@ -37,16 +38,63 @@ TextStyle? _fadedCaption(FluentThemeData theme, {double alpha = 0.6}) =>
 
 // ─── Session History ──────────────────────────────────────────────
 
-class SessionHistory extends StatelessWidget {
+class SessionHistory extends StatefulWidget {
   final List<Map<String, dynamic>> data;
 
   const SessionHistory({super.key, required this.data});
+
+  @override
+  State<SessionHistory> createState() => _SessionHistoryState();
+}
+
+class _SessionHistoryState extends State<SessionHistory> {
+  String _sortColumn = 'date';
+  SortDirection _sortDirection = SortDirection.descending;
+
+  void _toggleSort(String column) {
+    setState(() {
+      if (_sortColumn == column) {
+        _sortDirection = _sortDirection == SortDirection.ascending
+            ? SortDirection.descending
+            : SortDirection.ascending;
+      } else {
+        _sortColumn = column;
+        _sortDirection = SortDirection.ascending;
+      }
+    });
+  }
+
+  List<Map<String, dynamic>> get _sortedData {
+    final sorted = List<Map<String, dynamic>>.of(widget.data);
+
+    final int Function(Map<String, dynamic>, Map<String, dynamic>) comparator;
+    switch (_sortColumn) {
+      case 'duration':
+        comparator = (a, b) => (a['totalDuration'] as Duration? ??
+                Duration.zero)
+            .compareTo(b['totalDuration'] as Duration? ?? Duration.zero);
+      case 'status':
+        comparator = (a, b) => (a['isComplete'] as bool? ?? false)
+            .toString()
+            .compareTo((b['isComplete'] as bool? ?? false).toString());
+      case 'date':
+      default:
+        comparator = (a, b) => (a['startTime'] as DateTime)
+            .compareTo(b['startTime'] as DateTime);
+    }
+
+    sorted.sort(_sortDirection == SortDirection.ascending
+        ? comparator
+        : (a, b) => comparator(b, a));
+    return sorted;
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
     final hStyle = _headerStyle(theme);
+    final data = _sortedData;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxHeight: 350, minHeight: 100),
@@ -60,15 +108,30 @@ class SessionHistory extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
                 children: [
-                  _HeaderCell(label: l10n.dateHeader, flex: 2, style: hStyle),
-                  _HeaderCell(
-                      label: l10n.durationHeader,
-                      align: TextAlign.center,
-                      style: hStyle),
-                  _HeaderCell(
-                      label: l10n.statusHeader,
-                      align: TextAlign.right,
-                      style: hStyle),
+                  SortableHeaderCell(
+                    label: l10n.dateHeader,
+                    flex: 2,
+                    style: hStyle,
+                    isActive: _sortColumn == 'date',
+                    direction: _sortDirection,
+                    onTap: () => _toggleSort('date'),
+                  ),
+                  SortableHeaderCell(
+                    label: l10n.durationHeader,
+                    align: TextAlign.center,
+                    style: hStyle,
+                    isActive: _sortColumn == 'duration',
+                    direction: _sortDirection,
+                    onTap: () => _toggleSort('duration'),
+                  ),
+                  SortableHeaderCell(
+                    label: l10n.statusHeader,
+                    align: TextAlign.right,
+                    style: hStyle,
+                    isActive: _sortColumn == 'status',
+                    direction: _sortDirection,
+                    onTap: () => _toggleSort('status'),
+                  ),
                 ],
               ),
             ),
@@ -95,33 +158,6 @@ class SessionHistory extends StatelessWidget {
 }
 
 // ─── Small extracted widgets ──────────────────────────────────────
-
-class _HeaderCell extends StatelessWidget {
-  const _HeaderCell({
-    required this.label,
-    this.flex = 1,
-    this.align = TextAlign.start,
-    this.style,
-  });
-
-  final String label;
-  final int flex;
-  final TextAlign align;
-  final TextStyle? style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Text(
-        label,
-        overflow: TextOverflow.ellipsis,
-        textAlign: align,
-        style: style,
-      ),
-    );
-  }
-}
 
 class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.theme, required this.l10n});

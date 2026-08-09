@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/sections/widgets/sortable_header.dart';
 import './reusable.dart' as rub;
 import './approw.dart';
 
-class ApplicationLimitsCard extends StatelessWidget {
+class ApplicationLimitsCard extends StatefulWidget {
   final List<AppUsageSummary> appSummaries;
   final ScreenTimeDataController controller;
   final VoidCallback onDataChanged;
@@ -30,12 +31,81 @@ class ApplicationLimitsCard extends StatelessWidget {
     fontSize: 13,
   );
 
+  @override
+  State<ApplicationLimitsCard> createState() => _ApplicationLimitsCardState();
+}
+
+class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
+  String _sortColumn = 'name';
+  SortDirection _sortDirection = SortDirection.ascending;
+  String _searchQuery = '';
+  final _searchController = TextEditingController();
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _toggleSort(String column) {
+    setState(() {
+      if (_sortColumn == column) {
+        _sortDirection = _sortDirection == SortDirection.ascending
+            ? SortDirection.descending
+            : SortDirection.ascending;
+      } else {
+        _sortColumn = column;
+        _sortDirection = SortDirection.ascending;
+      }
+    });
+  }
+
+  void _onSearchChanged(String value) {
+    setState(() => _searchQuery = value);
+  }
+
+  void _clearSearch() {
+    _searchController.clear();
+    setState(() => _searchQuery = '');
+  }
+
+  List<AppUsageSummary> get _sortedApps {
+    final query = _searchQuery.trim().toLowerCase();
+    final filtered = widget.appSummaries.where((app) {
+      if (app.appName.trim().isEmpty) return false;
+      if (query.isEmpty) return true;
+      return app.appName.toLowerCase().contains(query) ||
+          app.siteName.toLowerCase().contains(query) ||
+          app.category.toLowerCase().contains(query);
+    }).toList();
+
+    final int Function(AppUsageSummary, AppUsageSummary) comparator;
+    switch (_sortColumn) {
+      case 'category':
+        comparator = (a, b) => a.category.compareTo(b.category);
+      case 'dailyLimit':
+        comparator = (a, b) => a.dailyLimit.compareTo(b.dailyLimit);
+      case 'currentUsage':
+        comparator = (a, b) => a.currentUsage.compareTo(b.currentUsage);
+      case 'name':
+      default:
+        comparator = (a, b) => (a.siteName.isNotEmpty ? a.siteName : a.appName)
+            .toLowerCase()
+            .compareTo((b.siteName.isNotEmpty ? b.siteName : b.appName)
+                .toLowerCase());
+    }
+
+    filtered.sort(_sortDirection == SortDirection.ascending
+        ? comparator
+        : (a, b) => comparator(b, a));
+    return filtered;
+  }
+
   // ──────────────────────────── build ────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    final filteredApps =
-        appSummaries.where((app) => app.appName.trim().isNotEmpty).toList();
+    final sortedApps = _sortedApps;
 
     return rub.Card(
       padding: EdgeInsets.zero,
@@ -44,17 +114,28 @@ class ApplicationLimitsCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           _Header(
-            count: filteredApps.length,
+            count: sortedApps.length,
             onAdd: () => _showLimitDialog(context),
+            searchController: _searchController,
+            onSearchChanged: _onSearchChanged,
+            onClearSearch: _clearSearch,
           ),
-          _TableHeader(headerStyle: _headerStyle),
-          if (filteredApps.isEmpty)
-            _EmptyState()
+          _TableHeader(
+            headerStyle: ApplicationLimitsCard._headerStyle,
+            sortColumn: _sortColumn,
+            sortDirection: _sortDirection,
+            onSort: _toggleSort,
+          ),
+          if (sortedApps.isEmpty)
+            _EmptyState(
+              hasSearch: _searchQuery.trim().isNotEmpty,
+              onClear: _clearSearch,
+            )
           else
-            ...filteredApps.asMap().entries.map((entry) => AppRow(
+            ...sortedApps.asMap().entries.map((entry) => AppRow(
                   app: entry.value,
                   onEdit: () => _showLimitDialog(context, app: entry.value),
-                  isLast: entry.key == filteredApps.length - 1,
+                  isLast: entry.key == sortedApps.length - 1,
                 )),
           const SizedBox(height: 8),
         ],
@@ -97,7 +178,8 @@ class ApplicationLimitsCard extends StatelessWidget {
                 children: [
                   // App selector — only for add mode
                   if (!isEdit) ...[
-                    Text(l10n.selectApplication, style: _sectionLabelStyle),
+                    Text(l10n.selectApplication,
+                        style: ApplicationLimitsCard._sectionLabelStyle),
                     const SizedBox(height: 8),
                     ComboBox<String>(
                       placeholder: Text(
@@ -107,7 +189,7 @@ class ApplicationLimitsCard extends StatelessWidget {
                         ),
                       ),
                       isExpanded: true,
-                      items: appSummaries
+                      items: widget.appSummaries
                           .where((a) => a.appName.trim().isNotEmpty)
                           .map((a) => ComboBoxItem<String>(
                                 value: a.appName,
@@ -164,12 +246,12 @@ class ApplicationLimitsCard extends StatelessWidget {
                           hours: hours.round(),
                           minutes: minutes.round() ~/ 5 * 5,
                         );
-                        controller.updateAppLimit(
+                        widget.controller.updateAppLimit(
                           selectedApp!,
                           duration,
                           limitEnabled,
                         );
-                        onDataChanged();
+                        widget.onDataChanged();
                         Navigator.pop(context);
                       }
                     : null,
@@ -197,8 +279,17 @@ class ApplicationLimitsCard extends StatelessWidget {
 class _Header extends StatelessWidget {
   final int count;
   final VoidCallback onAdd;
+  final TextEditingController searchController;
+  final ValueChanged<String> onSearchChanged;
+  final VoidCallback onClearSearch;
 
-  const _Header({required this.count, required this.onAdd});
+  const _Header({
+    required this.count,
+    required this.onAdd,
+    required this.searchController,
+    required this.onSearchChanged,
+    required this.onClearSearch,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -207,53 +298,83 @@ class _Header extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: theme.accentColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(FluentIcons.app_icon_default,
-                size: 18, color: theme.accentColor),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  kIsWeb ? "Website Limits" : l10n.applicationLimits,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w600),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: theme.accentColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                Text(
-                  kIsWeb ? "$count Websites" : l10n.applicationsTracked(count),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color:
-                        theme.typography.caption?.color?.withValues(alpha: 0.6),
+                child: Icon(FluentIcons.app_icon_default,
+                    size: 18, color: theme.accentColor),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      kIsWeb ? "Website Limits" : l10n.applicationLimits,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      kIsWeb
+                          ? "$count Websites"
+                          : l10n.applicationsTracked(count),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.typography.caption?.color
+                            ?.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              FilledButton(
+                style: ButtonStyle(
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
                 ),
-              ],
-            ),
-          ),
-          FilledButton(
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                onPressed: onAdd,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(FluentIcons.add, size: 12),
+                    const SizedBox(width: 6),
+                    Text(l10n.addLimit),
+                  ],
+                ),
               ),
-            ),
-            onPressed: onAdd,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(FluentIcons.add, size: 12),
-                const SizedBox(width: 6),
-                Text(l10n.addLimit),
-              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 32,
+            child: TextBox(
+              controller: searchController,
+              placeholder: l10n.searchApplications,
+              style: const TextStyle(fontSize: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              onChanged: onSearchChanged,
+              prefix: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Icon(FluentIcons.search,
+                    size: 14, color: theme.inactiveColor),
+              ),
+              suffix: searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(FluentIcons.clear,
+                          size: 12, color: theme.inactiveColor),
+                      onPressed: onClearSearch,
+                    )
+                  : null,
             ),
           ),
         ],
@@ -264,8 +385,16 @@ class _Header extends StatelessWidget {
 
 class _TableHeader extends StatelessWidget {
   final TextStyle headerStyle;
+  final String sortColumn;
+  final SortDirection sortDirection;
+  final ValueChanged<String> onSort;
 
-  const _TableHeader({required this.headerStyle});
+  const _TableHeader({
+    required this.headerStyle,
+    required this.sortColumn,
+    required this.sortDirection,
+    required this.onSort,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -284,28 +413,40 @@ class _TableHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-              flex: 3, child: Text(l10n.applicationHeader, style: headerStyle)),
-          Expanded(
+          SortableHeaderCell(
+            label: l10n.applicationHeader,
             flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(l10n.categoryHeader, style: headerStyle),
-            ),
+            style: headerStyle,
+            isActive: sortColumn == 'name',
+            direction: sortDirection,
+            onTap: () => onSort('name'),
           ),
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(l10n.dailyLimitHeader, style: headerStyle),
-            ),
+          SortableHeaderCell(
+            label: l10n.categoryHeader,
+            flex: 3,
+            padding: const EdgeInsets.only(left: 8),
+            style: headerStyle,
+            isActive: sortColumn == 'category',
+            direction: sortDirection,
+            onTap: () => onSort('category'),
           ),
-          Expanded(
+          SortableHeaderCell(
+            label: l10n.dailyLimitHeader,
             flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: Text(l10n.currentUsageHeader, style: headerStyle),
-            ),
+            padding: const EdgeInsets.only(left: 8),
+            style: headerStyle,
+            isActive: sortColumn == 'dailyLimit',
+            direction: sortDirection,
+            onTap: () => onSort('dailyLimit'),
+          ),
+          SortableHeaderCell(
+            label: l10n.currentUsageHeader,
+            flex: 2,
+            padding: const EdgeInsets.only(left: 8),
+            style: headerStyle,
+            isActive: sortColumn == 'currentUsage',
+            direction: sortDirection,
+            onTap: () => onSort('currentUsage'),
           ),
           SizedBox(
             width: 50,
@@ -319,7 +460,10 @@ class _TableHeader extends StatelessWidget {
 }
 
 class _EmptyState extends StatelessWidget {
-  const _EmptyState();
+  final bool hasSearch;
+  final VoidCallback? onClear;
+
+  const _EmptyState({this.hasSearch = false, this.onClear});
 
   @override
   Widget build(BuildContext context) {
@@ -332,13 +476,19 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(FluentIcons.app_icon_default,
-                size: 48, color: theme.inactiveColor),
+            Icon(
+                hasSearch ? FluentIcons.search : FluentIcons.app_icon_default,
+                size: 48,
+                color: theme.inactiveColor),
             const SizedBox(height: 16),
             Text(
-              l10n.noApplicationsToDisplay,
+              hasSearch ? l10n.noApplicationsMatch : l10n.noApplicationsToDisplay,
               style: TextStyle(color: theme.inactiveColor),
             ),
+            if (hasSearch && onClear != null) ...[
+              const SizedBox(height: 8),
+              Button(onPressed: onClear, child: Text(l10n.clearSearch)),
+            ],
           ],
         ),
       ),
