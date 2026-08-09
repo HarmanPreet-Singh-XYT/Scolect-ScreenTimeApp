@@ -1653,6 +1653,29 @@ class AppLocalizationsRu extends AppLocalizations {
       'Прекратить отслеживание при неактивности';
 
   @override
+  String get keepActiveDuringMediaTitle =>
+      'Оставаться активным во время воспроизведения медиа';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'Игнорировать паузу простоя во время воспроизведения видео или аудио (например, YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'Пауза при потере фокуса окна';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'Приостанавливать отслеживание, когда окно браузера теряет фокус';
+
+  @override
+  String get pauseOnTabUnfocusTitle =>
+      'Пауза при переключении или расфокусировке вкладки';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'Приостанавливать отслеживание, когда вкладка неактивна или находится в фоне';
+
+  @override
   String get idleTimeoutTitle => 'Тайм-аут Бездействия';
 
   @override

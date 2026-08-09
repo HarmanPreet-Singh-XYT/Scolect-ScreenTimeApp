@@ -229,7 +229,7 @@ class WebTrackingSection extends StatelessWidget {
             onChanged: (v) => settings.updateSetting('idleDetectionEnabled', v),
           ),
         ),
-        if (settings.idleDetectionEnabled)
+        if (settings.idleDetectionEnabled) ...[
           SettingRow(
             title: l10n.idleTimeoutTitle,
             description: l10n.idleTimeoutDescription(
@@ -240,6 +240,32 @@ class WebTrackingSection extends StatelessWidget {
               onPressed: () => _showIdleTimeoutDialog(context, settings, l10n),
             ),
           ),
+          SettingRow(
+            title: l10n.keepActiveDuringMediaTitle,
+            description: l10n.keepActiveDuringMediaDescription,
+            control: ToggleSwitch(
+              checked: settings.ignoreIdleOnMedia,
+              onChanged: (v) => settings.updateSetting('ignoreIdleOnMedia', v),
+            ),
+          ),
+        ],
+        SettingRow(
+          title: l10n.pauseOnWindowBlurTitle,
+          description: l10n.pauseOnWindowBlurDescription,
+          control: ToggleSwitch(
+            checked: settings.pauseOnWindowBlur,
+            onChanged: (v) => settings.updateSetting('pauseOnWindowBlur', v),
+          ),
+        ),
+        SettingRow(
+          title: l10n.pauseOnTabUnfocusTitle,
+          description: l10n.pauseOnTabUnfocusDescription,
+          showDivider: false,
+          control: ToggleSwitch(
+            checked: settings.pauseOnTabUnfocus,
+            onChanged: (v) => settings.updateSetting('pauseOnTabUnfocus', v),
+          ),
+        ),
       ],
     );
   }

@@ -1649,6 +1649,27 @@ class AppLocalizationsBn extends AppLocalizations {
   String get idleDetectionDescription => 'নিষ্ক্রিয় থাকলে ট্র্যাকিং বন্ধ করুন';
 
   @override
+  String get keepActiveDuringMediaTitle => 'মিডিয়া চলাকালীন সক্রিয় রাখুন';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'ভিডিও বা অডিও চলাকালীন অলস বিরতি উপেক্ষা করুন (যেমন YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'উইন্ডো ফোকাস হারালে বিরতি দিন';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'ব্রাউজার উইন্ডো ফোকাস হারালে ট্র্যাকিং বিরতি দিন';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'ট্যাব পরিবর্তন বা আনফোকাসে বিরতি দিন';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'ট্যাব নিষ্ক্রিয় বা ব্যাকগ্রাউন্ডে থাকলে ট্র্যাকিং বিরতি দিন';
+
+  @override
   String get idleTimeoutTitle => 'নিষ্ক্রিয় সময়সীমা';
 
   @override

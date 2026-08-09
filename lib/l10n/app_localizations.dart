@@ -3112,6 +3112,42 @@ abstract class AppLocalizations {
   /// **'Stop tracking when inactive'**
   String get idleDetectionDescription;
 
+  /// No description provided for @keepActiveDuringMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Active During Media'**
+  String get keepActiveDuringMediaTitle;
+
+  /// No description provided for @keepActiveDuringMediaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore idle pause while video or audio is playing (e.g. YouTube, Netflix)'**
+  String get keepActiveDuringMediaDescription;
+
+  /// No description provided for @pauseOnWindowBlurTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause on Window Blur'**
+  String get pauseOnWindowBlurTitle;
+
+  /// No description provided for @pauseOnWindowBlurDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause tracking when the browser window loses focus'**
+  String get pauseOnWindowBlurDescription;
+
+  /// No description provided for @pauseOnTabUnfocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause on Tab Switch / Unfocus'**
+  String get pauseOnTabUnfocusTitle;
+
+  /// No description provided for @pauseOnTabUnfocusDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause tracking when tab is inactive or backgrounded'**
+  String get pauseOnTabUnfocusDescription;
+
   /// No description provided for @idleTimeoutTitle.
   ///
   /// In en, this message translates to:

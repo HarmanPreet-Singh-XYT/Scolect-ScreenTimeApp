@@ -1644,13 +1644,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get activityTrackingSection => 'Pelacakan Aktivitas';
 
   @override
-  String get idleDetectionTitle => 'Deteksi Idle';
+  String get idleDetectionTitle => 'Deteksi Tidak Aktif';
 
   @override
   String get idleDetectionDescription => 'Berhenti melacak saat tidak aktif';
 
   @override
-  String get idleTimeoutTitle => 'Batas Waktu Idle';
+  String get keepActiveDuringMediaTitle => 'Tetap Aktif Saat Putar Media';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'Abaikan jeda tidak aktif saat video atau audio sedang diputar (mis. YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'Jeda Saat Jendela Kehilangan Fokus';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'Jeda pelacakan saat jendela peramban kehilangan fokus';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'Jeda Saat Pindah / Lepas Fokus Tab';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'Jeda pelacakan saat tab tidak aktif atau berada di latar belakang';
+
+  @override
+  String get idleTimeoutTitle => 'Batas Waktu Tidak Aktif';
 
   @override
   String idleTimeoutDescription(String timeout) {

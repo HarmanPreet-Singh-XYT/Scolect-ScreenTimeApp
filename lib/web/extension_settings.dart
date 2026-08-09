@@ -107,6 +107,9 @@ class ExtensionSettings {
   bool _overallLimitEnabled = false;
   bool _idleDetection = true;
   int _idleTimeoutSeconds = 60;
+  bool _pauseOnWindowBlur = true;
+  bool _pauseOnTabUnfocus = false;
+  bool _ignoreIdleOnMedia = true;
 
   ExtensionMode get mode => _mode;
   String get desktopUrl => _desktopUrl;
@@ -114,6 +117,9 @@ class ExtensionSettings {
   bool get overallLimitEnabled => _overallLimitEnabled;
   bool get idleDetection => _idleDetection;
   int get idleTimeoutSeconds => _idleTimeoutSeconds;
+  bool get pauseOnWindowBlur => _pauseOnWindowBlur;
+  bool get pauseOnTabUnfocus => _pauseOnTabUnfocus;
+  bool get ignoreIdleOnMedia => _ignoreIdleOnMedia;
 
   // ── Load ────────────────────────────────────────────────────────────────────
 
@@ -126,6 +132,9 @@ class ExtensionSettings {
     _overallLimitEnabled = raw['overallLimitEnabled'] as bool? ?? false;
     _idleDetection = raw['idleDetection'] as bool? ?? true;
     _idleTimeoutSeconds = raw['idleTimeoutSeconds'] as int? ?? 60;
+    _pauseOnWindowBlur = raw['pauseOnWindowBlur'] as bool? ?? true;
+    _pauseOnTabUnfocus = raw['pauseOnTabUnfocus'] as bool? ?? false;
+    _ignoreIdleOnMedia = raw['ignoreIdleOnMedia'] as bool? ?? true;
 
     final metaRaw = raw['metadata'] as Map<String, dynamic>? ?? {};
     _metadata.clear();
@@ -186,6 +195,18 @@ class ExtensionSettings {
     await _persist();
   }
 
+  Future<void> setFocusDetectionOptions({
+    bool? pauseOnWindowBlur,
+    bool? pauseOnTabUnfocus,
+    bool? ignoreIdleOnMedia,
+  }) async {
+    await _ensureLoaded();
+    if (pauseOnWindowBlur != null) _pauseOnWindowBlur = pauseOnWindowBlur;
+    if (pauseOnTabUnfocus != null) _pauseOnTabUnfocus = pauseOnTabUnfocus;
+    if (ignoreIdleOnMedia != null) _ignoreIdleOnMedia = ignoreIdleOnMedia;
+    await _persist();
+  }
+
   Future<void> updateMetadata(
     String domain, {
     String? category,
@@ -233,6 +254,9 @@ class ExtensionSettings {
     _overallLimitEnabled = false;
     _idleDetection = true;
     _idleTimeoutSeconds = 60;
+    _pauseOnWindowBlur = true;
+    _pauseOnTabUnfocus = false;
+    _ignoreIdleOnMedia = true;
     _loaded = false;
     await chromeStorageSet({
       _kSettingsKey: {
@@ -242,6 +266,9 @@ class ExtensionSettings {
         'overallLimitEnabled': false,
         'idleDetection': true,
         'idleTimeoutSeconds': 60,
+        'pauseOnWindowBlur': true,
+        'pauseOnTabUnfocus': false,
+        'ignoreIdleOnMedia': true,
         'metadata': <String, dynamic>{},
       },
     });
@@ -277,6 +304,9 @@ class ExtensionSettings {
         'overallLimitEnabled': _overallLimitEnabled,
         'idleDetection': _idleDetection,
         'idleTimeoutSeconds': _idleTimeoutSeconds,
+        'pauseOnWindowBlur': _pauseOnWindowBlur,
+        'pauseOnTabUnfocus': _pauseOnTabUnfocus,
+        'ignoreIdleOnMedia': _ignoreIdleOnMedia,
         'metadata': {
           for (final e in _metadata.entries) e.key: e.value.toMap(),
         },

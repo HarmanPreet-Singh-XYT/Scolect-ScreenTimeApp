@@ -1633,6 +1633,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get idleDetectionDescription => 'إيقاف التتبع عند عدم النشاط';
 
   @override
+  String get keepActiveDuringMediaTitle => 'الإبقاء نشطًا أثناء تشغيل الوسائط';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'تجاهل إيقاف الخمول أثناء تشغيل الفيديو أو الصوت (مثل يوتيوب ونتفليكس)';
+
+  @override
+  String get pauseOnWindowBlurTitle =>
+      'إيقاف مؤقت عند فقدان التركيز عن النافذة';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'إيقاف التتبع مؤقتًا عندما تفقد نافذة المتصفح التركيز';
+
+  @override
+  String get pauseOnTabUnfocusTitle =>
+      'إيقاف مؤقت عند تبديل أو فقدان التركيز عن التبويب';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'إيقاف التتبع مؤقتًا عندما يكون التبويب غير نشط أو في الخلفية';
+
+  @override
   String get idleTimeoutTitle => 'مهلة الخمول';
 
   @override

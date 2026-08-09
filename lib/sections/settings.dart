@@ -58,6 +58,9 @@ const _simpleSettingPaths = <String, String>{
   'monitorKeyboard': 'tracking.monitorKeyboard',
   'audioThreshold': 'tracking.audioThreshold',
   'resetHour': 'tracking.resetHour',
+  'pauseOnWindowBlur': 'tracking.pauseOnWindowBlur',
+  'pauseOnTabUnfocus': 'tracking.pauseOnTabUnfocus',
+  'ignoreIdleOnMedia': 'tracking.ignoreIdleOnMedia',
 };
 
 /// Field setters keyed by setting name, used to assign in-memory values.
@@ -86,6 +89,9 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'monitorKeyboard': (p, v) => p._monitorKeyboard = v,
   'audioThreshold': (p, v) => p._audioThreshold = v,
   'resetHour': (p, v) => p._resetHour = v,
+  'pauseOnWindowBlur': (p, v) => p._pauseOnWindowBlur = v,
+  'pauseOnTabUnfocus': (p, v) => p._pauseOnTabUnfocus = v,
+  'ignoreIdleOnMedia': (p, v) => p._ignoreIdleOnMedia = v,
 };
 
 class SettingsProvider extends ChangeNotifier {
@@ -108,6 +114,9 @@ class SettingsProvider extends ChangeNotifier {
   String _trackingMode = TrackingModeOptions.defaultMode;
   bool _idleDetectionEnabled = true;
   int _idleTimeout = IdleTimeoutOptions.defaultTimeout;
+  bool _pauseOnWindowBlur = true;
+  bool _pauseOnTabUnfocus = false;
+  bool _ignoreIdleOnMedia = true;
   bool _monitorAudio = true;
   bool _monitorControllers = true;
   bool _monitorHIDDevices = true;
@@ -135,6 +144,9 @@ class SettingsProvider extends ChangeNotifier {
   String get trackingMode => _trackingMode;
   bool get idleDetectionEnabled => _idleDetectionEnabled;
   int get idleTimeout => _idleTimeout;
+  bool get pauseOnWindowBlur => _pauseOnWindowBlur;
+  bool get pauseOnTabUnfocus => _pauseOnTabUnfocus;
+  bool get ignoreIdleOnMedia => _ignoreIdleOnMedia;
   bool get monitorAudio => _monitorAudio;
   bool get monitorControllers => _monitorControllers;
   bool get monitorHIDDevices => _monitorHIDDevices;
@@ -187,6 +199,12 @@ class SettingsProvider extends ChangeNotifier {
         _settingsManager.getSetting('tracking.idleDetection') ?? true;
     _idleTimeout = _settingsManager.getSetting('tracking.idleTimeout') ??
         IdleTimeoutOptions.defaultTimeout;
+    _pauseOnWindowBlur =
+        _settingsManager.getSetting('tracking.pauseOnWindowBlur') ?? true;
+    _pauseOnTabUnfocus =
+        _settingsManager.getSetting('tracking.pauseOnTabUnfocus') ?? false;
+    _ignoreIdleOnMedia =
+        _settingsManager.getSetting('tracking.ignoreIdleOnMedia') ?? true;
     _monitorAudio =
         _settingsManager.getSetting('tracking.monitorAudio') ?? true;
     _monitorControllers =
@@ -263,6 +281,16 @@ class SettingsProvider extends ChangeNotifier {
           );
         } else {
           await _tracker.updateIdleTimeout(value);
+        }
+      case 'pauseOnWindowBlur':
+      case 'pauseOnTabUnfocus':
+      case 'ignoreIdleOnMedia':
+        if (kIsWeb) {
+          await ExtensionSettings().setFocusDetectionOptions(
+            pauseOnWindowBlur: _pauseOnWindowBlur,
+            pauseOnTabUnfocus: _pauseOnTabUnfocus,
+            ignoreIdleOnMedia: _ignoreIdleOnMedia,
+          );
         }
       case 'monitorAudio':
         await _tracker.updateAudioMonitoring(value);

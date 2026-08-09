@@ -1670,14 +1670,38 @@ class AppLocalizationsFr extends AppLocalizations {
   String get activityTrackingSection => 'Suivi d\'Activité';
 
   @override
-  String get idleDetectionTitle => 'Détection d\'Inactivité';
+  String get idleDetectionTitle => 'Détection d\'inactivité';
 
   @override
   String get idleDetectionDescription =>
       'Arrêter le suivi en cas d\'inactivité';
 
   @override
-  String get idleTimeoutTitle => 'Délai d\'Inactivité';
+  String get keepActiveDuringMediaTitle =>
+      'Maintenir actif pendant la lecture média';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'Ignorer la pause d\'inactivité pendant la lecture d\'une vidéo ou d\'un audio (ex. YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle =>
+      'Mettre en pause lors de la perte de focus de la fenêtre';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'Mettre en pause le suivi lorsque la fenêtre du navigateur perd le focus';
+
+  @override
+  String get pauseOnTabUnfocusTitle =>
+      'Mettre en pause lors du changement d\'onglet';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'Mettre en pause le suivi lorsque l\'onglet est inactif ou en arrière-plan';
+
+  @override
+  String get idleTimeoutTitle => 'Délai d\'inactivité';
 
   @override
   String idleTimeoutDescription(String timeout) {

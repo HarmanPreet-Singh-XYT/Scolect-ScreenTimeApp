@@ -1121,6 +1121,12 @@
   "activityTrackingSection": "Activity Tracking",
   "idleDetectionTitle": "Idle Detection",
   "idleDetectionDescription": "Stop tracking when inactive",
+  "keepActiveDuringMediaTitle": "Keep Active During Media",
+  "keepActiveDuringMediaDescription": "Ignore idle pause while video or audio is playing (e.g. YouTube, Netflix)",
+  "pauseOnWindowBlurTitle": "Pause on Window Blur",
+  "pauseOnWindowBlurDescription": "Pause tracking when the browser window loses focus",
+  "pauseOnTabUnfocusTitle": "Pause on Tab Switch / Unfocus",
+  "pauseOnTabUnfocusDescription": "Pause tracking when tab is inactive or backgrounded",
   "idleTimeoutTitle": "Idle Timeout",
   "idleTimeoutDescription": "Time before considering idle ({timeout})",
   "@idleTimeoutDescription": {

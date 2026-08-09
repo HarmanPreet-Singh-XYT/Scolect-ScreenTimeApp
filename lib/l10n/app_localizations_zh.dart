@@ -1602,13 +1602,32 @@ class AppLocalizationsZh extends AppLocalizations {
   String get activityTrackingSection => '活动追踪';
 
   @override
-  String get idleDetectionTitle => '空闲检测';
+  String get idleDetectionTitle => '闲置检测';
 
   @override
   String get idleDetectionDescription => '在不活动时停止追踪';
 
   @override
-  String get idleTimeoutTitle => '空闲超时';
+  String get keepActiveDuringMediaTitle => '媒体播放期间保持活动';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      '在播放视频或音频时忽略闲置暂停（例如 YouTube、Netflix）';
+
+  @override
+  String get pauseOnWindowBlurTitle => '窗口失去焦点时暂停';
+
+  @override
+  String get pauseOnWindowBlurDescription => '当浏览器窗口失去焦点时暂停跟踪';
+
+  @override
+  String get pauseOnTabUnfocusTitle => '标签页切换/取消焦点时暂停';
+
+  @override
+  String get pauseOnTabUnfocusDescription => '当标签页处于非活动状态或后台时暂停跟踪';
+
+  @override
+  String get idleTimeoutTitle => '闲置超时';
 
   @override
   String idleTimeoutDescription(String timeout) {

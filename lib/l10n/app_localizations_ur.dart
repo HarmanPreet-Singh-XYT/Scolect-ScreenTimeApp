@@ -1644,6 +1644,27 @@ class AppLocalizationsUr extends AppLocalizations {
   String get idleDetectionDescription => 'غیر فعال ہونے پر ٹریکنگ بند کریں';
 
   @override
+  String get keepActiveDuringMediaTitle => 'میڈیا پلے بیک کے دوران فعال رکھیں';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'ویڈیو یا آڈیو چلنے کے دوران غیر فعال وقفے کو نظر انداز کریں (جیسے یوٹیوب، نیٹ فلکس)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'ونڈو فوکس ختم ہونے پر روکیں';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'براؤزر ونڈو کا فوکس ختم ہونے پر ٹریکنگ روکیں';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'ٹیب تبدیل یا ان فوکس ہونے پر روکیں';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'ٹیب کے غیر فعال یا بیک گراؤنڈ میں ہونے پر ٹریکنگ روکیں';
+
+  @override
   String get idleTimeoutTitle => 'بیکار ٹائم آؤٹ';
 
   @override

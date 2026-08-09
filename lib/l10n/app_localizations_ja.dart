@@ -1621,6 +1621,27 @@ class AppLocalizationsJa extends AppLocalizations {
   String get idleDetectionDescription => '非アクティブ時に追跡を停止';
 
   @override
+  String get keepActiveDuringMediaTitle => 'メディア再生中もアクティブを維持';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      '動画や音声の再生中はアイドル一時停止を無視（YouTube、Netflixなど）';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'ウィンドウのフォーカスが外れたら一時停止';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'ブラウザウィンドウのフォーカスが外れたときにトラッキングを一時停止';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'タブ切り替え・非アクティブ時に一時停止';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'タブが非アクティブまたはバックグラウンドにあるときにトラッキングを一時停止';
+
+  @override
   String get idleTimeoutTitle => 'アイドルタイムアウト';
 
   @override

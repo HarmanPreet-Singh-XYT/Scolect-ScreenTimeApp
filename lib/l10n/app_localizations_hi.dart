@@ -1648,6 +1648,28 @@ class AppLocalizationsHi extends AppLocalizations {
   String get idleDetectionDescription => 'निष्क्रिय होने पर ट्रैकिंग बंद करें';
 
   @override
+  String get keepActiveDuringMediaTitle =>
+      'मीडिया प्लेबैक के दौरान सक्रिय रखें';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'वीडियो या ऑडियो चलते समय निष्क्रियता रोक को अनदेखा करें (जैसे YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'विंडो फोकस हटने पर रोकें';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'ब्राउज़र विंडो का फोकस हटने पर ट्रैकिंग रोकें';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'टैब बदलने या अनफोकस होने पर रोकें';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'टैब के निष्क्रिय या बैकग्राउंड में होने पर ट्रैकिंग रोकें';
+
+  @override
   String get idleTimeoutTitle => 'निष्क्रिय समय सीमा';
 
   @override

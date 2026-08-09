@@ -1663,14 +1663,37 @@ class AppLocalizationsEs extends AppLocalizations {
   String get activityTrackingSection => 'Seguimiento de Actividad';
 
   @override
-  String get idleDetectionTitle => 'Detección de Inactividad';
+  String get idleDetectionTitle => 'Detección de inactividad';
 
   @override
   String get idleDetectionDescription =>
       'Dejar de rastrear cuando esté inactivo';
 
   @override
-  String get idleTimeoutTitle => 'Tiempo de Inactividad';
+  String get keepActiveDuringMediaTitle =>
+      'Mantener activo durante reproducción de multimedia';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'Ignorar la pausa por inactividad mientras se reproduce video o audio (p. ej. YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'Pausar al perder el foco de la ventana';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'Pausar el seguimiento cuando la ventana del navegador pierde el foco';
+
+  @override
+  String get pauseOnTabUnfocusTitle =>
+      'Pausar al cambiar o desenfocar la pestaña';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'Pausar el seguimiento cuando la pestaña esté inactiva o en segundo plano';
+
+  @override
+  String get idleTimeoutTitle => 'Tiempo de espera de inactividad';
 
   @override
   String idleTimeoutDescription(String timeout) {

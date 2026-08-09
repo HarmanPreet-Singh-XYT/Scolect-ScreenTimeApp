@@ -1007,8 +1007,9 @@ chrome.idle.onStateChanged.addListener(async state => {
   _isIdle = state !== 'active';
 
   if (_isIdle && !wasIdle) {
-    // Just went idle — but don't pause if media is actively playing (e.g. Netflix).
-    const mediaPlaying = await _isMediaPlayingInActiveTab();
+    // Just went idle — check if media playback bypass is enabled
+    const ignoreOnMedia = settings.ignoreIdleOnMedia ?? true;
+    const mediaPlaying = ignoreOnMedia ? await _isMediaPlayingInActiveTab() : false;
     if (mediaPlaying) {
       // Keep _isIdle false so tick() continues accumulating time.
       _isIdle = false;
@@ -1027,9 +1028,17 @@ chrome.idle.onStateChanged.addListener(async state => {
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
+    const settings = await getSettings();
     const tab = await chrome.tabs.get(tabId);
-    if (tab.url) await startTracking(tab.url, tab.title);
-  } catch { /* tab closed */ }
+    if (tab?.url) {
+      await startTracking(tab.url, tab.title);
+    } else if (settings.pauseOnTabUnfocus) {
+      await pauseTracking();
+    }
+  } catch {
+    const settings = await getSettings();
+    if (settings.pauseOnTabUnfocus) await pauseTracking().catch(console.error);
+  }
 });
 
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
@@ -1060,9 +1069,13 @@ chrome.tabs.onRemoved.addListener(() => {
   });
 });
 
-chrome.windows.onFocusChanged.addListener(windowId => {
+chrome.windows.onFocusChanged.addListener(async windowId => {
+  const settings = await getSettings();
+  const pauseOnBlur = settings.pauseOnWindowBlur ?? true;
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
-    pauseTracking().catch(console.error);
+    if (pauseOnBlur) {
+      pauseTracking().catch(console.error);
+    }
   } else {
     chrome.tabs.query({ active: true, windowId }, tabs => {
       if (tabs[0]?.url) startTracking(tabs[0].url).catch(console.error);

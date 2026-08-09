@@ -1642,6 +1642,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get idleDetectionDescription => 'Stop tracking when inactive';
 
   @override
+  String get keepActiveDuringMediaTitle => 'Keep Active During Media';
+
+  @override
+  String get keepActiveDuringMediaDescription =>
+      'Ignore idle pause while video or audio is playing (e.g. YouTube, Netflix)';
+
+  @override
+  String get pauseOnWindowBlurTitle => 'Pause on Window Blur';
+
+  @override
+  String get pauseOnWindowBlurDescription =>
+      'Pause tracking when the browser window loses focus';
+
+  @override
+  String get pauseOnTabUnfocusTitle => 'Pause on Tab Switch / Unfocus';
+
+  @override
+  String get pauseOnTabUnfocusDescription =>
+      'Pause tracking when tab is inactive or backgrounded';
+
+  @override
   String get idleTimeoutTitle => 'Idle Timeout';
 
   @override
