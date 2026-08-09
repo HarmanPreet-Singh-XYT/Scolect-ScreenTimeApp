@@ -12,38 +12,52 @@
 //! Commands from the C-API thread are sent via a global Mutex<Command> plus a
 //! PostThreadMessage(WM_APP) wake-up.  The callback fires directly from the
 //! Win32 thread (safe: it just does PostMessage back to the Flutter main hwnd).
+//!
+//! Rendering uses GDI+ (anti-aliased fills/paths/text) composited into a GDI
+//! back-buffer, matching the Fluent-ish look of the rest of the app instead of
+//! raw un-antialiased GDI primitives.
 
 #![allow(non_snake_case, non_camel_case_types, dead_code)]
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-use std::sync::{Mutex, OnceLock};
+use std::sync::{Mutex, Once, OnceLock};
 use std::thread;
 
-use windows::core::PCSTR;
-use windows::Win32::Foundation::{COLORREF, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM, HINSTANCE};
+use windows::core::{PCSTR, PCWSTR};
+use windows::Win32::Foundation::{COLORREF, HINSTANCE, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM};
+use windows::Win32::Graphics::Dwm::{DwmEnableBlurBehindWindow, DWM_BB_ENABLE, DWM_BLURBEHIND};
 use windows::Win32::Graphics::Gdi::{
-    BeginPaint, BitBlt, CreateCompatibleBitmap, CreateCompatibleDC, CreateFontA, CreatePen,
-    CreateSolidBrush, DeleteDC, DeleteObject, DrawTextA, EndPaint, FillRect,
-    GetStockObject, LineTo, MoveToEx, RoundRect, SelectObject, SetBkMode,
-    SetTextColor, HBITMAP, HDC, HPEN, PAINTSTRUCT, PS_SOLID, SRCCOPY,
-    TRANSPARENT, DT_CENTER, DT_SINGLELINE, DT_VCENTER, HFONT,
+    BeginPaint, BitBlt, CreateCompatibleBitmap, CreateCompatibleDC, DeleteDC, DeleteObject,
+    EndPaint, SelectObject, HBITMAP, HDC, HRGN, PAINTSTRUCT, SRCCOPY,
+};
+use windows::Win32::Graphics::GdiPlus::{
+    GdipAddPathArcI, GdipClosePathFigure, GdipCreateFont, GdipCreateFontFamilyFromName,
+    GdipCreateFromHDC, GdipCreatePath, GdipCreatePen1, GdipCreateSolidFill,
+    GdipCreateStringFormat, GdipDeleteBrush, GdipDeleteFont, GdipDeleteFontFamily,
+    GdipDeleteGraphics, GdipDeletePath, GdipDeletePen, GdipDeleteStringFormat, GdipDrawLineI,
+    GdipDrawPath, GdipDrawString, GdipFillEllipseI, GdipFillPath, GdipScaleWorldTransform,
+    GdipSetSmoothingMode, GdipSetStringFormatAlign, GdipSetStringFormatLineAlign,
+    GdipSetTextRenderingHint, GdiplusStartup, FillModeAlternate, FontStyleBold,
+    FontStyleRegular, GdiplusStartupInput, GdiplusStartupOutput, GpBrush, GpFont, GpFontFamily,
+    GpGraphics, GpPath, GpPen, GpSolidFill, GpStringFormat, MatrixOrderPrepend, RectF,
+    SmoothingModeAntiAlias, StringAlignmentCenter, StringAlignmentNear,
+    TextRenderingHintAntiAliasGridFit, UnitPixel,
 };
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::System::Registry::{
     RegOpenKeyExA, RegQueryValueExA, HKEY_CURRENT_USER, KEY_READ, REG_VALUE_TYPE,
 };
+use windows::Win32::UI::HiDpi::GetDpiForWindow;
 use windows::Win32::UI::WindowsAndMessaging::{
     CreateWindowExA, DefWindowProcA, DestroyWindow, DispatchMessageA, EnumWindows,
     GetClientRect, GetForegroundWindow, GetMessageA, GetSystemMetrics, GetWindowRect,
-    GetWindowThreadProcessId, LoadCursorW, PostThreadMessageA,
-    RegisterClassExA, SetLayeredWindowAttributes, SetTimer, SetWindowPos, ShowWindow,
-    TranslateMessage, CS_HREDRAW, CS_VREDRAW, GWLP_USERDATA,
-    HWND_TOPMOST, IDC_ARROW, LWA_ALPHA, MSG, SM_CXSCREEN, SM_CYSCREEN, SWP_NOMOVE,
-    SWP_NOSIZE, SWP_NOACTIVATE, WM_APP, WM_DESTROY, WM_LBUTTONDOWN, WM_PAINT,
-    WM_TIMER, WNDCLASSEXA, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOPMOST,
-    WS_POPUP, SW_HIDE, SW_SHOWNOACTIVATE, SetWindowLongPtrA,
-    GetWindowLongPtrA,
+    GetWindowThreadProcessId, LoadCursorW, PostThreadMessageA, RegisterClassExA,
+    SetLayeredWindowAttributes, SetTimer, SetWindowPos, ShowWindow, TranslateMessage,
+    CS_HREDRAW, CS_VREDRAW, GWLP_USERDATA, HWND_TOPMOST, IDC_ARROW, LWA_ALPHA, MSG,
+    SM_CXSCREEN, SM_CYSCREEN, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE, WM_APP, WM_DESTROY,
+    WM_LBUTTONDOWN, WM_PAINT, WM_TIMER, WNDCLASSEXA, WS_EX_LAYERED, WS_EX_NOACTIVATE,
+    WS_EX_TOPMOST, WS_POPUP, SW_HIDE, SW_SHOWNOACTIVATE, SetWindowLongPtrA, GetWindowLongPtrA,
 };
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -56,13 +70,23 @@ const TIMER_REPOSITION: usize = 1;
 const TIMER_GRACE: usize = 2;
 const TIMER_HIDE_APP: usize = 3;
 
-const CARD_W: i32 = 400;
-const CARD_H: i32 = 390;
+const CARD_W: i32 = 408;
+const CARD_H: i32 = 460;
 
 // ─── Color helpers ────────────────────────────────────────────────────────────
 
 fn rgb(r: u8, g: u8, b: u8) -> COLORREF {
     COLORREF(r as u32 | ((g as u32) << 8) | ((b as u32) << 16))
+}
+
+/// Packs an ARGB color the way GDI+ expects it (0xAARRGGBB).
+fn argb(a: u8, r: u8, g: u8, b: u8) -> u32 {
+    ((a as u32) << 24) | ((r as u32) << 16) | ((g as u32) << 8) | (b as u32)
+}
+
+/// UTF-16, null-terminated — GDI+ string APIs take PCWSTR.
+fn wide(s: &str) -> Vec<u16> {
+    s.encode_utf16().chain(std::iter::once(0)).collect()
 }
 
 // ─── Dark-mode detection ──────────────────────────────────────────────────────
@@ -97,6 +121,25 @@ fn is_dark_mode() -> bool {
         let _ = windows::Win32::System::Registry::RegCloseKey(hkey);
         data == 0
     }
+}
+
+// ─── GDI+ lifecycle ───────────────────────────────────────────────────────────
+// GDI+ must be started once before any Gdip* call. We never shut it down —
+// this DLL lives for the whole process lifetime and calling GdiplusShutdown
+// from an arbitrary thread late in shutdown is more risk than it's worth.
+
+static GDIPLUS_INIT: Once = Once::new();
+
+fn ensure_gdiplus() {
+    GDIPLUS_INIT.call_once(|| unsafe {
+        let input = GdiplusStartupInput {
+            GdiplusVersion: 1,
+            ..Default::default()
+        };
+        let mut output = GdiplusStartupOutput::default();
+        let mut token: usize = 0;
+        let _ = GdiplusStartup(&mut token, &input, &mut output);
+    });
 }
 
 // ─── Global state ─────────────────────────────────────────────────────────────
@@ -265,6 +308,8 @@ fn win32_thread() {
         let tid = windows::Win32::System::Threading::GetCurrentThreadId();
         global().lock().unwrap().thread_id = tid;
 
+        ensure_gdiplus();
+
         // Register window class once per process.
         let hinstance = GetModuleHandleA(None).unwrap_or_default();
         let class_name = b"ScolectBlockOverlay\0";
@@ -371,8 +416,19 @@ unsafe fn handle_cmd_show() {
         return;
     }
 
-    // 52% opacity (133/255).
-    let _ = SetLayeredWindowAttributes(hwnd, COLORREF(0), 133, LWA_ALPHA);
+    // Ask DWM to blur whatever's behind the window (best-effort — this is
+    // silently ignored on Windows versions/configs that don't support it, in
+    // which case the translucent scrim fill below is the fallback).
+    let blur = DWM_BLURBEHIND {
+        dwFlags: DWM_BB_ENABLE,
+        fEnable: true.into(),
+        hRgnBlur: HRGN(std::ptr::null_mut()),
+        fTransitionOnMaximized: false.into(),
+    };
+    let _ = DwmEnableBlurBehindWindow(hwnd, &blur);
+
+    // Visibly translucent so the blurred backdrop/blocked app reads through.
+    let _ = SetLayeredWindowAttributes(hwnd, COLORREF(0), 210, LWA_ALPHA);
 
     // Allocate per-window state on the heap, store ptr in GWLP_USERDATA.
     let ws = Box::new(WindowState {
@@ -542,6 +598,128 @@ unsafe extern "system" fn wndproc(
     }
 }
 
+// ─── GDI+ drawing helpers ───────────────────────────────────────────────────────
+// Small wrappers around the flat GDI+ C API so on_paint reads like a UI layout
+// instead of a wall of raw FFI. Everything here draws anti-aliased, unlike the
+// raw GDI RoundRect/DrawTextA calls this replaced.
+
+unsafe fn round_rect_path(x: i32, y: i32, w: i32, h: i32, d: i32) -> *mut GpPath {
+    let d = d.min(w).min(h);
+    let mut path: *mut GpPath = std::ptr::null_mut();
+    let _ = GdipCreatePath(FillModeAlternate, &mut path);
+    let _ = GdipAddPathArcI(path, x, y, d, d, 180.0, 90.0);
+    let _ = GdipAddPathArcI(path, x + w - d, y, d, d, 270.0, 90.0);
+    let _ = GdipAddPathArcI(path, x + w - d, y + h - d, d, d, 0.0, 90.0);
+    let _ = GdipAddPathArcI(path, x, y + h - d, d, d, 90.0, 90.0);
+    let _ = GdipClosePathFigure(path);
+    path
+}
+
+unsafe fn fill_round_rect(g: *mut GpGraphics, x: i32, y: i32, w: i32, h: i32, d: i32, color: u32) {
+    let path = round_rect_path(x, y, w, h, d);
+    let mut brush: *mut GpSolidFill = std::ptr::null_mut();
+    let _ = GdipCreateSolidFill(color, &mut brush);
+    let _ = GdipFillPath(g, brush as *mut GpBrush, path);
+    let _ = GdipDeleteBrush(brush as *mut GpBrush);
+    let _ = GdipDeletePath(path);
+}
+
+unsafe fn stroke_round_rect(g: *mut GpGraphics, x: i32, y: i32, w: i32, h: i32, d: i32, color: u32, width: f32) {
+    let path = round_rect_path(x, y, w, h, d);
+    let mut pen: *mut GpPen = std::ptr::null_mut();
+    let _ = GdipCreatePen1(color, width, UnitPixel, &mut pen);
+    let _ = GdipDrawPath(g, pen, path);
+    let _ = GdipDeletePen(pen);
+    let _ = GdipDeletePath(path);
+}
+
+unsafe fn fill_ellipse(g: *mut GpGraphics, x: i32, y: i32, d: i32, color: u32) {
+    let mut brush: *mut GpSolidFill = std::ptr::null_mut();
+    let _ = GdipCreateSolidFill(color, &mut brush);
+    let _ = GdipFillEllipseI(g, brush as *mut GpBrush, x, y, d, d);
+    let _ = GdipDeleteBrush(brush as *mut GpBrush);
+}
+
+unsafe fn draw_line(g: *mut GpGraphics, x1: i32, y1: i32, x2: i32, y2: i32, color: u32, width: f32) {
+    let mut pen: *mut GpPen = std::ptr::null_mut();
+    let _ = GdipCreatePen1(color, width, UnitPixel, &mut pen);
+    let _ = GdipDrawLineI(g, pen, x1, y1, x2, y2);
+    let _ = GdipDeletePen(pen);
+}
+
+/// Draws `text` centered (or left-aligned) inside `rect`, vertically centered.
+unsafe fn draw_text(
+    g: *mut GpGraphics,
+    text: &str,
+    rect: RECT,
+    size: f32,
+    bold: bool,
+    color: u32,
+    centered: bool,
+) {
+    let family_name = wide("Segoe UI");
+    let mut family: *mut GpFontFamily = std::ptr::null_mut();
+    let status = GdipCreateFontFamilyFromName(PCWSTR(family_name.as_ptr()), std::ptr::null_mut(), &mut family);
+    if status.0 != 0 || family.is_null() {
+        return;
+    }
+
+    let style = if bold { FontStyleBold.0 } else { FontStyleRegular.0 };
+    let mut font: *mut GpFont = std::ptr::null_mut();
+    let _ = GdipCreateFont(family, size, style, UnitPixel, &mut font);
+
+    let mut format: *mut GpStringFormat = std::ptr::null_mut();
+    let _ = GdipCreateStringFormat(0, 0, &mut format);
+    let align = if centered { StringAlignmentCenter } else { StringAlignmentNear };
+    let _ = GdipSetStringFormatAlign(format, align);
+    let _ = GdipSetStringFormatLineAlign(format, StringAlignmentCenter);
+
+    let mut brush: *mut GpSolidFill = std::ptr::null_mut();
+    let _ = GdipCreateSolidFill(color, &mut brush);
+
+    let layout = RectF {
+        X: rect.left as f32,
+        Y: rect.top as f32,
+        Width: (rect.right - rect.left) as f32,
+        Height: (rect.bottom - rect.top) as f32,
+    };
+
+    let wtext = wide(text);
+    let _ = GdipDrawString(
+        g,
+        PCWSTR(wtext.as_ptr()),
+        -1,
+        font,
+        &layout,
+        format,
+        brush as *mut GpBrush,
+    );
+
+    let _ = GdipDeleteBrush(brush as *mut GpBrush);
+    let _ = GdipDeleteStringFormat(format);
+    let _ = GdipDeleteFont(font);
+    let _ = GdipDeleteFontFamily(family);
+}
+
+/// Soft, faux-blurred drop shadow: several translucent rounded rects, growing
+/// and fading outward, instead of a single hard-edged offset silhouette.
+unsafe fn draw_soft_shadow(g: *mut GpGraphics, rect: RECT, radius: i32) {
+    let layers = 8;
+    for i in (1..=layers).rev() {
+        let grow = i * 2;
+        let alpha = (3 + (layers - i) * 2) as u8;
+        fill_round_rect(
+            g,
+            rect.left - grow,
+            rect.top - grow + 6,
+            (rect.right - rect.left) + grow * 2,
+            (rect.bottom - rect.top) + grow * 2,
+            radius + grow,
+            argb(alpha, 0, 0, 0),
+        );
+    }
+}
+
 // ─── Paint ────────────────────────────────────────────────────────────────────
 
 unsafe fn on_paint(hwnd: HWND) {
@@ -567,41 +745,55 @@ unsafe fn on_paint(hwnd: HWND) {
     let bmp: HBITMAP = CreateCompatibleBitmap(hdc, cw, ch);
     let old_bmp = SelectObject(mem_dc, bmp.into());
 
-    // ── Colors ────────────────────────────────────────────────────────────────
-    let (bg_card, text_primary, text_secondary, separator_color, btn_secondary_bg, btn_secondary_txt) =
-        if ws.dark {
-            (
-                rgb(30, 30, 35),
-                rgb(240, 240, 240),
-                rgb(170, 170, 180),
-                rgb(60, 60, 70),
-                rgb(50, 50, 58),
-                rgb(200, 200, 210),
-            )
-        } else {
-            (
-                rgb(255, 255, 255),
-                rgb(20, 20, 20),
-                rgb(120, 120, 130),
-                rgb(220, 220, 228),
-                rgb(245, 245, 250),
-                rgb(60, 60, 70),
-            )
-        };
+    let mut g: *mut GpGraphics = std::ptr::null_mut();
+    let _ = GdipCreateFromHDC(mem_dc, &mut g);
+    let _ = GdipSetSmoothingMode(g, SmoothingModeAntiAlias);
+    // AntiAliasGridFit (grayscale AA) rather than ClearType — this bitmap gets
+    // uniformly alpha-blended against whatever's behind the window afterwards,
+    // and subpixel ClearType fringing looks wrong once that blend happens.
+    let _ = GdipSetTextRenderingHint(g, TextRenderingHintAntiAliasGridFit);
 
-    let color_red = rgb(220, 53, 69);
-    let color_orange = rgb(255, 140, 0);
-    let color_white = rgb(255, 255, 255);
+    // The window's client rect (cw/ch) is in real device pixels for whatever
+    // monitor it's on. Everything below is laid out in fixed "96 DPI" design
+    // pixels (CARD_W, font sizes, etc.), so scale the GDI+ world transform up
+    // to the monitor's actual DPI — otherwise on a >100% scaled display the
+    // whole card (including text) renders at 96-DPI size, i.e. visibly small.
+    let dpi = GetDpiForWindow(hwnd).max(1);
+    let scale = dpi as f32 / 96.0;
+    let _ = GdipScaleWorldTransform(g, scale, scale, MatrixOrderPrepend);
+    let dw = (cw as f32 / scale).round() as i32;
+    let dh = (ch as f32 / scale).round() as i32;
 
-    // ── Scrim background (semi-transparent dark) ──────────────────────────────
-    let scrim_brush = CreateSolidBrush(rgb(0, 0, 0));
-    FillRect(mem_dc, &client, scrim_brush);
-    DeleteObject(scrim_brush.into());
+    // ── Scolect brand palette (mirrors lib/app_design.dart) ───────────────────
+    let (bg_card, text_primary, text_secondary, border_color, surface_secondary) = if ws.dark {
+        (
+            argb(255, 20, 29, 45),   // darkSurface
+            argb(255, 224, 229, 235), // darkTextPrimary
+            argb(255, 122, 139, 155), // darkTextSecondary
+            argb(255, 31, 42, 59),    // darkBorder
+            argb(255, 18, 24, 34),    // darkSurfaceSecondary
+        )
+    } else {
+        (
+            argb(255, 255, 255, 255), // lightSurface
+            argb(255, 15, 23, 42),    // lightTextPrimary
+            argb(255, 71, 85, 105),   // lightTextSecondary
+            argb(255, 203, 213, 225), // lightBorder
+            argb(255, 230, 237, 247), // lightSurfaceSecondary
+        )
+    };
+    let color_error = argb(255, 239, 68, 68); // errorColor
+    let color_error_tint = argb(38, 239, 68, 68); // errorColor @ ~15%
+    let color_accent = argb(255, 99, 102, 241); // primaryAccent (indigo)
+    let color_warning = argb(255, 245, 158, 11); // warningColor
+    let color_white = argb(255, 255, 255, 255);
 
-    // ── Card rect ─────────────────────────────────────────────────────────────
-    let cx = (cw - CARD_W) / 2;
-    let cy = (ch - CARD_H) / 2;
+    // ── Scrim background ───────────────────────────────────────────────────────
+    fill_round_rect(g, 0, 0, dw, dh, 0, argb(255, 8, 10, 16));
 
+    // ── Card ────────────────────────────────────────────────────────────────────
+    let cx = (dw - CARD_W) / 2;
+    let cy = (dh - CARD_H) / 2;
     let card_rect = RECT {
         left: cx,
         top: cy,
@@ -609,278 +801,121 @@ unsafe fn on_paint(hwnd: HWND) {
         bottom: cy + CARD_H,
     };
 
-    // Card shadow (slightly larger, semi-dark).
-    let shadow_rect = RECT {
-        left: card_rect.left + 4,
-        top: card_rect.top + 6,
-        right: card_rect.right + 4,
-        bottom: card_rect.bottom + 6,
-    };
-    let shadow_brush = CreateSolidBrush(rgb(0, 0, 0));
-    let old_pen_null = SelectObject(
-        mem_dc,
-        GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN),
-    );
-    SelectObject(mem_dc, shadow_brush.into());
-    RoundRect(
-        mem_dc,
-        shadow_rect.left,
-        shadow_rect.top,
-        shadow_rect.right,
-        shadow_rect.bottom,
-        16,
-        16,
-    );
-    SelectObject(mem_dc, old_pen_null);
-    DeleteObject(shadow_brush.into());
+    let card_radius = 32;
+    draw_soft_shadow(g, card_rect, card_radius);
+    fill_round_rect(g, card_rect.left, card_rect.top, CARD_W, CARD_H, card_radius, bg_card);
+    stroke_round_rect(g, card_rect.left, card_rect.top, CARD_W, CARD_H, card_radius, border_color, 1.0);
 
-    // Card background.
-    let card_brush = CreateSolidBrush(bg_card);
-    let null_pen = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-    let old_pen = SelectObject(mem_dc, null_pen);
-    SelectObject(mem_dc, card_brush.into());
-    RoundRect(
-        mem_dc,
-        card_rect.left,
-        card_rect.top,
-        card_rect.right,
-        card_rect.bottom,
-        16,
-        16,
+    // ── Icon badge (tinted circle + "!" glyph, centered at the top) ───────────
+    let icon_d = 60;
+    let icon_x = card_rect.left + (CARD_W - icon_d) / 2;
+    let icon_y = card_rect.top + 26;
+    fill_ellipse(g, icon_x, icon_y, icon_d, color_error_tint);
+    draw_text(
+        g,
+        "!",
+        RECT { left: icon_x, top: icon_y - 2, right: icon_x + icon_d, bottom: icon_y + icon_d - 2 },
+        28.0,
+        true,
+        color_error,
+        true,
     );
-    SelectObject(mem_dc, old_pen);
-    DeleteObject(card_brush.into());
 
-    // ── Red header band (88px) ────────────────────────────────────────────────
-    let header_rect = RECT {
-        left: card_rect.left,
-        top: card_rect.top,
-        right: card_rect.right,
-        bottom: card_rect.top + 88,
-    };
-    // Clip corners for top of card with a red RoundRect.
-    let red_brush = CreateSolidBrush(color_red);
-    let null_pen2 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-    let op2 = SelectObject(mem_dc, null_pen2);
-    SelectObject(mem_dc, red_brush.into());
-    // Draw slightly taller rounded rect so bottom corners of header are square.
-    RoundRect(
-        mem_dc,
-        header_rect.left,
-        header_rect.top,
-        header_rect.right,
-        header_rect.bottom + 16,
-        16,
-        16,
-    );
-    SelectObject(mem_dc, op2);
-    DeleteObject(red_brush.into());
-
-    // Icon in header — GDI doesn't render emoji glyphs reliably so use an
-    // ASCII stand-in that is universally legible.
-    let hg_fallback = b"[ ! ]\0";
-    let hg_rect = RECT {
-        left: header_rect.left,
-        top: header_rect.top,
-        right: header_rect.right,
-        bottom: header_rect.bottom,
-    };
-    SetBkMode(mem_dc, TRANSPARENT);
-    SetTextColor(mem_dc, color_white);
-    let icon_font = make_font(mem_dc, 22, true);
-    let old_font_icon = SelectObject(mem_dc, icon_font.into());
-    DrawTextA(
-        mem_dc,
-        &mut hg_fallback.to_vec(),
-        &mut { hg_rect },
-        DT_CENTER | DT_SINGLELINE | DT_VCENTER,
-    );
-    SelectObject(mem_dc, old_font_icon);
-    DeleteObject(icon_font.into());
-
-    // ── "Time limit reached" title ────────────────────────────────────────────
-    let title_font = make_font(mem_dc, 15, true);
-    let old_tf = SelectObject(mem_dc, title_font.into());
-    SetTextColor(mem_dc, text_primary);
-    SetBkMode(mem_dc, TRANSPARENT);
+    // ── Title + subtitle ───────────────────────────────────────────────────────
     let title_rect = RECT {
-        left: card_rect.left + 16,
-        top: card_rect.top + 96,
-        right: card_rect.right - 16,
-        bottom: card_rect.top + 122,
+        left: card_rect.left + 20,
+        top: icon_y + icon_d + 14,
+        right: card_rect.right - 20,
+        bottom: icon_y + icon_d + 42,
     };
-    let mut title_txt = b"Time limit reached\0".to_vec();
-    DrawTextA(
-        mem_dc,
-        &mut title_txt,
-        &mut { title_rect },
-        DT_CENTER | DT_SINGLELINE | DT_VCENTER,
-    );
-    SelectObject(mem_dc, old_tf);
-    DeleteObject(title_font.into());
+    draw_text(g, "Time limit reached", title_rect, 17.0, true, text_primary, true);
 
-    // ── App name subtitle ─────────────────────────────────────────────────────
-    let sub_font = make_font(mem_dc, 12, false);
-    let old_sf = SelectObject(mem_dc, sub_font.into());
-    SetTextColor(mem_dc, text_secondary);
     let sub_rect = RECT {
-        left: card_rect.left + 16,
-        top: card_rect.top + 124,
-        right: card_rect.right - 16,
-        bottom: card_rect.top + 146,
+        left: card_rect.left + 20,
+        top: title_rect.bottom,
+        right: card_rect.right - 20,
+        bottom: title_rect.bottom + 22,
     };
-    let app_name_cstr = format!("{}\0", ws.args.app_name);
-    let mut app_name_bytes = app_name_cstr.into_bytes();
-    DrawTextA(
-        mem_dc,
-        &mut app_name_bytes,
-        &mut { sub_rect },
-        DT_CENTER | DT_SINGLELINE | DT_VCENTER,
-    );
-    SelectObject(mem_dc, old_sf);
-    DeleteObject(sub_font.into());
+    draw_text(g, &ws.args.app_name, sub_rect, 12.5, false, text_secondary, true);
 
-    // ── Stat boxes ────────────────────────────────────────────────────────────
-    let stat_y = card_rect.top + 152;
-    let stat_h = 42;
-    let box_margin = 12;
-    let box_gap = 8;
+    // ── Stat pills ──────────────────────────────────────────────────────────────
+    let stat_top = sub_rect.bottom + 18;
+    let stat_h = 46;
+    let box_margin = 16;
+    let box_gap = 10;
     let half_w = (CARD_W - box_margin * 2 - box_gap) / 2;
 
-    // "Used today" box (left).
     let used_box = RECT {
         left: card_rect.left + box_margin,
-        top: stat_y,
+        top: stat_top,
         right: card_rect.left + box_margin + half_w,
-        bottom: stat_y + stat_h,
+        bottom: stat_top + stat_h,
     };
-    let stat_bg_brush = CreateSolidBrush(btn_secondary_bg);
-    let np = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-    let op3 = SelectObject(mem_dc, np);
-    SelectObject(mem_dc, stat_bg_brush.into());
-    RoundRect(mem_dc, used_box.left, used_box.top, used_box.right, used_box.bottom, 8, 8);
-    SelectObject(mem_dc, op3);
-    DeleteObject(stat_bg_brush.into());
-
-    let mono_font = make_font(mem_dc, 11, true);
-    let old_mf = SelectObject(mem_dc, mono_font.into());
-    SetBkMode(mem_dc, TRANSPARENT);
-    SetTextColor(mem_dc, color_red);
-    let used_label_rect = RECT {
-        left: used_box.left,
-        top: used_box.top + 4,
-        right: used_box.right,
-        bottom: used_box.top + 18,
-    };
-    let mut used_label = b"Used today\0".to_vec();
-    DrawTextA(mem_dc, &mut used_label, &mut { used_label_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    let used_val = format_duration(ws.args.used_seconds);
-    let used_val_cstr = format!("{}\0", used_val);
-    let mut used_val_bytes = used_val_cstr.into_bytes();
-    let used_val_rect = RECT {
-        left: used_box.left,
-        top: used_box.top + 20,
-        right: used_box.right,
-        bottom: used_box.bottom - 4,
-    };
-    DrawTextA(mem_dc, &mut used_val_bytes, &mut { used_val_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    SelectObject(mem_dc, old_mf);
-    DeleteObject(mono_font.into());
-
-    // "Daily limit" box (right).
     let limit_box = RECT {
         left: used_box.right + box_gap,
-        top: stat_y,
+        top: stat_top,
         right: used_box.right + box_gap + half_w,
-        bottom: stat_y + stat_h,
+        bottom: stat_top + stat_h,
     };
-    let stat_bg_brush2 = CreateSolidBrush(btn_secondary_bg);
-    let np2 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-    let op4 = SelectObject(mem_dc, np2);
-    SelectObject(mem_dc, stat_bg_brush2.into());
-    RoundRect(mem_dc, limit_box.left, limit_box.top, limit_box.right, limit_box.bottom, 8, 8);
-    SelectObject(mem_dc, op4);
-    DeleteObject(stat_bg_brush2.into());
 
-    let mono_font2 = make_font(mem_dc, 11, true);
-    let old_mf2 = SelectObject(mem_dc, mono_font2.into());
-    SetTextColor(mem_dc, text_secondary);
-    let lim_label_rect = RECT {
-        left: limit_box.left,
-        top: limit_box.top + 4,
-        right: limit_box.right,
-        bottom: limit_box.top + 18,
-    };
-    let mut lim_label = b"Daily limit\0".to_vec();
-    DrawTextA(mem_dc, &mut lim_label, &mut { lim_label_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    let lim_val = format_duration(ws.args.limit_seconds);
-    let lim_val_cstr = format!("{}\0", lim_val);
-    let mut lim_val_bytes = lim_val_cstr.into_bytes();
-    let lim_val_rect = RECT {
-        left: limit_box.left,
-        top: limit_box.top + 20,
-        right: limit_box.right,
-        bottom: limit_box.bottom - 4,
-    };
-    DrawTextA(mem_dc, &mut lim_val_bytes, &mut { lim_val_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    SelectObject(mem_dc, old_mf2);
-    DeleteObject(mono_font2.into());
+    for (pill, label, value, value_color) in [
+        (used_box, "USED TODAY", format_duration(ws.args.used_seconds), color_error),
+        (limit_box, "DAILY LIMIT", format_duration(ws.args.limit_seconds), text_primary),
+    ] {
+        fill_round_rect(g, pill.left, pill.top, pill.right - pill.left, pill.bottom - pill.top, 10, surface_secondary);
+        draw_text(
+            g,
+            label,
+            RECT { left: pill.left, top: pill.top + 6, right: pill.right, bottom: pill.top + 20 },
+            9.5,
+            true,
+            text_secondary,
+            true,
+        );
+        draw_text(
+            g,
+            &value,
+            RECT { left: pill.left, top: pill.top + 20, right: pill.right, bottom: pill.bottom - 4 },
+            13.0,
+            true,
+            value_color,
+            true,
+        );
+    }
 
-    // ── Separator ─────────────────────────────────────────────────────────────
-    let sep_y = stat_y + stat_h + 10;
-    let sep_pen: HPEN = CreatePen(PS_SOLID, 1, separator_color);
-    let old_sep_pen = SelectObject(mem_dc, sep_pen.into());
-    MoveToEx(mem_dc, card_rect.left + 16, sep_y, None);
-    LineTo(mem_dc, card_rect.right - 16, sep_y);
-    SelectObject(mem_dc, old_sep_pen);
-    DeleteObject(sep_pen.into());
+    // ── Separator ───────────────────────────────────────────────────────────────
+    let sep_y = used_box.bottom + 18;
+    draw_line(g, card_rect.left + 20, sep_y, card_rect.right - 20, sep_y, border_color, 1.0);
 
     // ── Grace badge (visible only when grace_active) ──────────────────────────
-    let mut grace_badge_bottom = sep_y + 4;
+    let mut content_top = sep_y + 16;
     if ws.grace_active {
         let badge_rect = RECT {
-            left: card_rect.left + 16,
-            top: sep_y + 8,
-            right: card_rect.right - 16,
-            bottom: sep_y + 30,
+            left: card_rect.left + 20,
+            top: sep_y + 10,
+            right: card_rect.right - 20,
+            bottom: sep_y + 42,
         };
-        let badge_brush = CreateSolidBrush(color_orange);
-        let np3 = GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-        let op5 = SelectObject(mem_dc, np3);
-        SelectObject(mem_dc, badge_brush.into());
-        RoundRect(mem_dc, badge_rect.left, badge_rect.top, badge_rect.right, badge_rect.bottom, 6, 6);
-        SelectObject(mem_dc, op5);
-        DeleteObject(badge_brush.into());
-
-        let grace_font = make_font(mem_dc, 10, true);
-        let old_gf = SelectObject(mem_dc, grace_font.into());
-        SetTextColor(mem_dc, color_white);
-        SetBkMode(mem_dc, TRANSPARENT);
+        fill_round_rect(g, badge_rect.left, badge_rect.top, badge_rect.right - badge_rect.left, badge_rect.bottom - badge_rect.top, 10, color_warning);
         let mins = ws.grace_seconds_left / 60;
         let secs = ws.grace_seconds_left % 60;
-        let badge_txt = format!("Grace period: {:02}:{:02} remaining\0", mins, secs);
-        let mut badge_bytes = badge_txt.into_bytes();
-        DrawTextA(mem_dc, &mut badge_bytes, &mut { badge_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-        SelectObject(mem_dc, old_gf);
-        DeleteObject(grace_font.into());
-        grace_badge_bottom = badge_rect.bottom + 4;
+        let badge_txt = format!("Grace period: {:02}:{:02} remaining", mins, secs);
+        draw_text(g, &badge_txt, badge_rect, 11.0, true, color_white, true);
+        content_top = badge_rect.bottom + 14;
     }
 
     // ── Buttons ───────────────────────────────────────────────────────────────
     // Layout (top to bottom):
-    //   Row 1: [Minimize]  [Quit]     — primary (red), half width each
+    //   Row 1: [Minimize]  [Quit]     — primary (brand accent), half width each
     //   Row 2: [+5 min grace...]       — secondary, full width
-    //   Row 3: [Unblock for today]     — secondary, full width
-
-    let btn_top = grace_badge_bottom + 6;
-    let btn_h = 34;
-    let btn_gap = 6;
-    let btn_margin = 16;
+    //   Row 3: [Unblock for today]     — tertiary, full width
+    let btn_h = 40;
+    let btn_gap = 8;
+    let btn_margin = 20;
     let btn_full_w = CARD_W - btn_margin * 2;
     let btn_half_w = (btn_full_w - btn_gap) / 2;
 
-    // Row 1: Minimize + Quit
-    let r1_top = card_rect.top + btn_top;
+    let r1_top = content_top;
     let minimize_rect = RECT {
         left: card_rect.left + btn_margin,
         top: r1_top,
@@ -894,7 +929,6 @@ unsafe fn on_paint(hwnd: HWND) {
         bottom: r1_top + btn_h,
     };
 
-    // Row 2: Grace
     let r2_top = r1_top + btn_h + btn_gap;
     let grace_rect = RECT {
         left: card_rect.left + btn_margin,
@@ -903,7 +937,6 @@ unsafe fn on_paint(hwnd: HWND) {
         bottom: r2_top + btn_h,
     };
 
-    // Row 3: Unblock
     let r3_top = r2_top + btn_h + btn_gap;
     let unblock_rect = RECT {
         left: card_rect.left + btn_margin,
@@ -918,98 +951,53 @@ unsafe fn on_paint(hwnd: HWND) {
     ws.btn_grace = grace_rect;
     ws.btn_unblock = unblock_rect;
 
-    // Draw primary buttons (red).
-    draw_button(mem_dc, minimize_rect, b"Minimize\0", color_red, color_white, false);
-    draw_button(mem_dc, quit_rect, b"Quit\0", color_red, color_white, false);
+    // Primary buttons: solid brand-accent fill, no border.
+    draw_button(g, minimize_rect, "Minimize", color_accent, color_white, None, 11.5, true);
+    draw_button(g, quit_rect, "Quit", color_accent, color_white, None, 11.5, true);
 
-    // Draw secondary buttons.
+    // Secondary buttons: tinted surface with a hairline border.
     let grace_grayed = ws.grace_used;
-    let grace_bg = if grace_grayed { text_secondary } else { btn_secondary_bg };
-    let grace_txt_color = if grace_grayed { rgb(180, 180, 180) } else { btn_secondary_txt };
-    draw_button(mem_dc, grace_rect, b"+5 min grace \x97 save and close\0", grace_bg, grace_txt_color, true);
-    draw_button(mem_dc, unblock_rect, b"Unblock for today\0", btn_secondary_bg, btn_secondary_txt, true);
+    let grace_bg = if grace_grayed { border_color } else { surface_secondary };
+    let grace_txt = if grace_grayed { text_secondary } else { text_primary };
+    draw_button(g, grace_rect, "+5 min grace — save and close", grace_bg, grace_txt, Some(border_color), 11.0, false);
+    draw_button(g, unblock_rect, "Unblock for today", surface_secondary, text_secondary, Some(border_color), 11.0, false);
 
     // ── Footer ────────────────────────────────────────────────────────────────
-    let footer_font = make_font(mem_dc, 9, false);
-    let old_ff = SelectObject(mem_dc, footer_font.into());
-    SetTextColor(mem_dc, text_secondary);
-    SetBkMode(mem_dc, TRANSPARENT);
     let footer_rect = RECT {
         left: card_rect.left,
-        top: card_rect.bottom - 22,
+        top: card_rect.bottom - 30,
         right: card_rect.right,
-        bottom: card_rect.bottom - 4,
+        bottom: card_rect.bottom - 12,
     };
-    let mut footer_txt = b"Scolect\0".to_vec();
-    DrawTextA(mem_dc, &mut footer_txt, &mut { footer_rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    SelectObject(mem_dc, old_ff);
-    DeleteObject(footer_font.into());
+    draw_text(g, "Scolect", footer_rect, 9.0, false, text_secondary, true);
+
+    let _ = GdipDeleteGraphics(g);
 
     // ── Blit back-buffer to screen ────────────────────────────────────────────
-    BitBlt(hdc, 0, 0, cw, ch, Some(mem_dc), 0, 0, SRCCOPY);
+    let _ = BitBlt(hdc, 0, 0, cw, ch, Some(mem_dc), 0, 0, SRCCOPY);
 
     SelectObject(mem_dc, old_bmp);
-    DeleteObject(bmp.into());
-    DeleteDC(mem_dc);
+    let _ = DeleteObject(bmp.into());
+    let _ = DeleteDC(mem_dc);
 
-    EndPaint(hwnd, &ps);
+    let _ = EndPaint(hwnd, &ps);
 }
 
-unsafe fn draw_button(hdc: HDC, rect: RECT, label: &[u8], bg: COLORREF, fg: COLORREF, secondary: bool) {
-    let brush = CreateSolidBrush(bg);
-    let border_pen = if secondary {
-        CreatePen(PS_SOLID, 1, rgb(180, 180, 190))
-    } else {
-        CreatePen(PS_SOLID, 0, bg) // no visible border for primary
-    };
-    let old_pen = SelectObject(hdc, border_pen.into());
-    SelectObject(hdc, brush.into());
-    RoundRect(hdc, rect.left, rect.top, rect.right, rect.bottom, 8, 8);
-    SelectObject(hdc, old_pen);
-    DeleteObject(brush.into());
-    DeleteObject(border_pen.into());
-
-    let font = make_font(hdc, 11, !secondary);
-    let old_font = SelectObject(hdc, font.into());
-    SetTextColor(hdc, fg);
-    SetBkMode(hdc, TRANSPARENT);
-    let mut txt = label.to_vec();
-    // Ensure null-terminated.
-    if txt.last() != Some(&0) {
-        txt.push(0);
+unsafe fn draw_button(
+    g: *mut GpGraphics,
+    rect: RECT,
+    label: &str,
+    bg: u32,
+    fg: u32,
+    border: Option<u32>,
+    font_size: f32,
+    bold: bool,
+) {
+    fill_round_rect(g, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, 10, bg);
+    if let Some(border_color) = border {
+        stroke_round_rect(g, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, 10, border_color, 1.0);
     }
-    DrawTextA(hdc, &mut txt, &mut { rect }, DT_CENTER | DT_SINGLELINE | DT_VCENTER);
-    SelectObject(hdc, old_font);
-    DeleteObject(font.into());
-}
-
-unsafe fn make_font(_hdc: HDC, pt: i32, bold: bool) -> HFONT {
-    // Convert point size to logical units.
-    let dc_hdc = windows::Win32::Graphics::Gdi::GetDC(None);
-    let dpi = windows::Win32::Graphics::Gdi::GetDeviceCaps(
-        Some(dc_hdc),
-        windows::Win32::Graphics::Gdi::LOGPIXELSY,
-    );
-    windows::Win32::Graphics::Gdi::ReleaseDC(None, dc_hdc);
-
-    let height = -(pt * dpi) / 72;
-    let weight = if bold { 700i32 } else { 400i32 };
-    CreateFontA(
-        height,
-        0,
-        0,
-        0,
-        weight,
-        0,
-        0,
-        0,
-        windows::Win32::Graphics::Gdi::DEFAULT_CHARSET,
-        windows::Win32::Graphics::Gdi::OUT_DEFAULT_PRECIS,
-        windows::Win32::Graphics::Gdi::CLIP_DEFAULT_PRECIS,
-        windows::Win32::Graphics::Gdi::CLEARTYPE_QUALITY,
-        windows::Win32::Graphics::Gdi::DEFAULT_PITCH.0 as u32,
-        PCSTR(b"Segoe UI\0".as_ptr()),
-    )
+    draw_text(g, label, rect, font_size, bold, fg, true);
 }
 
 fn format_duration(seconds: i32) -> String {
@@ -1032,24 +1020,55 @@ unsafe fn on_click(hwnd: HWND, lparam: LPARAM) {
     }
     let ws = &mut *ws_ptr;
 
+    // WM_LBUTTONDOWN's lparam is in real screen/client pixels, but on_paint
+    // lays out (and stores) button rects in fixed 96-DPI design pixels scaled
+    // up only for drawing via the GDI+ world transform. Undo that scale here
+    // so hit-testing lines up with what's on screen on displays that aren't
+    // running at 100% Windows scaling.
     let x = (lparam.0 & 0xFFFF) as i16 as i32;
     let y = ((lparam.0 >> 16) & 0xFFFF) as i16 as i32;
-    let pt = POINT { x, y };
+    let dpi = GetDpiForWindow(hwnd).max(1);
+    let scale = dpi as f32 / 96.0;
+    let pt = POINT {
+        x: (x as f32 / scale).round() as i32,
+        y: (y as f32 / scale).round() as i32,
+    };
+
+    eprintln!(
+        "🚫[rust] on_click raw=({x},{y}) scale={scale} pt=({},{}) btn_minimize={:?} btn_quit={:?} btn_grace={:?} btn_unblock={:?}",
+        pt.x, pt.y, ws.btn_minimize, ws.btn_quit, ws.btn_grace, ws.btn_unblock
+    );
 
     if point_in_rect(pt, ws.btn_minimize) {
+        eprintln!("🚫[rust] on_click matched MINIMIZE");
         fire_callback("minimize");
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_quit) {
+        eprintln!("🚫[rust] on_click matched QUIT");
         fire_callback("quit");
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_grace) && !ws.grace_used {
+        eprintln!("🚫[rust] on_click matched GRACE");
         ws.grace_used = true;
         fire_callback("grace");
-        // Don't dismiss — let Dart handle the countdown.
-        let _ = windows::Win32::Graphics::Gdi::InvalidateRect(Some(hwnd), None, false);
-    } else if point_in_rect(pt, ws.btn_unblock) {
-        fire_callback("unblock");
+        // Grace means "let the user actually use the app for 5 minutes to
+        // save/close" — so it must get out of the way like Minimize/Quit do,
+        // not stay open with a countdown badge on top of the app (which
+        // previously left the app fully blocked for the entire grace period,
+        // defeating the point of granting it). Restore visibility for hard
+        // block (its windows were SW_HIDE'd by TIMER_HIDE_APP) before tearing
+        // the overlay down.
+        show_hide_process_windows(ws.args.pid, true);
         destroy_overlay_window();
+    } else if point_in_rect(pt, ws.btn_unblock) {
+        eprintln!("🚫[rust] on_click matched UNBLOCK");
+        fire_callback("unblock");
+        // Same as grace: restore hard-block-hidden windows since the app is
+        // no longer blocked for the rest of the day.
+        show_hide_process_windows(ws.args.pid, true);
+        destroy_overlay_window();
+    } else {
+        eprintln!("🚫[rust] on_click matched NOTHING (click missed all buttons)");
     }
 }
 

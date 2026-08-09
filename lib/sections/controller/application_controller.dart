@@ -207,6 +207,16 @@ class BackgroundAppTracker {
         await _startPollingMode();
       } else {
         await _startPreciseMode();
+        // _handleFocusChange only fires on FUTURE focus-change events — it
+        // never runs for whatever's already focused when tracking (re)starts.
+        // Without this, restarting the app while sitting in an already-over-
+        // limit app (with no subsequent app switch) leaves _currentApp empty
+        // forever, so the heartbeat never gets a foothold and blocking never
+        // re-arms until the user happens to switch apps at least once. The
+        // dto's fields are placeholders — _handleFocusChange re-queries the
+        // real foreground window itself; they only need to dodge its two
+        // early-return guards (empty title / explorer.exe "Program Manager").
+        _handleFocusChange(AppWindowDto(appName: '', windowTitle: 'startup-sync'));
       }
 
       _isTracking = true;
@@ -440,35 +450,44 @@ class BackgroundAppTracker {
     if (_currentApp.isEmpty || _currentApp == _selfAppName) return;
     if (!_screenStateAllowsTracking) return;
 
-    bool idleDetectionEnabled =
-        SettingsManager().getSetting("tracking.idleDetection") ?? true;
-    if (idleDetectionEnabled && !_isUserActive) return;
-
     final metadata = _appDataStore?.getAppMetadata(_currentApp);
     if (metadata != null && (!metadata.isTracking || !metadata.isVisible))
       return;
 
-    final now = DateTime.now();
-    final elapsed = now.difference(_currentAppStartTime);
-    if (elapsed.inSeconds <= 0) return;
+    bool idleDetectionEnabled =
+        SettingsManager().getSetting("tracking.idleDetection") ?? true;
+    final isActive = !idleDetectionEnabled || _isUserActive;
 
-    await _appDataStore?.recordAppUsage(
-      _currentApp,
-      SettingsManager().getLogicalDate(now),
-      elapsed,
-      0,
-      [TimeRange(startTime: _currentAppStartTime, endTime: now)],
-    );
-    _currentAppStartTime = now;
-    debugPrint('💓 Heartbeat: $_currentApp (+${elapsed.inSeconds}s)');
+    // Only accrue usage while active — don't count AFK time. But the limit
+    // check below must run regardless of idle state: usage recorded while
+    // the user WAS active can already be over the limit, and blocking must
+    // not silently stop firing just because they've since paused moving the
+    // mouse/typing (previously this whole function returned early once idle,
+    // so a heartbeat-only trigger — no app switch — could never fire again
+    // once the user reached their limit and then sat still).
+    if (isActive) {
+      final now = DateTime.now();
+      final elapsed = now.difference(_currentAppStartTime);
+      if (elapsed.inSeconds > 0) {
+        await _appDataStore?.recordAppUsage(
+          _currentApp,
+          SettingsManager().getLogicalDate(now),
+          elapsed,
+          0,
+          [TimeRange(startTime: _currentAppStartTime, endTime: now)],
+        );
+        _currentAppStartTime = now;
+        debugPrint('💓 Heartbeat: $_currentApp (+${elapsed.inSeconds}s)');
+      }
+    }
 
-    // Check if the app just crossed its daily limit while the user was in it.
-    // Only fires when blocking is enabled — skips the overhead otherwise.
+    // Check if the app has crossed its daily limit. Only fires when blocking
+    // is enabled — skips the overhead otherwise.
     if (AppBlockingService().behavior != BlockingBehavior.none &&
         metadata != null &&
         metadata.limitStatus &&
         metadata.dailyLimit > Duration.zero) {
-      final today = SettingsManager().getLogicalDate(now);
+      final today = SettingsManager().getLogicalDate(DateTime.now());
       final usage = _appDataStore?.getAppUsage(_currentApp, today);
       final used = usage?.timeSpent ?? Duration.zero;
       if (used >= metadata.dailyLimit) {
@@ -530,7 +549,17 @@ class BackgroundAppTracker {
         (window.appName == "explorer.exe" &&
             window.windowTitle == "Program Manager")) return;
 
-    String newApp = await _getCurrentActiveApp();
+    // Snapshot the foreground window once so the app name and pid used below
+    // always refer to the same window — a second, later query can race with
+    // the OS handing focus to a different window (e.g. right after launching
+    // an app), which previously caused the block overlay to target whatever
+    // window happened to be foreground at that later point instead of the
+    // app that was actually detected as over its limit.
+    WindowInfo? activeInfo;
+    try {
+      activeInfo = await ForegroundWindowPlugin.getForegroundWindowInfo();
+    } catch (_) {}
+    String newApp = activeInfo?.programName ?? '';
     if (newApp == "SearchHost" || newApp == "Application Frame Host") {
       newApp = _sanitizeWindowTitle(window.windowTitle);
     }
@@ -563,16 +592,13 @@ class BackgroundAppTracker {
         final today = SettingsManager().getLogicalDate(DateTime.now());
         final usage = _appDataStore?.getAppUsage(newApp, today);
         final used = usage?.timeSpent ?? Duration.zero;
-        if (used >= metadata.dailyLimit) {
-          try {
-            final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
-            AppBlockingService().onLimitedAppFocused(
-              appName: newApp,
-              pid: info.processId,
-              usedTime: used,
-              limitTime: metadata.dailyLimit,
-            );
-          } catch (_) {}
+        if (used >= metadata.dailyLimit && activeInfo != null) {
+          AppBlockingService().onLimitedAppFocused(
+            appName: newApp,
+            pid: activeInfo.processId,
+            usedTime: used,
+            limitTime: metadata.dailyLimit,
+          );
         }
       }
 
@@ -720,15 +746,6 @@ class BackgroundAppTracker {
       return {'title': info.programName};
     } catch (e) {
       return null;
-    }
-  }
-
-  Future<String> _getCurrentActiveApp() async {
-    try {
-      WindowInfo info = await ForegroundWindowPlugin.getForegroundWindowInfo();
-      return info.programName;
-    } catch (e) {
-      return '';
     }
   }
 

@@ -2,6 +2,7 @@
 
 #include <windows.h>
 #include <powrprof.h>
+#include <cstdio>
 #include <optional>
 #include <string>
 #include "flutter/generated_plugin_registrant.h"
@@ -11,7 +12,16 @@
 // Custom window message used to marshal overlay callbacks from the Rust Win32
 // thread back to the Flutter engine messenger thread (the main Win32 thread).
 // LPARAM carries a heap-allocated char* (must be freed after use).
-#define WM_OVERLAY_ACTION (WM_USER + 1)
+//
+// This MUST be a globally-registered message (RegisterWindowMessageA), not a
+// raw WM_USER+N value: the Flutter Windows embedder's own platform-thread
+// task runner posts messages to this window using IDs in the WM_USER range
+// for its internal wakeups. HandleTopLevelWindowProc() runs before our own
+// switch in MessageHandler and swallows anything it recognizes as its own —
+// a raw WM_USER+1 collided with that and silently ate every overlay action
+// (the Rust click handler and native callback both fired correctly, but the
+// posted message never reached our switch, so Dart never heard about it).
+static const UINT WM_OVERLAY_ACTION = RegisterWindowMessageA("ScolectBlockOverlayAction");
 
 // ─── Function pointer types for block_overlay.dll ────────────────────────────
 typedef void (*PFN_block_overlay_show)(DWORD pid, const char* app_name,
@@ -42,6 +52,9 @@ PFN_block_overlay_start_grace g_grace_fn  = nullptr;
 // Posts WM_OVERLAY_ACTION to the main window so that the method channel
 // InvokeMethod call happens on the correct thread.
 void CALLBACK OverlayCallback(const char* action) {
+  fprintf(stderr, "\xf0\x9f\x9a\xab[cpp] OverlayCallback action=%s\n",
+          action ? action : "(null)");
+  fflush(stderr);
   if (!g_main_hwnd || !action) return;
   // Duplicate the string onto the heap; MessageHandler frees it.
   char* copy = _strdup(action);
@@ -302,26 +315,31 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd,
     }
   }
 
+  // WM_OVERLAY_ACTION is a RegisterWindowMessageA() value, not a compile-time
+  // constant, so it can't be a switch `case` label — handle it separately.
+  if (message == WM_OVERLAY_ACTION) {
+    // Fired from OverlayCallback (Rust Win32 thread) via PostMessage.
+    // LPARAM is a heap-allocated char* (strdup'd in OverlayCallback).
+    char* action = reinterpret_cast<char*>(lparam);
+    fprintf(stderr, "\xf0\x9f\x9a\xab[cpp] WM_OVERLAY_ACTION action=%s channel=%s\n",
+            action ? action : "(null)", g_overlay_channel ? "set" : "null");
+    fflush(stderr);
+    if (action && g_overlay_channel) {
+      std::string action_str(action);
+      g_overlay_channel->InvokeMethod(
+          "onAction",
+          std::make_unique<flutter::EncodableValue>(action_str));
+    }
+    free(action);
+    return 0;
+  }
+
   switch (message) {
     case WM_FONTCHANGE:
       if (flutter_controller_) {
         flutter_controller_->engine()->ReloadSystemFonts();
       }
       break;
-
-    case WM_OVERLAY_ACTION: {
-      // Fired from OverlayCallback (Rust Win32 thread) via PostMessage.
-      // LPARAM is a heap-allocated char* (strdup'd in OverlayCallback).
-      char* action = reinterpret_cast<char*>(lparam);
-      if (action && g_overlay_channel) {
-        std::string action_str(action);
-        g_overlay_channel->InvokeMethod(
-            "onAction",
-            std::make_unique<flutter::EncodableValue>(action_str));
-      }
-      free(action);
-      return 0;
-    }
   }
 
   return Win32Window::MessageHandler(hwnd, message, wparam, lparam);

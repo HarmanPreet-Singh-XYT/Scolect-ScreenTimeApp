@@ -244,9 +244,10 @@ class ForegroundWindowPlugin {
   /// Used by [AppBlockingService.hideOtherApp] on Windows.
   static Future<void> hideOtherApp(int pid) async {
     try {
-      await compute(_minimizeProcessWindows, pid);
-    } catch (e) {
-      debugPrint('ForegroundWindowPlugin.hideOtherApp: $e');
+      final matched = await compute(_minimizeProcessWindows, pid);
+      debugPrint('🚫 [block_overlay] _minimizeProcessWindows(pid=$pid) matched $matched window(s)');
+    } catch (e, st) {
+      debugPrint('ForegroundWindowPlugin.hideOtherApp: $e\n$st');
     }
   }
 
@@ -457,7 +458,8 @@ class ForegroundWindowPlugin {
 
   /// Minimizes all visible top-level windows owned by [pid].
   /// Runs in a compute isolate; uses static FFI bindings loaded fresh there.
-  static void _minimizeProcessWindows(int pid) {
+  /// Returns the number of matched windows, for diagnostics.
+  static int _minimizeProcessWindows(int pid) {
     // We need our own DLL references inside the isolate.
     final user32 = DynamicLibrary.open('user32.dll');
     final kernel32 = DynamicLibrary.open('kernel32.dll');
@@ -469,10 +471,6 @@ class ForegroundWindowPlugin {
     final showWindow = user32.lookupFunction<
         Int32 Function(Pointer<Void>, Int32),
         int Function(Pointer<Void>, int)>('ShowWindow');
-
-    final isWindowVisible = user32.lookupFunction<
-        Int32 Function(Pointer<Void>),
-        int Function(Pointer<Void>)>('IsWindowVisible');
 
     // Callback closure for EnumWindows — Dart FFI requires a top-level or static
     // function for NativeCallable. Use EnumWindows-style manual approach instead.
@@ -518,19 +516,29 @@ class ForegroundWindowPlugin {
 
     const gwHwndNext = 2; // GW_HWNDNEXT
 
+    var matched = 0;
     try {
       var hwnd = getTopWindow(nullptr);
       while (hwnd.address != 0) {
         pidBox.value = 0;
         getWindowThreadProcessId(hwnd, pidBox);
-        if (pidBox.value == pid && isWindowVisible(hwnd) != 0) {
-          showWindow(hwnd, _kSwMinimize);
+        // Don't gate on isWindowVisible: under hard block the blocked app's
+        // windows have already been SW_HIDE'd (see TIMER_HIDE_APP in
+        // block_overlay/src/lib.rs), so requiring visibility here meant
+        // Minimize silently did nothing — the window stayed hidden instead
+        // of being restored and minimized to the taskbar.
+        if (pidBox.value == pid) {
+          matched++;
+          final wasVisible = showWindow(hwnd, _kSwMinimize);
+          // ignore: avoid_print — this isolate has no debugPrint binding.
+          print('🚫 [block_overlay] minimize hwnd=${hwnd.address} wasVisible=$wasVisible');
         }
         hwnd = getNextWindow(hwnd, gwHwndNext);
       }
     } finally {
       calloc.free(pidBox);
     }
+    return matched;
   }
 
   /// Opens [pid] and calls TerminateProcess on it.
