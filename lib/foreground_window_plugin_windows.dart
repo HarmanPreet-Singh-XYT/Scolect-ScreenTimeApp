@@ -244,10 +244,9 @@ class ForegroundWindowPlugin {
   /// Used by [AppBlockingService.hideOtherApp] on Windows.
   static Future<void> hideOtherApp(int pid) async {
     try {
-      final matched = await compute(_minimizeProcessWindows, pid);
-      debugPrint('🚫 [block_overlay] _minimizeProcessWindows(pid=$pid) matched $matched window(s)');
-    } catch (e, st) {
-      debugPrint('ForegroundWindowPlugin.hideOtherApp: $e\n$st');
+      await compute(_minimizeProcessWindows, pid);
+    } catch (e) {
+      debugPrint('ForegroundWindowPlugin.hideOtherApp: $e');
     }
   }
 
@@ -458,8 +457,7 @@ class ForegroundWindowPlugin {
 
   /// Minimizes all visible top-level windows owned by [pid].
   /// Runs in a compute isolate; uses static FFI bindings loaded fresh there.
-  /// Returns the number of matched windows, for diagnostics.
-  static int _minimizeProcessWindows(int pid) {
+  static void _minimizeProcessWindows(int pid) {
     // We need our own DLL references inside the isolate.
     final user32 = DynamicLibrary.open('user32.dll');
     final kernel32 = DynamicLibrary.open('kernel32.dll');
@@ -516,7 +514,6 @@ class ForegroundWindowPlugin {
 
     const gwHwndNext = 2; // GW_HWNDNEXT
 
-    var matched = 0;
     try {
       var hwnd = getTopWindow(nullptr);
       while (hwnd.address != 0) {
@@ -528,17 +525,13 @@ class ForegroundWindowPlugin {
         // Minimize silently did nothing — the window stayed hidden instead
         // of being restored and minimized to the taskbar.
         if (pidBox.value == pid) {
-          matched++;
-          final wasVisible = showWindow(hwnd, _kSwMinimize);
-          // ignore: avoid_print — this isolate has no debugPrint binding.
-          print('🚫 [block_overlay] minimize hwnd=${hwnd.address} wasVisible=$wasVisible');
+          showWindow(hwnd, _kSwMinimize);
         }
         hwnd = getNextWindow(hwnd, gwHwndNext);
       }
     } finally {
       calloc.free(pidBox);
     }
-    return matched;
   }
 
   /// Opens [pid] and calls TerminateProcess on it.

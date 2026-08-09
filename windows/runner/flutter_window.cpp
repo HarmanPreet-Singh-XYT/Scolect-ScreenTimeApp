@@ -2,7 +2,6 @@
 
 #include <windows.h>
 #include <powrprof.h>
-#include <cstdio>
 #include <optional>
 #include <string>
 #include "flutter/generated_plugin_registrant.h"
@@ -52,9 +51,6 @@ PFN_block_overlay_start_grace g_grace_fn  = nullptr;
 // Posts WM_OVERLAY_ACTION to the main window so that the method channel
 // InvokeMethod call happens on the correct thread.
 void CALLBACK OverlayCallback(const char* action) {
-  fprintf(stderr, "\xf0\x9f\x9a\xab[cpp] OverlayCallback action=%s\n",
-          action ? action : "(null)");
-  fflush(stderr);
   if (!g_main_hwnd || !action) return;
   // Duplicate the string onto the heap; MessageHandler frees it.
   char* copy = _strdup(action);
@@ -321,9 +317,6 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd,
     // Fired from OverlayCallback (Rust Win32 thread) via PostMessage.
     // LPARAM is a heap-allocated char* (strdup'd in OverlayCallback).
     char* action = reinterpret_cast<char*>(lparam);
-    fprintf(stderr, "\xf0\x9f\x9a\xab[cpp] WM_OVERLAY_ACTION action=%s channel=%s\n",
-            action ? action : "(null)", g_overlay_channel ? "set" : "null");
-    fflush(stderr);
     if (action && g_overlay_channel) {
       std::string action_str(action);
       g_overlay_channel->InvokeMethod(

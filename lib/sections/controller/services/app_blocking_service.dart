@@ -65,7 +65,6 @@ class AppBlockingService {
 
     _activeAppName = appName;
     _activePid = pid;
-    debugPrint('🚫 [block_overlay] triggering for "$appName" pid=$pid hardBlock=${behavior == BlockingBehavior.hard}');
 
     if (!Platform.isMacOS && !Platform.isWindows) return;
 
@@ -107,7 +106,6 @@ class AppBlockingService {
     final action = call.arguments as String? ?? '';
     final appName = _activeAppName ?? '';
     final pid = _activePid ?? 0;
-    debugPrint('🚫 [block_overlay] action="$action" appName="$appName" pid=$pid');
 
     switch (action) {
       case 'minimize':
@@ -192,16 +190,14 @@ class AppBlockingService {
   // ── Native calls ──────────────────────────────────────────────────────────
 
   Future<void> hideOtherApp(int pid) async {
-    debugPrint('🚫 [block_overlay] hideOtherApp called with pid=$pid');
     try {
       if (Platform.isMacOS) {
         await _fwChannel.invokeMethod('hideOtherApp', {'pid': pid});
       } else if (Platform.isWindows) {
         await ForegroundWindowPlugin.hideOtherApp(pid);
       }
-      debugPrint('🚫 [block_overlay] hideOtherApp completed for pid=$pid');
-    } catch (e, st) {
-      debugPrint('🚫 [block_overlay] hideOtherApp failed: $e\n$st');
+    } catch (e) {
+      debugPrint('hideOtherApp failed: $e');
     }
   }
 

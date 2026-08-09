@@ -190,7 +190,7 @@ packages:
     description:
       path: "."
       ref: rust
-      resolved-ref: "8cebab807720cb419e74c9c04c567f714c8c37f2"
+      resolved-ref: "4d172dd8d1b8403fc5fe0240836c18091cec9aae"
       url: "https://github.com/HarmanPreet-Singh-XYT/Screenstate"
     source: git
     version: "0.0.6+1"

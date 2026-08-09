@@ -1034,21 +1034,13 @@ unsafe fn on_click(hwnd: HWND, lparam: LPARAM) {
         y: (y as f32 / scale).round() as i32,
     };
 
-    eprintln!(
-        "🚫[rust] on_click raw=({x},{y}) scale={scale} pt=({},{}) btn_minimize={:?} btn_quit={:?} btn_grace={:?} btn_unblock={:?}",
-        pt.x, pt.y, ws.btn_minimize, ws.btn_quit, ws.btn_grace, ws.btn_unblock
-    );
-
     if point_in_rect(pt, ws.btn_minimize) {
-        eprintln!("🚫[rust] on_click matched MINIMIZE");
         fire_callback("minimize");
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_quit) {
-        eprintln!("🚫[rust] on_click matched QUIT");
         fire_callback("quit");
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_grace) && !ws.grace_used {
-        eprintln!("🚫[rust] on_click matched GRACE");
         ws.grace_used = true;
         fire_callback("grace");
         // Grace means "let the user actually use the app for 5 minutes to
@@ -1061,14 +1053,11 @@ unsafe fn on_click(hwnd: HWND, lparam: LPARAM) {
         show_hide_process_windows(ws.args.pid, true);
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_unblock) {
-        eprintln!("🚫[rust] on_click matched UNBLOCK");
         fire_callback("unblock");
         // Same as grace: restore hard-block-hidden windows since the app is
         // no longer blocked for the rest of the day.
         show_hide_process_windows(ws.args.pid, true);
         destroy_overlay_window();
-    } else {
-        eprintln!("🚫[rust] on_click matched NOTHING (click missed all buttons)");
     }
 }
 
