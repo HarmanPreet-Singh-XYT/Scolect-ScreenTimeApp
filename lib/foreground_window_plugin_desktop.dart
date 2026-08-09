@@ -41,4 +41,16 @@ class ForegroundWindowPlugin {
       throw UnsupportedError('Platform ${Platform.operatingSystem} is not supported');
     }
   }
+
+  static Future<void> hideOtherApp(int pid) async {
+    if (Platform.isWindows) {
+      await windows.ForegroundWindowPlugin.hideOtherApp(pid);
+    }
+  }
+
+  static Future<void> terminateOtherApp(int pid) async {
+    if (Platform.isWindows) {
+      await windows.ForegroundWindowPlugin.terminateOtherApp(pid);
+    }
+  }
 }

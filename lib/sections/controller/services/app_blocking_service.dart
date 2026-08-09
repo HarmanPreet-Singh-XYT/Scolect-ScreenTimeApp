@@ -3,10 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../settings_data_controller.dart';
-// foreground_window_plugin_windows.dart is only used on Windows at runtime,
-// but it's safe to import unconditionally on any non-web platform since it
-// only references dart:ffi which is available on all desktop targets.
-import '../../../foreground_window_plugin_windows.dart';
+import '../../../foreground_window_plugin.dart';
 
 enum BlockingBehavior { none, soft, hard }
 

@@ -6,4 +6,8 @@ class ForegroundWindowPlugin {
   static Future<WindowInfo> getForegroundWindowInfo() async {
     throw UnsupportedError('ForegroundWindowPlugin is not supported on this platform.');
   }
+
+  static Future<void> hideOtherApp(int pid) async {}
+
+  static Future<void> terminateOtherApp(int pid) async {}
 }
