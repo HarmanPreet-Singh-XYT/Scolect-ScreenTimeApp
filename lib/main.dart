@@ -152,7 +152,8 @@ Future<void> _appMainWeb() async {
   await Hive.initFlutter();
   await SettingsManager().init();
 
-  final String savedTheme = SettingsManager().getSetting("theme.selected") ?? "System";
+  final String savedTheme =
+      SettingsManager().getSetting("theme.selected") ?? "System";
   String? savedLocale = SettingsManager().getSetting("language.selected");
   if (savedLocale == null) {
     savedLocale = LanguageOptions.defaultLanguage;
@@ -264,7 +265,6 @@ class _AppWithThemeWeb extends StatelessWidget {
     );
   }
 }
-
 
 Future<void> _appMain(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -993,8 +993,7 @@ class CustomSidebar extends StatelessWidget {
           icon: FluentIcons.analytics_report, label: l10n.navReports, index: 3),
       _NavItemData(
           icon: FluentIcons.red_eye, label: l10n.navFocusMode, index: 4),
-      _NavItemData(
-          icon: FluentIcons.globe, label: l10n.navBrowser, index: 5),
+      _NavItemData(icon: FluentIcons.globe, label: l10n.navBrowser, index: 5),
       _NavItemData.separator(),
       _NavItemData(
           icon: FluentIcons.settings, label: l10n.navSettings, index: 6),
