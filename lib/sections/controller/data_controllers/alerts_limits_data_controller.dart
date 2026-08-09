@@ -70,9 +70,15 @@ class ScreenTimeDataController extends ChangeNotifier {
   static final ScreenTimeDataController _instance =
       ScreenTimeDataController._internal();
   factory ScreenTimeDataController() => _instance;
-  ScreenTimeDataController._internal();
+  ScreenTimeDataController._internal() {
+    _loadOverallLimitFromStorage();
+  }
 
   final AppDataStore _dataStore = AppDataStore();
+
+  static const _overallEnabledKey = 'limitsAlerts.overallLimit.enabled';
+  static const _overallHoursKey = 'limitsAlerts.overallLimit.hours';
+  static const _overallMinutesKey = 'limitsAlerts.overallLimit.minutes';
 
   Duration _overallLimit = Duration.zero;
   bool _overallLimitEnabled = false;
@@ -121,9 +127,21 @@ class ScreenTimeDataController extends ChangeNotifier {
     return remaining > Duration.zero && remaining <= threshold;
   }
 
+  void _loadOverallLimitFromStorage() {
+    final settings = SettingsManager();
+    final enabled = settings.getSetting(_overallEnabledKey) as bool? ?? false;
+    final hours = (settings.getSetting(_overallHoursKey) as num?)?.toInt() ?? 0;
+    final minutes =
+        (settings.getSetting(_overallMinutesKey) as num?)?.toInt() ?? 0;
+    _overallLimitEnabled = enabled;
+    _overallLimit = Duration(hours: hours, minutes: minutes);
+  }
+
   void _saveOverallLimitToStorage() {
-    debugPrint(
-        'Saving overall limit: enabled=$_overallLimitEnabled, limit=$_overallLimit');
+    final settings = SettingsManager();
+    settings.updateSetting(_overallEnabledKey, _overallLimitEnabled);
+    settings.updateSetting(_overallHoursKey, _overallLimit.inHours);
+    settings.updateSetting(_overallMinutesKey, _overallLimit.inMinutes % 60);
   }
 
   // ============================================================

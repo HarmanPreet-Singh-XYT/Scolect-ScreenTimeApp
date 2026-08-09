@@ -12,6 +12,7 @@ import 'package:window_focus/window_focus.dart';
 import 'app_data_controller.dart';
 import 'services/app_blocking_service.dart';
 import 'categories_controller.dart';
+import 'data_controllers/alerts_limits_data_controller.dart';
 
 enum TrackingMode {
   polling,
@@ -502,6 +503,23 @@ class BackgroundAppTracker {
         } catch (_) {}
       }
     }
+
+    // Check if the overall (all-apps) daily limit has been exceeded. Blocks
+    // whichever app is currently focused, same as a per-app limit would.
+    if (AppBlockingService().behavior != BlockingBehavior.none) {
+      final screenTimeController = ScreenTimeDataController();
+      if (screenTimeController.isOverallLimitReached) {
+        try {
+          final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
+          AppBlockingService().onLimitedAppFocused(
+            appName: _currentApp,
+            pid: info.processId,
+            usedTime: screenTimeController.getOverallUsage(),
+            limitTime: screenTimeController.overallLimit,
+          );
+        } catch (_) {}
+      }
+    }
   }
 
   void _heartbeatSelfApp() {
@@ -585,19 +603,37 @@ class BackgroundAppTracker {
         return;
       }
 
-      // Check if this app is over its limit — fire blocking event if needed
-      if (metadata != null &&
-          metadata.limitStatus &&
-          metadata.dailyLimit > Duration.zero) {
-        final today = SettingsManager().getLogicalDate(DateTime.now());
-        final usage = _appDataStore?.getAppUsage(newApp, today);
-        final used = usage?.timeSpent ?? Duration.zero;
-        if (used >= metadata.dailyLimit && activeInfo != null) {
+      // Never block Scolect's own window — per-app and overall checks below
+      // both target whatever app the user just switched into.
+      if (newApp != _selfAppName) {
+        // Check if this app is over its limit — fire blocking event if needed
+        if (metadata != null &&
+            metadata.limitStatus &&
+            metadata.dailyLimit > Duration.zero) {
+          final today = SettingsManager().getLogicalDate(DateTime.now());
+          final usage = _appDataStore?.getAppUsage(newApp, today);
+          final used = usage?.timeSpent ?? Duration.zero;
+          if (used >= metadata.dailyLimit && activeInfo != null) {
+            AppBlockingService().onLimitedAppFocused(
+              appName: newApp,
+              pid: activeInfo.processId,
+              usedTime: used,
+              limitTime: metadata.dailyLimit,
+            );
+          }
+        }
+
+        // Check if the overall (all-apps) daily limit has been exceeded —
+        // re-evaluated on every app switch, not just the 60s heartbeat, so
+        // switching into a new app while already over the limit blocks
+        // immediately instead of waiting for the next tick.
+        final screenTimeController = ScreenTimeDataController();
+        if (screenTimeController.isOverallLimitReached && activeInfo != null) {
           AppBlockingService().onLimitedAppFocused(
             appName: newApp,
             pid: activeInfo.processId,
-            usedTime: used,
-            limitTime: metadata.dailyLimit,
+            usedTime: screenTimeController.getOverallUsage(),
+            limitTime: screenTimeController.overallLimit,
           );
         }
       }
