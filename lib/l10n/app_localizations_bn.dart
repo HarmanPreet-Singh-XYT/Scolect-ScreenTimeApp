@@ -1663,6 +1663,14 @@ class AppLocalizationsBn extends AppLocalizations {
       'ব্রাউজার উইন্ডো ফোকাস হারালে ট্র্যাকিং বিরতি দিন';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'মিডিয়া চলাকালীন উইন্ডো ফোকাস উপেক্ষা করুন';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'ভিডিও বা অডিও চলাকালীন স্ক্রিন পরিবর্তন করলেও ট্র্যাকিং সক্রিয় রাখুন';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'ট্যাব পরিবর্তন বা আনফোকাসে বিরতি দিন';
 
   @override

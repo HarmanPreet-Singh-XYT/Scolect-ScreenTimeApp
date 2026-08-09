@@ -1668,6 +1668,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Приостанавливать отслеживание, когда окно браузера теряет фокус';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'Игнорировать расфокусировку окна при воспроизведении медиа';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Сохранять отслеживание активным при переключении экранов во время воспроизведения видео или аудио';
+
+  @override
   String get pauseOnTabUnfocusTitle =>
       'Пауза при переключении или расфокусировке вкладки';
 

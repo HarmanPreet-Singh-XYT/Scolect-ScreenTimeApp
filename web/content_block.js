@@ -5,7 +5,22 @@
 (function () {
   const OVERLAY_ID = '__scolect_block_overlay__';
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
+  function setCleanHTML(targetElement, htmlString) {
+    if (!targetElement) return;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    targetElement.replaceChildren(...Array.from(doc.body.childNodes));
+  }
+
+  function escHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
   function fmtDuration(seconds) {
     if (!seconds || seconds <= 0) return '0s';
@@ -374,60 +389,60 @@
     `;
 
     const card = document.createElement('div');
-    card.innerHTML = `
+    setCleanHTML(card, `
       <div class="scrim"></div>
       <div class="card">
         <div class="header">
           <div class="icon-wrap">
             <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22 4L6 10v10c0 9.375 6.8 18.15 16 20.25C31.2 38.15 38 29.375 38 20V10L22 4z"
-                    fill="rgba(107,78,255,0.22)" stroke="${t.accent}" stroke-width="2" stroke-linejoin="round"/>
-              <rect x="16" y="20" width="12" height="9" rx="2" fill="none" stroke="${t.accentText}" stroke-width="1.8"/>
-              <path d="M18.5 20v-2.5a3.5 3.5 0 0 1 7 0V20" stroke="${t.accentText}" stroke-width="1.8" stroke-linecap="round"/>
-              <circle cx="22" cy="24.5" r="1.3" fill="${t.accentText}"/>
+                    fill="rgba(107,78,255,0.22)" stroke="${escHtml(t.accent)}" stroke-width="2" stroke-linejoin="round"/>
+              <rect x="16" y="20" width="12" height="9" rx="2" fill="none" stroke="${escHtml(t.accentText)}" stroke-width="1.8"/>
+              <path d="M18.5 20v-2.5a3.5 3.5 0 0 1 7 0V20" stroke="${escHtml(t.accentText)}" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="22" cy="24.5" r="1.3" fill="${escHtml(t.accentText)}"/>
             </svg>
           </div>
-          <div class="badge">${s.badge}</div>
+          <div class="badge">${escHtml(s.badge)}</div>
         </div>
-        <h1>${s.title}</h1>
-        <div class="domain">${siteName || domain}</div>
+        <h1>${escHtml(s.title)}</h1>
+        <div class="domain">${escHtml(siteName || domain)}</div>
         <div class="divider"></div>
 
         <div class="stats">
           <div class="stat">
-            <div class="stat-value">${fmtDuration(spentSecs)}</div>
-            <div class="stat-label">${s.timeSpent}</div>
+            <div class="stat-value">${escHtml(fmtDuration(spentSecs))}</div>
+            <div class="stat-label">${escHtml(s.timeSpent)}</div>
           </div>
           <div class="stat">
-            <div class="stat-value">${limitSecs > 0 ? fmtDuration(limitSecs) : fmtDuration(spentSecs)}</div>
-            <div class="stat-label">${s.dailyLimit}</div>
+            <div class="stat-value">${escHtml(limitSecs > 0 ? fmtDuration(limitSecs) : fmtDuration(spentSecs))}</div>
+            <div class="stat-label">${escHtml(s.dailyLimit)}</div>
           </div>
           <div class="stat">
-            <div class="stat-value">${visits}</div>
-            <div class="stat-label">${s.visitsToday}</div>
+            <div class="stat-value">${escHtml(visits)}</div>
+            <div class="stat-label">${escHtml(s.visitsToday)}</div>
           </div>
         </div>
 
-        <div class="reset-row">${s.resetsIn} <strong id="scolect-countdown">–</strong></div>
+        <div class="reset-row">${escHtml(s.resetsIn)} <strong id="scolect-countdown">–</strong></div>
 
         <div class="btn-group">
-          <button class="btn-back" id="scolect-btn-back">${s.goBack}</button>
-          <button class="btn-dashboard" id="scolect-btn-dash">${s.openDashboard}</button>
-          <button class="btn-unblock" id="scolect-btn-unblock-toggle">${s.unblockToday}</button>
+          <button class="btn-back" id="scolect-btn-back">${escHtml(s.goBack)}</button>
+          <button class="btn-dashboard" id="scolect-btn-dash">${escHtml(s.openDashboard)}</button>
+          <button class="btn-unblock" id="scolect-btn-unblock-toggle">${escHtml(s.unblockToday)}</button>
         </div>
 
         <div class="unblock-panel" id="scolect-unblock-panel">
-          <label>${s.unblockConfirmLabel.replace('{siteName}', `<strong id="scolect-confirm-hint">${siteName || domain}</strong>`)}</label>
+          <label>${escHtml(s.unblockConfirmLabel).replace('{siteName}', `<strong id="scolect-confirm-hint">${escHtml(siteName || domain)}</strong>`)}</label>
           <div class="unblock-input-row">
             <input class="unblock-input" id="scolect-unblock-input" type="text"
-                   placeholder="${siteName || domain}" autocomplete="off" spellcheck="false" />
-            <button class="btn-confirm-unblock" id="scolect-btn-confirm" disabled>${s.unblockButton}</button>
+                   placeholder="${escHtml(siteName || domain)}" autocomplete="off" spellcheck="false" />
+            <button class="btn-confirm-unblock" id="scolect-btn-confirm" disabled>${escHtml(s.unblockButton)}</button>
           </div>
         </div>
 
-        <div class="footer">${s.footer}</div>
+        <div class="footer">${escHtml(s.footer)}</div>
       </div>
-    `;
+    `);
 
     shadow.appendChild(style);
     shadow.appendChild(card);

@@ -31,6 +31,7 @@ sed -i '' 's/"engineRevision"/"useLocalCanvasKit":true,"engineRevision"/g' "$BOO
 
 # 6. Generate extension ZIP archive (for distribution or Firefox loading)
 echo "▶ Creating extension ZIP archive..."
+find build/web -name ".DS_Store" -delete 2>/dev/null || true
 rm -f build/scolect-extension.zip
 (cd build/web && zip -q -r ../scolect-extension.zip .)
 

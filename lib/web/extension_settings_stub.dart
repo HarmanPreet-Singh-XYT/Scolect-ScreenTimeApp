@@ -54,6 +54,7 @@ class ExtensionSettings {
   bool get pauseOnWindowBlur => true;
   bool get pauseOnTabUnfocus => false;
   bool get ignoreIdleOnMedia => true;
+  bool get ignoreWindowBlurOnMedia => true;
 
   Future<void> load() async {}
   Future<ExtensionMode> getMode() async => ExtensionMode.standalone;
@@ -64,6 +65,6 @@ class ExtensionSettings {
   Future<void> updateMetadata(String domain, {String? category, bool? isTracking, bool? isProductive, Duration? dailyLimit, String? siteName}) async {}
   Future<void> setOverallLimit({required int seconds, required bool enabled}) async {}
   Future<void> setIdleDetection({required bool enabled, required int timeoutSeconds}) async {}
-  Future<void> setFocusDetectionOptions({bool? pauseOnWindowBlur, bool? pauseOnTabUnfocus, bool? ignoreIdleOnMedia}) async {}
+  Future<void> setFocusDetectionOptions({bool? pauseOnWindowBlur, bool? pauseOnTabUnfocus, bool? ignoreIdleOnMedia, bool? ignoreWindowBlurOnMedia}) async {}
   Future<void> clearAllData() async {}
 }

@@ -1663,6 +1663,14 @@ class AppLocalizationsHi extends AppLocalizations {
       'ब्राउज़र विंडो का फोकस हटने पर ट्रैकिंग रोकें';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'मीडिया के दौरान विंडो फोकस हटना अनदेखा करें';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'वीडियो या ऑडियो चलते समय स्क्रीन बदलते भी ट्रैकिंग सक्रिय रखें';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'टैब बदलने या अनफोकस होने पर रोकें';
 
   @override

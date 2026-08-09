@@ -1635,6 +1635,13 @@ class AppLocalizationsJa extends AppLocalizations {
       'ブラウザウィンドウのフォーカスが外れたときにトラッキングを一時停止';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle => 'メディア再生中はウィンドウフォーカス外れを無視';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      '動画や音声の再生中は画面を切り替えてもトラッキングを継続';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'タブ切り替え・非アクティブ時に一時停止';
 
   @override

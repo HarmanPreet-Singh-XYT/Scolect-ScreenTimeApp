@@ -1656,6 +1656,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pause tracking when the browser window loses focus';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle => 'Ignore Window Blur During Media';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Keep tracking active when switching screens while video or audio is playing';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'Pause on Tab Switch / Unfocus';
 
   @override

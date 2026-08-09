@@ -257,6 +257,16 @@ class WebTrackingSection extends StatelessWidget {
             onChanged: (v) => settings.updateSetting('pauseOnWindowBlur', v),
           ),
         ),
+        if (settings.pauseOnWindowBlur)
+          SettingRow(
+            title: l10n.ignoreWindowBlurOnMediaTitle,
+            description: l10n.ignoreWindowBlurOnMediaDescription,
+            isSubSetting: true,
+            control: ToggleSwitch(
+              checked: settings.ignoreWindowBlurOnMedia,
+              onChanged: (v) => settings.updateSetting('ignoreWindowBlurOnMedia', v),
+            ),
+          ),
         SettingRow(
           title: l10n.pauseOnTabUnfocusTitle,
           description: l10n.pauseOnTabUnfocusDescription,

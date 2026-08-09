@@ -1124,6 +1124,8 @@
   "keepActiveDuringMediaDescription": "تجاهل إيقاف الخمول أثناء تشغيل الفيديو أو الصوت (مثل يوتيوب ونتفليكس)",
   "pauseOnWindowBlurTitle": "إيقاف مؤقت عند فقدان التركيز عن النافذة",
   "pauseOnWindowBlurDescription": "إيقاف التتبع مؤقتًا عندما تفقد نافذة المتصفح التركيز",
+  "ignoreWindowBlurOnMediaTitle": "تجاهل فقدان التركيز عن النافذة أثناء تشغيل الوسائط",
+  "ignoreWindowBlurOnMediaDescription": "الإبقاء على التتبع نشطًا عند التبديل بين الشاشات أثناء تشغيل الفيديو أو الصوت",
   "pauseOnTabUnfocusTitle": "إيقاف مؤقت عند تبديل أو فقدان التركيز عن التبويب",
   "pauseOnTabUnfocusDescription": "إيقاف التتبع مؤقتًا عندما يكون التبويب غير نشط أو في الخلفية",
   "idleTimeoutTitle": "مهلة الخمول",

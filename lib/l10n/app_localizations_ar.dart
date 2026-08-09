@@ -1648,6 +1648,14 @@ class AppLocalizationsAr extends AppLocalizations {
       'إيقاف التتبع مؤقتًا عندما تفقد نافذة المتصفح التركيز';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'تجاهل فقدان التركيز عن النافذة أثناء تشغيل الوسائط';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'الإبقاء على التتبع نشطًا عند التبديل بين الشاشات أثناء تشغيل الفيديو أو الصوت';
+
+  @override
   String get pauseOnTabUnfocusTitle =>
       'إيقاف مؤقت عند تبديل أو فقدان التركيز عن التبويب';
 

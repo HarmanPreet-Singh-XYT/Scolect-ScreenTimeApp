@@ -156,7 +156,12 @@ flutter run -d macos    # For macOS
 # Build release
 flutter build windows   # For Windows
 flutter build macos     # For macOS
+
+# Build Browser Extension (Chrome & Firefox)
+./build_extension.sh    # Generates build/web & build/scolect-extension.zip
 ```
+
+For detailed Firefox AMO build instructions and prerequisites, see [BUILD_EXTENSION.md](BUILD_EXTENSION.md).
 
 ---
 

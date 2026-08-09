@@ -1125,6 +1125,8 @@
   "keepActiveDuringMediaDescription": "Ignore idle pause while video or audio is playing (e.g. YouTube, Netflix)",
   "pauseOnWindowBlurTitle": "Pause on Window Blur",
   "pauseOnWindowBlurDescription": "Pause tracking when the browser window loses focus",
+  "ignoreWindowBlurOnMediaTitle": "Ignore Window Blur During Media",
+  "ignoreWindowBlurOnMediaDescription": "Keep tracking active when switching screens while video or audio is playing",
   "pauseOnTabUnfocusTitle": "Pause on Tab Switch / Unfocus",
   "pauseOnTabUnfocusDescription": "Pause tracking when tab is inactive or backgrounded",
   "idleTimeoutTitle": "Idle Timeout",

@@ -1125,6 +1125,8 @@
   "keepActiveDuringMediaDescription": "ویڈیو یا آڈیو چلنے کے دوران غیر فعال وقفے کو نظر انداز کریں (جیسے یوٹیوب، نیٹ فلکس)",
   "pauseOnWindowBlurTitle": "ونڈو فوکس ختم ہونے پر روکیں",
   "pauseOnWindowBlurDescription": "براؤزر ونڈو کا فوکس ختم ہونے پر ٹریکنگ روکیں",
+  "ignoreWindowBlurOnMediaTitle": "میڈیا کے دوران ونڈو فوکس ختم ہونا نظر انداز کریں",
+  "ignoreWindowBlurOnMediaDescription": "ویڈیو یا آڈیو چلنے کے دوران اسکرین تبدیل کرنے پر بھی ٹریکنگ فعال رکھیں",
   "pauseOnTabUnfocusTitle": "ٹیب تبدیل یا ان فوکس ہونے پر روکیں",
   "pauseOnTabUnfocusDescription": "ٹیب کے غیر فعال یا بیک گراؤنڈ میں ہونے پر ٹریکنگ روکیں",
   "idleTimeoutTitle": "بیکار ٹائم آؤٹ",

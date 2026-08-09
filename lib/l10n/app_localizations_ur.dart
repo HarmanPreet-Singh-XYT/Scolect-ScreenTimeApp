@@ -1658,6 +1658,14 @@ class AppLocalizationsUr extends AppLocalizations {
       'براؤزر ونڈو کا فوکس ختم ہونے پر ٹریکنگ روکیں';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'میڈیا کے دوران ونڈو فوکس ختم ہونا نظر انداز کریں';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'ویڈیو یا آڈیو چلنے کے دوران اسکرین تبدیل کرنے پر بھی ٹریکنگ فعال رکھیں';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'ٹیب تبدیل یا ان فوکس ہونے پر روکیں';
 
   @override

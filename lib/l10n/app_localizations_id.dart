@@ -1664,6 +1664,14 @@ class AppLocalizationsId extends AppLocalizations {
       'Jeda pelacakan saat jendela peramban kehilangan fokus';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'Abaikan Hilang Fokus Jendela Saat Putar Media';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Tetap aktifkan pelacakan saat berpindah layar selama video atau audio diputar';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'Jeda Saat Pindah / Lepas Fokus Tab';
 
   @override

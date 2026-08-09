@@ -1074,7 +1074,12 @@ chrome.windows.onFocusChanged.addListener(async windowId => {
   const pauseOnBlur = settings.pauseOnWindowBlur ?? true;
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     if (pauseOnBlur) {
-      pauseTracking().catch(console.error);
+      // Don't pause if media (video/audio) is active and media bypass is enabled
+      const ignoreOnMedia = (settings.ignoreWindowBlurOnMedia ?? settings.ignoreIdleOnMedia) ?? true;
+      const mediaPlaying = ignoreOnMedia ? await _isMediaPlayingInActiveTab() : false;
+      if (!mediaPlaying) {
+        pauseTracking().catch(console.error);
+      }
     }
   } else {
     chrome.tabs.query({ active: true, windowId }, tabs => {

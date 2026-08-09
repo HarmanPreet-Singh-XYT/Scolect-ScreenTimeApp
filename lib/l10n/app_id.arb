@@ -1124,6 +1124,8 @@
   "keepActiveDuringMediaDescription": "Abaikan jeda tidak aktif saat video atau audio sedang diputar (mis. YouTube, Netflix)",
   "pauseOnWindowBlurTitle": "Jeda Saat Jendela Kehilangan Fokus",
   "pauseOnWindowBlurDescription": "Jeda pelacakan saat jendela peramban kehilangan fokus",
+  "ignoreWindowBlurOnMediaTitle": "Abaikan Hilang Fokus Jendela Saat Putar Media",
+  "ignoreWindowBlurOnMediaDescription": "Tetap aktifkan pelacakan saat berpindah layar selama video atau audio diputar",
   "pauseOnTabUnfocusTitle": "Jeda Saat Pindah / Lepas Fokus Tab",
   "pauseOnTabUnfocusDescription": "Jeda pelacakan saat tab tidak aktif atau berada di latar belakang",
   "idleTimeoutTitle": "Batas Waktu Tidak Aktif",

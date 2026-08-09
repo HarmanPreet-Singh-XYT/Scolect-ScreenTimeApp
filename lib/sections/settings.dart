@@ -61,6 +61,7 @@ const _simpleSettingPaths = <String, String>{
   'pauseOnWindowBlur': 'tracking.pauseOnWindowBlur',
   'pauseOnTabUnfocus': 'tracking.pauseOnTabUnfocus',
   'ignoreIdleOnMedia': 'tracking.ignoreIdleOnMedia',
+  'ignoreWindowBlurOnMedia': 'tracking.ignoreWindowBlurOnMedia',
 };
 
 /// Field setters keyed by setting name, used to assign in-memory values.
@@ -92,6 +93,7 @@ final Map<String, _FieldSetter> _fieldSetters = {
   'pauseOnWindowBlur': (p, v) => p._pauseOnWindowBlur = v,
   'pauseOnTabUnfocus': (p, v) => p._pauseOnTabUnfocus = v,
   'ignoreIdleOnMedia': (p, v) => p._ignoreIdleOnMedia = v,
+  'ignoreWindowBlurOnMedia': (p, v) => p._ignoreWindowBlurOnMedia = v,
 };
 
 class SettingsProvider extends ChangeNotifier {
@@ -117,6 +119,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _pauseOnWindowBlur = true;
   bool _pauseOnTabUnfocus = false;
   bool _ignoreIdleOnMedia = true;
+  bool _ignoreWindowBlurOnMedia = true;
   bool _monitorAudio = true;
   bool _monitorControllers = true;
   bool _monitorHIDDevices = true;
@@ -147,6 +150,7 @@ class SettingsProvider extends ChangeNotifier {
   bool get pauseOnWindowBlur => _pauseOnWindowBlur;
   bool get pauseOnTabUnfocus => _pauseOnTabUnfocus;
   bool get ignoreIdleOnMedia => _ignoreIdleOnMedia;
+  bool get ignoreWindowBlurOnMedia => _ignoreWindowBlurOnMedia;
   bool get monitorAudio => _monitorAudio;
   bool get monitorControllers => _monitorControllers;
   bool get monitorHIDDevices => _monitorHIDDevices;
@@ -205,6 +209,8 @@ class SettingsProvider extends ChangeNotifier {
         _settingsManager.getSetting('tracking.pauseOnTabUnfocus') ?? false;
     _ignoreIdleOnMedia =
         _settingsManager.getSetting('tracking.ignoreIdleOnMedia') ?? true;
+    _ignoreWindowBlurOnMedia =
+        _settingsManager.getSetting('tracking.ignoreWindowBlurOnMedia') ?? true;
     _monitorAudio =
         _settingsManager.getSetting('tracking.monitorAudio') ?? true;
     _monitorControllers =
@@ -285,11 +291,13 @@ class SettingsProvider extends ChangeNotifier {
       case 'pauseOnWindowBlur':
       case 'pauseOnTabUnfocus':
       case 'ignoreIdleOnMedia':
+      case 'ignoreWindowBlurOnMedia':
         if (kIsWeb) {
           await ExtensionSettings().setFocusDetectionOptions(
             pauseOnWindowBlur: _pauseOnWindowBlur,
             pauseOnTabUnfocus: _pauseOnTabUnfocus,
             ignoreIdleOnMedia: _ignoreIdleOnMedia,
+            ignoreWindowBlurOnMedia: _ignoreWindowBlurOnMedia,
           );
         }
       case 'monitorAudio':

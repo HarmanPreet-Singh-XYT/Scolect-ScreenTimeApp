@@ -1124,6 +1124,8 @@
   "keepActiveDuringMediaDescription": "Ignorar la pausa por inactividad mientras se reproduce video o audio (p. ej. YouTube, Netflix)",
   "pauseOnWindowBlurTitle": "Pausar al perder el foco de la ventana",
   "pauseOnWindowBlurDescription": "Pausar el seguimiento cuando la ventana del navegador pierde el foco",
+  "ignoreWindowBlurOnMediaTitle": "Ignorar desenfoque de ventana durante multimedia",
+  "ignoreWindowBlurOnMediaDescription": "Mantener el seguimiento activo al cambiar de pantalla mientras se reproduce video o audio",
   "pauseOnTabUnfocusTitle": "Pausar al cambiar o desenfocar la pestaña",
   "pauseOnTabUnfocusDescription": "Pausar el seguimiento cuando la pestaña esté inactiva o en segundo plano",
   "idleTimeoutTitle": "Tiempo de espera de inactividad",

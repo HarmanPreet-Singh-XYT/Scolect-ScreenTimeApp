@@ -1672,6 +1672,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Pausar o rastreamento quando a janela do navegador perder o foco';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'Ignorar perda de foco da janela durante mídia';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Manter o rastreamento ativo ao alternar de tela durante a reprodução de vídeo ou áudio';
+
+  @override
   String get pauseOnTabUnfocusTitle => 'Pausar ao alternar ou desfocar a aba';
 
   @override

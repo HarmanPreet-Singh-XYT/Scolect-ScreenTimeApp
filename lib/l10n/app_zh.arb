@@ -1125,6 +1125,8 @@
   "keepActiveDuringMediaDescription": "在播放视频或音频时忽略闲置暂停（例如 YouTube、Netflix）",
   "pauseOnWindowBlurTitle": "窗口失去焦点时暂停",
   "pauseOnWindowBlurDescription": "当浏览器窗口失去焦点时暂停跟踪",
+  "ignoreWindowBlurOnMediaTitle": "媒体播放时忽略窗口失去焦点",
+  "ignoreWindowBlurOnMediaDescription": "在播放视频或音频时切换屏幕仍保持跟踪活动",
   "pauseOnTabUnfocusTitle": "标签页切换/取消焦点时暂停",
   "pauseOnTabUnfocusDescription": "当标签页处于非活动状态或后台时暂停跟踪",
   "idleTimeoutTitle": "闲置超时",

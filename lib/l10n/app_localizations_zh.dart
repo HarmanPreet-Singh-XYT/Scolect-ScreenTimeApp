@@ -1621,6 +1621,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get pauseOnWindowBlurDescription => '当浏览器窗口失去焦点时暂停跟踪';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle => '媒体播放时忽略窗口失去焦点';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription => '在播放视频或音频时切换屏幕仍保持跟踪活动';
+
+  @override
   String get pauseOnTabUnfocusTitle => '标签页切换/取消焦点时暂停';
 
   @override

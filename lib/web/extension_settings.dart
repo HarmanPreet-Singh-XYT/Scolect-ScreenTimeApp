@@ -110,6 +110,7 @@ class ExtensionSettings {
   bool _pauseOnWindowBlur = true;
   bool _pauseOnTabUnfocus = false;
   bool _ignoreIdleOnMedia = true;
+  bool _ignoreWindowBlurOnMedia = true;
 
   ExtensionMode get mode => _mode;
   String get desktopUrl => _desktopUrl;
@@ -120,6 +121,7 @@ class ExtensionSettings {
   bool get pauseOnWindowBlur => _pauseOnWindowBlur;
   bool get pauseOnTabUnfocus => _pauseOnTabUnfocus;
   bool get ignoreIdleOnMedia => _ignoreIdleOnMedia;
+  bool get ignoreWindowBlurOnMedia => _ignoreWindowBlurOnMedia;
 
   // ── Load ────────────────────────────────────────────────────────────────────
 
@@ -135,6 +137,7 @@ class ExtensionSettings {
     _pauseOnWindowBlur = raw['pauseOnWindowBlur'] as bool? ?? true;
     _pauseOnTabUnfocus = raw['pauseOnTabUnfocus'] as bool? ?? false;
     _ignoreIdleOnMedia = raw['ignoreIdleOnMedia'] as bool? ?? true;
+    _ignoreWindowBlurOnMedia = raw['ignoreWindowBlurOnMedia'] as bool? ?? true;
 
     final metaRaw = raw['metadata'] as Map<String, dynamic>? ?? {};
     _metadata.clear();
@@ -199,11 +202,13 @@ class ExtensionSettings {
     bool? pauseOnWindowBlur,
     bool? pauseOnTabUnfocus,
     bool? ignoreIdleOnMedia,
+    bool? ignoreWindowBlurOnMedia,
   }) async {
     await _ensureLoaded();
     if (pauseOnWindowBlur != null) _pauseOnWindowBlur = pauseOnWindowBlur;
     if (pauseOnTabUnfocus != null) _pauseOnTabUnfocus = pauseOnTabUnfocus;
     if (ignoreIdleOnMedia != null) _ignoreIdleOnMedia = ignoreIdleOnMedia;
+    if (ignoreWindowBlurOnMedia != null) _ignoreWindowBlurOnMedia = ignoreWindowBlurOnMedia;
     await _persist();
   }
 
@@ -257,6 +262,7 @@ class ExtensionSettings {
     _pauseOnWindowBlur = true;
     _pauseOnTabUnfocus = false;
     _ignoreIdleOnMedia = true;
+    _ignoreWindowBlurOnMedia = true;
     _loaded = false;
     await chromeStorageSet({
       _kSettingsKey: {
@@ -269,6 +275,7 @@ class ExtensionSettings {
         'pauseOnWindowBlur': true,
         'pauseOnTabUnfocus': false,
         'ignoreIdleOnMedia': true,
+        'ignoreWindowBlurOnMedia': true,
         'metadata': <String, dynamic>{},
       },
     });
@@ -307,6 +314,7 @@ class ExtensionSettings {
         'pauseOnWindowBlur': _pauseOnWindowBlur,
         'pauseOnTabUnfocus': _pauseOnTabUnfocus,
         'ignoreIdleOnMedia': _ignoreIdleOnMedia,
+        'ignoreWindowBlurOnMedia': _ignoreWindowBlurOnMedia,
         'metadata': {
           for (final e in _metadata.entries) e.key: e.value.toMap(),
         },

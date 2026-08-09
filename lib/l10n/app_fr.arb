@@ -1124,6 +1124,8 @@
   "keepActiveDuringMediaDescription": "Ignorer la pause d'inactivité pendant la lecture d'une vidéo ou d'un audio (ex. YouTube, Netflix)",
   "pauseOnWindowBlurTitle": "Mettre en pause lors de la perte de focus de la fenêtre",
   "pauseOnWindowBlurDescription": "Mettre en pause le suivi lorsque la fenêtre du navigateur perd le focus",
+  "ignoreWindowBlurOnMediaTitle": "Ignorer la perte de focus pendant la lecture média",
+  "ignoreWindowBlurOnMediaDescription": "Maintenir le suivi actif lors du changement d'écran pendant la lecture d'une vidéo ou d'un audio",
   "pauseOnTabUnfocusTitle": "Mettre en pause lors du changement d'onglet",
   "pauseOnTabUnfocusDescription": "Mettre en pause le suivi lorsque l'onglet est inactif ou en arrière-plan",
   "idleTimeoutTitle": "Délai d'inactivité",

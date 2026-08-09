@@ -1125,6 +1125,8 @@
   "keepActiveDuringMediaDescription": "動画や音声の再生中はアイドル一時停止を無視（YouTube、Netflixなど）",
   "pauseOnWindowBlurTitle": "ウィンドウのフォーカスが外れたら一時停止",
   "pauseOnWindowBlurDescription": "ブラウザウィンドウのフォーカスが外れたときにトラッキングを一時停止",
+  "ignoreWindowBlurOnMediaTitle": "メディア再生中はウィンドウフォーカス外れを無視",
+  "ignoreWindowBlurOnMediaDescription": "動画や音声の再生中は画面を切り替えてもトラッキングを継続",
   "pauseOnTabUnfocusTitle": "タブ切り替え・非アクティブ時に一時停止",
   "pauseOnTabUnfocusDescription": "タブが非アクティブまたはバックグラウンドにあるときにトラッキングを一時停止",
   "idleTimeoutTitle": "アイドルタイムアウト",

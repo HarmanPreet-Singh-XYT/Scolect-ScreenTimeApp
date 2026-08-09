@@ -3136,6 +3136,18 @@ abstract class AppLocalizations {
   /// **'Pause tracking when the browser window loses focus'**
   String get pauseOnWindowBlurDescription;
 
+  /// No description provided for @ignoreWindowBlurOnMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ignore Window Blur During Media'**
+  String get ignoreWindowBlurOnMediaTitle;
+
+  /// No description provided for @ignoreWindowBlurOnMediaDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep tracking active when switching screens while video or audio is playing'**
+  String get ignoreWindowBlurOnMediaDescription;
+
   /// No description provided for @pauseOnTabUnfocusTitle.
   ///
   /// In en, this message translates to:

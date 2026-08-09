@@ -2,7 +2,22 @@
 
 const PREFIX = 'scolect_';
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+function setCleanHTML(targetElement, htmlString) {
+  if (!targetElement) return;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  targetElement.replaceChildren(...Array.from(doc.body.childNodes));
+}
+
+function escHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 function formatSeconds(seconds) {
   if (!seconds || seconds <= 0) return '0m';
@@ -151,12 +166,12 @@ async function renderSiteTab(state, storageData) {
   const domain = state?.activeDomain ?? null;
 
   if (!domain) {
-    panel.innerHTML = `
+    setCleanHTML(panel, `
       <div class="site-empty">
         <div class="site-empty-favicon">?</div>
         <div class="site-empty-title">No active site</div>
         <div class="site-empty-sub">Start browsing to see<br>site details here.</div>
-      </div>`;
+      </div>`);
     return;
   }
 
@@ -259,15 +274,15 @@ async function renderSiteTab(state, storageData) {
   const displayDomain = domain.replace(/^www\./, '');
   const faviconLetter = domainInitial(displayDomain);
 
-  panel.innerHTML = `
+  setCleanHTML(panel, `
     <div class="site-hero">
-      <div class="site-hero-favicon">${faviconLetter}</div>
-      ${siteName ? `<div class="site-hero-name">${siteName}</div>` : ''}
-      <div class="site-hero-domain" title="${domain}">${displayDomain}</div>
-      <div class="site-hero-time">${formatSeconds(todaySecs)}</div>
+      <div class="site-hero-favicon">${escHtml(faviconLetter)}</div>
+      ${siteName ? `<div class="site-hero-name">${escHtml(siteName)}</div>` : ''}
+      <div class="site-hero-domain" title="${escHtml(domain)}">${escHtml(displayDomain)}</div>
+      <div class="site-hero-time">${escHtml(formatSeconds(todaySecs))}</div>
       <div class="site-hero-chips">
-        <span class="stat-chip">${todayVisits} visit${todayVisits !== 1 ? 's' : ''}</span>
-        ${lastSeenMs ? `<span class="stat-chip">${timeSince(lastSeenMs)} ago</span>` : ''}
+        <span class="stat-chip">${escHtml(todayVisits)} visit${todayVisits !== 1 ? 's' : ''}</span>
+        ${lastSeenMs ? `<span class="stat-chip">${escHtml(timeSince(lastSeenMs))} ago</span>` : ''}
         ${badgeHTML}
       </div>
       ${heroLimitHTML}
@@ -277,7 +292,7 @@ async function renderSiteTab(state, storageData) {
       <div class="week-chart">
         ${weekRowsHTML}
       </div>
-    </div>`;
+    </div>`);
 }
 
 // ─── Render ───────────────────────────────────────────────────────────────────
@@ -390,12 +405,12 @@ async function render() {
 
   // ── Top sites (max 4)
   const list = document.getElementById('sitesList');
-  list.innerHTML = '';
+  list.replaceChildren();
 
   const siteMetadata = storageData?.scolect_settings?.metadata ?? {};
 
   if (domains.length === 0) {
-    list.innerHTML = `
+    setCleanHTML(list, `
       <div class="empty-state">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round">
           <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/>
@@ -404,7 +419,7 @@ async function render() {
           <path d="M12.5 3a17 17 0 0 1 0 18"/>
         </svg>
         <p>Start browsing to see<br>your top sites here.</p>
-      </div>`;
+      </div>`);
   } else {
     const top    = domains.slice(0, 4);
     const maxSec = top[0]?.seconds || 1;
@@ -439,18 +454,18 @@ async function render() {
 
       const row = document.createElement('div');
       row.className = 'site-row';
-      row.innerHTML = `
+      setCleanHTML(row, `
         <div class="site-bar-bg" style="width:${bgPct}%"></div>
         <div class="site-rank">${i + 1}</div>
-        <div class="site-favicon">${domainInitial(displayName)}</div>
+        <div class="site-favicon">${escHtml(domainInitial(displayName))}</div>
         <div class="site-info">
-          <div class="site-domain" title="${d.domain}">${displayName}</div>
+          <div class="site-domain" title="${escHtml(d.domain)}">${escHtml(displayName)}</div>
           ${limitBarHTML}
         </div>
         <div class="site-time-col">
-          <span class="site-time" style="${timeColorStyle}">${formatSeconds(d.seconds)}</span>
-          ${d.visits ? `<span class="site-visits">${d.visits}×</span>` : ''}
-        </div>`;
+          <span class="site-time" style="${timeColorStyle}">${escHtml(formatSeconds(d.seconds))}</span>
+          ${d.visits ? `<span class="site-visits">${escHtml(d.visits)}×</span>` : ''}
+        </div>`);
       list.appendChild(row);
     });
   }
@@ -730,7 +745,7 @@ function renderFocusTab(state, settings, storageData) {
       <div class="focus-session-list">${rows}</div>`;
   }
 
-  panel.innerHTML = controlHTML + statsHTML + historyHTML;
+  setCleanHTML(panel, controlHTML + statsHTML + historyHTML);
 
   // ── Wire up control buttons
   document.getElementById('fcPlayPause')?.addEventListener('click', () => {

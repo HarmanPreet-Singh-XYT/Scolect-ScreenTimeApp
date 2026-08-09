@@ -1693,6 +1693,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Mettre en pause le suivi lorsque la fenêtre du navigateur perd le focus';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'Ignorer la perte de focus pendant la lecture média';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Maintenir le suivi actif lors du changement d\'écran pendant la lecture d\'une vidéo ou d\'un audio';
+
+  @override
   String get pauseOnTabUnfocusTitle =>
       'Mettre en pause lors du changement d\'onglet';
 

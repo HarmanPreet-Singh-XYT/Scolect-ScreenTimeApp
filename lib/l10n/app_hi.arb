@@ -1124,6 +1124,8 @@
   "keepActiveDuringMediaDescription": "वीडियो या ऑडियो चलते समय निष्क्रियता रोक को अनदेखा करें (जैसे YouTube, Netflix)",
   "pauseOnWindowBlurTitle": "विंडो फोकस हटने पर रोकें",
   "pauseOnWindowBlurDescription": "ब्राउज़र विंडो का फोकस हटने पर ट्रैकिंग रोकें",
+  "ignoreWindowBlurOnMediaTitle": "मीडिया के दौरान विंडो फोकस हटना अनदेखा करें",
+  "ignoreWindowBlurOnMediaDescription": "वीडियो या ऑडियो चलते समय स्क्रीन बदलते भी ट्रैकिंग सक्रिय रखें",
   "pauseOnTabUnfocusTitle": "टैब बदलने या अनफोकस होने पर रोकें",
   "pauseOnTabUnfocusDescription": "टैब के निष्क्रिय या बैकग्राउंड में होने पर ट्रैकिंग रोकें",
   "idleTimeoutTitle": "निष्क्रिय समय सीमा",

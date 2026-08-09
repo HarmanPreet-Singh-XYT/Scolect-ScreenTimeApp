@@ -1685,6 +1685,14 @@ class AppLocalizationsEs extends AppLocalizations {
       'Pausar el seguimiento cuando la ventana del navegador pierde el foco';
 
   @override
+  String get ignoreWindowBlurOnMediaTitle =>
+      'Ignorar desenfoque de ventana durante multimedia';
+
+  @override
+  String get ignoreWindowBlurOnMediaDescription =>
+      'Mantener el seguimiento activo al cambiar de pantalla mientras se reproduce video o audio';
+
+  @override
   String get pauseOnTabUnfocusTitle =>
       'Pausar al cambiar o desenfocar la pestaña';
 
