@@ -9,6 +9,7 @@
 #include <windows.h>
 #include <powrprof.h>
 #include "win32_window.h"
+#include "block_overlay_ffi.h"
 
 // Restarts the current application.
 void RestartApplication();
@@ -37,6 +38,12 @@ class FlutterWindow : public Win32Window {
 
   // Method channel for app restart
   std::unique_ptr<flutter::MethodChannel<>> restart_channel_;
+
+  // Method channel for block overlay (timemark/block_overlay)
+  std::unique_ptr<flutter::MethodChannel<>> overlay_channel_;
+
+  // Handle to the block_overlay Rust DLL (loaded dynamically at runtime)
+  HMODULE block_overlay_dll_ = nullptr;
 
   // Handle for GUID_CONSOLE_DISPLAY_STATE (screen on/off)
   HPOWERNOTIFY power_notification_handle_ = nullptr;

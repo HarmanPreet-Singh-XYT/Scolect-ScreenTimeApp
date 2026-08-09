@@ -3,12 +3,62 @@
 #include <windows.h>
 #include <powrprof.h>
 #include <optional>
+#include <string>
 #include "flutter/generated_plugin_registrant.h"
 
 #pragma comment(lib, "powrprof.lib")
 
-// Load WTS functions dynamically to avoid wtsapi32.h linker issues
+// Custom window message used to marshal overlay callbacks from the Rust Win32
+// thread back to the Flutter engine messenger thread (the main Win32 thread).
+// LPARAM carries a heap-allocated char* (must be freed after use).
+//
+// This MUST be a globally-registered message (RegisterWindowMessageA), not a
+// raw WM_USER+N value: the Flutter Windows embedder's own platform-thread
+// task runner posts messages to this window using IDs in the WM_USER range
+// for its internal wakeups. HandleTopLevelWindowProc() runs before our own
+// switch in MessageHandler and swallows anything it recognizes as its own —
+// a raw WM_USER+1 collided with that and silently ate every overlay action
+// (the Rust click handler and native callback both fired correctly, but the
+// posted message never reached our switch, so Dart never heard about it).
+static const UINT WM_OVERLAY_ACTION = RegisterWindowMessageA("ScolectBlockOverlayAction");
+
+// ─── Function pointer types for block_overlay.dll ────────────────────────────
+typedef void (*PFN_block_overlay_show)(DWORD pid, const char* app_name,
+                                       int used_seconds, int limit_seconds,
+                                       bool hard_block,
+                                       BlockOverlayCallback callback);
+typedef void (*PFN_block_overlay_dismiss)();
+typedef void (*PFN_block_overlay_start_grace)(int seconds);
+
+// ─── Globals shared between the Flutter window and the Rust callback ──────────
 namespace {
+
+// The main window HWND — set in OnCreate, used by the Rust callback to post
+// WM_OVERLAY_ACTION back to the main thread.
+HWND g_main_hwnd = nullptr;
+
+// Overlay channel pointer — set in OnCreate, used in MessageHandler.
+// Raw pointer is safe because FlutterWindow outlives the message loop.
+flutter::MethodChannel<>* g_overlay_channel = nullptr;
+
+// ─── DLL function pointers (null until DLL is loaded) ─────────────────────
+
+PFN_block_overlay_show       g_show_fn    = nullptr;
+PFN_block_overlay_dismiss    g_dismiss_fn = nullptr;
+PFN_block_overlay_start_grace g_grace_fn  = nullptr;
+
+// ─── Rust → Flutter callback (called from Rust Win32 thread) ─────────────────
+// Posts WM_OVERLAY_ACTION to the main window so that the method channel
+// InvokeMethod call happens on the correct thread.
+void CALLBACK OverlayCallback(const char* action) {
+  if (!g_main_hwnd || !action) return;
+  // Duplicate the string onto the heap; MessageHandler frees it.
+  char* copy = _strdup(action);
+  PostMessage(g_main_hwnd, WM_OVERLAY_ACTION, 0,
+              reinterpret_cast<LPARAM>(copy));
+}
+
+// ─── WTS helpers ──────────────────────────────────────────────────────────────
 
 typedef BOOL(WINAPI* WTSRegisterFn)(HWND, DWORD);
 typedef BOOL(WINAPI* WTSUnregisterFn)(HWND);
@@ -73,6 +123,9 @@ bool FlutterWindow::OnCreate() {
   });
   flutter_controller_->ForceRedraw();
 
+  // Store main HWND for cross-thread callback marshalling.
+  g_main_hwnd = GetHandle();
+
   // -------------------------
   // Restart Method Channel
   // -------------------------
@@ -87,6 +140,89 @@ bool FlutterWindow::OnCreate() {
         if (call.method_name() == "restartApp") {
           RestartApplication();
           result->Success();
+        } else {
+          result->NotImplemented();
+        }
+      });
+
+  // -------------------------
+  // Block Overlay DLL + Method Channel
+  // -------------------------
+  // Load the Rust DLL dynamically so the app still starts if the DLL is absent
+  // (e.g. during a non-Windows build or before the Rust crate has been built).
+  block_overlay_dll_ = LoadLibraryA("block_overlay.dll");
+  if (block_overlay_dll_) {
+    g_show_fn = reinterpret_cast<PFN_block_overlay_show>(
+        GetProcAddress(block_overlay_dll_, "block_overlay_show"));
+    g_dismiss_fn = reinterpret_cast<PFN_block_overlay_dismiss>(
+        GetProcAddress(block_overlay_dll_, "block_overlay_dismiss"));
+    g_grace_fn = reinterpret_cast<PFN_block_overlay_start_grace>(
+        GetProcAddress(block_overlay_dll_, "block_overlay_start_grace"));
+  }
+
+  overlay_channel_ = std::make_unique<flutter::MethodChannel<>>(
+      flutter_controller_->engine()->messenger(),
+      "timemark/block_overlay",
+      &flutter::StandardMethodCodec::GetInstance());
+
+  // Store raw ptr so the WM_OVERLAY_ACTION handler can use it without capturing
+  // the unique_ptr (which would extend lifetime past OnDestroy).
+  g_overlay_channel = overlay_channel_.get();
+
+  overlay_channel_->SetMethodCallHandler(
+      [](const flutter::MethodCall<>& call,
+         std::unique_ptr<flutter::MethodResult<>> result) {
+        const std::string& method = call.method_name();
+
+        if (method == "show") {
+          if (!g_show_fn) { result->Error("UNAVAILABLE", "block_overlay.dll not loaded"); return; }
+
+          const auto* args =
+              std::get_if<flutter::EncodableMap>(call.arguments());
+          if (!args) { result->Error("BAD_ARGS", "Expected map"); return; }
+
+          auto get_int = [&](const std::string& key, int def = 0) -> int {
+            auto it = args->find(flutter::EncodableValue(key));
+            if (it == args->end()) return def;
+            if (auto* v = std::get_if<int32_t>(&it->second)) return *v;
+            if (auto* v = std::get_if<int64_t>(&it->second)) return static_cast<int>(*v);
+            return def;
+          };
+          auto get_str = [&](const std::string& key) -> std::string {
+            auto it = args->find(flutter::EncodableValue(key));
+            if (it == args->end()) return "";
+            if (auto* v = std::get_if<std::string>(&it->second)) return *v;
+            return "";
+          };
+          auto get_bool = [&](const std::string& key) -> bool {
+            auto it = args->find(flutter::EncodableValue(key));
+            if (it == args->end()) return false;
+            if (auto* v = std::get_if<bool>(&it->second)) return *v;
+            return false;
+          };
+
+          DWORD pid            = static_cast<DWORD>(get_int("pid"));
+          std::string app_name = get_str("appName");
+          int used_sec         = get_int("usedSeconds");
+          int limit_sec        = get_int("limitSeconds");
+          bool hard            = get_bool("hardBlock");
+
+          g_show_fn(pid, app_name.c_str(), used_sec, limit_sec, hard,
+                    OverlayCallback);
+          result->Success();
+
+        } else if (method == "dismiss") {
+          if (g_dismiss_fn) g_dismiss_fn();
+          result->Success();
+
+        } else if (method == "startGrace") {
+          if (!g_grace_fn) { result->Error("UNAVAILABLE", "block_overlay.dll not loaded"); return; }
+          int seconds = 300;
+          if (auto* v32 = std::get_if<int32_t>(call.arguments())) seconds = *v32;
+          else if (auto* v64 = std::get_if<int64_t>(call.arguments())) seconds = static_cast<int>(*v64);
+          g_grace_fn(seconds);
+          result->Success();
+
         } else {
           result->NotImplemented();
         }
@@ -142,8 +278,23 @@ void FlutterWindow::OnDestroy() {
   // Unregister WTS while HWND is still valid
   UnregisterWTSNotification(GetHandle());
 
+  // Dismiss any live overlay before tearing down the channel.
+  if (g_dismiss_fn) g_dismiss_fn();
+  g_overlay_channel = nullptr;
+  g_main_hwnd = nullptr;
+
+  overlay_channel_.reset();
   restart_channel_.reset();
   flutter_controller_.reset();
+
+  if (block_overlay_dll_) {
+    FreeLibrary(block_overlay_dll_);
+    block_overlay_dll_ = nullptr;
+    g_show_fn    = nullptr;
+    g_dismiss_fn = nullptr;
+    g_grace_fn   = nullptr;
+  }
+
   Win32Window::OnDestroy();
 }
 
@@ -158,6 +309,22 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd,
     if (result) {
       return *result;
     }
+  }
+
+  // WM_OVERLAY_ACTION is a RegisterWindowMessageA() value, not a compile-time
+  // constant, so it can't be a switch `case` label — handle it separately.
+  if (message == WM_OVERLAY_ACTION) {
+    // Fired from OverlayCallback (Rust Win32 thread) via PostMessage.
+    // LPARAM is a heap-allocated char* (strdup'd in OverlayCallback).
+    char* action = reinterpret_cast<char*>(lparam);
+    if (action && g_overlay_channel) {
+      std::string action_str(action);
+      g_overlay_channel->InvokeMethod(
+          "onAction",
+          std::make_unique<flutter::EncodableValue>(action_str));
+    }
+    free(action);
+    return 0;
   }
 
   switch (message) {

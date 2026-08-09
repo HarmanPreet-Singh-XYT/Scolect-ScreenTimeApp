@@ -1,0 +1,28 @@
+[package]
+name = "block_overlay"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "block_overlay"
+crate-type = ["cdylib"]
+
+[dependencies]
+windows = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Graphics_Gdi",
+  "Win32_System_LibraryLoader",
+  "Win32_UI_Controls",
+  "Win32_System_Threading",
+  "Win32_System_SystemInformation",
+  "Win32_UI_Shell",
+  "Win32_Graphics_Dwm",
+  "Win32_Graphics_GdiPlus",
+  "Win32_System_Registry",
+  "Win32_UI_HiDpi",
+] }
+
+[profile.release]
+opt-level = 3
+lto = true

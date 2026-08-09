@@ -28,7 +28,7 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
     // ✅ IMPORTANT: Capture login item status IMMEDIATELY at launch
     // This must be done before any async operations as the AppleEvent is transient
     wasLaunchedAsLoginItem = launchedAsLogInItem
-    
+
     setupMethodChannel()
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       self.setupWindowDelegate()
@@ -54,6 +54,46 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
       case "wasLaunchedAtLogin":
         // ✅ Return the properly detected login item status
         result(self?.wasLaunchedAsLoginItem ?? false)
+      default:
+        result(FlutterMethodNotImplemented)
+      }
+    }
+
+    // Block overlay channel — Dart calls Swift to show/dismiss the native panel.
+    // Swift calls Dart back via the same channel for button actions.
+    let overlayChannel = FlutterMethodChannel(
+      name: "timemark/block_overlay",
+      binaryMessenger: controller.engine.binaryMessenger
+    )
+
+    // Wire button callbacks: Swift → Dart
+    BlockOverlayPanel.shared.onAction = { [weak overlayChannel] action in
+      DispatchQueue.main.async {
+        overlayChannel?.invokeMethod("onAction", arguments: action)
+      }
+    }
+
+    overlayChannel.setMethodCallHandler { call, result in
+      switch call.method {
+      case "show":
+        guard let args = call.arguments as? [String: Any],
+              let pid   = args["pid"]          as? Int,
+              let name  = args["appName"]       as? String,
+              let used  = args["usedSeconds"]   as? Int,
+              let limit = args["limitSeconds"]  as? Int
+        else { result(FlutterError(code: "INVALID_ARGS", message: nil, details: nil)); return }
+        let hard = args["hardBlock"] as? Bool ?? false
+        BlockOverlayPanel.shared.show(pid: Int32(pid), appName: name,
+                                      usedSeconds: used, limitSeconds: limit,
+                                      hardBlock: hard)
+        result(nil)
+      case "dismiss":
+        BlockOverlayPanel.shared.dismiss()
+        result(nil)
+      case "startGrace":
+        let secs = (call.arguments as? Int) ?? 300
+        BlockOverlayPanel.shared.startGraceCountdown(seconds: secs)
+        result(nil)
       default:
         result(FlutterMethodNotImplemented)
       }

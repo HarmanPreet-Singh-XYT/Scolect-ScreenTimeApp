@@ -15,6 +15,20 @@ public class ForegroundWindowPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "getForegroundWindow":
             getForegroundWindow(result: result)
+        case "hideOtherApp":
+            if let args = call.arguments as? [String: Any],
+               let pid = args["pid"] as? Int {
+                hideOtherApp(pid: pid_t(pid), result: result)
+            } else {
+                result(FlutterError(code: "INVALID_ARGS", message: "pid required", details: nil))
+            }
+        case "terminateOtherApp":
+            if let args = call.arguments as? [String: Any],
+               let pid = args["pid"] as? Int {
+                terminateOtherApp(pid: pid_t(pid), result: result)
+            } else {
+                result(FlutterError(code: "INVALID_ARGS", message: "pid required", details: nil))
+            }
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -125,6 +139,30 @@ public class ForegroundWindowPlugin: NSObject, FlutterPlugin {
         return getProcessNameViaPS(for: pid)
     }
     
+    // MARK: - Hide / Terminate Other App
+
+    private func hideOtherApp(pid: pid_t, result: @escaping FlutterResult) {
+        DispatchQueue.main.async {
+            if let app = NSRunningApplication(processIdentifier: pid) {
+                app.hide()
+                result(true)
+            } else {
+                result(false)
+            }
+        }
+    }
+
+    private func terminateOtherApp(pid: pid_t, result: @escaping FlutterResult) {
+        DispatchQueue.main.async {
+            if let app = NSRunningApplication(processIdentifier: pid) {
+                app.terminate()
+                result(true)
+            } else {
+                result(false)
+            }
+        }
+    }
+
     private func getProcessNameViaPS(for pid: Int) -> String {
         let task = Process()
         task.launchPath = "/bin/ps"
