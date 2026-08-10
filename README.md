@@ -5,9 +5,10 @@
 **Take Control of Your Digital Habits**
 
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Download-blue?logo=microsoft)](https://apps.microsoft.com/detail/9phbzxnpvhsq?hl=en-US&gl=CA)
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Download-4285F4?logo=googlechrome)](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
 [![License](https://img.shields.io/badge/license-GNU%20LGPL-blue.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-3.38+-02569B?logo=flutter)](https://flutter.dev)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-lightgrey)]()
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Chrome-lightgrey)]()
 [![GitHub stars](https://img.shields.io/github/stars/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp?style=social)](https://github.com/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp)
 
 [Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots) • [Contributing](#-contributing) • [License](#-license)
@@ -31,6 +32,7 @@
 - 🎯 **Stay Focused** - Built-in Pomodoro timer with customizable work sessions
 - 📊 **Detailed Analytics** - Beautiful charts and reports showing your usage patterns
 - 🚀 **Boost Productivity** - Track productive vs. non-productive time
+- 🌐 **Chrome Extension** - Track web browsing activity and domain usage
 - 🔔 **Smart Alerts** - Customizable notifications when you exceed limits
 - 🎨 **Fully Customizable** - Create custom themes, categories, and workflows
 - 🔒 **Privacy First** - All data stored locally, no cloud sync required
@@ -122,6 +124,20 @@
 1. Click the button above or visit the [Microsoft Store page](https://apps.microsoft.com/detail/9phbzxnpvhsq?hl=en-US&gl=CA)
 2. Click "Get" or "Install"
 3. Launch Scolect from the Start Menu
+
+### Chrome Web Store (Chrome Extension)
+
+[![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Add%20to%20Chrome-4285F4?logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
+
+**Benefits:**
+- ✅ Track web browsing time and domain activity
+- ✅ Standalone web extension or integration with Scolect desktop app
+- ✅ Automatic updates via Chrome Web Store
+- ✅ Privacy-focused local storage
+
+1. Visit the [Chrome Web Store page](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
+2. Click **Add to Chrome**
+3. Pin the extension to quickly track your web screen time
 
 ### macOS
 
@@ -279,6 +295,9 @@ scolect/
   - DMG installer available
   - Native macOS integration
   - System tray support
+- ✅ **Chrome Extension** - Fully supported
+  - Available on [Chrome Web Store](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
+  - Track domain activity & web screen time
 
 ### Coming Soon
 - 🔜 **Linux** - In development
@@ -403,7 +422,7 @@ Absolutely! In the Applications section, you can hide specific apps, disable tra
 <details>
 <summary><b>Is Scolect free?</b></summary>
 
-Yes! Scolect is completely free to download and use from the Microsoft Store.
+Yes! Scolect is completely free to download and use from the Microsoft Store and Chrome Web Store.
 </details>
 
 ---
@@ -472,7 +491,7 @@ If you find Scolect useful, please:
 
 - ⭐ Star this repository
 - 📢 Share it with others
-- ⭐ Rate it on the [Microsoft Store](https://apps.microsoft.com/detail/9phbzxnpvhsq?hl=en-US&gl=CA)
+- ⭐ Rate it on the [Microsoft Store](https://apps.microsoft.com/detail/9phbzxnpvhsq?hl=en-US&gl=CA) or [Chrome Web Store](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
 - 🐛 Report bugs and suggest features
 - 🤝 Contribute to the codebase\
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/harmanpreetsingh.xyt)
