@@ -553,9 +553,9 @@ class _Header extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  refreshButton,
-                  const SizedBox(height: 8),
                   resetButton,
+                  const SizedBox(height: 8),
+                  refreshButton,
                 ],
               ),
             ],
