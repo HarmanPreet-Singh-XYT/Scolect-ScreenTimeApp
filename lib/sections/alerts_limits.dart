@@ -278,6 +278,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
         builder: (context, constraints) {
           final isWide = constraints.maxWidth >= 1000;
           final isMedium = constraints.maxWidth >= 700;
+          final pagePadding = constraints.maxWidth < 480 ? 12.0 : 24.0;
 
           // Build cards once, reuse across layouts
           final notificationCard = NotificationSettingsCard(
@@ -314,10 +315,10 @@ class _AlertsLimitsState extends State<AlertsLimits> {
                 );
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(pagePadding),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: constraints.maxHeight - 48,
+                minHeight: constraints.maxHeight - pagePadding * 2,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,68 +485,98 @@ class _Header extends StatelessWidget {
   const _Header({required this.onReset, required this.onRefresh});
 
   static final _iconRadius = BorderRadius.circular(8);
+  static const _kStackBreakpoint = 480.0;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
 
-    return Row(
+    final titleBlock = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.alertsLimitsTitle,
-                style: theme.typography.title
-                    ?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.alertsLimitsSubtitle,
-                style: theme.typography.caption?.copyWith(
-                  color:
-                      theme.typography.caption?.color?.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
+        Text(
+          l10n.alertsLimitsTitle,
+          style: theme.typography.title?.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(width: 16),
-        Tooltip(
-          message: l10n.refresh,
-          child: IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: theme.accentColor.withValues(alpha: 0.1),
-                borderRadius: _iconRadius,
-              ),
-              child:
-                  Icon(FluentIcons.refresh, size: 16, color: theme.accentColor),
-            ),
-            onPressed: onRefresh,
-          ),
-        ),
-        const SizedBox(width: 8),
-        Button(
-          style: ButtonStyle(
-            padding: WidgetStateProperty.all(
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            ),
-          ),
-          onPressed: () => _showResetDialog(context),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(FluentIcons.reset, size: 14),
-              const SizedBox(width: 8),
-              Text(l10n.resetAll),
-            ],
+        const SizedBox(height: 4),
+        Text(
+          l10n.alertsLimitsSubtitle,
+          style: theme.typography.caption?.copyWith(
+            color: theme.typography.caption?.color?.withValues(alpha: 0.7),
           ),
         ),
       ],
+    );
+
+    final refreshButton = Tooltip(
+      message: l10n.refresh,
+      child: IconButton(
+        icon: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.accentColor.withValues(alpha: 0.1),
+            borderRadius: _iconRadius,
+          ),
+          child: Icon(FluentIcons.refresh, size: 16, color: theme.accentColor),
+        ),
+        onPressed: onRefresh,
+      ),
+    );
+
+    final resetButton = Button(
+      style: ButtonStyle(
+        padding: WidgetStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        ),
+      ),
+      onPressed: () => _showResetDialog(context),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(FluentIcons.reset, size: 14),
+          const SizedBox(width: 8),
+          Text(l10n.resetAll),
+        ],
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < _kStackBreakpoint) {
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: titleBlock),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  refreshButton,
+                  const SizedBox(height: 8),
+                  resetButton,
+                ],
+              ),
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: titleBlock),
+            const SizedBox(width: 16),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                refreshButton,
+                const SizedBox(width: 8),
+                resetButton,
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 

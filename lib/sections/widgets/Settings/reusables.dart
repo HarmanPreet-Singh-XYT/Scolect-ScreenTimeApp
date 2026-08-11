@@ -252,6 +252,31 @@ class _SettingRowState extends State<SettingRow> with _HoverStateMixin {
     final theme = FluentTheme.of(context);
     final isSub = widget.isSubSetting;
 
+    final titleBlock = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          widget.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: isSub ? Colors.grey[100] : null,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          widget.description,
+          style: TextStyle(
+            fontSize: 11,
+            color: Colors.grey[100],
+          ),
+        ),
+      ],
+    );
+
     return Column(
       children: [
         buildHoverRegion(
@@ -282,30 +307,8 @@ class _SettingRowState extends State<SettingRow> with _HoverStateMixin {
                   Icon(widget.icon, size: 16, color: theme.accentColor),
                   const SizedBox(width: 12),
                 ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.title,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: isSub ? Colors.grey[100] : null,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        widget.description,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey[100],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
+                Expanded(child: titleBlock),
+                const SizedBox(width: 12),
                 widget.control,
               ],
             ),

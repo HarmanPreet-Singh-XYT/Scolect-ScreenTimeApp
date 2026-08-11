@@ -8,6 +8,7 @@ import 'package:screentime/sections/controller/data_controllers/browser_data_con
 import '../../controller/data_controllers/reports_controller.dart';
 import '../../controller/data_controllers/alerts_limits_data_controller.dart'
     as app_summary_data;
+import 'package:screentime/utils/responsive.dart';
 import 'tabs/overview_tab.dart';
 import 'tabs/usage_chart_tab.dart';
 import 'tabs/patterns_tab.dart';
@@ -77,6 +78,7 @@ Future<void> showAppDetailsDialog(
 
   showDialog(
     context: context,
+    barrierDismissible: true,
     builder: (_) => AppDetailsDialog(
       app: app,
       l10n: l10n,
@@ -243,6 +245,7 @@ Future<void> showWebsiteDetailsDialog(
 
   showDialog(
     context: context,
+    barrierDismissible: true,
     builder: (_) => AppDetailsDialog(
       app: AppUsageSummary(
         appName: site.displayName,
@@ -251,6 +254,7 @@ Future<void> showWebsiteDetailsDialog(
         isProductive: site.isProductive,
         isVisible: true,
       ),
+      domain: site.domain,
       l10n: l10n,
       appSummary: appSummary,
       appBasicDetails: appBasicDetails,
@@ -266,6 +270,7 @@ Future<void> showWebsiteDetailsDialog(
 
 class AppDetailsDialog extends StatefulWidget {
   final AppUsageSummary app;
+  final String domain;
   final AppLocalizations l10n;
   final app_summary_data.AppUsageSummary appSummary;
   final ApplicationBasicDetail appBasicDetails;
@@ -279,6 +284,7 @@ class AppDetailsDialog extends StatefulWidget {
   const AppDetailsDialog({
     super.key,
     required this.app,
+    this.domain = '',
     required this.l10n,
     required this.appSummary,
     required this.appBasicDetails,
@@ -301,17 +307,22 @@ class _AppDetailsDialogState extends State<AppDetailsDialog> {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final l10n = widget.l10n;
+    final isMobile = Responsive.isMobile(context);
     final tabs = [
       (l10n.overview, FluentIcons.view_dashboard),
-      (l10n.usageOverPastWeek, FluentIcons.chart),
+      (isMobile ? l10n.usageOverPastWeek.split(' ').first : l10n.usageOverPastWeek,
+          FluentIcons.chart),
       (l10n.patterns, FluentIcons.insights),
     ];
+
+    final dialogWidth =
+        (MediaQuery.sizeOf(context).width - 48).clamp(280.0, 680.0);
 
     return ContentDialog(
       constraints: const BoxConstraints(maxWidth: 700, maxHeight: 1000),
       title: _buildHeader(context, theme),
       content: SizedBox(
-        width: 680,
+        width: dialogWidth,
         height: 460,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -366,6 +377,16 @@ class _AppDetailsDialogState extends State<AppDetailsDialog> {
                   style: theme.typography.subtitle
                       ?.copyWith(fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis),
+              if (widget.domain.isNotEmpty &&
+                  widget.domain != app.appName) ...[
+                const SizedBox(height: 2),
+                Text(widget.domain,
+                    style: theme.typography.caption?.copyWith(
+                      color: theme.typography.caption?.color
+                          ?.withValues(alpha: 0.6),
+                    ),
+                    overflow: TextOverflow.ellipsis),
+              ],
               const SizedBox(height: 4),
               Row(
                 mainAxisSize: MainAxisSize.min,

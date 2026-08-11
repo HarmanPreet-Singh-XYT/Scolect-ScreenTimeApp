@@ -108,23 +108,29 @@ class _LineChartWidgetState extends State<LineChartWidget>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, _) {
-        // Invalidate spot cache whenever animation ticks so gradient animates.
-        _cachedMainSpots = null;
-        _cachedAvgSpots = null;
-        return LineChart(
-          _getChartData(context),
-          // BUGFIX: removed explicit `duration` here — the custom
-          // AnimationController already drives the animation; having both
-          // caused a double-animation artefact on data changes.
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isPhone = constraints.maxWidth < 500;
+
+        return AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) {
+            // Invalidate spot cache whenever animation ticks so gradient animates.
+            _cachedMainSpots = null;
+            _cachedAvgSpots = null;
+            return LineChart(
+              _getChartData(context, isPhone: isPhone),
+              // BUGFIX: removed explicit `duration` here — the custom
+              // AnimationController already drives the animation; having both
+              // caused a double-animation artefact on data changes.
+            );
+          },
         );
       },
     );
   }
 
-  LineChartData _getChartData(BuildContext context) {
+  LineChartData _getChartData(BuildContext context, {bool isPhone = false}) {
     final data = widget.dailyScreenTimeData;
     _rebuildSpotsIfNeeded();
 
@@ -142,7 +148,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
     return LineChartData(
       lineTouchData: _buildTouchData(context),
       gridData: _buildGridData(maxY),
-      titlesData: _buildTitlesData(context, maxY),
+      titlesData: _buildTitlesData(context, maxY, isPhone: isPhone),
       borderData: _buildBorderData(),
       lineBarsData: _buildLineBarsData(),
       minX: 0,
@@ -268,29 +274,29 @@ class _LineChartWidgetState extends State<LineChartWidget>
     );
   }
 
-  FlTitlesData _buildTitlesData(BuildContext context, double maxY) {
+  FlTitlesData _buildTitlesData(BuildContext context, double maxY, {bool isPhone = false}) {
     return FlTitlesData(
       bottomTitles: AxisTitles(sideTitles: _buildBottomTitles()),
-      leftTitles: AxisTitles(sideTitles: _buildLeftTitles(context, maxY)),
+      leftTitles: AxisTitles(sideTitles: _buildLeftTitles(context, maxY, isPhone: isPhone)),
       rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
     );
   }
 
-  SideTitles _buildLeftTitles(BuildContext context, double maxY) {
+  SideTitles _buildLeftTitles(BuildContext context, double maxY, {bool isPhone = false}) {
     return SideTitles(
       showTitles: true,
-      reservedSize: 44,
+      reservedSize: isPhone ? 30 : 44,
       interval: maxY > 12 ? 4 : 2,
       getTitlesWidget: (value, meta) {
         if (value == 0 || value == meta.max) return const SizedBox.shrink();
         return Padding(
-          padding: const EdgeInsets.only(right: 8),
+          padding: EdgeInsets.only(right: isPhone ? 4 : 8),
           child: Text(
             '${value.toInt()}h',
-            style: const TextStyle(
+            style: TextStyle(
               color: _textColor,
-              fontSize: 12,
+              fontSize: isPhone ? 10 : 12,
               fontWeight: FontWeight.w500,
             ),
             textAlign: TextAlign.right,

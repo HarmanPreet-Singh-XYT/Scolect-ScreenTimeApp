@@ -17,6 +17,7 @@ import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart' show ThemeOptions, SettingsManager;
+import 'package:screentime/utils/responsive.dart';
 
 import 'package:screentime/sections/overview.dart';
 import 'package:screentime/sections/applications.dart';
@@ -51,6 +52,7 @@ class _WebDashboardState extends State<WebDashboard>
     with SingleTickerProviderStateMixin {
   // Sidebar state
   bool _isSidebarExpanded = true;
+  bool _appliedInitialSidebarState = false;
   late AnimationController _sidebarAnimController;
   late Animation<double> _sidebarAnimation;
   int _selectedIndex = 0;
@@ -87,6 +89,20 @@ class _WebDashboardState extends State<WebDashboard>
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (kIsWeb) _syncOverlayStrings(context);
+  }
+
+  // Called from the body LayoutBuilder (the same width source that decides
+  // mobile vs desktop layout) so the initial sidebar state can never
+  // disagree with which layout is actually showing. Mutates state directly
+  // (no setState) so the correction lands in this same build pass instead
+  // of flashing the drawer open for one frame first.
+  void _applyInitialSidebarStateFor(bool isMobile) {
+    if (_appliedInitialSidebarState) return;
+    _appliedInitialSidebarState = true;
+    if (isMobile) {
+      _isSidebarExpanded = false;
+      _sidebarAnimController.value = 0.0;
+    }
   }
 
   void _syncOverlayStrings(BuildContext context) {
@@ -201,60 +217,153 @@ class _WebDashboardState extends State<WebDashboard>
       );
     }
 
-    return Column(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = Responsive.isMobileWidth(constraints.maxWidth);
+        _applyInitialSidebarStateFor(isMobile);
+
+        return Column(
+          children: [
+            // ── Top App Bar (Enhanced Title Bar styled) ─────────────────────
+            _WebTitleBar(
+              mode: _mode,
+              onToggleSidebar: _toggleSidebar,
+              isSidebarExpanded: _isSidebarExpanded,
+              isMobile: isMobile,
+            ),
+
+            // ── Main Body (Sidebar + Content Area) ───────────────────────────
+            Expanded(
+              child: isMobile
+                  ? _buildMobileBody(isDark, customTheme)
+                  : _buildDesktopBody(isDark, customTheme),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDesktopBody(bool isDark, CustomThemeData customTheme) {
+    return Row(
       children: [
-        // ── Top App Bar (Enhanced Title Bar styled) ─────────────────────────
-        _WebTitleBar(
-          mode: _mode,
-          onToggleSidebar: _toggleSidebar,
-          isSidebarExpanded: _isSidebarExpanded,
+        // Left Collapsible Sidebar
+        AnimatedBuilder(
+          animation: _sidebarAnimation,
+          builder: (context, child) {
+            final expandProgress = _sidebarAnimation.value;
+            final width = lerpDouble(
+              AppDesign.sidebarCollapsedWidth,
+              AppDesign.sidebarExpandedWidth,
+              expandProgress,
+            )!;
+
+            return SizedBox(
+              width: width,
+              child: _WebSidebar(
+                width: width,
+                isExpanded: _isSidebarExpanded,
+                expandProgress: expandProgress,
+                selectedIndex: _selectedIndex,
+                onItemSelected: (idx) => setState(() => _selectedIndex = idx),
+                isDark: isDark,
+                customTheme: customTheme,
+                everConnected: _everConnected,
+              ),
+            );
+          },
         ),
 
-        // ── Main Body (Sidebar + Content Area Row) ──────────────────────────
+        // Main content panel
         Expanded(
-          child: Row(
-            children: [
-              // Left Collapsible Sidebar
-              AnimatedBuilder(
-                animation: _sidebarAnimation,
-                builder: (context, child) {
-                  final expandProgress = _sidebarAnimation.value;
-                  final width = lerpDouble(
-                    AppDesign.sidebarCollapsedWidth,
-                    AppDesign.sidebarExpandedWidth,
-                    expandProgress,
-                  )!;
+          child: Container(
+            color: isDark ? AppDesign.darkBackground : AppDesign.lightBackground,
+            child: AnimatedSwitcher(
+              duration: AppDesign.animMedium,
+              child: _getPage(_selectedIndex),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-                  return SizedBox(
-                    width: width,
-                    child: _WebSidebar(
-                      width: width,
-                      isExpanded: _isSidebarExpanded,
-                      expandProgress: expandProgress,
-                      selectedIndex: _selectedIndex,
-                      onItemSelected: (idx) =>
-                          setState(() => _selectedIndex = idx),
-                      isDark: isDark,
-                      customTheme: customTheme,
-                      everConnected: _everConnected,
-                    ),
-                  );
-                },
+  Widget _buildMobileBody(bool isDark, CustomThemeData customTheme) {
+    return Stack(
+      children: [
+        // Main content panel fills the full width on mobile
+        Positioned.fill(
+          child: Container(
+            color: isDark ? AppDesign.darkBackground : AppDesign.lightBackground,
+            child: AnimatedSwitcher(
+              duration: AppDesign.animMedium,
+              child: _getPage(_selectedIndex),
+            ),
+          ),
+        ),
+
+        // Backdrop + drawer. IgnorePointer keeps them out of the hit-test
+        // tree entirely once closed, so content below stays tappable and
+        // scrollable — an invisible (opacity 0) widget still blocks hits.
+        IgnorePointer(
+          ignoring: !_isSidebarExpanded,
+          child: GestureDetector(
+            onTap: _toggleSidebar,
+            child: AnimatedBuilder(
+              animation: _sidebarAnimation,
+              builder: (context, child) => Opacity(
+                opacity: _sidebarAnimation.value,
+                child: child,
               ),
+              child: Container(color: Colors.black.withValues(alpha: 0.5)),
+            ),
+          ),
+        ),
+        IgnorePointer(
+          ignoring: !_isSidebarExpanded,
+          child: AnimatedBuilder(
+            animation: _sidebarAnimation,
+            builder: (context, child) {
+              const drawerWidth = AppDesign.sidebarExpandedWidth;
+              final offsetX = lerpDouble(
+                -drawerWidth,
+                0,
+                _sidebarAnimation.value,
+              )!;
 
-              // Main content panel
-              Expanded(
-                child: Container(
-                  color: isDark
-                      ? AppDesign.darkBackground
-                      : AppDesign.lightBackground,
-                  child: AnimatedSwitcher(
-                    duration: AppDesign.animMedium,
-                    child: _getPage(_selectedIndex),
-                  ),
+              return Transform.translate(
+                offset: Offset(offsetX, 0),
+                child: child,
+              );
+            },
+            child: SizedBox(
+              width: AppDesign.sidebarExpandedWidth,
+              height: double.infinity,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      blurRadius: 16,
+                      offset: const Offset(4, 0),
+                    ),
+                  ],
+                ),
+                child: _WebSidebar(
+                  width: AppDesign.sidebarExpandedWidth,
+                  isExpanded: true,
+                  expandProgress: 1.0,
+                  selectedIndex: _selectedIndex,
+                  onItemSelected: (idx) {
+                    setState(() => _selectedIndex = idx);
+                    _toggleSidebar();
+                  },
+                  isDark: isDark,
+                  customTheme: customTheme,
+                  everConnected: _everConnected,
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ],
@@ -300,11 +409,13 @@ class _WebTitleBar extends StatelessWidget {
   final ExtensionMode mode;
   final VoidCallback onToggleSidebar;
   final bool isSidebarExpanded;
+  final bool isMobile;
 
   const _WebTitleBar({
     required this.mode,
     required this.onToggleSidebar,
     required this.isSidebarExpanded,
+    required this.isMobile,
   });
 
   @override
@@ -344,18 +455,21 @@ class _WebTitleBar extends StatelessWidget {
           ),
           const SizedBox(width: 12),
 
-          // Title
-          Text(
-            'Scolect Web Dashboard',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: theme.typography.body?.color,
+          // Title (shortened on mobile so the mode chip / theme toggle fit)
+          Expanded(
+            child: Text(
+              isMobile ? 'Scolect' : 'Scolect Web Dashboard',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: theme.typography.body?.color,
+              ),
             ),
           ),
 
-
-          const Spacer(),
+          const SizedBox(width: 8),
 
           // Mode Chip
           _ModeChip(mode: mode),

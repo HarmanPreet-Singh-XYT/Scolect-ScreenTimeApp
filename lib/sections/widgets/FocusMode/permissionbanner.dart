@@ -300,6 +300,7 @@ class _CompactNotificationBannerState extends State<CompactNotificationBanner>
   Future<void> _showSystemSettingsInfo() async {
     await showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (ctx) => ContentDialog(
         title: const Row(
           children: [

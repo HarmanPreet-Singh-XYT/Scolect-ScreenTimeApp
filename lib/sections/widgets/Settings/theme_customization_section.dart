@@ -216,6 +216,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (_) => ThemeEditorDialog(
         initialTheme: ThemePresets.defaultTheme.copyWith(
           id: 'custom_${DateTime.now().millisecondsSinceEpoch}',
@@ -239,6 +240,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (_) => ThemeEditorDialog(
         initialTheme: theme,
         onSave: (updated) async {
@@ -257,6 +259,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (_) => ContentDialog(
         title: Text(l10n.deleteCustomTheme),
         content: Text(l10n.confirmDeleteTheme(theme.name)),
@@ -292,6 +295,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     try {
       final result = await showDialog<String>(
         context: context,
+        barrierDismissible: true,
         builder: (_) => _ExportOptionsDialog(theme: theme),
       );
       if (result == null || !mounted) return;
@@ -320,6 +324,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     try {
       final result = await showDialog<String>(
         context: context,
+        barrierDismissible: true,
         builder: (_) => const _ImportOptionsDialog(),
       );
       if (result == null || !mounted) return;

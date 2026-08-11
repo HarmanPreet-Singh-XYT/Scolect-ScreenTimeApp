@@ -8,6 +8,7 @@ import './controller/data_controllers/reports_controller.dart';
 import 'package:screentime/sections/widgets/Reports/application_usage.dart';
 import 'package:screentime/sections/widgets/Reports/top_boxes.dart';
 import 'package:screentime/sections/controller/analytics_xlsx_exporter.dart';
+import 'package:screentime/utils/responsive.dart';
 
 enum PeriodType { last7Days, lastMonth, last3Months, lifetime, custom }
 
@@ -161,6 +162,7 @@ class _ReportsState extends State<Reports> {
   Future<void> _showExportDialog() async {
     await showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (ctx) => _ExportDialog(
         l10n: _l10n,
         onExport: _exportComprehensiveReport,
@@ -228,6 +230,7 @@ class _ReportsState extends State<Reports> {
 
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (ctx) {
         return StatefulBuilder(builder: (ctx, setDialogState) {
           return ContentDialog(
@@ -298,6 +301,7 @@ class _ReportsState extends State<Reports> {
   void _showValidationError(BuildContext dialogContext) {
     showDialog(
       context: dialogContext,
+      barrierDismissible: true,
       builder: (ctx) => ContentDialog(
         title: Text(_l10n.invalidDateRange),
         content: Text(_l10n.startDateBeforeEndDate),
@@ -384,48 +388,81 @@ class _ReportsState extends State<Reports> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          child: Text(
-            _l10n.usageAnalytics,
-            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            overflow: TextOverflow.ellipsis,
+    Widget buildTitle(bool isMobile) => Text(
+          _l10n.usageAnalytics,
+          style: TextStyle(
+            fontSize: isMobile ? 19 : 24,
+            fontWeight: FontWeight.bold,
           ),
-        ),
-        Row(
-          children: [
-            if (_analyticsSummary != null && !_isLoading)
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: _ExportButton(
-                  isExporting: _isExporting,
-                  onPressed: _showExportDialog,
-                  l10n: _l10n,
-                ),
+          overflow: TextOverflow.ellipsis,
+        );
+
+    final periodDropdown = ComboBox<PeriodType>(
+      value: _selectedPeriod,
+      items: PeriodType.values
+          .map((p) => ComboBoxItem<PeriodType>(
+                value: p,
+                child: Text(_getPeriodLabel(p)),
+              ))
+          .toList(),
+      onChanged: (value) {
+        if (value == null || value == _selectedPeriod) return;
+        if (value == PeriodType.custom) {
+          _showDateRangeDialog();
+        } else {
+          setState(() => _selectedPeriod = value);
+          _loadAnalyticsData();
+        }
+      },
+    );
+
+    final exportButton = _analyticsSummary != null && !_isLoading
+        ? _ExportButton(
+            isExporting: _isExporting,
+            onPressed: _showExportDialog,
+            l10n: _l10n,
+          )
+        : null;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < Responsive.mobileBreakpoint) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(child: buildTitle(true)),
+                  const SizedBox(width: 12),
+                  periodDropdown,
+                ],
               ),
-            ComboBox<PeriodType>(
-              value: _selectedPeriod,
-              items: PeriodType.values
-                  .map((p) => ComboBoxItem<PeriodType>(
-                        value: p,
-                        child: Text(_getPeriodLabel(p)),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value == null || value == _selectedPeriod) return;
-                if (value == PeriodType.custom) {
-                  _showDateRangeDialog();
-                } else {
-                  setState(() => _selectedPeriod = value);
-                  _loadAnalyticsData();
-                }
-              },
+              if (exportButton != null) ...[
+                const SizedBox(height: 12),
+                SizedBox(width: double.infinity, child: exportButton),
+              ],
+            ],
+          );
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(child: buildTitle(false)),
+            Row(
+              children: [
+                if (exportButton != null)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 12),
+                    child: exportButton,
+                  ),
+                periodDropdown,
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 }
@@ -852,26 +889,33 @@ class CardContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
-    return Container(
-      constraints: BoxConstraints(maxHeight: maxHeight),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: theme.inactiveBackgroundColor),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: _titleStyle,
-            semanticsLabel: AppLocalizations.of(context)!.sectionLabel(title),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isPhone = constraints.maxWidth < 500;
+        final pad = isPhone ? 12.0 : 20.0;
+
+        return Container(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          padding: EdgeInsets.all(pad),
+          decoration: BoxDecoration(
+            color: theme.micaBackgroundColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: theme.inactiveBackgroundColor),
           ),
-          const SizedBox(height: 20),
-          Expanded(child: child),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: _titleStyle,
+                semanticsLabel: AppLocalizations.of(context)!.sectionLabel(title),
+              ),
+              SizedBox(height: pad),
+              Expanded(child: child),
+            ],
+          ),
+        );
+      },
     );
   }
 }

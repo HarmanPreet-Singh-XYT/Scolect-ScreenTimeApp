@@ -5,7 +5,115 @@ import 'package:screentime/sections/controller/data_controllers/applications_dat
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
+import 'package:screentime/utils/responsive.dart';
 import 'browser_shared.dart';
+
+// ─── Shared limit picker (used by both table row and mobile card) ────────────
+
+String formatBrowserLimit(Duration d) {
+  final h = d.inHours;
+  final m = d.inMinutes % 60;
+  if (h > 0 && m > 0) return '${h}h ${m}m';
+  if (h > 0) return '${h}h';
+  return '${m}m';
+}
+
+/// Opens the daily limit picker dialog — same UX as BrowserLimits tab.
+/// Shared by [_WebsiteRow] (desktop table) and [_WebsiteCard] (mobile list).
+void showBrowserLimitPicker(
+  BuildContext context,
+  WebsiteBasicDetail site,
+  VoidCallback onMetadataChanged,
+) {
+  final l10n = AppLocalizations.of(context)!;
+  int hours = site.dailyLimit.inHours;
+  int minutes = site.dailyLimit.inMinutes % 60;
+
+  showDialog<void>(
+    context: context,
+    builder: (ctx) => StatefulBuilder(
+      builder: (ctx, setInner) => ContentDialog(
+        title: Text(l10n.browserDailyLimitDialog(site.domain)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.browserDailyLimitDialogDesc),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text(l10n.browserHours,
+                        style: const TextStyle(fontSize: 12)),
+                    const SizedBox(height: 4),
+                    NumberBox<int>(
+                      value: hours,
+                      min: 0,
+                      max: 23,
+                      onChanged: (v) => setInner(() => hours = v ?? 0),
+                      mode: SpinButtonPlacementMode.inline,
+                    ),
+                  ],
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(':',
+                      style: TextStyle(
+                          fontSize: 24, fontWeight: FontWeight.bold)),
+                ),
+                Column(
+                  children: [
+                    Text(l10n.minutesLabel,
+                        style: const TextStyle(fontSize: 12)),
+                    const SizedBox(height: 4),
+                    NumberBox<int>(
+                      value: minutes,
+                      min: 0,
+                      max: 59,
+                      onChanged: (v) => setInner(() => minutes = v ?? 0),
+                      mode: SpinButtonPlacementMode.inline,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        actions: [
+          Button(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancelButton),
+          ),
+          if (site.dailyLimit > Duration.zero)
+            Button(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await BrowserDataProvider().updateWebsiteMetadata(
+                  site.domain,
+                  dailyLimit: Duration.zero,
+                );
+                onMetadataChanged();
+              },
+              child: Text(l10n.browserRemoveLimit),
+            ),
+          FilledButton(
+            onPressed: () async {
+              Navigator.of(ctx).pop();
+              final limit = Duration(hours: hours, minutes: minutes);
+              await BrowserDataProvider().updateWebsiteMetadata(
+                site.domain,
+                dailyLimit: limit,
+              );
+              onMetadataChanged();
+            },
+            child: Text(l10n.saveButton),
+          ),
+        ],
+      ),
+    ),
+  );
+}
 
 class BrowserWebsites extends StatefulWidget {
   final ValueChanged<BrowserTab> onTabChange;
@@ -83,57 +191,112 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
       return const Center(child: ProgressRing());
     }
 
+    final isMobile = Responsive.isMobileWidth(MediaQuery.sizeOf(context).width);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 14 : 24,
+        vertical: isMobile ? 14 : 20,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Filters bar ────────────────────────────────────────────────
           BrowserCard(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            child: Row(
-              children: [
-                BrowserSearchBox(
-                  placeholder: l10n.browserSearchPlaceholder,
-                  onChanged: _onSearch,
-                ),
-                const SizedBox(width: 12),
-                _FilterCombo<String>(
-                  value: _categoryFilter,
-                  items: _categories,
-                  label: (v) => v,
-                  onChanged: (v) => setState(() => _categoryFilter = v),
-                ),
-                const SizedBox(width: 8),
-                _FilterCombo<String>(
-                  value: _trackingFilter,
-                  items: const ['all', 'tracked', 'untracked'],
-                  label: (v) => switch (v) {
-                    'tracked' => l10n.browserFilterTracked,
-                    'untracked' => l10n.browserFilterUntracked,
-                    _ => l10n.browserFilterAllTracking,
-                  },
-                  onChanged: (v) => setState(() => _trackingFilter = v),
-                ),
-                const SizedBox(width: 8),
-                _FilterCombo<String>(
-                  value: _productivityFilter,
-                  items: const ['all', 'productive', 'unproductive'],
-                  label: (v) => switch (v) {
-                    'productive' => l10n.productive,
-                    'unproductive' => l10n.browserFilterUnproductive,
-                    _ => l10n.browserFilterAllTypes,
-                  },
-                  onChanged: (v) => setState(() => _productivityFilter = v),
-                ),
-                const Spacer(),
-                BrowserIconButton(
-                  tooltip: l10n.refresh,
-                  icon: FluentIcons.refresh,
-                  onPressed: _loadData,
-                ),
-              ],
-            ),
+            child: isMobile
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      BrowserSearchBox(
+                        placeholder: l10n.browserSearchPlaceholder,
+                        onChanged: _onSearch,
+                        width: double.infinity,
+                      ),
+                      const SizedBox(height: 8),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          _FilterCombo<String>(
+                            value: _categoryFilter,
+                            items: _categories,
+                            label: (v) => v,
+                            onChanged: (v) => setState(() => _categoryFilter = v),
+                          ),
+                          _FilterCombo<String>(
+                            value: _trackingFilter,
+                            items: const ['all', 'tracked', 'untracked'],
+                            label: (v) => switch (v) {
+                              'tracked' => l10n.browserFilterTracked,
+                              'untracked' => l10n.browserFilterUntracked,
+                              _ => l10n.browserFilterAllTracking,
+                            },
+                            onChanged: (v) => setState(() => _trackingFilter = v),
+                          ),
+                          _FilterCombo<String>(
+                            value: _productivityFilter,
+                            items: const ['all', 'productive', 'unproductive'],
+                            label: (v) => switch (v) {
+                              'productive' => l10n.productive,
+                              'unproductive' => l10n.browserFilterUnproductive,
+                              _ => l10n.browserFilterAllTypes,
+                            },
+                            onChanged: (v) => setState(() => _productivityFilter = v),
+                          ),
+                          BrowserIconButton(
+                            tooltip: l10n.refresh,
+                            icon: FluentIcons.refresh,
+                            onPressed: _loadData,
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      BrowserSearchBox(
+                        placeholder: l10n.browserSearchPlaceholder,
+                        onChanged: _onSearch,
+                      ),
+                      const SizedBox(width: 12),
+                      _FilterCombo<String>(
+                        value: _categoryFilter,
+                        items: _categories,
+                        label: (v) => v,
+                        onChanged: (v) => setState(() => _categoryFilter = v),
+                      ),
+                      const SizedBox(width: 8),
+                      _FilterCombo<String>(
+                        value: _trackingFilter,
+                        items: const ['all', 'tracked', 'untracked'],
+                        label: (v) => switch (v) {
+                          'tracked' => l10n.browserFilterTracked,
+                          'untracked' => l10n.browserFilterUntracked,
+                          _ => l10n.browserFilterAllTracking,
+                        },
+                        onChanged: (v) => setState(() => _trackingFilter = v),
+                      ),
+                      const SizedBox(width: 8),
+                      _FilterCombo<String>(
+                        value: _productivityFilter,
+                        items: const ['all', 'productive', 'unproductive'],
+                        label: (v) => switch (v) {
+                          'productive' => l10n.productive,
+                          'unproductive' => l10n.browserFilterUnproductive,
+                          _ => l10n.browserFilterAllTypes,
+                        },
+                        onChanged: (v) => setState(() => _productivityFilter = v),
+                      ),
+                      const Spacer(),
+                      BrowserIconButton(
+                        tooltip: l10n.refresh,
+                        icon: FluentIcons.refresh,
+                        onPressed: _loadData,
+                      ),
+                    ],
+                  ),
           ),
           const SizedBox(height: 10),
 
@@ -150,36 +313,56 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
             ),
           ),
 
-          // ── Table ──────────────────────────────────────────────────────
+          // ── Table / card list ────────────────────────────────────────────
           Expanded(
-            child: BrowserCard(
-              padding: EdgeInsets.zero,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-                child: Column(
-                  children: [
-                    _TableHeader(),
-                    Expanded(
-                      child: filtered.isEmpty
-                          ? BrowserEmptyState(
-                              icon: FluentIcons.globe,
-                              title: l10n.browserNoWebsitesTitle,
-                              subtitle: l10n.browserNoWebsitesDesktopSubtitle,
-                            )
-                          : ListView.builder(
-                              itemCount: filtered.length,
-                              itemBuilder: (context, i) => _WebsiteRow(
-                                site: filtered[i],
-                                showDivider: i < filtered.length - 1,
-                                onMetadataChanged: _loadData,
-                                onTap: () => _showSiteDetail(context, filtered[i]),
-                              ),
-                            ),
+            child: isMobile
+                ? (filtered.isEmpty
+                    ? BrowserCard(
+                        child: BrowserEmptyState(
+                          icon: FluentIcons.globe,
+                          title: l10n.browserNoWebsitesTitle,
+                          subtitle: l10n.browserNoWebsitesDesktopSubtitle,
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: filtered.length,
+                        itemBuilder: (context, i) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _WebsiteCard(
+                            site: filtered[i],
+                            onMetadataChanged: _loadData,
+                            onTap: () => _showSiteDetail(context, filtered[i]),
+                          ),
+                        ),
+                      ))
+                : BrowserCard(
+                    padding: EdgeInsets.zero,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(12)),
+                      child: Column(
+                        children: [
+                          _TableHeader(),
+                          Expanded(
+                            child: filtered.isEmpty
+                                ? BrowserEmptyState(
+                                    icon: FluentIcons.globe,
+                                    title: l10n.browserNoWebsitesTitle,
+                                    subtitle: l10n.browserNoWebsitesDesktopSubtitle,
+                                  )
+                                : ListView.builder(
+                                    itemCount: filtered.length,
+                                    itemBuilder: (context, i) => _WebsiteRow(
+                                      site: filtered[i],
+                                      showDivider: i < filtered.length - 1,
+                                      onMetadataChanged: _loadData,
+                                      onTap: () => _showSiteDetail(context, filtered[i]),
+                                    ),
+                                  ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
           ),
         ],
       ),
@@ -330,97 +513,8 @@ class _WebsiteRowState extends State<_WebsiteRow> {
     });
   }
 
-  /// Opens the daily limit picker dialog — same UX as BrowserLimits tab.
   void _showLimitPicker() {
-    final l10n = AppLocalizations.of(context)!;
-    final site = widget.site;
-    int hours = site.dailyLimit.inHours;
-    int minutes = site.dailyLimit.inMinutes % 60;
-
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setInner) => ContentDialog(
-          title: Text(l10n.browserDailyLimitDialog(site.domain)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.browserDailyLimitDialogDesc),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Text(l10n.browserHours,
-                          style: const TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      NumberBox<int>(
-                        value: hours,
-                        min: 0,
-                        max: 23,
-                        onChanged: (v) => setInner(() => hours = v ?? 0),
-                        mode: SpinButtonPlacementMode.inline,
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(':',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
-                  ),
-                  Column(
-                    children: [
-                      Text(l10n.minutesLabel,
-                          style: const TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      NumberBox<int>(
-                        value: minutes,
-                        min: 0,
-                        max: 59,
-                        onChanged: (v) => setInner(() => minutes = v ?? 0),
-                        mode: SpinButtonPlacementMode.inline,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            Button(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancelButton),
-            ),
-            if (site.dailyLimit > Duration.zero)
-              Button(
-                onPressed: () async {
-                  Navigator.of(ctx).pop();
-                  await BrowserDataProvider().updateWebsiteMetadata(
-                    site.domain,
-                    dailyLimit: Duration.zero,
-                  );
-                  widget.onMetadataChanged();
-                },
-                child: Text(l10n.browserRemoveLimit),
-              ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                final limit = Duration(hours: hours, minutes: minutes);
-                await BrowserDataProvider().updateWebsiteMetadata(
-                  site.domain,
-                  dailyLimit: limit,
-                );
-                widget.onMetadataChanged();
-              },
-              child: Text(l10n.saveButton),
-            ),
-          ],
-        ),
-      ),
-    );
+    showBrowserLimitPicker(context, widget.site, widget.onMetadataChanged);
   }
 
   @override
@@ -716,6 +810,407 @@ class _WebsiteRowState extends State<_WebsiteRow> {
     if (h > 0 && m > 0) return '${h}h ${m}m';
     if (h > 0) return '${h}h';
     return '${m}m';
+  }
+}
+
+// ─── Website card (mobile list view) ──────────────────────────────────────────
+
+class _WebsiteCard extends StatefulWidget {
+  final WebsiteBasicDetail site;
+  final VoidCallback onMetadataChanged;
+  final VoidCallback onTap;
+
+  const _WebsiteCard({
+    required this.site,
+    required this.onMetadataChanged,
+    required this.onTap,
+  });
+
+  @override
+  State<_WebsiteCard> createState() => _WebsiteCardState();
+}
+
+class _WebsiteCardState extends State<_WebsiteCard> {
+  bool _editing = false;
+  late TextEditingController _nameController;
+  final _focusNode = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.site.displayName);
+  }
+
+  @override
+  void didUpdateWidget(_WebsiteCard old) {
+    super.didUpdateWidget(old);
+    if (old.site.displayName != widget.site.displayName && !_editing) {
+      _nameController.text = widget.site.displayName;
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveEdit() async {
+    final newName = _nameController.text.trim();
+    setState(() => _editing = false);
+    if (newName == widget.site.displayName) return;
+    await BrowserDataProvider().updateWebsiteMetadata(
+      widget.site.domain,
+      siteName: newName.isEmpty ? '' : newName,
+    );
+    widget.onMetadataChanged();
+  }
+
+  void _startEdit() {
+    setState(() {
+      _editing = true;
+      _nameController.text = widget.site.displayName;
+    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+      _nameController.selection = TextSelection(
+          baseOffset: 0, extentOffset: _nameController.text.length);
+    });
+  }
+
+  void _showLimitPicker() {
+    showBrowserLimitPicker(context, widget.site, widget.onMetadataChanged);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final captionColor = theme.typography.caption?.color;
+    final site = widget.site;
+    final hasDifferentName = site.siteName.isNotEmpty && site.siteName != site.domain;
+
+    final hasLimit = site.dailyLimit > Duration.zero;
+    double limitProgress = 0;
+    if (hasLimit && site.timeSpent > Duration.zero) {
+      limitProgress =
+          (site.timeSpent.inSeconds / site.dailyLimit.inSeconds).clamp(0.0, 1.0);
+    }
+    final overLimit = limitProgress >= 1.0;
+    final limitColor = overLimit
+        ? kBrowserRed
+        : limitProgress > 0.75
+            ? kBrowserAmber
+            : kBrowserGreen;
+
+    return BrowserCard(
+      padding: const EdgeInsets.all(12),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: theme.accentColor.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Icon(FluentIcons.globe,
+                      size: 14,
+                      color: theme.accentColor.withValues(alpha: 0.6)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _editing
+                      ? SizedBox(
+                          height: 30,
+                          child: TextBox(
+                            controller: _nameController,
+                            focusNode: _focusNode,
+                            style: const TextStyle(fontSize: 13),
+                            onSubmitted: (_) => _saveEdit(),
+                            suffix: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(FluentIcons.check_mark, size: 12),
+                                  onPressed: _saveEdit,
+                                ),
+                                IconButton(
+                                  icon: const Icon(FluentIcons.cancel, size: 12),
+                                  onPressed: () => setState(() => _editing = false),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    site.displayName,
+                                    style: const TextStyle(
+                                        fontSize: 14, fontWeight: FontWeight.w600),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  if (hasDifferentName)
+                                    Text(
+                                      site.domain,
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: captionColor?.withValues(alpha: 0.5),
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (site.limitStatus)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4),
+                                child: Tooltip(
+                                  message: 'Daily limit reached – site is blocked',
+                                  child: Icon(
+                                    FluentIcons.lock,
+                                    size: 13,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: Tooltip(
+                                message: l10n.browserEditSiteName,
+                                child: IconButton(
+                                  icon: Icon(FluentIcons.edit,
+                                      size: 13,
+                                      color: captionColor?.withValues(alpha: 0.5)),
+                                  onPressed: _startEdit,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                BrowserStatChip(
+                  label: site.category,
+                  color: theme.accentColor.withValues(alpha: 0.12),
+                  textColor: theme.accentColor,
+                ),
+                _MetricPill(
+                  icon: FluentIcons.timer,
+                  label: site.formattedTimeSpent,
+                  color: theme.accentColor,
+                ),
+                _MetricPill(
+                  icon: FluentIcons.view,
+                  label: '${site.visits} ${l10n.browserColumnVisits.toLowerCase()}',
+                  color: captionColor?.withValues(alpha: 0.7) ?? kBrowserPurple,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: _showLimitPicker,
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: theme.inactiveBackgroundColor.withValues(alpha: 0.25),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(FluentIcons.time_picker,
+                          size: 13, color: captionColor?.withValues(alpha: 0.6)),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Daily Limit',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: captionColor?.withValues(alpha: 0.6),
+                        ),
+                      ),
+                      const Spacer(),
+                      if (hasLimit) ...[
+                        SizedBox(
+                          width: 60,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: theme.inactiveBackgroundColor,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              FractionallySizedBox(
+                                widthFactor: limitProgress,
+                                child: Container(
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: limitColor,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          formatBrowserLimit(site.dailyLimit),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: limitColor,
+                          ),
+                        ),
+                      ] else
+                        Text(
+                          'No limit',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: captionColor?.withValues(alpha: 0.35),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: _ToggleRow(
+                    label: l10n.productive,
+                    value: site.isProductive,
+                    activeColor: kBrowserGreen,
+                    onChanged: (v) async {
+                      await BrowserDataProvider().updateWebsiteMetadata(
+                        site.domain,
+                        isProductive: v,
+                      );
+                      widget.onMetadataChanged();
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _ToggleRow(
+                    label: l10n.browserColumnTracking,
+                    value: site.isTracking,
+                    activeColor: theme.accentColor,
+                    onChanged: (v) async {
+                      await BrowserDataProvider().updateWebsiteMetadata(
+                        site.domain,
+                        isTracking: v,
+                      );
+                      widget.onMetadataChanged();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MetricPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _MetricPill({required this.icon, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 11, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  final String label;
+  final bool value;
+  final Color activeColor;
+  final ValueChanged<bool> onChanged;
+
+  const _ToggleRow({
+    required this.label,
+    required this.value,
+    required this.activeColor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.typography.caption?.color?.withValues(alpha: 0.7),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 6),
+        _CompactToggle(
+          value: value,
+          activeColor: activeColor,
+          onChanged: onChanged,
+        ),
+      ],
+    );
   }
 }
 

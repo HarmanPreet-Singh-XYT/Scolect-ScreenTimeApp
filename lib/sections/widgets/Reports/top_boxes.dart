@@ -60,6 +60,7 @@ class TopBoxes extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isCompact = constraints.maxWidth < 800;
+        final isPhone = constraints.maxWidth < 500;
 
         return GridView.builder(
           shrinkWrap: true,
@@ -68,7 +69,7 @@ class TopBoxes extends StatelessWidget {
             crossAxisCount: isCompact ? 2 : 4,
             crossAxisSpacing: 12,
             mainAxisSpacing: 12,
-            childAspectRatio: isCompact ? 1.6 : 1.8,
+            childAspectRatio: isPhone ? 1.3 : (isCompact ? 1.6 : 1.8),
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {
@@ -76,6 +77,7 @@ class TopBoxes extends StatelessWidget {
               item: items[index],
               isLoading: isLoading,
               index: index,
+              isPhone: isPhone,
             );
           },
         );
@@ -116,11 +118,13 @@ class _AnalyticsCard extends StatefulWidget {
   final _AnalyticsItem item;
   final bool isLoading;
   final int index;
+  final bool isPhone;
 
   const _AnalyticsCard({
     required this.item,
     required this.isLoading,
     required this.index,
+    this.isPhone = false,
   });
 
   @override
@@ -196,12 +200,16 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
           child: AnimatedContainer(
             duration: _hoverDuration,
             curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(widget.isPhone ? 12 : 16),
             decoration: _buildDecoration(theme, isDark),
             transform: _isHovered ? _hoverMatrix : _identityMatrix,
             child: widget.isLoading
                 ? const _ShimmerPlaceholder()
-                : _CardContent(item: widget.item, isHovered: _isHovered),
+                : _CardContent(
+                    item: widget.item,
+                    isHovered: _isHovered,
+                    isPhone: widget.isPhone,
+                  ),
           ),
         ),
       ),
@@ -259,8 +267,13 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
 class _CardContent extends StatelessWidget {
   final _AnalyticsItem item;
   final bool isHovered;
+  final bool isPhone;
 
-  const _CardContent({required this.item, required this.isHovered});
+  const _CardContent({
+    required this.item,
+    required this.isHovered,
+    this.isPhone = false,
+  });
 
   static const _positiveColor = Color(0xFF10B981);
   static const _negativeColor = Color(0xFFEF4444);
@@ -281,7 +294,7 @@ class _CardContent extends StatelessWidget {
               child: Text(
                 item.title,
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: isPhone ? 12 : 14,
                   fontWeight: FontWeight.w600,
                   color:
                       theme.typography.caption?.color?.withValues(alpha: 0.7),
@@ -296,17 +309,18 @@ class _CardContent extends StatelessWidget {
               icon: item.icon,
               color: item.accentColor,
               isHovered: isHovered,
+              isPhone: isPhone,
             ),
           ],
         ),
 
-        const Spacer(),
+        isPhone ? const SizedBox(height: 8) : const Spacer(),
 
         // Value
         AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 200),
           style: TextStyle(
-            fontSize: isHovered ? 26 : 24,
+            fontSize: isPhone ? 18 : (isHovered ? 26 : 24),
             fontWeight: FontWeight.w700,
             color: theme.typography.title?.color,
             letterSpacing: -0.5,
@@ -398,23 +412,25 @@ class _IconBadge extends StatelessWidget {
   final IconData icon;
   final Color color;
   final bool isHovered;
+  final bool isPhone;
 
   const _IconBadge({
     required this.icon,
     required this.color,
     required this.isHovered,
+    this.isPhone = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(isPhone ? 6 : 8),
       decoration: BoxDecoration(
         color: color.withValues(alpha: isHovered ? 0.2 : 0.1),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Icon(icon, size: 18, color: color),
+      child: Icon(icon, size: isPhone ? 14 : 18, color: color),
     );
   }
 }

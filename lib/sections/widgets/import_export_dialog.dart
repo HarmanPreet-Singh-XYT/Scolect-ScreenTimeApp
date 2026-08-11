@@ -626,6 +626,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
     if (result.success && result.filePath != null && mounted) {
       final shouldShare = await showDialog<bool>(
         context: context,
+        barrierDismissible: true,
         builder: (_) => _ShareDialog(l10n: l10n),
       );
       if (shouldShare == true) {
@@ -639,6 +640,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
 
     final importMode = await showDialog<ImportMode>(
       context: context,
+      barrierDismissible: true,
       builder: (_) => const _RefinedImportModeDialog(),
     );
     if (importMode == null) return;
@@ -646,6 +648,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
     if (importMode == ImportMode.replace) {
       final confirmed = await showDialog<bool>(
         context: context,
+        barrierDismissible: true,
         builder: (_) => _ReplaceConfirmDialog(l10n: l10n),
       );
       if (confirmed != true) return;

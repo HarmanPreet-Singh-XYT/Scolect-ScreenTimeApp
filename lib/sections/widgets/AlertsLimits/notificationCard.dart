@@ -65,12 +65,16 @@ final List<_TileConfig> _tileConfigs = [
     titleOf: (l) => l.soundAlerts,
     subtitleOf: (l) => l.playSoundWithAlerts,
   ),
-  _TileConfig(
-    type: AlertType.system,
-    icon: FluentIcons.system,
-    titleOf: (l) => l.systemAlerts,
-    subtitleOf: (l) => l.systemTrayNotifications,
-  ),
+  // System Alerts toggle is hidden: it writes to limitsAlerts.system, but
+  // the notification engine's getUseSystemNotifications() reads from an
+  // unrelated 'notifications.system' key that's never set, so this toggle
+  // doesn't actually control anything today.
+  // _TileConfig(
+  //   type: AlertType.system,
+  //   icon: FluentIcons.system,
+  //   titleOf: (l) => l.systemAlerts,
+  //   subtitleOf: (l) => l.systemTrayNotifications,
+  // ),
 ];
 
 // ──────────────── Widget ────────────────

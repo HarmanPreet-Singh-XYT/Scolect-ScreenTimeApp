@@ -94,18 +94,20 @@ class BrowserGradientIconBox extends StatelessWidget {
 class BrowserSearchBox extends StatelessWidget {
   final String placeholder;
   final ValueChanged<String> onChanged;
+  final double? width;
 
   const BrowserSearchBox({
     super.key,
     required this.placeholder,
     required this.onChanged,
+    this.width = 260,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     return Container(
-      width: 260,
+      width: width,
       height: 36,
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,

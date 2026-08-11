@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' as mt;
 import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart';
+import 'package:screentime/utils/responsive.dart';
 import '../../../controller/data_controllers/reports_controller.dart';
 import '../../../controller/data_controllers/alerts_limits_data_controller.dart'
     as app_summary_data;
@@ -62,146 +63,166 @@ class OverviewTab extends StatelessWidget {
             ? l10n.moreUsageThanLastWeek(growthPct.abs().toStringAsFixed(1))
             : l10n.lessUsageThanLastWeek(growthPct.abs().toStringAsFixed(1));
 
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                  child: buildStatCard(
-                      context,
-                      l10n.today,
-                      appBasicDetails.formattedScreenTime,
-                      FluentIcons.calendar_day,
-                      Colors.blue,
-                      theme)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: buildStatCard(
-                      context,
-                      l10n.dailyLimit,
-                      hasLimit
-                          ? formatDuration(appSummary.dailyLimit)
-                          : l10n.noLimit,
-                      FluentIcons.timer,
-                      Colors.orange,
-                      theme)),
-              const SizedBox(width: 10),
-              Expanded(
-                  child: buildStatCard(
-                      context,
-                      l10n.weeklyTotal,
-                      formatDuration(weeklyTotal),
-                      FluentIcons.calendar_week,
-                      Colors.purple,
-                      theme)),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (hasLimit) ...[
-            buildCompactCard(
-              context,
-              l10n.todaysLimitUsage,
-              FluentIcons.timer,
-              theme,
-              child: _buildLimitProgress(overLimit, limitProgress, appSummary),
+    final sessionsCard = buildCompactCard(
+      context,
+      l10n.sessions,
+      FluentIcons.issue_tracking,
+      theme,
+      child: Column(children: [
+        buildInfoRow(l10n.totalSessions,
+            '${appDetails.sessionBreakdown.totalSessions}', theme),
+        buildInfoRow(
+            l10n.avgSession,
+            formatDuration(appDetails.sessionBreakdown.averageSessionDuration),
+            theme),
+        buildInfoRow(
+            l10n.longestSession,
+            appDetails.sessionBreakdown.formattedLongestSessionDuration,
+            theme),
+      ]),
+    );
+
+    final thisWeekCard = buildCompactCard(
+      context,
+      l10n.thisWeek,
+      FluentIcons.calendar_week,
+      theme,
+      child: Column(children: [
+        buildInfoRow(l10n.mostActive, mostActiveDay, theme),
+        buildInfoRow(
+            l10n.peakUsage, formatDuration(mostActiveDuration), theme),
+        buildInfoRow(l10n.dailyAverage,
+            appDetails.usageInsights.formattedAverageDailyUsage, theme),
+      ]),
+    );
+
+    final productivityScoreCard = buildCompactCard(
+      context,
+      l10n.productivityScore,
+      FluentIcons.like,
+      theme,
+      child: _buildProductivityScore(),
+    );
+
+    final streaksCard = buildCompactCard(
+      context,
+      l10n.streaks,
+      FluentIcons.lightning_bolt,
+      theme,
+      child: _buildStreakTracker(weeklyData, sortedKeys, hasLimit),
+    );
+
+    return LayoutBuilder(builder: (context, constraints) {
+      // This tab renders inside AppDetailsDialog, whose content area is
+      // capped at 680px (see appdetails.dialog.dart) — below the global
+      // 700px mobile breakpoint even on desktop. Use a narrower threshold
+      // here so the two-column pairing only collapses on genuinely narrow
+      // (phone-width) dialogs.
+      final isMobile = constraints.maxWidth < Responsive.narrowBreakpoint;
+      final statsCompact = constraints.maxWidth < 412.0;
+
+      Widget pairedRow(Widget first, Widget second) {
+        if (isMobile) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [first, const SizedBox(height: 12), second],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: first),
+            const SizedBox(width: 10),
+            Expanded(child: second),
+          ],
+        );
+      }
+
+      final todayCard = buildStatCard(
+          context,
+          l10n.today,
+          appBasicDetails.formattedScreenTime,
+          FluentIcons.calendar_day,
+          Colors.blue,
+          theme);
+      final dailyLimitCard = buildStatCard(
+          context,
+          l10n.dailyLimit,
+          hasLimit ? formatDuration(appSummary.dailyLimit) : l10n.noLimit,
+          FluentIcons.timer,
+          Colors.orange,
+          theme);
+      final weeklyTotalCard = buildStatCard(
+          context,
+          l10n.weeklyTotal,
+          formatDuration(weeklyTotal),
+          FluentIcons.calendar_week,
+          Colors.purple,
+          theme);
+
+      return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (statsCompact) ...[
+              Row(
+                children: [
+                  Expanded(child: todayCard),
+                  const SizedBox(width: 10),
+                  Expanded(child: dailyLimitCard),
+                ],
+              ),
+              const SizedBox(height: 10),
+              weeklyTotalCard,
+            ] else
+              Row(
+                children: [
+                  Expanded(child: todayCard),
+                  const SizedBox(width: 10),
+                  Expanded(child: dailyLimitCard),
+                  const SizedBox(width: 10),
+                  Expanded(child: weeklyTotalCard),
+                ],
             ),
             const SizedBox(height: 12),
+            if (hasLimit) ...[
+              buildCompactCard(
+                context,
+                l10n.todaysLimitUsage,
+                FluentIcons.timer,
+                theme,
+                child:
+                    _buildLimitProgress(overLimit, limitProgress, appSummary),
+              ),
+              const SizedBox(height: 12),
+            ],
+            buildCompactCard(
+              context,
+              l10n.thisWeekAtAGlance,
+              FluentIcons.chart,
+              theme,
+              child: _buildSparkline(
+                  weeklyData, sortedKeys, hasLimit, appSummary),
+            ),
+            const SizedBox(height: 12),
+            buildCompactCard(
+              context,
+              l10n.hourlyActivityHeatmap,
+              FluentIcons.clock,
+              theme,
+              child: _buildHourlyHeatmap(appDetails.hourlyBreakdown),
+            ),
+            const SizedBox(height: 12),
+            pairedRow(sessionsCard, thisWeekCard),
+            const SizedBox(height: 12),
+            pairedRow(productivityScoreCard, streaksCard),
+            const SizedBox(height: 12),
+            _buildWeekOverWeekBanner(growthPct, isIncrease, growthLabel),
+            const SizedBox(height: 4),
           ],
-          buildCompactCard(
-            context,
-            l10n.thisWeekAtAGlance,
-            FluentIcons.chart,
-            theme,
-            child:
-                _buildSparkline(weeklyData, sortedKeys, hasLimit, appSummary),
-          ),
-          const SizedBox(height: 12),
-          buildCompactCard(
-            context,
-            l10n.hourlyActivityHeatmap,
-            FluentIcons.clock,
-            theme,
-            child: _buildHourlyHeatmap(appDetails.hourlyBreakdown),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: buildCompactCard(
-                  context,
-                  l10n.sessions,
-                  FluentIcons.issue_tracking,
-                  theme,
-                  child: Column(children: [
-                    buildInfoRow(l10n.totalSessions,
-                        '${appDetails.sessionBreakdown.totalSessions}', theme),
-                    buildInfoRow(
-                        l10n.avgSession,
-                        formatDuration(
-                            appDetails.sessionBreakdown.averageSessionDuration),
-                        theme),
-                    buildInfoRow(
-                        l10n.longestSession,
-                        appDetails
-                            .sessionBreakdown.formattedLongestSessionDuration,
-                        theme),
-                  ]),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: buildCompactCard(
-                  context,
-                  l10n.thisWeek,
-                  FluentIcons.calendar_week,
-                  theme,
-                  child: Column(children: [
-                    buildInfoRow(l10n.mostActive, mostActiveDay, theme),
-                    buildInfoRow(l10n.peakUsage,
-                        formatDuration(mostActiveDuration), theme),
-                    buildInfoRow(
-                        l10n.dailyAverage,
-                        appDetails.usageInsights.formattedAverageDailyUsage,
-                        theme),
-                  ]),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: buildCompactCard(
-                  context,
-                  l10n.productivityScore,
-                  FluentIcons.like,
-                  theme,
-                  child: _buildProductivityScore(),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: buildCompactCard(
-                  context,
-                  l10n.streaks,
-                  FluentIcons.lightning_bolt,
-                  theme,
-                  child: _buildStreakTracker(weeklyData, sortedKeys, hasLimit),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildWeekOverWeekBanner(growthPct, isIncrease, growthLabel),
-          const SizedBox(height: 4),
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
   Widget _buildLimitProgress(bool overLimit, double limitProgress,

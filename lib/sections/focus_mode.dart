@@ -1067,41 +1067,58 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
     );
   }
 
+  static const _kCompactControlsBreakpoint = 412.0;
+
   Widget _buildControls(
       BuildContext context, AppLocalizations l10n, Color color) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ControlButton(
-            icon: FluentIcons.refresh,
-            onPressed: () => setState(() {
-                  _timerService.resetStats();
-                  _timerService.resetTimer();
-                }),
-            tooltip: l10n.restartSession),
-        const SizedBox(width: 16),
-        ControlButton(
-            icon: FluentIcons.previous,
-            onPressed: () => setState(() => _timerService.navigateBackward()),
-            tooltip: 'Previous Phase'),
-        const SizedBox(width: 20),
-        ScaleTransition(
-          scale: _btnScaleAnim,
-          child: PlayPauseButton(
-              isRunning: _isRunning, color: color, onPressed: _handlePlayPause),
-        ),
-        const SizedBox(width: 20),
-        ControlButton(
-            icon: FluentIcons.next,
-            onPressed: () => setState(() => _timerService.navigateForward()),
-            tooltip: 'Next Phase'),
-        const SizedBox(width: 16),
-        ControlButton(
-            icon: FluentIcons.settings,
-            onPressed: () => _showSettingsDialog(context),
-            tooltip: l10n.settings),
-      ],
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final compact = constraints.maxWidth < _kCompactControlsBreakpoint;
+      final smallGap = SizedBox(width: compact ? 10.0 : 16.0);
+      final largeGap = SizedBox(width: compact ? 12.0 : 20.0);
+
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ControlButton(
+              icon: FluentIcons.refresh,
+              compact: compact,
+              onPressed: () => setState(() {
+                    _timerService.resetStats();
+                    _timerService.resetTimer();
+                  }),
+              tooltip: l10n.restartSession),
+          smallGap,
+          ControlButton(
+              icon: FluentIcons.previous,
+              compact: compact,
+              onPressed: () =>
+                  setState(() => _timerService.navigateBackward()),
+              tooltip: 'Previous Phase'),
+          largeGap,
+          ScaleTransition(
+            scale: _btnScaleAnim,
+            child: PlayPauseButton(
+                isRunning: _isRunning,
+                color: color,
+                compact: compact,
+                onPressed: _handlePlayPause),
+          ),
+          largeGap,
+          ControlButton(
+              icon: FluentIcons.next,
+              compact: compact,
+              onPressed: () =>
+                  setState(() => _timerService.navigateForward()),
+              tooltip: 'Next Phase'),
+          smallGap,
+          ControlButton(
+              icon: FluentIcons.settings,
+              compact: compact,
+              onPressed: () => _showSettingsDialog(context),
+              tooltip: l10n.settings),
+        ],
+      );
+    });
   }
 
   Widget _buildCounter(
@@ -1202,6 +1219,7 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
 
     await showDialog<String>(
       context: context,
+      barrierDismissible: true,
       builder: (ctx) => StatefulBuilder(builder: (ctx, setDlg) {
         void applyPreset(double w, double s, double l) {
           setDlg(() {

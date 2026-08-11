@@ -392,3 +392,197 @@ class _Divider extends StatelessWidget {
     );
   }
 }
+
+// ═══════════════════ Mobile Card ═══════════════════
+
+class AppLimitCard extends StatelessWidget {
+  final AppUsageSummary app;
+  final VoidCallback onEdit;
+
+  const AppLimitCard({
+    super.key,
+    required this.app,
+    required this.onEdit,
+  });
+
+  double get _progress {
+    if (!app.limitStatus || app.dailyLimit == Duration.zero) return 0.0;
+    return (app.currentUsage.inMinutes / app.dailyLimit.inMinutes)
+        .clamp(0.0, 1.0);
+  }
+
+  Color get _statusColor {
+    if (!app.limitStatus || app.dailyLimit == Duration.zero) {
+      return Colors.grey;
+    }
+    if (app.currentUsage >= app.dailyLimit) return Colors.red;
+    if (app.isAboutToReachLimit) return Colors.orange;
+    if (app.percentageOfLimitUsed > 0.75) return const Color(0xFFEAB308);
+    return const Color(0xFF10B981);
+  }
+
+  bool get _showProgress => app.limitStatus && app.dailyLimit != Duration.zero;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+    final statusColor = _statusColor;
+    final progress = _progress;
+    final appName = app.siteName.isNotEmpty ? app.siteName : app.appName;
+    final domain = app.appName;
+
+    return GestureDetector(
+      onTap: onEdit,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+                color: theme.inactiveBackgroundColor.withValues(alpha: 0.4)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          appName,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
+                        if (domain.isNotEmpty && domain != appName)
+                          Text(
+                            domain,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: theme.typography.caption?.color
+                                  ?.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 6,
+                              height: 6,
+                              decoration: BoxDecoration(
+                                color: statusColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              app.limitStatus ? l10n.active : l10n.off,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: statusColor,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(FluentIcons.edit,
+                        size: 14, color: theme.accentColor),
+                    onPressed: onEdit,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: theme.accentColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      app.category,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: theme.accentColor,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: theme.inactiveBackgroundColor.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      AppRow.formatDuration(app.dailyLimit, l10n),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        color: app.limitStatus
+                            ? theme.typography.body?.color
+                            : theme.inactiveColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Text(
+                    AppRow.formatDuration(app.currentUsage, l10n),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: statusColor,
+                    ),
+                  ),
+                  if (_showProgress) ...[
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _ProgressBar(
+                        progress: progress,
+                        color: statusColor,
+                        backgroundColor: theme.inactiveBackgroundColor,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${(progress * 100).toInt()}%',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: theme.typography.caption?.color
+                            ?.withValues(alpha: 0.6),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

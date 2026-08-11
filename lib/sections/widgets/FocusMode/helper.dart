@@ -20,12 +20,14 @@ class ControlButton extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
   final String tooltip;
+  final bool compact;
 
   const ControlButton({
     super.key,
     required this.icon,
     required this.onPressed,
     required this.tooltip,
+    this.compact = false,
   });
 
   @override
@@ -41,6 +43,8 @@ class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final accent = theme.accentColor;
+    final size = widget.compact ? 36.0 : 44.0;
+    final iconSize = widget.compact ? 14.0 : 16.0;
 
     return Tooltip(
       message: widget.tooltip,
@@ -52,8 +56,8 @@ class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
           onTap: widget.onPressed,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            width: 44,
-            height: 44,
+            width: size,
+            height: size,
             transform: Matrix4.identity()..scale(_isPressed ? 0.92 : 1.0),
             transformAlignment: Alignment.center,
             decoration: BoxDecoration(
@@ -69,7 +73,7 @@ class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
             ),
             child: Icon(
               widget.icon,
-              size: 16,
+              size: iconSize,
               color: _isHovered ? accent : null,
             ),
           ),
@@ -85,12 +89,14 @@ class PlayPauseButton extends StatefulWidget {
   final bool isRunning;
   final Color color;
   final VoidCallback onPressed;
+  final bool compact;
 
   const PlayPauseButton({
     super.key,
     required this.isRunning,
     required this.color,
     required this.onPressed,
+    this.compact = false,
   });
 
   @override
@@ -104,14 +110,16 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
   @override
   Widget build(BuildContext context) {
     final color = widget.color;
+    final size = widget.compact ? 56.0 : 72.0;
+    final iconSize = widget.compact ? 22.0 : 28.0;
 
     return buildHoverRegion(
       child: GestureDetector(
         onTap: widget.onPressed,
         child: AnimatedContainer(
           duration: _duration,
-          width: 72,
-          height: 72,
+          width: size,
+          height: size,
           decoration: BoxDecoration(
             color: color,
             shape: BoxShape.circle,
@@ -129,7 +137,7 @@ class _PlayPauseButtonState extends State<PlayPauseButton>
             child: Icon(
               widget.isRunning ? FluentIcons.pause : FluentIcons.play_solid,
               key: ValueKey(widget.isRunning),
-              size: 28,
+              size: iconSize,
               color: Colors.white,
             ),
           ),

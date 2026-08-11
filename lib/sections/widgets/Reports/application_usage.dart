@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/sortable_header.dart';
+import 'package:screentime/utils/responsive.dart';
 import '../../controller/data_controllers/reports_controller.dart';
 import './appdetails.dialog.dart';
 
@@ -133,47 +134,55 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
 
-    return Container(
-      height: 500,
-      decoration: BoxDecoration(
-        color: theme.micaBackgroundColor,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: theme.resources.dividerStrokeColorDefault,
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _Header(
-            l10n: l10n,
-            theme: theme,
-            totalApps: _totalApps,
-            productiveApps: _productiveApps,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = Responsive.isMobileWidth(constraints.maxWidth);
+
+        return Container(
+          height: 500,
+          decoration: BoxDecoration(
+            color: theme.micaBackgroundColor,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: theme.resources.dividerStrokeColorDefault,
+            ),
           ),
-          _buildToolbar(l10n, theme),
-          _ColumnHeaders(
-            l10n: l10n,
-            theme: theme,
-            sortBy: _sortBy,
-            sortAscending: _sortAscending,
-            onSort: _onHeaderSort,
-            productivityFilter: _productivityFilter,
-            onProductivityFilterCycle: _cycleProductivityFilter,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _Header(
+                l10n: l10n,
+                theme: theme,
+                totalApps: _totalApps,
+                productiveApps: _productiveApps,
+                isMobile: isMobile,
+              ),
+              _buildToolbar(l10n, theme, isMobile),
+              if (!isMobile)
+                _ColumnHeaders(
+                  l10n: l10n,
+                  theme: theme,
+                  sortBy: _sortBy,
+                  sortAscending: _sortAscending,
+                  onSort: _onHeaderSort,
+                  productivityFilter: _productivityFilter,
+                  onProductivityFilterCycle: _cycleProductivityFilter,
+                ),
+              Expanded(
+                child: _visibleApps.isEmpty
+                    ? _EmptyState(
+                        l10n: l10n,
+                        theme: theme,
+                        hasSearch: _searchQuery.isNotEmpty,
+                        onClear: _clearSearch,
+                      )
+                    : _buildAppList(_visibleApps, theme, isMobile),
+              ),
+              _FooterStats(l10n: l10n, theme: theme, apps: _visibleApps),
+            ],
           ),
-          Expanded(
-            child: _visibleApps.isEmpty
-                ? _EmptyState(
-                    l10n: l10n,
-                    theme: theme,
-                    hasSearch: _searchQuery.isNotEmpty,
-                    onClear: _clearSearch,
-                  )
-                : _buildAppList(_visibleApps, theme),
-          ),
-          _FooterStats(l10n: l10n, theme: theme, apps: _visibleApps),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -185,55 +194,85 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
     });
   }
 
-  Widget _buildToolbar(AppLocalizations l10n, FluentThemeData theme) {
+  Widget _buildSearchBox(AppLocalizations l10n, FluentThemeData theme,
+      {required double width}) {
+    return SizedBox(
+      width: width,
+      height: 32,
+      child: TextBox(
+        controller: _searchController,
+        focusNode: _searchFocusNode,
+        placeholder: l10n.searchApplications,
+        style: const TextStyle(fontSize: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        onChanged: (value) {
+          _searchQuery = value;
+          _updateFilterAndSort();
+        },
+        prefix: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child:
+              Icon(FluentIcons.search, size: 14, color: theme.inactiveColor),
+        ),
+        suffix: _searchQuery.isNotEmpty
+            ? IconButton(
+                icon: Icon(FluentIcons.clear,
+                    size: 12, color: theme.inactiveColor),
+                onPressed: _clearSearch,
+              )
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildSortToggle(AppLocalizations l10n) {
+    return Tooltip(
+      message: _sortAscending ? l10n.sortAscending : l10n.sortDescending,
+      child: ToggleButton(
+        checked: _sortAscending,
+        onChanged: (value) {
+          _sortAscending = value;
+          _updateFilterAndSort();
+        },
+        child: Icon(
+          _sortAscending ? FluentIcons.sort_up : FluentIcons.sort_down,
+          size: 14,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildToolbar(
+      AppLocalizations l10n, FluentThemeData theme, bool isMobile) {
+    if (isMobile) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildSearchBox(l10n, theme, width: double.infinity),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: _buildSortPills(l10n, theme)),
+                const SizedBox(width: 8),
+                _buildSortToggle(l10n),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          SizedBox(
-            width: 200,
-            height: 32,
-            child: TextBox(
-              controller: _searchController,
-              focusNode: _searchFocusNode,
-              placeholder: l10n.searchApplications,
-              style: const TextStyle(fontSize: 13),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              onChanged: (value) {
-                _searchQuery = value;
-                _updateFilterAndSort();
-              },
-              prefix: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Icon(FluentIcons.search,
-                    size: 14, color: theme.inactiveColor),
-              ),
-              suffix: _searchQuery.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(FluentIcons.clear,
-                          size: 12, color: theme.inactiveColor),
-                      onPressed: _clearSearch,
-                    )
-                  : null,
-            ),
-          ),
+          _buildSearchBox(l10n, theme, width: 200),
           const SizedBox(width: 12),
           Expanded(child: _buildSortPills(l10n, theme)),
           const SizedBox(width: 8),
-          Tooltip(
-            message: _sortAscending ? l10n.sortAscending : l10n.sortDescending,
-            child: ToggleButton(
-              checked: _sortAscending,
-              onChanged: (value) {
-                _sortAscending = value;
-                _updateFilterAndSort();
-              },
-              child: Icon(
-                _sortAscending ? FluentIcons.sort_up : FluentIcons.sort_down,
-                size: 14,
-              ),
-            ),
-          ),
+          _buildSortToggle(l10n),
         ],
       ),
     );
@@ -291,7 +330,26 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
     );
   }
 
-  Widget _buildAppList(List<AppUsageSummary> apps, FluentThemeData theme) {
+  Widget _buildAppList(
+      List<AppUsageSummary> apps, FluentThemeData theme, bool isMobile) {
+    if (isMobile) {
+      return ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        itemCount: apps.length,
+        itemBuilder: (context, index) {
+          final app = apps[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: _AppUsageCard(
+              app: app,
+              theme: theme,
+              onTap: () => _showAppDetails(context, app),
+            ),
+          );
+        },
+      );
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 4),
       itemCount: apps.length,
@@ -343,16 +401,51 @@ class _Header extends StatelessWidget {
   final FluentThemeData theme;
   final int totalApps;
   final int productiveApps;
+  final bool isMobile;
 
   const _Header({
     required this.l10n,
     required this.theme,
     required this.totalApps,
     required this.productiveApps,
+    required this.isMobile,
   });
 
   @override
   Widget build(BuildContext context) {
+    final titleRow = Row(
+      children: [
+        Icon(FluentIcons.app_icon_default_list,
+            size: 20, color: theme.accentColor),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            l10n.detailedApplicationUsage,
+            style: theme.typography.subtitle
+                ?.copyWith(fontWeight: FontWeight.w600),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+
+    final stats = [
+      _MiniStat(
+        value: '$totalApps',
+        label: l10n.apps,
+        icon: FluentIcons.grid_view_medium,
+        color: theme.accentColor,
+        theme: theme,
+      ),
+      _MiniStat(
+        value: '$productiveApps',
+        label: l10n.productive,
+        icon: FluentIcons.check_mark,
+        color: Colors.green,
+        theme: theme,
+      ),
+    ];
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
       decoration: BoxDecoration(
@@ -362,37 +455,24 @@ class _Header extends StatelessWidget {
           ),
         ),
       ),
-      child: Row(
-        children: [
-          Icon(FluentIcons.app_icon_default_list,
-              size: 20, color: theme.accentColor),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              l10n.detailedApplicationUsage,
-              style: theme.typography.subtitle
-                  ?.copyWith(fontWeight: FontWeight.w600),
-              overflow: TextOverflow.ellipsis,
+      child: isMobile
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                titleRow,
+                const SizedBox(height: 10),
+                Wrap(spacing: 16, runSpacing: 8, children: stats),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: titleRow),
+                const SizedBox(width: 12),
+                stats[0],
+                const SizedBox(width: 16),
+                stats[1],
+              ],
             ),
-          ),
-          const SizedBox(width: 12),
-          _MiniStat(
-            value: '$totalApps',
-            label: l10n.apps,
-            icon: FluentIcons.grid_view_medium,
-            color: theme.accentColor,
-            theme: theme,
-          ),
-          const SizedBox(width: 16),
-          _MiniStat(
-            value: '$productiveApps',
-            label: l10n.productive,
-            icon: FluentIcons.check_mark,
-            color: Colors.green,
-            theme: theme,
-          ),
-        ],
-      ),
     );
   }
 }
@@ -660,6 +740,82 @@ class _AppListItem extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AppUsageCard extends StatelessWidget {
+  final AppUsageSummary app;
+  final FluentThemeData theme;
+  final VoidCallback onTap;
+
+  const _AppUsageCard({
+    required this.app,
+    required this.theme,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: theme.resources.dividerStrokeColorDefault),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _AppIcon(isProductive: app.isProductive),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        app.siteName.isNotEmpty ? app.siteName : app.appName,
+                        style: theme.typography.body
+                            ?.copyWith(fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (app.siteName.isNotEmpty &&
+                          app.siteName != app.appName)
+                        Text(
+                          app.appName,
+                          style: theme.typography.caption?.copyWith(
+                            fontSize: 10,
+                            color: theme.inactiveColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _TimeDisplay(duration: app.totalTime, theme: theme),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _CategoryChip(category: app.category, theme: theme),
+                _ProductivityBadge(isProductive: app.isProductive, l10n: l10n),
+              ],
+            ),
+          ],
         ),
       ),
     );

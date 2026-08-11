@@ -154,7 +154,7 @@ class ChangelogModal {
   ) {
     return showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (_) => _ChangelogDialog(release: release),
     );
   }

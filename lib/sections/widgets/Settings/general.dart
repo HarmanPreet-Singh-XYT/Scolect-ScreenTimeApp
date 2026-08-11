@@ -164,7 +164,7 @@ class _SettingsComboBox<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 160,
+      width: 130,
       child: ComboBox<T>(
         value: value,
         isExpanded: true,
@@ -172,7 +172,10 @@ class _SettingsComboBox<T> extends StatelessWidget {
           for (final item in items)
             ComboBoxItem<T>(
               value: item[valueKey]! as T,
-              child: Text(labelBuilder(item)),
+              child: Text(
+                labelBuilder(item),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
         ],
         onChanged: (v) {
@@ -455,14 +458,14 @@ class _ExtensionModeCardState extends State<_ExtensionModeCard> {
           title: l10n.browserExtensionMode,
           description: _mode.description,
           control: SizedBox(
-            width: 160,
+            width: 130,
             child: ComboBox<ExtensionMode>(
               value: _mode,
               isExpanded: true,
               items: ExtensionMode.values
                   .map((m) => ComboBoxItem<ExtensionMode>(
                         value: m,
-                        child: Text(m.label),
+                        child: Text(m.label, overflow: TextOverflow.ellipsis),
                       ))
                   .toList(),
               onChanged: (mode) {

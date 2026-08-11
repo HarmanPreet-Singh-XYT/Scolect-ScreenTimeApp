@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/sortable_header.dart';
+import 'package:screentime/utils/responsive.dart';
 import './reusable.dart' as rub;
 import './approw.dart';
 
@@ -107,39 +108,65 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
   Widget build(BuildContext context) {
     final sortedApps = _sortedApps;
 
-    return rub.Card(
-      padding: EdgeInsets.zero,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _Header(
-            count: sortedApps.length,
-            onAdd: () => _showLimitDialog(context),
-            searchController: _searchController,
-            onSearchChanged: _onSearchChanged,
-            onClearSearch: _clearSearch,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isMobile = Responsive.isMobileWidth(constraints.maxWidth);
+
+        return rub.Card(
+          padding: EdgeInsets.zero,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _Header(
+                count: sortedApps.length,
+                onAdd: () => _showLimitDialog(context),
+                searchController: _searchController,
+                onSearchChanged: _onSearchChanged,
+                onClearSearch: _clearSearch,
+                isMobile: isMobile,
+              ),
+              if (!isMobile)
+                _TableHeader(
+                  headerStyle: ApplicationLimitsCard._headerStyle,
+                  sortColumn: _sortColumn,
+                  sortDirection: _sortDirection,
+                  onSort: _toggleSort,
+                ),
+              if (sortedApps.isEmpty)
+                _EmptyState(
+                  hasSearch: _searchQuery.trim().isNotEmpty,
+                  onClear: _clearSearch,
+                )
+              else if (isMobile)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 8),
+                  child: Column(
+                    children: sortedApps
+                        .map((app) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: AppLimitCard(
+                                app: app,
+                                onEdit: () =>
+                                    _showLimitDialog(context, app: app),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                )
+              else
+                ...sortedApps.asMap().entries.map((entry) => AppRow(
+                      app: entry.value,
+                      onEdit: () =>
+                          _showLimitDialog(context, app: entry.value),
+                      isLast: entry.key == sortedApps.length - 1,
+                    )),
+              const SizedBox(height: 8),
+            ],
           ),
-          _TableHeader(
-            headerStyle: ApplicationLimitsCard._headerStyle,
-            sortColumn: _sortColumn,
-            sortDirection: _sortDirection,
-            onSort: _toggleSort,
-          ),
-          if (sortedApps.isEmpty)
-            _EmptyState(
-              hasSearch: _searchQuery.trim().isNotEmpty,
-              onClear: _clearSearch,
-            )
-          else
-            ...sortedApps.asMap().entries.map((entry) => AppRow(
-                  app: entry.value,
-                  onEdit: () => _showLimitDialog(context, app: entry.value),
-                  isLast: entry.key == sortedApps.length - 1,
-                )),
-          const SizedBox(height: 8),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -157,6 +184,7 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
 
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           final totalMinutes = (hours * 60 + minutes).round();
@@ -282,6 +310,7 @@ class _Header extends StatelessWidget {
   final TextEditingController searchController;
   final ValueChanged<String> onSearchChanged;
   final VoidCallback onClearSearch;
+  final bool isMobile;
 
   const _Header({
     required this.count,
@@ -289,6 +318,7 @@ class _Header extends StatelessWidget {
     required this.searchController,
     required this.onSearchChanged,
     required this.onClearSearch,
+    this.isMobile = false,
   });
 
   @override
@@ -296,47 +326,95 @@ class _Header extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
 
+    final titleRow = Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: theme.accentColor.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(FluentIcons.app_icon_default,
+              size: 18, color: theme.accentColor),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                kIsWeb ? "Website Limits" : l10n.applicationLimits,
+                style: const TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                kIsWeb ? "$count Websites" : l10n.applicationsTracked(count),
+                style: TextStyle(
+                  fontSize: 12,
+                  color:
+                      theme.typography.caption?.color?.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (!isMobile)
+          FilledButton(
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              ),
+            ),
+            onPressed: onAdd,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(FluentIcons.add, size: 12),
+                const SizedBox(width: 6),
+                Text(l10n.addLimit),
+              ],
+            ),
+          ),
+      ],
+    );
+
+    final searchBox = SizedBox(
+      height: 32,
+      child: TextBox(
+        controller: searchController,
+        placeholder: l10n.searchApplications,
+        style: const TextStyle(fontSize: 13),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        onChanged: onSearchChanged,
+        prefix: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child:
+              Icon(FluentIcons.search, size: 14, color: theme.inactiveColor),
+        ),
+        suffix: searchController.text.isNotEmpty
+            ? IconButton(
+                icon: Icon(FluentIcons.clear,
+                    size: 12, color: theme.inactiveColor),
+                onPressed: onClearSearch,
+              )
+            : null,
+      ),
+    );
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: theme.accentColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(FluentIcons.app_icon_default,
-                    size: 18, color: theme.accentColor),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      kIsWeb ? "Website Limits" : l10n.applicationLimits,
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      kIsWeb
-                          ? "$count Websites"
-                          : l10n.applicationsTracked(count),
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.typography.caption?.color
-                            ?.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              FilledButton(
+          titleRow,
+          const SizedBox(height: 12),
+          searchBox,
+          if (isMobile) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
                 style: ButtonStyle(
                   padding: WidgetStateProperty.all(
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -344,6 +422,7 @@ class _Header extends StatelessWidget {
                 ),
                 onPressed: onAdd,
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Icon(FluentIcons.add, size: 12),
@@ -352,31 +431,8 @@ class _Header extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 32,
-            child: TextBox(
-              controller: searchController,
-              placeholder: l10n.searchApplications,
-              style: const TextStyle(fontSize: 13),
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              onChanged: onSearchChanged,
-              prefix: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Icon(FluentIcons.search,
-                    size: 14, color: theme.inactiveColor),
-              ),
-              suffix: searchController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(FluentIcons.clear,
-                          size: 12, color: theme.inactiveColor),
-                      onPressed: onClearSearch,
-                    )
-                  : null,
             ),
-          ),
+          ],
         ],
       ),
     );

@@ -13,6 +13,7 @@ import 'package:screentime/sections/settings.dart' show SettingsProvider;
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
 import './widgets/sortable_header.dart';
+import 'package:screentime/utils/responsive.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -392,55 +393,92 @@ class _Header extends StatelessWidget {
     final theme = FluentTheme.of(context);
     final captionColor = theme.typography.caption?.color;
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final titleBlock = Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            _GradientIconBox(
-              icon: FluentIcons.app_icon_default,
-              color: theme.accentColor,
-            ),
-            const SizedBox(width: 14),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  kIsWeb ? "Websites" : l10n.applicationsTitle,
-                  style: theme.typography.subtitle?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  kIsWeb
-                      ? "Manage tracking and visibility for websites"
-                      : l10n.applicationsSubtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: captionColor?.withValues(alpha: 0.6),
-                  ),
-                ),
-              ],
-            ),
-          ],
+        _GradientIconBox(
+          icon: FluentIcons.app_icon_default,
+          color: theme.accentColor,
         ),
-        Row(
-          children: [
-            _SearchBox(
-              placeholder: kIsWeb
-                  ? "Search website or domain..."
-                  : l10n.searchApplication,
-              onChanged: changeSearchValue,
-            ),
-            const SizedBox(width: 12),
-            _BorderedIconButton(
-              tooltip: l10n.refresh,
-              icon: FluentIcons.refresh,
-              onPressed: onRefresh,
-            ),
-          ],
+        const SizedBox(width: 14),
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                kIsWeb ? "Websites" : l10n.applicationsTitle,
+                style: theme.typography.subtitle?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                kIsWeb
+                    ? "Manage tracking and visibility for websites"
+                    : l10n.applicationsSubtitle,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: captionColor?.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
+    );
+
+    Widget buildActions({required bool fullWidthSearch}) {
+      return Row(
+        mainAxisSize: fullWidthSearch ? MainAxisSize.max : MainAxisSize.min,
+        children: [
+          fullWidthSearch
+              ? Expanded(
+                  child: _SearchBox(
+                    placeholder: kIsWeb
+                        ? "Search website or domain..."
+                        : l10n.searchApplication,
+                    onChanged: changeSearchValue,
+                    width: double.infinity,
+                  ),
+                )
+              : _SearchBox(
+                  placeholder: kIsWeb
+                      ? "Search website or domain..."
+                      : l10n.searchApplication,
+                  onChanged: changeSearchValue,
+                ),
+          const SizedBox(width: 12),
+          _BorderedIconButton(
+            tooltip: l10n.refresh,
+            icon: FluentIcons.refresh,
+            onPressed: onRefresh,
+          ),
+        ],
+      );
+    }
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < Responsive.mobileBreakpoint) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              titleBlock,
+              const SizedBox(height: 12),
+              buildActions(fullWidthSearch: true),
+            ],
+          );
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            titleBlock,
+            buildActions(fullWidthSearch: false),
+          ],
+        );
+      },
     );
   }
 }
@@ -479,15 +517,20 @@ class _GradientIconBox extends StatelessWidget {
 class _SearchBox extends StatelessWidget {
   final String placeholder;
   final ValueChanged<String> onChanged;
+  final double width;
 
-  const _SearchBox({required this.placeholder, required this.onChanged});
+  const _SearchBox({
+    required this.placeholder,
+    required this.onChanged,
+    this.width = 260,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
 
     return Container(
-      width: 260,
+      width: width,
       height: 36,
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,
@@ -576,47 +619,62 @@ class _FilterBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return _CardContainer(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              _FilterDropdown(
-                icon: FluentIcons.checkbox_composite,
-                label: _trackingLabel(l10n),
-                activeColor: _kGreenColor,
-                items: [
-                  _DropdownItem(FluentIcons.view_all, l10n.allTracking, "all"),
-                  _DropdownItem(
-                      FluentIcons.check_mark, l10n.tracking, "tracked"),
-                  _DropdownItem(
-                      FluentIcons.cancel, l10n.notTracking, "untracked"),
-                ],
-                selectedValue: trackingFilter,
-                onChanged: onTrackingFilterChanged,
-              ),
-              const SizedBox(width: 16),
-              _FilterDropdown(
-                icon: FluentIcons.view,
-                label: _visibilityLabel(l10n),
-                activeColor: _kPurpleColor,
-                items: [
-                  _DropdownItem(
-                      FluentIcons.view_all, l10n.allVisibility, "all"),
-                  _DropdownItem(FluentIcons.red_eye, l10n.visible, "visible"),
-                  _DropdownItem(FluentIcons.hide3, l10n.hidden, "hidden"),
-                ],
-                selectedValue: visibilityFilter,
-                onChanged: onVisibilityFilterChanged,
-              ),
-            ],
-          ),
-          _CategoryDropdown(
-            selectedCategory: selectedCategory,
-            onChanged: onCategoryChanged,
-          ),
+    final filters = [
+      _FilterDropdown(
+        icon: FluentIcons.checkbox_composite,
+        label: _trackingLabel(l10n),
+        activeColor: _kGreenColor,
+        items: [
+          _DropdownItem(FluentIcons.view_all, l10n.allTracking, "all"),
+          _DropdownItem(FluentIcons.check_mark, l10n.tracking, "tracked"),
+          _DropdownItem(FluentIcons.cancel, l10n.notTracking, "untracked"),
         ],
+        selectedValue: trackingFilter,
+        onChanged: onTrackingFilterChanged,
+      ),
+      _FilterDropdown(
+        icon: FluentIcons.view,
+        label: _visibilityLabel(l10n),
+        activeColor: _kPurpleColor,
+        items: [
+          _DropdownItem(FluentIcons.view_all, l10n.allVisibility, "all"),
+          _DropdownItem(FluentIcons.red_eye, l10n.visible, "visible"),
+          _DropdownItem(FluentIcons.hide3, l10n.hidden, "hidden"),
+        ],
+        selectedValue: visibilityFilter,
+        onChanged: onVisibilityFilterChanged,
+      ),
+    ];
+
+    final categoryDropdown = _CategoryDropdown(
+      selectedCategory: selectedCategory,
+      onChanged: onCategoryChanged,
+    );
+
+    return _CardContainer(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (Responsive.isMobileWidth(constraints.maxWidth)) {
+            return Wrap(
+              spacing: 16,
+              runSpacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [...filters, categoryDropdown],
+            );
+          }
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                filters[0],
+                const SizedBox(width: 16),
+                filters[1],
+              ]),
+              categoryDropdown,
+            ],
+          );
+        },
       ),
     );
   }
@@ -806,41 +864,60 @@ class _DataTable extends StatelessWidget {
       return _EmptyState(theme: theme, l10n: l10n);
     }
 
-    return _CardContainer(
-      padding: EdgeInsets.zero,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
-        child: Column(
-          children: [
-            _TableHeaderRow(
-              l10n: l10n,
-              theme: theme,
-              sortColumn: sortColumn,
-              sortDirection: sortDirection,
-              onSort: onSort,
-              trackingFilter: trackingFilter,
-              onTrackingFilterCycle: onTrackingFilterCycle,
-              visibilityFilter: visibilityFilter,
-              onVisibilityFilterCycle: onVisibilityFilterCycle,
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: apps.length,
-                itemBuilder: (context, index) {
-                  final app = apps[index];
-                  return _ApplicationRow(
-                    app: app,
-                    toggleAppSetting: toggleAppSetting,
-                    refreshData: refreshData,
-                    isLast: index == apps.length - 1,
-                  );
-                },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (Responsive.isMobileWidth(constraints.maxWidth)) {
+          return ListView.builder(
+            padding: EdgeInsets.zero,
+            itemCount: apps.length,
+            itemBuilder: (context, index) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _ApplicationCard(
+                app: apps[index],
+                toggleAppSetting: toggleAppSetting,
+                refreshData: refreshData,
               ),
             ),
-          ],
-        ),
-      ),
+          );
+        }
+
+        return _CardContainer(
+          padding: EdgeInsets.zero,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                _TableHeaderRow(
+                  l10n: l10n,
+                  theme: theme,
+                  sortColumn: sortColumn,
+                  sortDirection: sortDirection,
+                  onSort: onSort,
+                  trackingFilter: trackingFilter,
+                  onTrackingFilterCycle: onTrackingFilterCycle,
+                  visibilityFilter: visibilityFilter,
+                  onVisibilityFilterCycle: onVisibilityFilterCycle,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: apps.length,
+                    itemBuilder: (context, index) {
+                      final app = apps[index];
+                      return _ApplicationRow(
+                        app: app,
+                        toggleAppSetting: toggleAppSetting,
+                        refreshData: refreshData,
+                        isLast: index == apps.length - 1,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -1100,6 +1177,7 @@ class _ApplicationRowState extends State<_ApplicationRow> {
   void _showEditDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: true,
       builder: (context) => _EditAppDialog(
         app: widget.app,
         refreshData: widget.refreshData,
@@ -1233,6 +1311,186 @@ class _ApplicationRowState extends State<_ApplicationRow> {
           ],
         ),
       ),
+    );
+  }
+}
+
+// ─── Application Card (mobile list view) ──────────────────────────────────────
+
+class _ApplicationCard extends StatefulWidget {
+  final AppViewModel app;
+  final void Function(String type, bool value, String name) toggleAppSetting;
+  final Future<void> Function() refreshData;
+
+  const _ApplicationCard({
+    required this.app,
+    required this.toggleAppSetting,
+    required this.refreshData,
+  });
+
+  @override
+  State<_ApplicationCard> createState() => _ApplicationCardState();
+}
+
+class _ApplicationCardState extends State<_ApplicationCard> {
+  void _showEditDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => _EditAppDialog(
+        app: widget.app,
+        refreshData: widget.refreshData,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = FluentTheme.of(context);
+    final app = widget.app;
+    final captionColor = theme.typography.caption?.color;
+
+    return _CardContainer(
+      padding: const EdgeInsets.all(12),
+      child: GestureDetector(
+        onTap: () => _showEditDialog(context),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        app.siteName.isNotEmpty ? app.siteName : app.name,
+                        style: const TextStyle(
+                            fontSize: 14, fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (app.siteName.isNotEmpty && app.siteName != app.name)
+                        Text(
+                          app.name,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: captionColor?.withValues(alpha: 0.5),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Tooltip(
+                    message: l10n.tableEdit,
+                    child: IconButton(
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: theme.accentColor.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Icon(
+                          FluentIcons.edit,
+                          size: 14,
+                          color: theme.accentColor,
+                        ),
+                      ),
+                      onPressed: () => _showEditDialog(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _Chip(
+                  label: app.category,
+                  color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                  textColor: theme.typography.body?.color?.withValues(alpha: 0.8),
+                ),
+                _Chip(
+                  label: app.screenTime,
+                  color: theme.accentColor.withValues(alpha: 0.1),
+                  textColor: theme.accentColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: _ToggleRow(
+                    label: l10n.tableTracking,
+                    value: app.isTracking,
+                    activeColor: _kGreenColor,
+                    onChanged: (v) =>
+                        widget.toggleAppSetting('isTracking', v, app.name),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _ToggleRow(
+                    label: l10n.tableHidden,
+                    value: app.isHidden,
+                    activeColor: _kPurpleColor,
+                    onChanged: (v) =>
+                        widget.toggleAppSetting('isHidden', v, app.name),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  final String label;
+  final bool value;
+  final Color activeColor;
+  final ValueChanged<bool> onChanged;
+
+  const _ToggleRow({
+    required this.label,
+    required this.value,
+    required this.activeColor,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.typography.caption?.color?.withValues(alpha: 0.7),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 6),
+        _CompactToggle(
+          value: value,
+          activeColor: activeColor,
+          onChanged: onChanged,
+        ),
+      ],
     );
   }
 }
