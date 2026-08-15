@@ -122,20 +122,22 @@ Future<void> showWebsiteDetailsDialog(
   final l10n = AppLocalizations.of(context)!;
   final provider = BrowserDataProvider();
 
-  // Fetch full site detail (limit, visits, tracking) and 7-day history in parallel
-  final results = await Future.wait([
-    provider.fetchAllWebsites(),
-    provider.fetchHistory(days: 7),
-  ]);
-
-  final allSites = results[0] as List<WebsiteBasicDetail>;
-  final history =
-      results[1] as List<({String date, Duration totalTime, int siteCount})>;
+  // Fetch all websites first to resolve canonical domain, siteName, limit, tracking
+  final allSites = await provider.fetchAllWebsites();
 
   // Prefer raw domain for lookup; fall back to display name matching
   final lookupKey = domain.isNotEmpty ? domain : displayName;
+  final cleanLookupKey = lookupKey
+      .replaceFirst(RegExp(r'^www\.', caseSensitive: false), '')
+      .toLowerCase()
+      .trim();
+
   final site = allSites.cast<WebsiteBasicDetail?>().firstWhere(
-            (s) => s!.domain == lookupKey || s.displayName == lookupKey,
+            (s) =>
+                s!.domain.toLowerCase().trim() == cleanLookupKey ||
+                s.domain == lookupKey ||
+                s.displayName.toLowerCase().trim() == cleanLookupKey ||
+                s.displayName == lookupKey,
             orElse: () => null,
           ) ??
       WebsiteBasicDetail(
@@ -150,23 +152,53 @@ Future<void> showWebsiteDetailsDialog(
         visits: 0,
       );
 
-  // Build weekly trend map from history (keyed MM/dd like the desktop does)
+  final targetDomain = site.domain.isNotEmpty ? site.domain : lookupKey;
+
+  // Fetch 14 days of site history (past 7 days for current week, preceding 7 days for comparison)
+  final history = await provider.fetchSiteHistory(targetDomain, days: 14);
+
+  // Split history into current week (last 7 days) and previous week (prior 7 days)
+  final currentWeekHistory =
+      history.length >= 7 ? history.sublist(history.length - 7) : history;
+  final previousWeekHistory = history.length >= 14
+      ? history.sublist(0, history.length - 7)
+      : <({String date, Duration timeSpent, int visits})>[];
+
+  // Build weekly trend map from current week history (keyed MM/dd like desktop does)
   final Map<String, Duration> weeklyDaily = {};
-  for (final entry in history) {
+  int weeklyVisits = 0;
+  Duration weeklyTotal = Duration.zero;
+  int maxVisitsInDay = 0;
+
+  for (final entry in currentWeekHistory) {
     try {
       final parts = entry.date.split('-');
       final key = '${parts[1]}/${parts[2]}'; // YYYY-MM-DD → MM/DD
-      // history gives total web time per day; we use the site's proportion of today
-      // We can only show today's exact value — other days are totals, not per-site.
-      // So we leave the daily trend empty except for today, which avoids misleading data.
-      weeklyDaily[key] = Duration.zero;
+      weeklyDaily[key] = entry.timeSpent;
+      weeklyTotal += entry.timeSpent;
+      weeklyVisits += entry.visits;
+      if (entry.visits > maxVisitsInDay) {
+        maxVisitsInDay = entry.visits;
+      }
     } catch (_) {}
   }
-  // Fill today with the actual value
+
+  // Ensure today's entry has the most up-to-date timeSpent and visits
   final now = DateTime.now();
   final todayKey =
       '${now.month.toString().padLeft(2, '0')}/${now.day.toString().padLeft(2, '0')}';
-  weeklyDaily[todayKey] = site.timeSpent;
+  final currentTodaySpent = weeklyDaily[todayKey] ?? Duration.zero;
+  if (site.timeSpent > currentTodaySpent) {
+    weeklyTotal = weeklyTotal - currentTodaySpent + site.timeSpent;
+    weeklyDaily[todayKey] = site.timeSpent;
+  }
+  final todayVisitsInHistory =
+      currentWeekHistory.isNotEmpty ? currentWeekHistory.last.visits : 0;
+  if (site.visits > todayVisitsInHistory) {
+    final diff = site.visits - todayVisitsInHistory;
+    weeklyVisits += diff;
+    if (site.visits > maxVisitsInDay) maxVisitsInDay = site.visits;
+  }
 
   final sortedDates = _sortedDateKeys(weeklyDaily);
 
@@ -180,6 +212,30 @@ Future<void> showWebsiteDetailsDialog(
     dateToX.putIfAbsent(date, () => xCoord++);
     spots.add(FlSpot(dateToX[date]!, mins));
   }
+
+  // Calculate week-over-week comparison
+  Duration previousPeriodUsage = Duration.zero;
+  for (final entry in previousWeekHistory) {
+    previousPeriodUsage += entry.timeSpent;
+  }
+  final currentPeriodUsage = weeklyTotal;
+  double growthPercentage = 0;
+  if (previousPeriodUsage > Duration.zero) {
+    growthPercentage =
+        ((currentPeriodUsage.inSeconds - previousPeriodUsage.inSeconds) /
+                previousPeriodUsage.inSeconds) *
+            100;
+  }
+
+  final avgDailyUsage = sortedDates.isNotEmpty
+      ? Duration(seconds: weeklyTotal.inSeconds ~/ sortedDates.length)
+      : site.timeSpent;
+  final avgSessionDuration = weeklyVisits > 0
+      ? Duration(seconds: weeklyTotal.inSeconds ~/ weeklyVisits)
+      : Duration.zero;
+  final avgLaunchesPerDay = sortedDates.isNotEmpty
+      ? weeklyVisits / sortedDates.length
+      : weeklyVisits.toDouble();
 
   // Build the data objects AppDetailsDialog expects
   final appSummary = app_summary_data.AppUsageSummary(
@@ -196,7 +252,11 @@ Future<void> showWebsiteDetailsDialog(
         ? (site.timeSpent.inSeconds / site.dailyLimit.inSeconds * 100)
             .clamp(0.0, 100.0)
         : 0.0,
-    trend: app_summary_data.UsageTrend.noData,
+    trend: growthPercentage > 5
+        ? app_summary_data.UsageTrend.increasing
+        : growthPercentage < -5
+            ? app_summary_data.UsageTrend.decreasing
+            : app_summary_data.UsageTrend.stable,
   );
 
   final appBasicDetails = ApplicationBasicDetail(
@@ -218,25 +278,25 @@ Future<void> showWebsiteDetailsDialog(
       monthly: {},
     ),
     hourlyBreakdown: {},
-    categoryUsage: {site.category: site.timeSpent},
+    categoryUsage: {site.category: weeklyTotal},
     usageInsights: UsageInsights(
       mostActiveHours: [],
       longestSession: Duration.zero,
-      averageDailyUsage: site.timeSpent,
+      averageDailyUsage: avgDailyUsage,
     ),
     comparisons: UsageComparisons(
-      currentPeriodUsage: site.timeSpent,
-      previousPeriodUsage: Duration.zero,
-      growthPercentage: 0,
+      currentPeriodUsage: currentPeriodUsage,
+      previousPeriodUsage: previousPeriodUsage,
+      growthPercentage: growthPercentage,
       similarAppsComparison: [],
     ),
     sessionBreakdown: SessionBreakdown(
-      averageSessionDuration: Duration.zero,
+      averageSessionDuration: avgSessionDuration,
       longestSessionDuration: Duration.zero,
       shortestSessionDuration: Duration.zero,
-      totalSessions: site.visits,
-      averageLaunchesPerDay: site.visits.toDouble(),
-      maxLaunchesPerDay: site.visits,
+      totalSessions: weeklyVisits,
+      averageLaunchesPerDay: avgLaunchesPerDay,
+      maxLaunchesPerDay: maxVisitsInDay,
       lastUsedTimestamp: null,
     ),
   );

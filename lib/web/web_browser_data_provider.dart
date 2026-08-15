@@ -260,9 +260,13 @@ class WebBrowserDataProvider {
 
   Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
       String domain, {int days = 7}) async {
-    final result = <({String date, Duration timeSpent, int visits})>[];
+    final cleanTargetDomain = domain
+        .replaceFirst(RegExp(r'^www\.', caseSensitive: false), '')
+        .toLowerCase()
+        .trim();
     final now = DateTime.now();
 
+    final dateEntries = <({DateTime date, String dateKey, String storageKey})>[];
     for (int i = days - 1; i >= 0; i--) {
       final date = now.subtract(Duration(days: i));
       final y = date.year;
@@ -270,24 +274,61 @@ class WebBrowserDataProvider {
       final d = date.day.toString().padLeft(2, '0');
       final dateKey = '$y-$m-$d';
       final storageKey = _storageKey(dateKey);
+      dateEntries.add((date: date, dateKey: dateKey, storageKey: storageKey));
+    }
 
-      final data = await chromeStorageGet([storageKey]);
-      final day = data[storageKey] as Map<String, dynamic>?;
+    final allData = await chromeStorageGet(dateEntries.map((e) => e.storageKey).toList());
+    final result = <({String date, Duration timeSpent, int visits})>[];
+
+    for (final entry in dateEntries) {
+      final day = allData[entry.storageKey];
       if (day == null) {
-        result.add((date: dateKey, timeSpent: Duration.zero, visits: 0));
+        result.add((date: entry.dateKey, timeSpent: Duration.zero, visits: 0));
         continue;
       }
-      final domains = (day['domains'] as List<dynamic>? ?? [])
-          .whereType<Map<String, dynamic>>()
-          .toList();
-      final entry = domains.firstWhere(
-        (d) => d['domain'] == domain,
-        orElse: () => <String, dynamic>{},
-      );
+
+      int seconds = 0;
+      int visits = 0;
+
+      if (day is Map<String, dynamic>) {
+        final domains = day['domains'];
+        if (domains is List) {
+          for (final raw in domains.whereType<Map<String, dynamic>>()) {
+            final rawDomain = (raw['domain'] as String? ?? '')
+                .replaceFirst(RegExp(r'^www\.', caseSensitive: false), '')
+                .toLowerCase()
+                .trim();
+            if (rawDomain == cleanTargetDomain) {
+              seconds += (raw['seconds'] as num?)?.toInt() ?? 0;
+              visits += (raw['visits'] as num?)?.toInt() ?? 0;
+            }
+          }
+        } else if (day.containsKey(cleanTargetDomain)) {
+          final raw = day[cleanTargetDomain];
+          if (raw is Map<String, dynamic>) {
+            seconds = (raw['seconds'] as num?)?.toInt() ?? 0;
+            visits = (raw['visits'] as num?)?.toInt() ?? 0;
+          } else if (raw is num) {
+            seconds = raw.toInt();
+          }
+        }
+      } else if (day is List) {
+        for (final raw in day.whereType<Map<String, dynamic>>()) {
+          final rawDomain = (raw['domain'] as String? ?? '')
+              .replaceFirst(RegExp(r'^www\.', caseSensitive: false), '')
+              .toLowerCase()
+              .trim();
+          if (rawDomain == cleanTargetDomain) {
+            seconds += (raw['seconds'] as num?)?.toInt() ?? 0;
+            visits += (raw['visits'] as num?)?.toInt() ?? 0;
+          }
+        }
+      }
+
       result.add((
-        date: dateKey,
-        timeSpent: Duration(seconds: (entry['seconds'] as num?)?.toInt() ?? 0),
-        visits: (entry['visits'] as num?)?.toInt() ?? 0,
+        date: entry.dateKey,
+        timeSpent: Duration(seconds: seconds),
+        visits: visits,
       ));
     }
     return result;
@@ -296,9 +337,8 @@ class WebBrowserDataProvider {
   // ── Historical data (last N days) ─────────────────────────────────────────
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async {
-    final result = <({String date, Duration totalTime, int siteCount})>[];
     final now = DateTime.now();
-
+    final dateEntries = <({DateTime date, String dateKey, String storageKey})>[];
     for (int i = 0; i < days; i++) {
       final date = now.subtract(Duration(days: i));
       final y = date.year;
@@ -306,20 +346,25 @@ class WebBrowserDataProvider {
       final d = date.day.toString().padLeft(2, '0');
       final dateKey = '$y-$m-$d';
       final storageKey = _storageKey(dateKey);
+      dateEntries.add((date: date, dateKey: dateKey, storageKey: storageKey));
+    }
 
-      final data = await chromeStorageGet([storageKey]);
-      final day = data[storageKey] as Map<String, dynamic>?;
+    final allData = await chromeStorageGet(dateEntries.map((e) => e.storageKey).toList());
+    final result = <({String date, Duration totalTime, int siteCount})>[];
+
+    for (final entry in dateEntries) {
+      final day = allData[entry.storageKey];
       if (day == null) {
-        result.add((date: dateKey, totalTime: Duration.zero, siteCount: 0));
+        result.add((date: entry.dateKey, totalTime: Duration.zero, siteCount: 0));
         continue;
       }
-      final domains = (day['domains'] as List<dynamic>? ?? [])
+      final domains = (day is Map<String, dynamic> ? (day['domains'] as List<dynamic>? ?? []) : [])
           .whereType<Map<String, dynamic>>()
           .toList();
       final total = domains.fold<int>(
         0, (s, d) => s + ((d['seconds'] as num?)?.toInt() ?? 0));
       result.add((
-        date: dateKey,
+        date: entry.dateKey,
         totalTime: Duration(seconds: total),
         siteCount: domains.where((d) => (d['seconds'] as num? ?? 0) > 0).length,
       ));

@@ -235,6 +235,7 @@ class WebTrackingSection extends StatelessWidget {
             description: l10n.idleTimeoutDescription(
               settings.getFormattedIdleTimeout(l10n),
             ),
+            isSubSetting: true,
             control: TimeoutButton(
               value: settings.getFormattedIdleTimeout(l10n),
               onPressed: () => _showIdleTimeoutDialog(context, settings, l10n),
@@ -243,30 +244,32 @@ class WebTrackingSection extends StatelessWidget {
           SettingRow(
             title: l10n.keepActiveDuringMediaTitle,
             description: l10n.keepActiveDuringMediaDescription,
+            isSubSetting: true,
             control: ToggleSwitch(
               checked: settings.ignoreIdleOnMedia,
               onChanged: (v) => settings.updateSetting('ignoreIdleOnMedia', v),
             ),
           ),
-        ],
-        SettingRow(
-          title: l10n.pauseOnWindowBlurTitle,
-          description: l10n.pauseOnWindowBlurDescription,
-          control: ToggleSwitch(
-            checked: settings.pauseOnWindowBlur,
-            onChanged: (v) => settings.updateSetting('pauseOnWindowBlur', v),
-          ),
-        ),
-        if (settings.pauseOnWindowBlur)
           SettingRow(
-            title: l10n.ignoreWindowBlurOnMediaTitle,
-            description: l10n.ignoreWindowBlurOnMediaDescription,
+            title: l10n.pauseOnWindowBlurTitle,
+            description: l10n.pauseOnWindowBlurDescription,
             isSubSetting: true,
             control: ToggleSwitch(
-              checked: settings.ignoreWindowBlurOnMedia,
-              onChanged: (v) => settings.updateSetting('ignoreWindowBlurOnMedia', v),
+              checked: settings.pauseOnWindowBlur,
+              onChanged: (v) => settings.updateSetting('pauseOnWindowBlur', v),
             ),
           ),
+          if (settings.pauseOnWindowBlur)
+            SettingRow(
+              title: l10n.ignoreWindowBlurOnMediaTitle,
+              description: l10n.ignoreWindowBlurOnMediaDescription,
+              isSubSetting: true,
+              control: ToggleSwitch(
+                checked: settings.ignoreWindowBlurOnMedia,
+                onChanged: (v) => settings.updateSetting('ignoreWindowBlurOnMedia', v),
+              ),
+            ),
+        ],
         SettingRow(
           title: l10n.pauseOnTabUnfocusTitle,
           description: l10n.pauseOnTabUnfocusDescription,

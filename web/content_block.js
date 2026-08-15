@@ -538,7 +538,7 @@
     }
     if (msg.type === 'CHECK_MEDIA_PLAYING') {
       const playing = [...document.querySelectorAll('video, audio')]
-        .some(el => !el.paused && !el.ended && el.readyState > 2);
+        .some(el => !el.paused && !el.ended && (el.readyState >= 2 || el.currentTime > 0));
       sendResponse({ playing });
       return true;
     }

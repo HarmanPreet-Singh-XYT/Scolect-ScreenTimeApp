@@ -532,13 +532,46 @@ async function tick() {
     new Promise(r => setTimeout(r, 2000)),
   ]);
 
-  // Skip time accumulation while the user is idle.
-  if (_isIdle) {
-    await refreshAppState();
-    return;
+  // ── Active idle state check on every tick ──────────────────────────────────
+  if (settings.idleDetection) {
+    const threshold = Math.max(
+      IDLE_THRESHOLD_MIN,
+      settings.idleTimeoutSeconds ?? IDLE_THRESHOLD_DEFAULT,
+    );
+    const systemState = await new Promise(resolve => {
+      chrome.idle.queryState(threshold, resolve);
+    });
+
+    if (systemState === 'active') {
+      _isIdle = false;
+    } else {
+      // System is idle or locked — check if media playback bypass is active
+      const ignoreOnMedia = settings.ignoreIdleOnMedia ?? true;
+      const mediaPlaying = ignoreOnMedia ? await _isMediaPlayingInActiveTab() : false;
+      if (mediaPlaying) {
+        _isIdle = false;
+      } else {
+        _isIdle = true;
+        await pauseTracking();
+        await refreshAppState();
+        return;
+      }
+    }
+  } else {
+    _isIdle = false;
   }
 
-  const current = await getActive();
+  let current = await getActive();
+  if (!current && !_isIdle) {
+    let tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    if (!tabs[0]) tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tabs[0]) tabs = await chrome.tabs.query({ active: true });
+    if (tabs[0]?.url) {
+      await startTracking(tabs[0].url, tabs[0].title);
+      current = await getActive();
+    }
+  }
+
   if (!current) {
     await refreshAppState();
     return;
@@ -974,25 +1007,53 @@ async function setupIdleDetection() {
   // Query current idle state so that if the SW restarts while the user is away
   // we don't start counting time immediately. Resolves _idleReadyPromise so
   // tick() knows _isIdle is authoritative and not the default false.
-  chrome.idle.queryState(threshold, state => {
+  chrome.idle.queryState(threshold, async state => {
     _isIdle = state !== 'active';
-    if (_isIdle) pauseTracking().catch(console.error);
+    if (_isIdle) {
+      const ignoreOnMedia = settings.ignoreIdleOnMedia ?? true;
+      const mediaPlaying = ignoreOnMedia ? await _isMediaPlayingInActiveTab() : false;
+      if (mediaPlaying) {
+        _isIdle = false;
+      } else {
+        await pauseTracking().catch(console.error);
+      }
+    }
     if (!_idleReady) { _idleReady = true; _idleReadyResolve(); }
   });
 }
 
 // Returns true if the active tab is producing media (audio output or playing video/audio element).
-// Used to skip idle-pause when the user is watching/listening hands-free (e.g. Netflix, Spotify).
+// Used to skip idle-pause when the user is watching/listening hands-free (e.g. Netflix, Spotify, YouTube).
 // Checks tab.audible first (no message needed), then falls back to DOM query via content script.
 async function _isMediaPlayingInActiveTab() {
   try {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    let tabs = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    if (!tabs[0]) {
+      tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    }
+    if (!tabs[0]) {
+      tabs = await chrome.tabs.query({ active: true });
+    }
     if (!tabs[0]) return false;
-    // tab.audible is true when the tab is actually producing audio output.
-    if (tabs[0].audible) return true;
-    // Fall back to DOM check for silent video (e.g. muted autoplay, paused-but-buffering).
-    const response = await chrome.tabs.sendMessage(tabs[0].id, { type: 'CHECK_MEDIA_PLAYING' });
-    return response?.playing ?? false;
+
+    // 1. Check if any active tab is producing audio (e.g. YouTube video with audio)
+    const audibleTab = tabs.find(t => t.audible);
+    if (audibleTab) return true;
+
+    // 2. Also check if any tab across windows is audible
+    const allAudible = await chrome.tabs.query({ audible: true });
+    if (allAudible.length > 0) return true;
+
+    // 3. Fall back to DOM check for playing video/audio elements in active tab
+    for (const tab of tabs) {
+      try {
+        const response = await chrome.tabs.sendMessage(tab.id, { type: 'CHECK_MEDIA_PLAYING' });
+        if (response?.playing) return true;
+      } catch {
+        // Tab not ready or restricted page
+      }
+    }
+    return false;
   } catch {
     // Content script not injected (e.g. chrome:// page) or tab not ready.
     return false;
@@ -1045,7 +1106,7 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   if (!tab.url) return;
 
   if (
-    info.status === 'complete' &&
+    (info.status === 'complete' || info.url) &&
     !tab.url.startsWith(chrome.runtime.getURL('')) &&
     !tab.url.startsWith('chrome-extension://') &&
     !tab.url.startsWith('moz-extension://')
@@ -1058,7 +1119,7 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
     }
   }
 
-  if (info.status === 'complete' && tab.active) {
+  if ((info.status === 'complete' || info.url) && tab.active) {
     startTracking(tab.url, tab.title).catch(console.error);
   }
 });
@@ -1071,7 +1132,7 @@ chrome.tabs.onRemoved.addListener(() => {
 
 chrome.windows.onFocusChanged.addListener(async windowId => {
   const settings = await getSettings();
-  const pauseOnBlur = settings.pauseOnWindowBlur ?? true;
+  const pauseOnBlur = settings.pauseOnWindowBlur ?? false;
   if (windowId === chrome.windows.WINDOW_ID_NONE) {
     if (pauseOnBlur) {
       // Don't pause if media (video/audio) is active and media bypass is enabled
@@ -1083,7 +1144,7 @@ chrome.windows.onFocusChanged.addListener(async windowId => {
     }
   } else {
     chrome.tabs.query({ active: true, windowId }, tabs => {
-      if (tabs[0]?.url) startTracking(tabs[0].url).catch(console.error);
+      if (tabs[0]?.url) startTracking(tabs[0].url, tabs[0].title).catch(console.error);
     });
   }
 });

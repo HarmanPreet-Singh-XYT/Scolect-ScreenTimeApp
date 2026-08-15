@@ -51,7 +51,7 @@ class ExtensionSettings {
   ExtensionMode get mode => ExtensionMode.standalone;
   String get desktopUrl => 'http://localhost:46000';
 
-  bool get pauseOnWindowBlur => true;
+  bool get pauseOnWindowBlur => false;
   bool get pauseOnTabUnfocus => false;
   bool get ignoreIdleOnMedia => true;
   bool get ignoreWindowBlurOnMedia => true;

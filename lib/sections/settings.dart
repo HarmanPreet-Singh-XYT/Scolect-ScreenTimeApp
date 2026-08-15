@@ -116,7 +116,7 @@ class SettingsProvider extends ChangeNotifier {
   String _trackingMode = TrackingModeOptions.defaultMode;
   bool _idleDetectionEnabled = true;
   int _idleTimeout = IdleTimeoutOptions.defaultTimeout;
-  bool _pauseOnWindowBlur = true;
+  bool _pauseOnWindowBlur = false;
   bool _pauseOnTabUnfocus = false;
   bool _ignoreIdleOnMedia = true;
   bool _ignoreWindowBlurOnMedia = true;
@@ -204,7 +204,7 @@ class SettingsProvider extends ChangeNotifier {
     _idleTimeout = _settingsManager.getSetting('tracking.idleTimeout') ??
         IdleTimeoutOptions.defaultTimeout;
     _pauseOnWindowBlur =
-        _settingsManager.getSetting('tracking.pauseOnWindowBlur') ?? true;
+        _settingsManager.getSetting('tracking.pauseOnWindowBlur') ?? false;
     _pauseOnTabUnfocus =
         _settingsManager.getSetting('tracking.pauseOnTabUnfocus') ?? false;
     _ignoreIdleOnMedia =

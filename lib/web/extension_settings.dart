@@ -107,7 +107,7 @@ class ExtensionSettings {
   bool _overallLimitEnabled = false;
   bool _idleDetection = true;
   int _idleTimeoutSeconds = 60;
-  bool _pauseOnWindowBlur = true;
+  bool _pauseOnWindowBlur = false;
   bool _pauseOnTabUnfocus = false;
   bool _ignoreIdleOnMedia = true;
   bool _ignoreWindowBlurOnMedia = true;
@@ -134,7 +134,7 @@ class ExtensionSettings {
     _overallLimitEnabled = raw['overallLimitEnabled'] as bool? ?? false;
     _idleDetection = raw['idleDetection'] as bool? ?? true;
     _idleTimeoutSeconds = raw['idleTimeoutSeconds'] as int? ?? 60;
-    _pauseOnWindowBlur = raw['pauseOnWindowBlur'] as bool? ?? true;
+    _pauseOnWindowBlur = raw['pauseOnWindowBlur'] as bool? ?? false;
     _pauseOnTabUnfocus = raw['pauseOnTabUnfocus'] as bool? ?? false;
     _ignoreIdleOnMedia = raw['ignoreIdleOnMedia'] as bool? ?? true;
     _ignoreWindowBlurOnMedia = raw['ignoreWindowBlurOnMedia'] as bool? ?? true;
@@ -259,7 +259,7 @@ class ExtensionSettings {
     _overallLimitEnabled = false;
     _idleDetection = true;
     _idleTimeoutSeconds = 60;
-    _pauseOnWindowBlur = true;
+    _pauseOnWindowBlur = false;
     _pauseOnTabUnfocus = false;
     _ignoreIdleOnMedia = true;
     _ignoreWindowBlurOnMedia = true;
@@ -272,7 +272,7 @@ class ExtensionSettings {
         'overallLimitEnabled': false,
         'idleDetection': true,
         'idleTimeoutSeconds': 60,
-        'pauseOnWindowBlur': true,
+        'pauseOnWindowBlur': false,
         'pauseOnTabUnfocus': false,
         'ignoreIdleOnMedia': true,
         'ignoreWindowBlurOnMedia': true,

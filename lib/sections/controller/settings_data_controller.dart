@@ -131,7 +131,7 @@ class SettingsManager {
   static final bool _isMacOS = PlatformUtils.isMacOS;
 
   Map<String, String> versionInfo = {
-    "version": "2.2.2",
+    "version": "2.2.3",
     "type": "Stable Build",
   };
 
@@ -180,6 +180,7 @@ class SettingsManager {
           "mode": TrackingModeOptions.defaultMode,
           "idleDetection": true,
           "idleTimeout": IdleTimeoutOptions.defaultTimeout,
+          "pauseOnWindowBlur": false,
           "monitorAudio": true, // re-enabled in 2.0.9 (crash fixed)
           "monitorControllers": false, // disabled — crashes
           "monitorHIDDevices": false, // disabled — crashes
