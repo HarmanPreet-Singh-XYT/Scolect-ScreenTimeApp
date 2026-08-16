@@ -1,4 +1,4 @@
-import 'package:auto_updater/auto_updater.dart';
+import 'package:screentime/utils/auto_updater_helper.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';

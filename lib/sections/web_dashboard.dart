@@ -450,7 +450,7 @@ class _WebTitleBar extends StatelessWidget {
             ),
             onPressed: onToggleSidebar,
             style: ButtonStyle(
-              backgroundColor: ButtonState.all(Colors.transparent),
+              backgroundColor: WidgetStateProperty.all(Colors.transparent),
             ),
           ),
           const SizedBox(width: 12),

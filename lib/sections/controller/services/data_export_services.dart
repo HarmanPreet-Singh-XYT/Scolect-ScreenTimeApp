@@ -531,7 +531,7 @@ class DataExportService {
     if (PlatformUtils.isMacOS) {
       // On macOS, let user choose location via save dialog
       try {
-        final String? outputPath = await FilePicker.platform.saveFile(
+        final String? outputPath = await FilePicker.saveFile(
           dialogTitle: 'Save Backup',
           fileName: fileName,
           allowedExtensions: ['stbackup'],
@@ -584,7 +584,7 @@ class DataExportService {
 
   /// Pick a file for import
   Future<String?> _pickImportFile() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['stbackup', 'json'],
       allowMultiple: false,

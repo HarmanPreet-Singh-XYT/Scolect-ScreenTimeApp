@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:fluent_ui/fluent_ui.dart' hide FilePicker;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -7,7 +7,7 @@ import 'package:screentime/sections/widgets/Settings/theme_customization_model.d
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:screentime/main.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_picker/file_picker.dart' as fp;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -364,10 +364,10 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       final file = File('${dir.path}/$fileName')..writeAsStringSync(data);
       await Share.shareXFiles([XFile(file.path)], subject: 'Theme Export');
     } else {
-      final outputPath = await FilePicker.platform.saveFile(
+      final outputPath = await fp.FilePicker.saveFile(
         dialogTitle: 'Save JSON file',
         fileName: fileName,
-        type: FileType.custom,
+        type: fp.FileType.custom,
         allowedExtensions: ['json'],
       );
       if (outputPath == null) throw Exception('Save cancelled');
@@ -376,8 +376,8 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
   }
 
   Future<String?> _loadThemeFromFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
+    final result = await fp.FilePicker.pickFiles(
+      type: fp.FileType.custom,
       allowedExtensions: ['json'],
       withData: true,
     );

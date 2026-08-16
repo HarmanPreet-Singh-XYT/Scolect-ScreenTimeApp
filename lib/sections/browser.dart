@@ -571,7 +571,7 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                       );
                     },
                     style: ButtonStyle(
-                      backgroundColor: ButtonState.all(theme.accentColor.withValues(alpha: 0.15)),
+                      backgroundColor: WidgetStateProperty.all(theme.accentColor.withValues(alpha: 0.15)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

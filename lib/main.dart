@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:auto_updater/auto_updater.dart';
+import 'package:screentime/utils/auto_updater_helper.dart';
 // import 'package:sentry_flutter/sentry_flutter.dart';
 // import 'utils/sentry_service.dart';
 import 'package:fluent_ui/fluent_ui.dart';

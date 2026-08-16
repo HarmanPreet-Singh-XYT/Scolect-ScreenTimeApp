@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  auto_updater_windows
   bitsdojo_window_windows
   flutter_localization
   just_audio_windows
