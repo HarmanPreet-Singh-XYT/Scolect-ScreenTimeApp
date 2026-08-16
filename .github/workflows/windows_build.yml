@@ -1,0 +1,38 @@
+name: Build Windows MSIX
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows x64 MSIX
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Enable Windows Desktop Support
+        run: flutter config --enable-windows-desktop
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Windows (Release x64)
+        run: flutter build windows --release
+
+      - name: Create MSIX Package
+        run: dart run msix:create
+
+      - name: Upload MSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scolect-windows-msix
+          path: build/windows/x64/runner/Release/*.msix
+          if-no-files-found: error
