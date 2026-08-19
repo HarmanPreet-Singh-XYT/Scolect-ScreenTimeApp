@@ -24,6 +24,7 @@ class WebsiteBasicDetail {
   final Duration dailyLimit;
   final bool limitStatus;
   final int visits;
+  final bool isPrivate;
 
   WebsiteBasicDetail({
     required this.domain,
@@ -36,6 +37,7 @@ class WebsiteBasicDetail {
     required this.dailyLimit,
     required this.limitStatus,
     required this.visits,
+    this.isPrivate = false,
   }) : formattedTimeSpent = timeSpent.toHourMinuteFormat();
 
   /// Human-readable name: siteName if captured, otherwise the bare domain.
@@ -58,6 +60,12 @@ class WebsiteBasicDetail {
   bool matchesProductivity(String filter) => switch (filter) {
         'productive' => isProductive,
         'unproductive' => !isProductive,
+        _ => true,
+      };
+
+  bool matchesVisibility(String filter) => switch (filter) {
+        'visible' => !isHidden,
+        'hidden' => isHidden,
         _ => true,
       };
 }
@@ -146,6 +154,7 @@ class BrowserDataProvider {
         dailyLimit: metadata.dailyLimit,
         limitStatus: metadata.limitStatus,
         visits: record?.openCount ?? 0,
+        isPrivate: metadata.isPrivate,
       ));
     }
 
@@ -296,6 +305,7 @@ class BrowserDataProvider {
     bool? isVisible,
     Duration? dailyLimit,
     String? siteName,
+    bool? isPrivate,
   }) async {
     await _ensureInitialized();
     return _dataStore.updateAppMetadata(
@@ -306,6 +316,7 @@ class BrowserDataProvider {
       isVisible: isVisible,
       dailyLimit: dailyLimit,
       siteName: siteName,
+      isPrivate: isPrivate,
     );
   }
 }
@@ -351,6 +362,7 @@ class _WebDelegatingProvider extends BrowserDataProvider {
     bool? isVisible,
     Duration? dailyLimit,
     String? siteName,
+    bool? isPrivate,
   }) =>
       _web.updateWebsiteMetadata(
         domain,
@@ -360,5 +372,6 @@ class _WebDelegatingProvider extends BrowserDataProvider {
         isVisible: isVisible,
         dailyLimit: dailyLimit,
         siteName: siteName,
+        isPrivate: isPrivate,
       );
 }

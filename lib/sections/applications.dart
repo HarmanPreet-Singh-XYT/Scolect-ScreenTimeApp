@@ -14,6 +14,10 @@ import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
 import './widgets/sortable_header.dart';
 import 'package:screentime/utils/responsive.dart';
+import 'controller/services/private_mode_service.dart';
+import '../web/web_private_mode_service.dart'
+    if (dart.library.io) '../web/web_private_mode_service_stub.dart';
+import 'UI sections/Privacy/private_mode_unlock_dialog.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -26,6 +30,7 @@ const _kGreenColor = Color(0xFF10B981);
 const _kBlueColor = Color(0xFF3B82F6);
 const _kPurpleColor = Color(0xFF8B5CF6);
 const _kAmberColor = Color(0xFFF59E0B);
+const _kRedColor = Color(0xFFEF4444);
 
 // ─── Data Model ───────────────────────────────────────────────────────────────
 
@@ -37,6 +42,7 @@ class AppViewModel {
   final Duration screenTimeDuration;
   bool isTracking;
   bool isHidden;
+  bool isPrivate;
   final bool isProductive;
   final Duration dailyLimit;
   final bool limitStatus;
@@ -49,6 +55,7 @@ class AppViewModel {
     required this.screenTimeDuration,
     required this.isTracking,
     required this.isHidden,
+    this.isPrivate = false,
     required this.isProductive,
     required this.dailyLimit,
     required this.limitStatus,
@@ -63,6 +70,7 @@ class AppViewModel {
       screenTimeDuration: detail.screenTime,
       isTracking: detail.isTracking,
       isHidden: detail.isHidden,
+      isPrivate: detail.isPrivate,
       isProductive: detail.isProductive,
       dailyLimit: detail.dailyLimit,
       limitStatus: detail.limitStatus,
@@ -88,6 +96,11 @@ class AppViewModel {
         "hidden" => isHidden,
         _ => true,
       };
+
+  /// Private items are excluded from normal-mode lists unless Private Mode
+  /// is currently unlocked.
+  bool matchesPrivate(bool privateModeUnlocked) =>
+      !isPrivate || privateModeUnlocked;
 }
 
 // ─── Main Widget ──────────────────────────────────────────────────────────────
@@ -120,11 +133,55 @@ class _ApplicationsState extends State<Applications>
 
   SettingsProvider? _settingsProvider;
 
+  bool _privateModeUnlocked = false;
+  bool _privateModeSetUpWeb = false;
+
+  void _onPrivateModeChanged() {
+    final unlocked =
+        kIsWeb ? WebPrivateModeService().isUnlocked : PrivateModeController().isUnlocked;
+    if (mounted && unlocked != _privateModeUnlocked) {
+      setState(() => _privateModeUnlocked = unlocked);
+    }
+  }
+
+  Future<void> _togglePrivateItemsVisibility() async {
+    if (_privateModeUnlocked) {
+      if (kIsWeb) {
+        WebPrivateModeService().lock();
+      } else {
+        PrivateModeController().lock();
+      }
+      setState(() => _privateModeUnlocked = false);
+      return;
+    }
+
+    final unlocked = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PrivateModeUnlockDialog(
+        onUnlock: (password) => kIsWeb
+            ? WebPrivateModeService().unlock(password)
+            : Future.value(PrivateModeController().unlock(password)),
+      ),
+    );
+    if (unlocked == true && mounted) {
+      setState(() => _privateModeUnlocked = true);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _initAnimation();
     _loadFilterPreferences();
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+      WebPrivateModeService().isSetUp.then((setUp) {
+        if (mounted) setState(() => _privateModeSetUpWeb = setUp);
+      });
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
@@ -243,6 +300,7 @@ class _ApplicationsState extends State<Applications>
             app.hasData &&
             app.matchesTracking(_trackingFilter) &&
             app.matchesVisibility(_visibilityFilter) &&
+            app.matchesPrivate(_privateModeUnlocked) &&
             app.matchesCategory(_selectedCategory) &&
             app.matchesSearch(_searchValue))
         .toList();
@@ -286,6 +344,11 @@ class _ApplicationsState extends State<Applications>
     _debounce?.cancel();
     _animationController.dispose();
     _settingsProvider?.removeListener(_loadData);
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
     super.dispose();
   }
 
@@ -342,16 +405,51 @@ class _ApplicationsState extends State<Applications>
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.only(left: 4, bottom: 8),
-                child: Text(
-                  kIsWeb
-                      ? '${filteredApps.length} websites'
-                      : l10n.applicationCount(filteredApps.length),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color:
-                        theme.typography.caption?.color?.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w500,
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      kIsWeb
+                          ? '${filteredApps.length} websites'
+                          : l10n.applicationCount(filteredApps.length),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: theme.typography.caption?.color
+                            ?.withValues(alpha: 0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    if ((kIsWeb
+                        ? _privateModeSetUpWeb
+                        : PrivateModeController().isSetUp)) ...[
+                      const SizedBox(width: 12),
+                      Button(
+                        style: ButtonStyle(
+                          padding: WidgetStatePropertyAll(
+                              const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6)),
+                        ),
+                        onPressed: _togglePrivateItemsVisibility,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _privateModeUnlocked
+                                  ? FluentIcons.unlock
+                                  : FluentIcons.lock,
+                              size: 12,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              _privateModeUnlocked
+                                  ? l10n.privateModeHideAction
+                                  : l10n.privateModeShowAction,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
               Expanded(
@@ -1547,6 +1645,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
   late bool _isProductive;
   late bool _isTracking;
   late bool _isVisible;
+  late bool _isPrivate;
   late bool _limitStatus;
   late int _limitHours;
   late int _limitMinutes;
@@ -1562,6 +1661,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
     _isProductive = app.isProductive;
     _isTracking = app.isTracking;
     _isVisible = !app.isHidden;
+    _isPrivate = app.isPrivate;
     _limitStatus = app.limitStatus;
     _limitHours = app.dailyLimit.inHours;
     _limitMinutes = app.dailyLimit.inMinutes.remainder(60);
@@ -1599,6 +1699,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
         isTracking: _isTracking,
         dailyLimit: effectiveLimit,
         siteName: _siteNameController.text.trim(),
+        isPrivate: _isPrivate,
       );
     } else {
       await AppDataStore().updateAppMetadata(
@@ -1609,6 +1710,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
         isVisible: _isVisible,
         dailyLimit: effectiveLimit,
         limitStatus: _limitStatus,
+        isPrivate: _isPrivate,
       );
     }
 
@@ -1714,6 +1816,14 @@ class _EditAppDialogState extends State<_EditAppDialog> {
                     value: _isVisible,
                     onChanged: (v) => setState(() => _isVisible = v),
                     activeColor: _kPurpleColor,
+                  ),
+                  const SizedBox(height: 8),
+                  _DialogToggle(
+                    icon: FluentIcons.lock,
+                    label: l10n.markAsPrivate,
+                    value: _isPrivate,
+                    onChanged: (v) => setState(() => _isPrivate = v),
+                    activeColor: _kRedColor,
                   ),
                 ],
               ),

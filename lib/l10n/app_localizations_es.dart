@@ -3869,4 +3869,78 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · rastreador de tiempo de pantalla';
+
+  @override
+  String get markAsPrivate => 'Privado';
+
+  @override
+  String get privateModeUnlockTitle => 'Desbloquear modo privado';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Contraseña';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'Confirmar contraseña';
+
+  @override
+  String get privateModeIncorrectPassword => 'Contraseña incorrecta';
+
+  @override
+  String get privateModeUnlockAction => 'Desbloquear';
+
+  @override
+  String get privateModeShowAction => 'Mostrar elementos privados';
+
+  @override
+  String get privateModeHideAction => 'Ocultar elementos privados';
+
+  @override
+  String get privateModeSectionTitle => 'Modo privado';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Establecer contraseña';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Cambiar contraseña';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Establece una contraseña para ocultar las aplicaciones y sitios web marcados como privados hasta que se desbloqueen.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Establecer contraseña';
+
+  @override
+  String get privateModeChangePasswordAction => 'Cambiar contraseña';
+
+  @override
+  String get privateModePasswordEmpty => 'La contraseña no puede estar vacía';
+
+  @override
+  String get privateModePasswordMismatch => 'Las contraseñas no coinciden';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Incluir elementos privados en los totales';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'Al activarse, las aplicaciones y sitios web privados seguirán contándose en los totales diarios incluso mientras estén ocultos.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Bloqueo automático tras';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'El modo privado se vuelve a bloquear automáticamente después de esta cantidad de minutos.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Restablecer contraseña';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Borra tu contraseña del modo privado. Los elementos ya marcados como privados permanecerán privados hasta que establezcas una nueva contraseña; no es posible recuperar la contraseña.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Restablecer contraseña';
 }

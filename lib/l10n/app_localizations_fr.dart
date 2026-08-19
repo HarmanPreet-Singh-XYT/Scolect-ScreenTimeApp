@@ -3885,4 +3885,81 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · suivi du temps d\'écran';
+
+  @override
+  String get markAsPrivate => 'Privé';
+
+  @override
+  String get privateModeUnlockTitle => 'Déverrouiller le mode privé';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Mot de passe';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder =>
+      'Confirmer le mot de passe';
+
+  @override
+  String get privateModeIncorrectPassword => 'Mot de passe incorrect';
+
+  @override
+  String get privateModeUnlockAction => 'Déverrouiller';
+
+  @override
+  String get privateModeShowAction => 'Afficher les éléments privés';
+
+  @override
+  String get privateModeHideAction => 'Masquer les éléments privés';
+
+  @override
+  String get privateModeSectionTitle => 'Mode privé';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Définir un mot de passe';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Modifier le mot de passe';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Définissez un mot de passe pour masquer les applications et sites Web marqués comme privés jusqu\'au déverrouillage.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Définir le mot de passe';
+
+  @override
+  String get privateModeChangePasswordAction => 'Modifier le mot de passe';
+
+  @override
+  String get privateModePasswordEmpty =>
+      'Le mot de passe ne peut pas être vide';
+
+  @override
+  String get privateModePasswordMismatch =>
+      'Les mots de passe ne correspondent pas';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Inclure les éléments privés dans les totaux';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'Lorsque cette option est activée, les applications et sites Web privés continuent d\'être pris en compte dans vos totaux quotidiens, même masqués.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Verrouillage automatique après';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'Le mode privé se reverrouille automatiquement après ce nombre de minutes.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Efface votre mot de passe du mode privé. Les éléments déjà marqués comme privés restent privés jusqu\'à ce que vous définissiez un nouveau mot de passe — aucune récupération de mot de passe n\'est possible.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Réinitialiser le mot de passe';
 }

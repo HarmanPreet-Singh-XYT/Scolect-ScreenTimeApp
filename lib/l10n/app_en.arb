@@ -2356,5 +2356,97 @@
     }
   },
   "blockOverlayUnblockButton": "Unblock",
-  "blockOverlayFooter": "Scolect · screen time tracker"
+  "blockOverlayFooter": "Scolect · screen time tracker",
+  "markAsPrivate": "Private",
+  "@markAsPrivate": {
+    "description": "TRANSLATE: Toggle label in the app/site edit dialog to mark an item as private (password-gated)"
+  },
+  "privateModeUnlockTitle": "Unlock Private Mode",
+  "@privateModeUnlockTitle": {
+    "description": "TRANSLATE: Title of the password prompt dialog shown to reveal private items"
+  },
+  "privateModePasswordPlaceholder": "Password",
+  "@privateModePasswordPlaceholder": {
+    "description": "TRANSLATE: Placeholder text for the password input field"
+  },
+  "privateModeConfirmPasswordPlaceholder": "Confirm password",
+  "@privateModeConfirmPasswordPlaceholder": {
+    "description": "TRANSLATE: Placeholder text for the confirm-password input field when setting a new password"
+  },
+  "privateModeIncorrectPassword": "Incorrect password",
+  "@privateModeIncorrectPassword": {
+    "description": "TRANSLATE: Error message shown when the entered private mode password is wrong"
+  },
+  "privateModeUnlockAction": "Unlock",
+  "@privateModeUnlockAction": {
+    "description": "TRANSLATE: Button label to submit the password and unlock private mode"
+  },
+  "privateModeShowAction": "Show private",
+  "@privateModeShowAction": {
+    "description": "TRANSLATE: Button label to reveal private items (triggers the unlock prompt)"
+  },
+  "privateModeHideAction": "Hide private",
+  "@privateModeHideAction": {
+    "description": "TRANSLATE: Button label to re-lock and hide private items"
+  },
+  "privateModeSectionTitle": "Private Mode",
+  "@privateModeSectionTitle": {
+    "description": "TRANSLATE: Title of the Private Mode settings card"
+  },
+  "privateModeSetPasswordTitle": "Set Password",
+  "@privateModeSetPasswordTitle": {
+    "description": "TRANSLATE: Title/row label shown when no private mode password has been set yet"
+  },
+  "privateModeChangePasswordTitle": "Change Password",
+  "@privateModeChangePasswordTitle": {
+    "description": "TRANSLATE: Title/row label shown when a private mode password already exists and can be changed"
+  },
+  "privateModePasswordDescription": "Set a password to hide apps and websites marked private until unlocked.",
+  "@privateModePasswordDescription": {
+    "description": "TRANSLATE: Description under the set/change password setting row"
+  },
+  "privateModeSetPasswordAction": "Set Password",
+  "@privateModeSetPasswordAction": {
+    "description": "TRANSLATE: Button label to open the set-password dialog"
+  },
+  "privateModeChangePasswordAction": "Change Password",
+  "@privateModeChangePasswordAction": {
+    "description": "TRANSLATE: Button label to open the change-password dialog"
+  },
+  "privateModePasswordEmpty": "Password cannot be empty",
+  "@privateModePasswordEmpty": {
+    "description": "TRANSLATE: Validation error when submitting an empty password"
+  },
+  "privateModePasswordMismatch": "Passwords do not match",
+  "@privateModePasswordMismatch": {
+    "description": "TRANSLATE: Validation error when password and confirm-password fields differ"
+  },
+  "privateModeIncludeInTotalsTitle": "Include Private Items in Totals",
+  "@privateModeIncludeInTotalsTitle": {
+    "description": "TRANSLATE: Setting row title for the toggle controlling whether private items count toward daily totals"
+  },
+  "privateModeIncludeInTotalsDescription": "When on, private apps and websites still count toward your daily totals even while hidden.",
+  "@privateModeIncludeInTotalsDescription": {
+    "description": "TRANSLATE: Description under the include-in-totals toggle"
+  },
+  "privateModeSessionTimeoutTitle": "Auto-Lock After",
+  "@privateModeSessionTimeoutTitle": {
+    "description": "TRANSLATE: Setting row title for the private mode session auto-relock timeout picker"
+  },
+  "privateModeSessionTimeoutDescription": "Private Mode automatically re-locks after this many minutes.",
+  "@privateModeSessionTimeoutDescription": {
+    "description": "TRANSLATE: Description under the auto-lock timeout setting"
+  },
+  "privateModeResetPasswordTitle": "Reset Password",
+  "@privateModeResetPasswordTitle": {
+    "description": "TRANSLATE: Setting row title and confirmation dialog title for resetting/clearing the private mode password"
+  },
+  "privateModeResetPasswordDescription": "Clears your Private Mode password. Items already marked private stay private until you set a new password — there is no password recovery.",
+  "@privateModeResetPasswordDescription": {
+    "description": "TRANSLATE: Description/warning text explaining what resetting the password does, shown both under the setting row and in the confirmation dialog"
+  },
+  "privateModeResetPasswordAction": "Reset Password",
+  "@privateModeResetPasswordAction": {
+    "description": "TRANSLATE: Button label to confirm resetting the private mode password"
+  }
 }

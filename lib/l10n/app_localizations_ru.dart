@@ -3854,4 +3854,78 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · трекер экранного времени';
+
+  @override
+  String get markAsPrivate => 'Личное';
+
+  @override
+  String get privateModeUnlockTitle => 'Разблокировать приватный режим';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Пароль';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'Подтвердите пароль';
+
+  @override
+  String get privateModeIncorrectPassword => 'Неверный пароль';
+
+  @override
+  String get privateModeUnlockAction => 'Разблокировать';
+
+  @override
+  String get privateModeShowAction => 'Показать скрытые';
+
+  @override
+  String get privateModeHideAction => 'Скрыть личные';
+
+  @override
+  String get privateModeSectionTitle => 'Приватный режим';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Установить пароль';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Изменить пароль';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Установите пароль, чтобы скрыть приложения и сайты, отмеченные как личные, до момента разблокировки.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Установить пароль';
+
+  @override
+  String get privateModeChangePasswordAction => 'Изменить пароль';
+
+  @override
+  String get privateModePasswordEmpty => 'Пароль не может быть пустым';
+
+  @override
+  String get privateModePasswordMismatch => 'Пароли не совпадают';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Учитывать личные элементы в итогах';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'Если включено, скрытые приложения и сайты по-прежнему учитываются в общей суточной статистике.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Автоблокировка через';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'Приватный режим автоматически блокируется через указанное количество минут.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Сбросить пароль';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Сбрасывает пароль приватного режима. Ранее скрытые элементы останутся недоступными, пока вы не зададите новый пароль — восстановление пароля невозможно.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Сбросить пароль';
 }

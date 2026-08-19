@@ -3,7 +3,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/sortable_header.dart';
-import 'package:screentime/utils/responsive.dart';
 import './reusable.dart' as rub;
 import './approw.dart';
 
@@ -110,7 +109,13 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isMobile = Responsive.isMobileWidth(constraints.maxWidth);
+        // This card's table row is flex-based (no hardcoded column
+        // widths), so it can render comfortably narrower than the global
+        // 700px mobile threshold — using that threshold here made the
+        // table fall back to mobile cards even inside a wide desktop
+        // window, since this card is one column of a multi-column page
+        // layout rather than the full page width.
+        final isMobile = constraints.maxWidth < 520;
 
         return rub.Card(
           padding: EdgeInsets.zero,

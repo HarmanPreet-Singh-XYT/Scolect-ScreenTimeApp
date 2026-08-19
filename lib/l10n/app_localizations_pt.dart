@@ -3847,4 +3847,78 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · rastreador de tempo de tela';
+
+  @override
+  String get markAsPrivate => 'Privado';
+
+  @override
+  String get privateModeUnlockTitle => 'Desbloquear Modo Privado';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Senha';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'Confirmar senha';
+
+  @override
+  String get privateModeIncorrectPassword => 'Senha incorreta';
+
+  @override
+  String get privateModeUnlockAction => 'Desbloquear';
+
+  @override
+  String get privateModeShowAction => 'Mostrar itens privados';
+
+  @override
+  String get privateModeHideAction => 'Ocultar itens privados';
+
+  @override
+  String get privateModeSectionTitle => 'Modo Privado';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Definir senha';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Alterar senha';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Defina uma senha para ocultar aplicativos e sites marcados como privados até que sejam desbloqueados.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Definir senha';
+
+  @override
+  String get privateModeChangePasswordAction => 'Alterar senha';
+
+  @override
+  String get privateModePasswordEmpty => 'A senha não pode ficar em branco';
+
+  @override
+  String get privateModePasswordMismatch => 'As senhas não coincidem';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Incluir itens privados nos totais';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'Quando ativado, os aplicativos e sites privados continuam contando para os totais diários, mesmo enquanto estiverem ocultos.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Bloquear automaticamente após';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'O Modo Privado é bloqueado automaticamente após esta quantidade de minutos.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Redefinir senha';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Limpa sua senha do Modo Privado. Os itens já marcados como privados permanecerão privados até que você defina uma nova senha — não há recuperação de senha.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Redefinir senha';
 }

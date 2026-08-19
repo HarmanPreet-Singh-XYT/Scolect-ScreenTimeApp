@@ -3817,4 +3817,78 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · screen time tracker';
+
+  @override
+  String get markAsPrivate => 'Private';
+
+  @override
+  String get privateModeUnlockTitle => 'Unlock Private Mode';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Password';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'Confirm password';
+
+  @override
+  String get privateModeIncorrectPassword => 'Incorrect password';
+
+  @override
+  String get privateModeUnlockAction => 'Unlock';
+
+  @override
+  String get privateModeShowAction => 'Show private';
+
+  @override
+  String get privateModeHideAction => 'Hide private';
+
+  @override
+  String get privateModeSectionTitle => 'Private Mode';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Set Password';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Change Password';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Set a password to hide apps and websites marked private until unlocked.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Set Password';
+
+  @override
+  String get privateModeChangePasswordAction => 'Change Password';
+
+  @override
+  String get privateModePasswordEmpty => 'Password cannot be empty';
+
+  @override
+  String get privateModePasswordMismatch => 'Passwords do not match';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Include Private Items in Totals';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'When on, private apps and websites still count toward your daily totals even while hidden.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Auto-Lock After';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'Private Mode automatically re-locks after this many minutes.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Reset Password';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Clears your Private Mode password. Items already marked private stay private until you set a new password — there is no password recovery.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Reset Password';
 }

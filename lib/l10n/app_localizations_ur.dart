@@ -3769,4 +3769,78 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · اسکرین ٹائم ٹریکر';
+
+  @override
+  String get markAsPrivate => 'نجی';
+
+  @override
+  String get privateModeUnlockTitle => 'پرائیویٹ موڈ ان لاک کریں';
+
+  @override
+  String get privateModePasswordPlaceholder => 'پاس ورڈ';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'پاس ورڈ کی تصدیق کریں';
+
+  @override
+  String get privateModeIncorrectPassword => 'غلط پاس ورڈ';
+
+  @override
+  String get privateModeUnlockAction => 'ان لاک کریں';
+
+  @override
+  String get privateModeShowAction => 'نجی آئٹمز دکھائیں';
+
+  @override
+  String get privateModeHideAction => 'نجی آئٹمز چھپائیں';
+
+  @override
+  String get privateModeSectionTitle => 'پرائیویٹ موڈ';
+
+  @override
+  String get privateModeSetPasswordTitle => 'پاس ورڈ سیٹ کریں';
+
+  @override
+  String get privateModeChangePasswordTitle => 'پاس ورڈ تبدیل کریں';
+
+  @override
+  String get privateModePasswordDescription =>
+      'ان لاک ہونے تک نجی نشان زد ایپس اور ویب سائٹس کو چھپانے کے لیے پاس ورڈ سیٹ کریں۔';
+
+  @override
+  String get privateModeSetPasswordAction => 'پاس ورڈ سیٹ کریں';
+
+  @override
+  String get privateModeChangePasswordAction => 'پاس ورڈ تبدیل کریں';
+
+  @override
+  String get privateModePasswordEmpty => 'پاس ورڈ خالی نہیں ہو سکتا';
+
+  @override
+  String get privateModePasswordMismatch => 'پاس ورڈ مماثل نہیں ہیں';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'کل اعدادوشمار میں نجی آئٹمز شامل کریں';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'آن ہونے پر، نجی ایپس اور ویب سائٹس چھپی ہونے کے باوجود آپ کے یومیہ ٹوٹل میں شمار ہوں گی۔';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'خودکار لاک برائے';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'پرائیویٹ موڈ اتنے منٹوں کے بعد خود بخود دوبارہ لاک ہو جاتا ہے۔';
+
+  @override
+  String get privateModeResetPasswordTitle => 'پاس ورڈ ری سیٹ کریں';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'یہ آپ کا پرائیویٹ موڈ پاس ورڈ صاف کر دیتا ہے۔ پہلے سے نجی نشان زد آئٹمز نیا پاس ورڈ سیٹ کرنے تک نجی رہیں گے — پاس ورڈ کی بازیابی ممکن نہیں ہے۔';
+
+  @override
+  String get privateModeResetPasswordAction => 'پاس ورڈ ری سیٹ کریں';
 }

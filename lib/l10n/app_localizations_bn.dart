@@ -3786,4 +3786,78 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · স্ক্রিন টাইম ট্র্যাকার';
+
+  @override
+  String get markAsPrivate => 'ব্যক্তিগত';
+
+  @override
+  String get privateModeUnlockTitle => 'প্রাইভেট মোড আনলক করুন';
+
+  @override
+  String get privateModePasswordPlaceholder => 'পাসওয়ার্ড';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'পাসওয়ার্ড নিশ্চিত করুন';
+
+  @override
+  String get privateModeIncorrectPassword => 'ভুল পাসওয়ার্ড';
+
+  @override
+  String get privateModeUnlockAction => 'আনলক করুন';
+
+  @override
+  String get privateModeShowAction => 'ব্যক্তিগত আইটেম দেখান';
+
+  @override
+  String get privateModeHideAction => 'ব্যক্তিগত আইটেম লুকান';
+
+  @override
+  String get privateModeSectionTitle => 'প্রাইভেট মোড';
+
+  @override
+  String get privateModeSetPasswordTitle => 'পাসওয়ার্ড সেট করুন';
+
+  @override
+  String get privateModeChangePasswordTitle => 'পাসওয়ার্ড পরিবর্তন করুন';
+
+  @override
+  String get privateModePasswordDescription =>
+      'আনলক না করা পর্যন্ত ব্যক্তিগত হিসেবে চিহ্নিত অ্যাপ এবং ওয়েবসাইটগুলি লুকিয়ে রাখতে একটি পাসওয়ার্ড সেট করুন।';
+
+  @override
+  String get privateModeSetPasswordAction => 'পাসওয়ার্ড সেট করুন';
+
+  @override
+  String get privateModeChangePasswordAction => 'পাসওয়ার্ড পরিবর্তন করুন';
+
+  @override
+  String get privateModePasswordEmpty => 'পাসওয়ার্ড খালি রাখা যাবে না';
+
+  @override
+  String get privateModePasswordMismatch => 'পাসওয়ার্ড মিলছে না';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'মোট হিসেবে ব্যক্তিগত আইটেম অন্তর্ভুক্ত করুন';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'চালু থাকলে, লুকানো থাকা অবস্থাতেও ব্যক্তিগত অ্যাপ এবং ওয়েবসাইট আপনার দৈনিক মোট হিসেবে গণনা করা হবে।';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'স্বয়ংক্রিয় লক হওয়ার সময়';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'নির্দিষ্ট মিনিট পর প্রাইভেট মোড স্বয়ংক্রিয়ভাবে আবার লক হয়ে যাবে।';
+
+  @override
+  String get privateModeResetPasswordTitle => 'পাসওয়ার্ড রিসেট করুন';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'আপনার প্রাইভেট মোডের পাসওয়ার্ড মুছে ফেলবে। নতুন পাসওয়ার্ড সেট না করা পর্যন্ত ইতোমধ্যে ব্যক্তিগত চিহ্নিত আইটেমগুলো ব্যক্তিগতই থাকবে — পাসওয়ার্ড পুনরুদ্ধারের কোনো সুযোগ নেই।';
+
+  @override
+  String get privateModeResetPasswordAction => 'পাসওয়ার্ড রিসেট করুন';
 }

@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:math' show max;
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart' show DurationFormatter;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
+import 'package:screentime/sections/controller/services/private_mode_service.dart';
+import 'package:screentime/web/web_private_mode_service.dart'
+    if (dart.library.io) 'package:screentime/web/web_private_mode_service_stub.dart';
+import 'package:screentime/sections/UI sections/Privacy/private_mode_unlock_dialog.dart';
 import 'package:screentime/utils/responsive.dart';
 import 'browser_shared.dart';
 
@@ -136,9 +141,53 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
   String _productivityFilter = 'all';
   Timer? _debounce;
 
+  bool _privateModeUnlocked = false;
+  bool _privateModeSetUpWeb = false;
+
+  void _onPrivateModeChanged() {
+    final unlocked =
+        kIsWeb ? WebPrivateModeService().isUnlocked : PrivateModeController().isUnlocked;
+    if (mounted && unlocked != _privateModeUnlocked) {
+      setState(() => _privateModeUnlocked = unlocked);
+    }
+  }
+
+  Future<void> _togglePrivateItemsVisibility() async {
+    if (_privateModeUnlocked) {
+      if (kIsWeb) {
+        WebPrivateModeService().lock();
+      } else {
+        PrivateModeController().lock();
+      }
+      setState(() => _privateModeUnlocked = false);
+      return;
+    }
+
+    final unlocked = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PrivateModeUnlockDialog(
+        onUnlock: (password) => kIsWeb
+            ? WebPrivateModeService().unlock(password)
+            : Future.value(PrivateModeController().unlock(password)),
+      ),
+    );
+    if (unlocked == true && mounted) {
+      setState(() => _privateModeUnlocked = true);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+      WebPrivateModeService().isSetUp.then((setUp) {
+        if (mounted) setState(() => _privateModeSetUpWeb = setUp);
+      });
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
     _loadData();
   }
 
@@ -172,12 +221,18 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
           s.matchesSearch(_search) &&
           s.matchesCategory(_categoryFilter) &&
           s.matchesTracking(_trackingFilter) &&
-          s.matchesProductivity(_productivityFilter))
+          s.matchesProductivity(_productivityFilter) &&
+          (!s.isPrivate || _privateModeUnlocked))
       .toList();
 
   @override
   void dispose() {
     _debounce?.cancel();
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
     super.dispose();
   }
 
@@ -303,13 +358,48 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
           // ── Count ─────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 8),
-            child: Text(
-              l10n.browserWebsiteCount(filtered.length),
-              style: TextStyle(
-                fontSize: 13,
-                color: theme.typography.caption?.color?.withValues(alpha: 0.7),
-                fontWeight: FontWeight.w500,
-              ),
+            child: Row(
+              children: [
+                Text(
+                  l10n.browserWebsiteCount(filtered.length),
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: theme.typography.caption?.color?.withValues(alpha: 0.7),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if ((kIsWeb
+                    ? _privateModeSetUpWeb
+                    : PrivateModeController().isSetUp)) ...[
+                  const SizedBox(width: 12),
+                  Button(
+                    style: ButtonStyle(
+                      padding: WidgetStatePropertyAll(
+                          const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6)),
+                    ),
+                    onPressed: _togglePrivateItemsVisibility,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          _privateModeUnlocked
+                              ? FluentIcons.unlock
+                              : FluentIcons.lock,
+                          size: 12,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          _privateModeUnlocked
+                              ? l10n.privateModeHideAction
+                              : l10n.privateModeShowAction,
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
 
@@ -1227,11 +1317,18 @@ class _WebsiteDetailDialog extends StatefulWidget {
 class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
   final _provider = BrowserDataProvider();
   List<({String date, Duration timeSpent, int visits})>? _history;
+  late bool _isPrivate;
 
   @override
   void initState() {
     super.initState();
+    _isPrivate = widget.site.isPrivate;
     _load();
+  }
+
+  Future<void> _setPrivate(bool value) async {
+    setState(() => _isPrivate = value);
+    await _provider.updateWebsiteMetadata(widget.site.domain, isPrivate: value);
   }
 
   Future<void> _load() async {
@@ -1373,6 +1470,48 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
                 ],
               ),
             ],
+            const SizedBox(height: 12),
+
+            // ── Private mode toggle ─────────────────────────────────────
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              decoration: BoxDecoration(
+                color: _isPrivate
+                    ? kBrowserRed.withValues(alpha: 0.08)
+                    : theme.inactiveBackgroundColor.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Icon(
+                        FluentIcons.lock,
+                        size: 14,
+                        color: _isPrivate
+                            ? kBrowserRed
+                            : captionColor?.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        AppLocalizations.of(context)!.markAsPrivate,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: _isPrivate ? FontWeight.w600 : FontWeight.w500,
+                          color: _isPrivate ? kBrowserRed : theme.typography.body?.color,
+                        ),
+                      ),
+                    ],
+                  ),
+                  _CompactToggle(
+                    value: _isPrivate,
+                    activeColor: kBrowserRed,
+                    onChanged: _setPrivate,
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 18),
 
             // ── 7-day chart ───────────────────────────────────────────────

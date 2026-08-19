@@ -4,6 +4,9 @@ import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/sortable_header.dart';
 import 'package:screentime/utils/responsive.dart';
 import '../../controller/data_controllers/reports_controller.dart';
+import '../../controller/services/private_mode_service.dart';
+import '../../../web/web_private_mode_service.dart'
+    if (dart.library.io) '../../../web/web_private_mode_service_stub.dart';
 import './appdetails.dialog.dart';
 
 class ApplicationUsage extends StatefulWidget {
@@ -33,16 +36,34 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   int _totalApps = 0;
   int _productiveApps = 0;
 
+  bool get _privateModeUnlocked => kIsWeb
+      ? WebPrivateModeService().isUnlocked
+      : PrivateModeController().isUnlocked;
+
+  void _onPrivateModeChanged() {
+    if (mounted) setState(_applyFilterAndSort);
+  }
+
   @override
   void initState() {
     super.initState();
     _applyFilterAndSort();
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
   }
 
   @override
   void dispose() {
     _searchFocusNode.dispose();
     _searchController.dispose();
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
     super.dispose();
   }
 
@@ -58,6 +79,7 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   void _applyFilterAndSort() {
     final query = _searchQuery.toLowerCase();
 
+    final privateModeUnlocked = _privateModeUnlocked;
     _filteredAppUsageDetails = widget.appUsageDetails.where((app) {
       final matchesQuery =
           query.isEmpty || app.appName.toLowerCase().contains(query);
@@ -66,7 +88,8 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
         'NonProductive' => !app.isProductive,
         _ => true,
       };
-      return matchesQuery && matchesProductivity;
+      final matchesPrivate = !app.isPrivate || privateModeUnlocked;
+      return matchesQuery && matchesProductivity && matchesPrivate;
     }).toList();
 
     _sortInPlace();

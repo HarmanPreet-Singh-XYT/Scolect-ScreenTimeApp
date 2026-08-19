@@ -17,6 +17,7 @@ import 'package:screentime/sections/widgets/Settings/tracking.dart';
 import 'package:screentime/sections/widgets/Settings/notification.dart';
 import 'package:screentime/sections/widgets/Settings/footer.dart';
 import 'package:screentime/sections/widgets/Settings/data.dart';
+import 'package:screentime/sections/widgets/Settings/privacy.dart';
 import 'package:screentime/sections/widgets/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_section.dart';
@@ -554,6 +555,8 @@ class _SettingsContentState extends State<SettingsContent> {
                 notificationSection,
                 _kSectionSpacing,
                 const DataSection(),
+                _kSectionSpacing,
+                const PrivacySection(),
               ],
             ),
           ),
@@ -598,6 +601,8 @@ class _SettingsContentState extends State<SettingsContent> {
         notificationSection,
         _kSectionSpacing,
         const DataSection(),
+        _kSectionSpacing,
+        const PrivacySection(),
         _kSectionSpacing,
         if (!kIsWeb) ...[
           const ied.BackupRestoreSection(),

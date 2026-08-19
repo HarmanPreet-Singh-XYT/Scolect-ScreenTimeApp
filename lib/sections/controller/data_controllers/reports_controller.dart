@@ -22,6 +22,7 @@ class AnalyticsSummary {
   final List<DailyScreenTime> dailyScreenTimeData;
   final Map<String, double> categoryBreakdown;
   final List<AppUsageSummary> appUsageDetails;
+  final Duration privateAppsTime;
 
   const AnalyticsSummary({
     required this.totalScreenTime,
@@ -35,7 +36,12 @@ class AnalyticsSummary {
     required this.dailyScreenTimeData,
     required this.categoryBreakdown,
     required this.appUsageDetails,
+    this.privateAppsTime = Duration.zero,
   });
+
+  /// Total screen time with private apps' time excluded, for when the
+  /// "include private items in totals" setting is off.
+  Duration get visibleScreenTime => totalScreenTime - privateAppsTime;
 }
 
 class DailyScreenTime {
@@ -52,6 +58,7 @@ class AppUsageSummary {
   final Duration totalTime;
   final bool isProductive;
   final bool isVisible;
+  final bool isPrivate;
 
   const AppUsageSummary({
     required this.appName,
@@ -60,6 +67,7 @@ class AppUsageSummary {
     required this.totalTime,
     required this.isProductive,
     required this.isVisible,
+    this.isPrivate = false,
   });
 }
 
@@ -349,8 +357,11 @@ class UsageAnalyticsController extends ChangeNotifier {
 
     // ── App usage details sorted by time ──
     final appUsageDetails = <AppUsageSummary>[];
+    Duration privateAppsTime = Duration.zero;
     appTotalUsage.forEach((appName, totalTime) {
       final metadata = _dataStore.getAppMetadata(appName);
+      final isPrivate = metadata?.isPrivate ?? false;
+      if (isPrivate) privateAppsTime += totalTime;
       appUsageDetails.add(AppUsageSummary(
         appName: appName,
         siteName: metadata?.siteName ?? '',
@@ -358,6 +369,7 @@ class UsageAnalyticsController extends ChangeNotifier {
         totalTime: totalTime,
         isProductive: metadata?.isProductive ?? false,
         isVisible: metadata?.isVisible ?? false,
+        isPrivate: isPrivate,
       ));
     });
     appUsageDetails.sort((a, b) => b.totalTime.compareTo(a.totalTime));
@@ -392,6 +404,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       dailyScreenTimeData: dailyScreenTimeData,
       categoryBreakdown: categoryBreakdown,
       appUsageDetails: appUsageDetails,
+      privateAppsTime: privateAppsTime,
     );
   }
 
@@ -487,6 +500,7 @@ class UsageAnalyticsController extends ChangeNotifier {
     }
 
     final appUsageDetails = <AppUsageSummary>[];
+    Duration privateAppsTime = Duration.zero;
     domainTotals.forEach((domain, secs) {
       final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
       final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
@@ -500,6 +514,8 @@ class UsageAnalyticsController extends ChangeNotifier {
       final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
           ? rawCat
           : AppCategories.categorizeApp(displayName);
+      final isPrivate = meta['isPrivate'] as bool? ?? false;
+      if (isPrivate) privateAppsTime += Duration(seconds: secs);
 
       appUsageDetails.add(AppUsageSummary(
         appName: domain,
@@ -508,6 +524,7 @@ class UsageAnalyticsController extends ChangeNotifier {
         totalTime: Duration(seconds: secs),
         isProductive: meta['isProductive'] as bool? ?? false,
         isVisible: true,
+        isPrivate: isPrivate,
       ));
     });
 
@@ -525,6 +542,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       dailyScreenTimeData: dailyScreenTimeData,
       categoryBreakdown: categoryBreakdown,
       appUsageDetails: appUsageDetails,
+      privateAppsTime: privateAppsTime,
     );
   }
 

@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/widgets.dart' as flutter_widgets;
 import 'package:screentime/app_design.dart';
 import 'package:screentime/main.dart';
+import 'package:screentime/onboarding/onboarding_mockups.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 
 // ============================================================================
@@ -24,11 +23,11 @@ class _SlideData {
     required this.title,
     required this.description,
     this.chips = const [],
-    this.visualType = _VisualType.circle,
+    this.visualType = _VisualType.welcome,
   });
 }
 
-enum _VisualType { circle, barChart, browser, rings, clock, rocket }
+enum _VisualType { welcome, appTracking, reports, limits, focusMode, browser, ready }
 
 const List<_SlideData> _slides = [
   _SlideData(
@@ -38,7 +37,16 @@ const List<_SlideData> _slides = [
     description:
         'Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.',
     chips: ['Privacy-first', 'Open Source', 'On-device'],
-    visualType: _VisualType.clock,
+    visualType: _VisualType.welcome,
+  ),
+  _SlideData(
+    emoji: '📱',
+    accentColor: Color(0xFF60A5FA),
+    title: 'Every App, Automatically',
+    description:
+        'Scolect watches the foreground app and quietly logs how long you spend in each one — no timers to start, nothing to remember.',
+    chips: ['Zero setup', 'Runs in the background', 'Per-app tracking'],
+    visualType: _VisualType.appTracking,
   ),
   _SlideData(
     emoji: '📊',
@@ -47,7 +55,7 @@ const List<_SlideData> _slides = [
     description:
         'Beautiful daily and weekly reports show your most-used apps, total screen time, and usage trends at a glance.',
     chips: ['Daily reports', 'Weekly trends', 'App breakdown'],
-    visualType: _VisualType.barChart,
+    visualType: _VisualType.reports,
   ),
   _SlideData(
     emoji: '🔔',
@@ -56,7 +64,7 @@ const List<_SlideData> _slides = [
     description:
         'Set daily time limits per app or for your total screen time. Get notified before you hit your limits — not after.',
     chips: ['Per-app limits', 'Total limit', 'Custom alerts'],
-    visualType: _VisualType.rings,
+    visualType: _VisualType.limits,
   ),
   _SlideData(
     emoji: '🎯',
@@ -65,7 +73,7 @@ const List<_SlideData> _slides = [
     description:
         'Block distracting apps during Pomodoro sessions. Custom work and break intervals with optional ambient sounds keep you in the zone.',
     chips: ['Pomodoro timer', 'App blocking', 'Ambient sounds'],
-    visualType: _VisualType.circle,
+    visualType: _VisualType.focusMode,
   ),
   _SlideData(
     emoji: '🌐',
@@ -83,7 +91,7 @@ const List<_SlideData> _slides = [
     description:
         'Scolect is ready to track. Your data stays entirely on-device — completely private, never uploaded anywhere.',
     chips: ['100% private', 'No account needed', 'Always free'],
-    visualType: _VisualType.rocket,
+    visualType: _VisualType.ready,
   ),
 ];
 
@@ -502,542 +510,28 @@ class _SlideVisual extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return switch (slide.visualType) {
-      _VisualType.barChart => _BarChartVisual(accentColor: slide.accentColor),
-      _VisualType.browser => _BrowserVisual(accentColor: slide.accentColor, isDark: isDark),
-      _VisualType.rings => _RingsVisual(accentColor: slide.accentColor, emoji: slide.emoji),
-      _VisualType.clock => _ClockVisual(accentColor: slide.accentColor, emoji: slide.emoji),
-      _VisualType.rocket => _RocketVisual(accentColor: slide.accentColor, emoji: slide.emoji),
-      _VisualType.circle => _CircleVisual(accentColor: slide.accentColor, emoji: slide.emoji),
+      _VisualType.welcome =>
+        WelcomeMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.appTracking =>
+        AppTrackingMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.reports =>
+        ReportsMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.limits =>
+        LimitsMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.focusMode =>
+        FocusModeMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.browser =>
+        BrowserMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.ready => ReadyMockup(
+          accentColor: slide.accentColor,
+          isDark: isDark,
+          items: const [
+            'Tracking active',
+            '100% on-device storage',
+            'Ready when you are',
+          ],
+        ),
     };
-  }
-}
-
-class _CircleVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-
-  const _CircleVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 180,
-      height: 180,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 180,
-            height: 180,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.25),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withValues(alpha: 0.65)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.45),
-                  blurRadius: 40,
-                  spreadRadius: 4,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 52)),
-        ],
-      ),
-    );
-  }
-}
-
-class _ClockVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-
-  const _ClockVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 180,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Outer ring
-          Container(
-            width: 180,
-            height: 180,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.25),
-                width: 2,
-              ),
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.15),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          // Middle ring
-          Container(
-            width: 130,
-            height: 130,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.4),
-                width: 1.5,
-              ),
-            ),
-          ),
-          // Inner filled circle
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withValues(alpha: 0.7)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.5),
-                  blurRadius: 36,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 44)),
-        ],
-      ),
-    );
-  }
-}
-
-class _BarChartVisual extends StatelessWidget {
-  final Color accentColor;
-
-  const _BarChartVisual({required this.accentColor});
-
-  @override
-  Widget build(BuildContext context) {
-    final bars = [0.45, 0.70, 0.55, 0.90, 0.65, 0.80, 0.50];
-
-    return SizedBox(
-      width: 200,
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Glow
-          Container(
-            width: 200,
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.15),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          // Bars
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(bars.length, (i) {
-              final height = bars[i] * 120;
-              final isHighest = bars[i] == bars.reduce(math.max);
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: Container(
-                  width: 18,
-                  height: height,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    gradient: LinearGradient(
-                      colors: isHighest
-                          ? [accentColor, accentColor.withValues(alpha: 0.7)]
-                          : [
-                              accentColor.withValues(alpha: 0.6),
-                              accentColor.withValues(alpha: 0.35),
-                            ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    boxShadow: isHighest
-                        ? [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.5),
-                              blurRadius: 12,
-                              spreadRadius: 1,
-                            )
-                          ]
-                        : null,
-                  ),
-                ),
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RingsVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-
-  const _RingsVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 190,
-      height: 190,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Outer ring
-          Container(
-            width: 190,
-            height: 190,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.18),
-                width: 12,
-              ),
-            ),
-          ),
-          // Middle ring
-          Container(
-            width: 148,
-            height: 148,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.4),
-                width: 10,
-              ),
-            ),
-          ),
-          // Inner ring
-          Container(
-            width: 108,
-            height: 108,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: accentColor.withValues(alpha: 0.7),
-                width: 8,
-              ),
-            ),
-          ),
-          // Center
-          Container(
-            width: 72,
-            height: 72,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: accentColor,
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.6),
-                  blurRadius: 30,
-                  spreadRadius: 4,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 30)),
-        ],
-      ),
-    );
-  }
-}
-
-class _BrowserVisual extends StatelessWidget {
-  final Color accentColor;
-  final bool isDark;
-
-  const _BrowserVisual({required this.accentColor, required this.isDark});
-
-  @override
-  Widget build(BuildContext context) {
-    final surfaceColor =
-        isDark ? AppDesignLegacy.darkSurface : AppDesignLegacy.lightSurface;
-    final borderColor =
-        isDark ? AppDesignLegacy.darkBorder : AppDesignLegacy.lightBorder;
-
-    return SizedBox(
-      width: 220,
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Glow behind browser
-          Container(
-            width: 220,
-            height: 160,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.2),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          // Browser window frame
-          Container(
-            width: 200,
-            height: 140,
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: borderColor, width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.25),
-                  blurRadius: 24,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                // Browser chrome (top bar)
-                Container(
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppDesignLegacy.darkSurfaceSecondary
-                        : AppDesignLegacy.lightSurfaceSecondary,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(9),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 10),
-                      // Traffic lights
-                      ...List.generate(3, (i) {
-                        final colors = [
-                          const Color(0xFFFF5F57),
-                          const Color(0xFFFFBD2E),
-                          const Color(0xFF28CA42),
-                        ];
-                        return Container(
-                          margin: const EdgeInsets.only(right: 5),
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: colors[i].withValues(alpha: 0.8),
-                          ),
-                        );
-                      }),
-                      const SizedBox(width: 8),
-                      // URL bar
-                      Expanded(
-                        child: Container(
-                          height: 16,
-                          margin: const EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                            color: borderColor.withValues(alpha: 0.5),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                // Content area — simulated progress bars / data rows
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(3, (i) {
-                        final widths = [0.8, 0.55, 0.7];
-                        return Row(
-                          children: [
-                            Container(
-                              width: 20,
-                              height: 20,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: accentColor.withValues(alpha: 0.2),
-                              ),
-                              child: Center(
-                                child: Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: accentColor.withValues(alpha: 0.6),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: 6,
-                                    width: double.infinity *
-                                        widths[i],
-                                    decoration: BoxDecoration(
-                                      color: (isDark
-                                              ? AppDesignLegacy.darkTextSecondary
-                                              : AppDesignLegacy.lightTextSecondary)
-                                          .withValues(alpha: 0.25),
-                                      borderRadius: BorderRadius.circular(3),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  FractionallySizedBox(
-                                    widthFactor: widths[i],
-                                    child: Container(
-                                      height: 4,
-                                      decoration: BoxDecoration(
-                                        color: accentColor.withValues(
-                                            alpha: 0.5 - i * 0.1),
-                                        borderRadius: BorderRadius.circular(2),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Globe emoji overlay
-          Positioned(
-            bottom: 6,
-            right: 12,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: accentColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: accentColor.withValues(alpha: 0.5),
-                    blurRadius: 12,
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text('🌐', style: TextStyle(fontSize: 20)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _RocketVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-
-  const _RocketVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 200,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Star burst rays
-          ...List.generate(8, (i) {
-            final angle = (i * math.pi / 4);
-            final radius = 80.0;
-            return Positioned(
-              left: 100 + math.cos(angle) * radius - 1,
-              top: 100 + math.sin(angle) * radius - 20,
-              child: Transform.rotate(
-                angle: angle,
-                child: Container(
-                  width: 2,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(1),
-                  ),
-                ),
-              ),
-            );
-          }),
-          // Outer glow
-          Container(
-            width: 160,
-            height: 160,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.2),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          // Inner circle
-          Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withValues(alpha: 0.6)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.5),
-                  blurRadius: 48,
-                  spreadRadius: 6,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 52)),
-        ],
-      ),
-    );
   }
 }
 

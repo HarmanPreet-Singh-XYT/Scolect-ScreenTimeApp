@@ -176,6 +176,12 @@ class SettingsManager {
           "notificationBannerDismissed": false,
         },
         "notificationController": {"reminderFrequency": 5},
+        "privacy": {
+          "passwordHash": "",
+          "passwordSalt": "",
+          "includePrivateInTotals": true,
+          "sessionTimeoutMinutes": 5,
+        },
         "tracking": {
           "mode": TrackingModeOptions.defaultMode,
           "idleDetection": true,

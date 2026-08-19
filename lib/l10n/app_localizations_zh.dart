@@ -3660,4 +3660,75 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · 屏幕时间追踪器';
+
+  @override
+  String get markAsPrivate => '私密';
+
+  @override
+  String get privateModeUnlockTitle => '解锁私密模式';
+
+  @override
+  String get privateModePasswordPlaceholder => '密码';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => '确认密码';
+
+  @override
+  String get privateModeIncorrectPassword => '密码错误';
+
+  @override
+  String get privateModeUnlockAction => '解锁';
+
+  @override
+  String get privateModeShowAction => '显示私密内容';
+
+  @override
+  String get privateModeHideAction => '隐藏私密内容';
+
+  @override
+  String get privateModeSectionTitle => '私密模式';
+
+  @override
+  String get privateModeSetPasswordTitle => '设置密码';
+
+  @override
+  String get privateModeChangePasswordTitle => '更改密码';
+
+  @override
+  String get privateModePasswordDescription => '设置密码以隐藏标记为私密的应用和网站，直至解锁。';
+
+  @override
+  String get privateModeSetPasswordAction => '设置密码';
+
+  @override
+  String get privateModeChangePasswordAction => '更改密码';
+
+  @override
+  String get privateModePasswordEmpty => '密码不能为空';
+
+  @override
+  String get privateModePasswordMismatch => '密码不匹配';
+
+  @override
+  String get privateModeIncludeInTotalsTitle => '在总计中包含私密项目';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      '开启后，隐藏的私密应用和网站仍会计入每日总计中。';
+
+  @override
+  String get privateModeSessionTimeoutTitle => '自动锁定时间';
+
+  @override
+  String get privateModeSessionTimeoutDescription => '私密模式将在指定分钟数后自动重新锁定。';
+
+  @override
+  String get privateModeResetPasswordTitle => '重置密码';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      '清除您的私密模式密码。已标记为私密的项目在设置新密码前仍保持私密状态——无法找回密码。';
+
+  @override
+  String get privateModeResetPasswordAction => '重置密码';
 }

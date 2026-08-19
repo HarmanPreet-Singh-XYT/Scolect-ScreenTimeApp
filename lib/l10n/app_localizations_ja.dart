@@ -3697,4 +3697,77 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · スクリーンタイムトラッカー';
+
+  @override
+  String get markAsPrivate => 'プライベート';
+
+  @override
+  String get privateModeUnlockTitle => 'プライベートモードのロック解除';
+
+  @override
+  String get privateModePasswordPlaceholder => 'パスワード';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'パスワードの確認';
+
+  @override
+  String get privateModeIncorrectPassword => 'パスワードが正しくありません';
+
+  @override
+  String get privateModeUnlockAction => 'ロック解除';
+
+  @override
+  String get privateModeShowAction => '非公開項目を表示';
+
+  @override
+  String get privateModeHideAction => '非公開項目を隠す';
+
+  @override
+  String get privateModeSectionTitle => 'プライベートモード';
+
+  @override
+  String get privateModeSetPasswordTitle => 'パスワードを設定';
+
+  @override
+  String get privateModeChangePasswordTitle => 'パスワードを変更';
+
+  @override
+  String get privateModePasswordDescription =>
+      'ロックを解除するまで、プライベートに設定されたアプリやウェブサイトを非表示にするパスワードを設定します。';
+
+  @override
+  String get privateModeSetPasswordAction => 'パスワードを設定';
+
+  @override
+  String get privateModeChangePasswordAction => 'パスワードを変更';
+
+  @override
+  String get privateModePasswordEmpty => 'パスワードを入力してください';
+
+  @override
+  String get privateModePasswordMismatch => 'パスワードが一致しません';
+
+  @override
+  String get privateModeIncludeInTotalsTitle => '合計時間にプライベート項目を含める';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'オンにすると、非表示の間もプライベートなアプリやウェブサイトが毎日の合計利用時間にカウントされます。';
+
+  @override
+  String get privateModeSessionTimeoutTitle => '自動ロック時間';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      '指定した分数が経過すると、プライベートモードが自動的に再ロックされます。';
+
+  @override
+  String get privateModeResetPasswordTitle => 'パスワードをリセット';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'プライベートモードのパスワードを消去します。新しいパスワードを設定するまで、すでにプライベートに設定された項目は保護されたままになります（パスワードの復元はできません）。';
+
+  @override
+  String get privateModeResetPasswordAction => 'パスワードをリセット';
 }

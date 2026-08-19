@@ -3757,4 +3757,78 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · تتبع وقت الشاشة';
+
+  @override
+  String get markAsPrivate => 'خاص';
+
+  @override
+  String get privateModeUnlockTitle => 'إلغاء قفل الوضع الخاص';
+
+  @override
+  String get privateModePasswordPlaceholder => 'كلمة المرور';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'تأكيد كلمة المرور';
+
+  @override
+  String get privateModeIncorrectPassword => 'كلمة المرور غير صحيحة';
+
+  @override
+  String get privateModeUnlockAction => 'إلغاء القفل';
+
+  @override
+  String get privateModeShowAction => 'إظهار العناصر الخاصة';
+
+  @override
+  String get privateModeHideAction => 'إخفاء العناصر الخاصة';
+
+  @override
+  String get privateModeSectionTitle => 'الوضع الخاص';
+
+  @override
+  String get privateModeSetPasswordTitle => 'تعيين كلمة المرور';
+
+  @override
+  String get privateModeChangePasswordTitle => 'تغيير كلمة المرور';
+
+  @override
+  String get privateModePasswordDescription =>
+      'عيّن كلمة مرور لإخفاء التطبيقات والمواقع المميزة كخاصة حتى يتم إلغاء القفل.';
+
+  @override
+  String get privateModeSetPasswordAction => 'تعيين كلمة المرور';
+
+  @override
+  String get privateModeChangePasswordAction => 'تغيير كلمة المرور';
+
+  @override
+  String get privateModePasswordEmpty => 'لا يمكن أن تكون كلمة المرور فارغة';
+
+  @override
+  String get privateModePasswordMismatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'تضمين العناصر الخاصة في الإجماليات';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'عند التفعيل، يستمر احتساب التطبيقات والمواقع الخاصة ضمن الإجماليات اليومية حتى أثناء إخفائها.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'قفل تلقائي بعد';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'يُعاد قفل الوضع الخاص تلقائيًا بعد انقضاء هذه الدقائق.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'يؤدي هذا إلى مسح كلمة مرور الوضع الخاص. تظل العناصر المميزة كخاصة محمية حتى تعيين كلمة مرور جديدة — لا يتوفر خيار لاستعادة كلمة المرور.';
+
+  @override
+  String get privateModeResetPasswordAction => 'إعادة تعيين كلمة المرور';
 }

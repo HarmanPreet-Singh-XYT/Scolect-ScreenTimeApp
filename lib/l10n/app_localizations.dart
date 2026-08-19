@@ -6791,6 +6791,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scolect · screen time tracker'**
   String get blockOverlayFooter;
+
+  /// TRANSLATE: Toggle label in the app/site edit dialog to mark an item as private (password-gated)
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get markAsPrivate;
+
+  /// TRANSLATE: Title of the password prompt dialog shown to reveal private items
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock Private Mode'**
+  String get privateModeUnlockTitle;
+
+  /// TRANSLATE: Placeholder text for the password input field
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get privateModePasswordPlaceholder;
+
+  /// TRANSLATE: Placeholder text for the confirm-password input field when setting a new password
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get privateModeConfirmPasswordPlaceholder;
+
+  /// TRANSLATE: Error message shown when the entered private mode password is wrong
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password'**
+  String get privateModeIncorrectPassword;
+
+  /// TRANSLATE: Button label to submit the password and unlock private mode
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock'**
+  String get privateModeUnlockAction;
+
+  /// TRANSLATE: Button label to reveal private items (triggers the unlock prompt)
+  ///
+  /// In en, this message translates to:
+  /// **'Show private'**
+  String get privateModeShowAction;
+
+  /// TRANSLATE: Button label to re-lock and hide private items
+  ///
+  /// In en, this message translates to:
+  /// **'Hide private'**
+  String get privateModeHideAction;
+
+  /// TRANSLATE: Title of the Private Mode settings card
+  ///
+  /// In en, this message translates to:
+  /// **'Private Mode'**
+  String get privateModeSectionTitle;
+
+  /// TRANSLATE: Title/row label shown when no private mode password has been set yet
+  ///
+  /// In en, this message translates to:
+  /// **'Set Password'**
+  String get privateModeSetPasswordTitle;
+
+  /// TRANSLATE: Title/row label shown when a private mode password already exists and can be changed
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get privateModeChangePasswordTitle;
+
+  /// TRANSLATE: Description under the set/change password setting row
+  ///
+  /// In en, this message translates to:
+  /// **'Set a password to hide apps and websites marked private until unlocked.'**
+  String get privateModePasswordDescription;
+
+  /// TRANSLATE: Button label to open the set-password dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Set Password'**
+  String get privateModeSetPasswordAction;
+
+  /// TRANSLATE: Button label to open the change-password dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get privateModeChangePasswordAction;
+
+  /// TRANSLATE: Validation error when submitting an empty password
+  ///
+  /// In en, this message translates to:
+  /// **'Password cannot be empty'**
+  String get privateModePasswordEmpty;
+
+  /// TRANSLATE: Validation error when password and confirm-password fields differ
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get privateModePasswordMismatch;
+
+  /// TRANSLATE: Setting row title for the toggle controlling whether private items count toward daily totals
+  ///
+  /// In en, this message translates to:
+  /// **'Include Private Items in Totals'**
+  String get privateModeIncludeInTotalsTitle;
+
+  /// TRANSLATE: Description under the include-in-totals toggle
+  ///
+  /// In en, this message translates to:
+  /// **'When on, private apps and websites still count toward your daily totals even while hidden.'**
+  String get privateModeIncludeInTotalsDescription;
+
+  /// TRANSLATE: Setting row title for the private mode session auto-relock timeout picker
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-Lock After'**
+  String get privateModeSessionTimeoutTitle;
+
+  /// TRANSLATE: Description under the auto-lock timeout setting
+  ///
+  /// In en, this message translates to:
+  /// **'Private Mode automatically re-locks after this many minutes.'**
+  String get privateModeSessionTimeoutDescription;
+
+  /// TRANSLATE: Setting row title and confirmation dialog title for resetting/clearing the private mode password
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get privateModeResetPasswordTitle;
+
+  /// TRANSLATE: Description/warning text explaining what resetting the password does, shown both under the setting row and in the confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Clears your Private Mode password. Items already marked private stay private until you set a new password — there is no password recovery.'**
+  String get privateModeResetPasswordDescription;
+
+  /// TRANSLATE: Button label to confirm resetting the private mode password
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get privateModeResetPasswordAction;
 }
 
 class _AppLocalizationsDelegate

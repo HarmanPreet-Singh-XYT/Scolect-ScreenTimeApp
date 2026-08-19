@@ -3782,4 +3782,78 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · pelacak waktu layar';
+
+  @override
+  String get markAsPrivate => 'Pribadi';
+
+  @override
+  String get privateModeUnlockTitle => 'Buka Kunci Mode Pribadi';
+
+  @override
+  String get privateModePasswordPlaceholder => 'Kata sandi';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'Konfirmasi kata sandi';
+
+  @override
+  String get privateModeIncorrectPassword => 'Kata sandi salah';
+
+  @override
+  String get privateModeUnlockAction => 'Buka Kunci';
+
+  @override
+  String get privateModeShowAction => 'Tampilkan item pribadi';
+
+  @override
+  String get privateModeHideAction => 'Sembunyikan item pribadi';
+
+  @override
+  String get privateModeSectionTitle => 'Mode Pribadi';
+
+  @override
+  String get privateModeSetPasswordTitle => 'Atur Kata Sandi';
+
+  @override
+  String get privateModeChangePasswordTitle => 'Ubah Kata Sandi';
+
+  @override
+  String get privateModePasswordDescription =>
+      'Atur kata sandi untuk menyembunyikan aplikasi dan situs web yang ditandai pribadi hingga dibuka kuncinya.';
+
+  @override
+  String get privateModeSetPasswordAction => 'Atur Kata Sandi';
+
+  @override
+  String get privateModeChangePasswordAction => 'Ubah Kata Sandi';
+
+  @override
+  String get privateModePasswordEmpty => 'Kata sandi tidak boleh kosong';
+
+  @override
+  String get privateModePasswordMismatch => 'Kata sandi tidak cocok';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'Sertakan Item Pribadi dalam Total';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'Saat aktif, aplikasi dan situs web pribadi tetap dihitung dalam total harian Anda meskipun sedang disembunyikan.';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'Kunci Otomatis Setelah';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'Mode Pribadi otomatis mengunci kembali setelah sekian menit.';
+
+  @override
+  String get privateModeResetPasswordTitle => 'Reset Kata Sandi';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'Menghapus kata sandi Mode Pribadi Anda. Item yang sudah ditandai pribadi tetap berstatus pribadi sampai Anda mengatur kata sandi baru — tidak ada pemulihan kata sandi.';
+
+  @override
+  String get privateModeResetPasswordAction => 'Reset Kata Sandi';
 }

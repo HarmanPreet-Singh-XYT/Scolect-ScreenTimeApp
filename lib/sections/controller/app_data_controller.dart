@@ -130,6 +130,9 @@ class AppMetadata {
   @HiveField(6)
   final String siteName; // empty string means "use domain as display name"
 
+  @HiveField(7)
+  final bool isPrivate;
+
   AppMetadata({
     required this.category,
     required this.isProductive,
@@ -138,6 +141,7 @@ class AppMetadata {
     this.dailyLimit = Duration.zero,
     this.limitStatus = false,
     this.siteName = '',
+    this.isPrivate = false,
   });
 }
 
@@ -851,6 +855,7 @@ class AppDataStore extends ChangeNotifier {
     Duration? dailyLimit,
     bool? limitStatus,
     String? siteName,
+    bool? isPrivate,
   }) async {
     if (kIsWeb) {
       final effectiveLimit = (limitStatus == false) ? Duration.zero : dailyLimit;
@@ -862,6 +867,7 @@ class AppDataStore extends ChangeNotifier {
         isVisible: isVisible,
         dailyLimit: effectiveLimit,
         siteName: siteName,
+        isPrivate: isPrivate,
       );
     }
 
@@ -880,6 +886,7 @@ class AppDataStore extends ChangeNotifier {
         dailyLimit: dailyLimit ?? existing?.dailyLimit ?? Duration.zero,
         limitStatus: limitStatus ?? existing?.limitStatus ?? false,
         siteName: siteName ?? existing?.siteName ?? '',
+        isPrivate: isPrivate ?? existing?.isPrivate ?? false,
       );
 
       _metadataCache[appName] = updated;
@@ -2260,12 +2267,13 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
       dailyLimit: fields[4] as Duration,
       limitStatus: fields[5] as bool,
       siteName: fields.containsKey(6) ? (fields[6] as String? ?? '') : '',
+      isPrivate: fields.containsKey(7) ? (fields[7] as bool? ?? false) : false,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppMetadata obj) {
-    writer.writeByte(7);
+    writer.writeByte(8);
     writer.writeByte(0);
     writer.write(obj.category);
     writer.writeByte(1);
@@ -2280,5 +2288,7 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
     writer.write(obj.limitStatus);
     writer.writeByte(6);
     writer.write(obj.siteName);
+    writer.writeByte(7);
+    writer.write(obj.isPrivate);
   }
 }

@@ -22,6 +22,7 @@ class WebBrowserDataProvider {
     bool? isVisible,
     Duration? dailyLimit,
     String? siteName,
+    bool? isPrivate,
   }) async => false;
 
   Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(String domain, {int days = 7}) async => [];

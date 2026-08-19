@@ -3775,4 +3775,78 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get blockOverlayFooter => 'Scolect · स्क्रीन टाइम ट्रैकर';
+
+  @override
+  String get markAsPrivate => 'निजी';
+
+  @override
+  String get privateModeUnlockTitle => 'प्राइवेट मोड अनलॉक करें';
+
+  @override
+  String get privateModePasswordPlaceholder => 'पासवर्ड';
+
+  @override
+  String get privateModeConfirmPasswordPlaceholder => 'पासवर्ड की पुष्टि करें';
+
+  @override
+  String get privateModeIncorrectPassword => 'गलत पासवर्ड';
+
+  @override
+  String get privateModeUnlockAction => 'अनलॉक करें';
+
+  @override
+  String get privateModeShowAction => 'निजी आइटम दिखाएं';
+
+  @override
+  String get privateModeHideAction => 'निजी आइटम छिपाएं';
+
+  @override
+  String get privateModeSectionTitle => 'प्राइवेट मोड';
+
+  @override
+  String get privateModeSetPasswordTitle => 'पासवर्ड सेट करें';
+
+  @override
+  String get privateModeChangePasswordTitle => 'पासवर्ड बदलें';
+
+  @override
+  String get privateModePasswordDescription =>
+      'निजी के रूप में चिह्नित ऐप्स और वेबसाइटों को अनलॉक होने तक छिपाने के लिए पासवर्ड सेट करें।';
+
+  @override
+  String get privateModeSetPasswordAction => 'पासवर्ड सेट करें';
+
+  @override
+  String get privateModeChangePasswordAction => 'पासवर्ड बदलें';
+
+  @override
+  String get privateModePasswordEmpty => 'पासवर्ड खाली नहीं हो सकता';
+
+  @override
+  String get privateModePasswordMismatch => 'पासवर्ड मेल नहीं खाते';
+
+  @override
+  String get privateModeIncludeInTotalsTitle =>
+      'कुल समय में निजी आइटम शामिल करें';
+
+  @override
+  String get privateModeIncludeInTotalsDescription =>
+      'चालू होने पर, निजी ऐप्स और वेबसाइट छिपे होने पर भी आपके दैनिक कुल समय में गिने जाएंगे।';
+
+  @override
+  String get privateModeSessionTimeoutTitle => 'इसके बाद स्वतः लॉक करें';
+
+  @override
+  String get privateModeSessionTimeoutDescription =>
+      'प्राइवेट मोड इतने मिनटों के बाद अपने आप फिर से लॉक हो जाता है।';
+
+  @override
+  String get privateModeResetPasswordTitle => 'पासवर्ड रीसेट करें';
+
+  @override
+  String get privateModeResetPasswordDescription =>
+      'यह आपका प्राइवेट मोड पासवर्ड हटा देता है। पहले से निजी चिह्नित आइटम नया पासवर्ड सेट करने तक निजी ही रहेंगे — कोई पासवर्ड रिकवरी उपलब्ध नहीं है।';
+
+  @override
+  String get privateModeResetPasswordAction => 'पासवर्ड रीसेट करें';
 }

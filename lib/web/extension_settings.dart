@@ -47,6 +47,7 @@ class WebsiteMetadata {
   final bool isProductive;
   final int dailyLimitSeconds; // 0 = no limit
   final String siteName;
+  final bool isPrivate;
 
   const WebsiteMetadata({
     this.category = 'Uncategorized',
@@ -54,6 +55,7 @@ class WebsiteMetadata {
     this.isProductive = false,
     this.dailyLimitSeconds = 0,
     this.siteName = '',
+    this.isPrivate = false,
   });
 
   Duration get dailyLimit => Duration(seconds: dailyLimitSeconds);
@@ -64,6 +66,7 @@ class WebsiteMetadata {
     bool? isProductive,
     int? dailyLimitSeconds,
     String? siteName,
+    bool? isPrivate,
   }) =>
       WebsiteMetadata(
         category: category ?? this.category,
@@ -71,6 +74,7 @@ class WebsiteMetadata {
         isProductive: isProductive ?? this.isProductive,
         dailyLimitSeconds: dailyLimitSeconds ?? this.dailyLimitSeconds,
         siteName: siteName ?? this.siteName,
+        isPrivate: isPrivate ?? this.isPrivate,
       );
 
   factory WebsiteMetadata.fromMap(Map<String, dynamic> m) => WebsiteMetadata(
@@ -79,6 +83,7 @@ class WebsiteMetadata {
         isProductive: m['isProductive'] as bool? ?? false,
         dailyLimitSeconds: m['dailyLimitSeconds'] as int? ?? 0,
         siteName: m['siteName'] as String? ?? '',
+        isPrivate: m['isPrivate'] as bool? ?? false,
       );
 
   Map<String, dynamic> toMap() => {
@@ -87,6 +92,7 @@ class WebsiteMetadata {
         'isProductive': isProductive,
         'dailyLimitSeconds': dailyLimitSeconds,
         if (siteName.isNotEmpty) 'siteName': siteName,
+        if (isPrivate) 'isPrivate': isPrivate,
       };
 }
 
@@ -111,6 +117,10 @@ class ExtensionSettings {
   bool _pauseOnTabUnfocus = false;
   bool _ignoreIdleOnMedia = true;
   bool _ignoreWindowBlurOnMedia = true;
+  String _privacyPasswordHash = '';
+  String _privacyPasswordSalt = '';
+  bool _privacyIncludeInTotals = true;
+  int _privacySessionTimeoutMinutes = 5;
 
   ExtensionMode get mode => _mode;
   String get desktopUrl => _desktopUrl;
@@ -122,6 +132,10 @@ class ExtensionSettings {
   bool get pauseOnTabUnfocus => _pauseOnTabUnfocus;
   bool get ignoreIdleOnMedia => _ignoreIdleOnMedia;
   bool get ignoreWindowBlurOnMedia => _ignoreWindowBlurOnMedia;
+  String get privacyPasswordHash => _privacyPasswordHash;
+  String get privacyPasswordSalt => _privacyPasswordSalt;
+  bool get privacyIncludeInTotals => _privacyIncludeInTotals;
+  int get privacySessionTimeoutMinutes => _privacySessionTimeoutMinutes;
 
   // ── Load ────────────────────────────────────────────────────────────────────
 
@@ -138,6 +152,11 @@ class ExtensionSettings {
     _pauseOnTabUnfocus = raw['pauseOnTabUnfocus'] as bool? ?? false;
     _ignoreIdleOnMedia = raw['ignoreIdleOnMedia'] as bool? ?? true;
     _ignoreWindowBlurOnMedia = raw['ignoreWindowBlurOnMedia'] as bool? ?? true;
+    _privacyPasswordHash = raw['privacyPasswordHash'] as String? ?? '';
+    _privacyPasswordSalt = raw['privacyPasswordSalt'] as String? ?? '';
+    _privacyIncludeInTotals = raw['privacyIncludeInTotals'] as bool? ?? true;
+    _privacySessionTimeoutMinutes =
+        raw['privacySessionTimeoutMinutes'] as int? ?? 5;
 
     final metaRaw = raw['metadata'] as Map<String, dynamic>? ?? {};
     _metadata.clear();
@@ -212,6 +231,28 @@ class ExtensionSettings {
     await _persist();
   }
 
+  Future<void> setPrivacyPassword({
+    required String passwordHash,
+    required String passwordSalt,
+  }) async {
+    await _ensureLoaded();
+    _privacyPasswordHash = passwordHash;
+    _privacyPasswordSalt = passwordSalt;
+    await _persist();
+  }
+
+  Future<void> setPrivacyOptions({
+    bool? includeInTotals,
+    int? sessionTimeoutMinutes,
+  }) async {
+    await _ensureLoaded();
+    if (includeInTotals != null) _privacyIncludeInTotals = includeInTotals;
+    if (sessionTimeoutMinutes != null) {
+      _privacySessionTimeoutMinutes = sessionTimeoutMinutes;
+    }
+    await _persist();
+  }
+
   Future<void> updateMetadata(
     String domain, {
     String? category,
@@ -219,6 +260,7 @@ class ExtensionSettings {
     bool? isProductive,
     Duration? dailyLimit,
     String? siteName,
+    bool? isPrivate,
   }) async {
     await _ensureLoaded();
     final current = _metadata[domain] ?? const WebsiteMetadata();
@@ -232,6 +274,7 @@ class ExtensionSettings {
       isProductive: isProductive,
       dailyLimitSeconds: dailyLimit?.inSeconds,
       siteName: siteName,
+      isPrivate: isPrivate,
     );
     await _persist();
   }
@@ -263,6 +306,10 @@ class ExtensionSettings {
     _pauseOnTabUnfocus = false;
     _ignoreIdleOnMedia = true;
     _ignoreWindowBlurOnMedia = true;
+    _privacyPasswordHash = '';
+    _privacyPasswordSalt = '';
+    _privacyIncludeInTotals = true;
+    _privacySessionTimeoutMinutes = 5;
     _loaded = false;
     await chromeStorageSet({
       _kSettingsKey: {
@@ -315,6 +362,10 @@ class ExtensionSettings {
         'pauseOnTabUnfocus': _pauseOnTabUnfocus,
         'ignoreIdleOnMedia': _ignoreIdleOnMedia,
         'ignoreWindowBlurOnMedia': _ignoreWindowBlurOnMedia,
+        'privacyPasswordHash': _privacyPasswordHash,
+        'privacyPasswordSalt': _privacyPasswordSalt,
+        'privacyIncludeInTotals': _privacyIncludeInTotals,
+        'privacySessionTimeoutMinutes': _privacySessionTimeoutMinutes,
         'metadata': {
           for (final e in _metadata.entries) e.key: e.value.toMap(),
         },

@@ -124,6 +124,7 @@ class WebBrowserDataProvider {
         dailyLimit: meta.dailyLimit,
         limitStatus: meta.dailyLimitSeconds > 0,
         visits: d.visits,
+        isPrivate: meta.isPrivate,
       ));
     }
 
@@ -147,6 +148,7 @@ class WebBrowserDataProvider {
           dailyLimit: entry.value.dailyLimit,
           limitStatus: false,
           visits: 0,
+          isPrivate: entry.value.isPrivate,
         ));
       }
     }
@@ -240,6 +242,7 @@ class WebBrowserDataProvider {
     bool? isVisible,
     Duration? dailyLimit,
     String? siteName,
+    bool? isPrivate,
   }) async {
     try {
       await _settings.updateMetadata(
@@ -249,6 +252,7 @@ class WebBrowserDataProvider {
         isProductive: isProductive,
         dailyLimit: dailyLimit,
         siteName: siteName,
+        isPrivate: isPrivate,
       );
       return true;
     } catch (_) {

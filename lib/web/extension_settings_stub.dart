@@ -55,6 +55,10 @@ class ExtensionSettings {
   bool get pauseOnTabUnfocus => false;
   bool get ignoreIdleOnMedia => true;
   bool get ignoreWindowBlurOnMedia => true;
+  String get privacyPasswordHash => '';
+  String get privacyPasswordSalt => '';
+  bool get privacyIncludeInTotals => true;
+  int get privacySessionTimeoutMinutes => 5;
 
   Future<void> load() async {}
   Future<ExtensionMode> getMode() async => ExtensionMode.standalone;
@@ -62,9 +66,11 @@ class ExtensionSettings {
   Future<Map<String, WebsiteMetadata>> getAllMetadata() async => {};
   Future<void> setMode(ExtensionMode mode) async {}
   Future<void> setDesktopUrl(String url) async {}
-  Future<void> updateMetadata(String domain, {String? category, bool? isTracking, bool? isProductive, Duration? dailyLimit, String? siteName}) async {}
+  Future<void> updateMetadata(String domain, {String? category, bool? isTracking, bool? isProductive, Duration? dailyLimit, String? siteName, bool? isPrivate}) async {}
   Future<void> setOverallLimit({required int seconds, required bool enabled}) async {}
   Future<void> setIdleDetection({required bool enabled, required int timeoutSeconds}) async {}
   Future<void> setFocusDetectionOptions({bool? pauseOnWindowBlur, bool? pauseOnTabUnfocus, bool? ignoreIdleOnMedia, bool? ignoreWindowBlurOnMedia}) async {}
+  Future<void> setPrivacyPassword({required String passwordHash, required String passwordSalt}) async {}
+  Future<void> setPrivacyOptions({bool? includeInTotals, int? sessionTimeoutMinutes}) async {}
   Future<void> clearAllData() async {}
 }

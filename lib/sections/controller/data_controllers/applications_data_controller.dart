@@ -44,6 +44,7 @@ class ApplicationBasicDetail {
   final bool isProductive;
   final Duration dailyLimit;
   final bool limitStatus;
+  final bool isPrivate;
 
   ApplicationBasicDetail({
     required this.name,
@@ -55,6 +56,7 @@ class ApplicationBasicDetail {
     required this.isProductive,
     required this.dailyLimit,
     required this.limitStatus,
+    this.isPrivate = false,
   }) : formattedScreenTime = screenTime.toHourMinuteFormat();
 }
 
@@ -242,6 +244,7 @@ class ApplicationsDataProvider {
           isProductive: site.isProductive,
           dailyLimit: site.dailyLimit,
           limitStatus: site.limitStatus,
+          isPrivate: site.isPrivate,
         );
       }).toList();
       apps.sort((a, b) => b.screenTime.compareTo(a.screenTime));
@@ -272,6 +275,7 @@ class ApplicationsDataProvider {
         isProductive: metadata.isProductive,
         dailyLimit: metadata.dailyLimit,
         limitStatus: metadata.limitStatus,
+        isPrivate: metadata.isPrivate,
       ));
     }
 
@@ -299,6 +303,7 @@ class ApplicationsDataProvider {
       isProductive: metadata.isProductive,
       dailyLimit: metadata.dailyLimit,
       limitStatus: metadata.limitStatus,
+      isPrivate: metadata.isPrivate,
     );
   }
 

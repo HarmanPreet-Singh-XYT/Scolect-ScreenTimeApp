@@ -1,8 +1,7 @@
-import 'dart:math' as math;
-
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/widgets.dart' as flutter_widgets;
 import 'package:screentime/app_design.dart';
+import 'package:screentime/onboarding/onboarding_mockups.dart';
 import 'package:screentime/web/chrome_storage_interop.dart'
     if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 
@@ -24,11 +23,11 @@ class _SlideData {
     required this.title,
     required this.description,
     this.chips = const [],
-    this.visualType = _VisualType.circle,
+    this.visualType = _VisualType.welcome,
   });
 }
 
-enum _VisualType { circle, puzzle, sync, shield, dashboard, rocket }
+enum _VisualType { welcome, puzzle, sync, shield, dashboard, rocket }
 
 const List<_SlideData> _slides = [
   _SlideData(
@@ -38,7 +37,7 @@ const List<_SlideData> _slides = [
     description:
         'The Scolect browser extension tracks time spent on every website — giving you a full picture of where your day goes online.',
     chips: ['Automatic tracking', 'Zero setup', 'Privacy-first'],
-    visualType: _VisualType.circle,
+    visualType: _VisualType.welcome,
   ),
   _SlideData(
     emoji: '🔌',
@@ -475,62 +474,20 @@ class _SlideVisual extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (slide.visualType) {
       _VisualType.puzzle => _PuzzleVisual(accentColor: slide.accentColor, isDark: isDark),
-      _VisualType.sync => _SyncVisual(accentColor: slide.accentColor),
-      _VisualType.shield => _ShieldVisual(accentColor: slide.accentColor, emoji: slide.emoji),
-      _VisualType.dashboard => _DashboardVisual(accentColor: slide.accentColor, isDark: isDark),
-      _VisualType.rocket => _RocketVisual(accentColor: slide.accentColor, emoji: slide.emoji),
-      _VisualType.circle => _CircleVisual(accentColor: slide.accentColor, emoji: slide.emoji),
+      _VisualType.sync => SyncMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.shield => PrivacyMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.dashboard => ReportsMockup(accentColor: slide.accentColor, isDark: isDark),
+      _VisualType.rocket => ReadyMockup(
+          accentColor: slide.accentColor,
+          isDark: isDark,
+          items: const [
+            'Tracking active',
+            '100% local storage',
+            'Ready to explore',
+          ],
+        ),
+      _VisualType.welcome => WelcomeMockup(accentColor: slide.accentColor, isDark: isDark),
     };
-  }
-}
-
-class _CircleVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-  const _CircleVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 160,
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 160,
-            height: 160,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.25),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          Container(
-            width: 110,
-            height: 110,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withValues(alpha: 0.65)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.45),
-                  blurRadius: 36,
-                  spreadRadius: 4,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 48)),
-        ],
-      ),
-    );
   }
 }
 
@@ -661,416 +618,6 @@ class _PuzzleVisual extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-// Dashboard mini-preview visual
-class _DashboardVisual extends StatelessWidget {
-  final Color accentColor;
-  final bool isDark;
-  const _DashboardVisual({required this.accentColor, required this.isDark});
-
-  @override
-  Widget build(BuildContext context) {
-    final surfaceColor =
-        isDark ? AppDesignLegacy.darkSurface : AppDesignLegacy.lightSurface;
-    final borderColor =
-        isDark ? AppDesignLegacy.darkBorder : AppDesignLegacy.lightBorder;
-    final bars = [0.6, 0.85, 0.45, 0.75, 0.55];
-
-    return SizedBox(
-      width: 200,
-      height: 150,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 200,
-            height: 150,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.15),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          Container(
-            width: 185,
-            height: 135,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: borderColor, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.2),
-                  blurRadius: 16,
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title row
-                Row(
-                  children: [
-                    Container(
-                      width: 60,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: (isDark
-                                ? AppDesignLegacy.darkTextPrimary
-                                : AppDesignLegacy.lightTextPrimary)
-                            .withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      width: 30,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: accentColor.withValues(alpha: 0.4),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                // Bar chart
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: bars.map((h) {
-                      final isMax = h == bars.reduce(math.max);
-                      return Container(
-                        width: 22,
-                        height: h * 75,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          gradient: LinearGradient(
-                            colors: isMax
-                                ? [accentColor, accentColor.withValues(alpha: 0.6)]
-                                : [
-                                    accentColor.withValues(alpha: 0.45),
-                                    accentColor.withValues(alpha: 0.25),
-                                  ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          boxShadow: isMax
-                              ? [
-                                  BoxShadow(
-                                    color: accentColor.withValues(alpha: 0.4),
-                                    blurRadius: 8,
-                                  )
-                                ]
-                              : null,
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Two nodes connected by an arc — represents desktop ↔ extension sync
-class _SyncVisual extends StatelessWidget {
-  final Color accentColor;
-  const _SyncVisual({required this.accentColor});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 130,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Connecting line
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _ArcPainter(color: accentColor),
-            ),
-          ),
-          // Left node: desktop
-          Positioned(
-            left: 10,
-            child: _SyncNode(
-              emoji: '🖥️',
-              label: 'Desktop',
-              accentColor: accentColor,
-            ),
-          ),
-          // Right node: extension
-          Positioned(
-            right: 10,
-            child: _SyncNode(
-              emoji: '🌐',
-              label: 'Browser',
-              accentColor: accentColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SyncNode extends StatelessWidget {
-  final String emoji;
-  final String label;
-  final Color accentColor;
-  const _SyncNode({
-    required this.emoji,
-    required this.label,
-    required this.accentColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 56,
-          height: 56,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              colors: [accentColor, accentColor.withValues(alpha: 0.65)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: accentColor.withValues(alpha: 0.45),
-                blurRadius: 20,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Center(child: Text(emoji, style: const TextStyle(fontSize: 24))),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: accentColor,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ArcPainter extends CustomPainter {
-  final Color color;
-  const _ArcPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.35)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final path = Path();
-    final midX = size.width / 2;
-    final midY = size.height / 2 - 10;
-    path.moveTo(66, midY + 4);
-    path.cubicTo(
-      midX - 20, midY - 24,
-      midX + 20, midY - 24,
-      size.width - 66, midY + 4,
-    );
-    canvas.drawPath(path, paint);
-
-    // Arrow heads
-    final arrowPaint = Paint()
-      ..color = color.withValues(alpha: 0.6)
-      ..strokeWidth = 1.8
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    // Right arrow at destination
-    final rx = size.width - 66.0;
-    canvas.drawLine(
-      Offset(rx - 8, midY + 4 - 5),
-      Offset(rx, midY + 4),
-      arrowPaint,
-    );
-    canvas.drawLine(
-      Offset(rx - 8, midY + 4 + 5),
-      Offset(rx, midY + 4),
-      arrowPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_ArcPainter old) => old.color != color;
-}
-
-// Shield visual for privacy slide
-class _ShieldVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-  const _ShieldVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 140,
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Glow
-          Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.22),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          // Shield shape via CustomPaint
-          CustomPaint(
-            size: const Size(90, 110),
-            painter: _ShieldPainter(color: accentColor),
-          ),
-          Positioned(
-            top: 28,
-            child: Text(emoji, style: const TextStyle(fontSize: 38)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ShieldPainter extends CustomPainter {
-  final Color color;
-  const _ShieldPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final gradient = LinearGradient(
-      colors: [color, color.withValues(alpha: 0.6)],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    );
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
-    final paint = Paint()
-      ..shader = gradient.createShader(rect)
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(size.width / 2, 0);
-    path.lineTo(size.width, size.height * 0.2);
-    path.lineTo(size.width, size.height * 0.55);
-    path.cubicTo(
-      size.width, size.height * 0.8,
-      size.width / 2, size.height,
-      size.width / 2, size.height,
-    );
-    path.cubicTo(
-      size.width / 2, size.height,
-      0, size.height * 0.8,
-      0, size.height * 0.55,
-    );
-    path.lineTo(0, size.height * 0.2);
-    path.close();
-
-    canvas.drawShadow(path, color.withValues(alpha: 0.5), 12, true);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(_ShieldPainter old) => old.color != color;
-}
-
-// Rocket visual
-class _RocketVisual extends StatelessWidget {
-  final Color accentColor;
-  final String emoji;
-  const _RocketVisual({required this.accentColor, required this.emoji});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 160,
-      height: 160,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          ...List.generate(8, (i) {
-            final angle = (i * math.pi / 4);
-            return Positioned(
-              left: 80 + math.cos(angle) * 68 - 1,
-              top: 80 + math.sin(angle) * 68 - 16,
-              child: Transform.rotate(
-                angle: angle,
-                child: Container(
-                  width: 2,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: accentColor.withValues(alpha: 0.3),
-                    borderRadius: BorderRadius.circular(1),
-                  ),
-                ),
-              ),
-            );
-          }),
-          Container(
-            width: 140,
-            height: 140,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [
-                accentColor.withValues(alpha: 0.2),
-                Colors.transparent,
-              ]),
-            ),
-          ),
-          Container(
-            width: 100,
-            height: 100,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: [accentColor, accentColor.withValues(alpha: 0.6)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: accentColor.withValues(alpha: 0.5),
-                  blurRadius: 40,
-                  spreadRadius: 5,
-                ),
-              ],
-            ),
-          ),
-          Text(emoji, style: const TextStyle(fontSize: 44)),
         ],
       ),
     );
