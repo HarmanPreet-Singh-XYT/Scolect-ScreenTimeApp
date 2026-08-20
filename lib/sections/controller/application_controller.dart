@@ -160,12 +160,22 @@ class BackgroundAppTracker {
   // ============================================================
   // PRECISE MODE STATE
   // ============================================================
+  // _currentApp is the stable appId (bundle identifier on macOS, executable
+  // path on Windows) used as the tracking/storage key. _currentProgramName
+  // is the parallel human-readable label — resolved separately since the
+  // OS-reported display name is not guaranteed stable across launches (see
+  // the appId migration in app_data_controller.dart).
   String _currentApp = '';
+  String _currentProgramName = '';
   DateTime _currentAppStartTime = DateTime.now();
   Timer? _selfTrackingHeartbeat;
   Timer? _universalHeartbeat;
 
-  static const String _selfAppName = 'Scolect - Track Screen Time & App Usage';
+  // Synthetic, fixed identity key for Scolect's own window — not a real
+  // bundle ID/exe path, just a stable sentinel used for internal comparisons.
+  // Detection of "this is our own window" still happens via a title match
+  // (see the "screentime" check in _handleFocusChange/_executePollingTracking).
+  static const String _selfAppId = 'Scolect - Track Screen Time & App Usage';
 
   final Map<String, AppMetadata> _metadataCache = {};
   bool _metadataCacheLoaded = false;
@@ -332,6 +342,7 @@ class BackgroundAppTracker {
       _stopSelfTrackingHeartbeat();
       _stopUniversalHeartbeat();
       _currentApp = '';
+      _currentProgramName = '';
       _currentAppStartTime = DateTime.now();
     }
   }
@@ -364,29 +375,34 @@ class BackgroundAppTracker {
       if (currentAppInfo == null) return;
 
       String appTitle = currentAppInfo['title'] ?? '';
+      String appId = currentAppInfo['appId'] ?? '';
 
-      if (appTitle.contains("Windows Explorer")) appTitle = "";
+      if (appTitle.contains("Windows Explorer")) {
+        appTitle = "";
+        appId = "";
+      }
       if (appTitle == "Productive ScreenTime" || appTitle == "screentime")
         return;
       if (appTitle == "loginwindow" || appTitle == "LockApp") return;
+      if (appId.isEmpty) appId = appTitle;
 
-      AppMetadata? metadata = await _getOrCreateMetadata(appTitle);
+      AppMetadata? metadata = await _getOrCreateMetadata(appId, appTitle);
 
       if (metadata != null && metadata.isTracking && metadata.isVisible) {
         final now = DateTime.now();
         final startTime = now.subtract(const Duration(minutes: 1));
         await _appDataStore?.recordAppUsage(
-          appTitle,
+          appId,
           SettingsManager().getLogicalDate(now),
           const Duration(minutes: 1),
           1,
           [TimeRange(startTime: startTime, endTime: now)],
         );
-        debugPrint('📊 Polling: $appTitle (+1 min)');
+        debugPrint('📊 Polling: $appTitle ($appId) (+1 min)');
       }
 
       _notificationController.checkAndSendNotifications();
-      _appUpdateController.add(appTitle);
+      _appUpdateController.add(appId);
     } catch (e) {
       debugPrint('❌ Polling error: $e');
     }
@@ -399,7 +415,7 @@ class BackgroundAppTracker {
     if (_trackingMode == TrackingMode.precise) {
       _currentAppStartTime = DateTime.now();
       if (_currentApp.isNotEmpty) {
-        await _getOrCreateMetadata(_currentApp);
+        await _getOrCreateMetadata(_currentApp, _currentProgramName);
         final now = DateTime.now();
         await _appDataStore?.recordAppUsage(
             _currentApp, SettingsManager().getLogicalDate(now), Duration.zero, 1, []);
@@ -448,7 +464,7 @@ class BackgroundAppTracker {
 
   Future<void> _heartbeatCurrentApp() async {
     if (!_isTracking) return;
-    if (_currentApp.isEmpty || _currentApp == _selfAppName) return;
+    if (_currentApp.isEmpty || _currentApp == _selfAppId) return;
     if (!_screenStateAllowsTracking) return;
 
     final metadata = _appDataStore?.getAppMetadata(_currentApp);
@@ -495,7 +511,9 @@ class BackgroundAppTracker {
         try {
           final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
           AppBlockingService().onLimitedAppFocused(
-            appName: _currentApp,
+            appId: _currentApp,
+            displayName: _appDataStore?.displayNameFor(_currentApp) ??
+                _currentProgramName,
             pid: info.processId,
             usedTime: used,
             limitTime: metadata.dailyLimit,
@@ -512,7 +530,9 @@ class BackgroundAppTracker {
         try {
           final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
           AppBlockingService().onLimitedAppFocused(
-            appName: _currentApp,
+            appId: _currentApp,
+            displayName: _appDataStore?.displayNameFor(_currentApp) ??
+                _currentProgramName,
             pid: info.processId,
             usedTime: screenTimeController.getOverallUsage(),
             limitTime: screenTimeController.overallLimit,
@@ -523,7 +543,7 @@ class BackgroundAppTracker {
   }
 
   void _heartbeatSelfApp() {
-    if (!_isTracking || _currentApp != _selfAppName) return;
+    if (!_isTracking || _currentApp != _selfAppId) return;
     if (!_screenStateAllowsTracking) return;
 
     bool idleDetectionEnabled =
@@ -577,26 +597,38 @@ class BackgroundAppTracker {
     try {
       activeInfo = await ForegroundWindowPlugin.getForegroundWindowInfo();
     } catch (_) {}
-    String newApp = activeInfo?.programName ?? '';
-    if (newApp == "SearchHost" || newApp == "Application Frame Host") {
-      newApp = _sanitizeWindowTitle(window.windowTitle);
+    String newAppId = activeInfo?.appId ?? '';
+    String newProgramName = activeInfo?.programName ?? '';
+    if (newProgramName == "SearchHost" ||
+        newProgramName == "Application Frame Host") {
+      // These Windows shell hosts don't have a meaningful stable identity
+      // distinct per hosted app — fall back to the (volatile) window title
+      // for both the key and the label, same limitation as before this
+      // change.
+      final sanitized = _sanitizeWindowTitle(window.windowTitle);
+      newProgramName = sanitized;
+      newAppId = sanitized;
     }
 
-    if (newApp == "Productive ScreenTime") return;
-    if (newApp == "screentime") newApp = _selfAppName;
-    if (newApp == "loginwindow" ||
-        newApp == "LockApp" ||
-        newApp == "UnlockingApp") return;
+    if (newProgramName == "Productive ScreenTime") return;
+    if (newProgramName == "screentime") {
+      newAppId = _selfAppId;
+      newProgramName = _selfAppId;
+    }
+    if (newProgramName == "loginwindow" ||
+        newProgramName == "LockApp" ||
+        newProgramName == "UnlockingApp") return;
 
-    if (newApp != _currentApp) {
+    if (newAppId != _currentApp) {
       _saveCurrentAppTime();
 
-      _currentApp = newApp;
+      _currentApp = newAppId;
+      _currentProgramName = newProgramName;
       _currentAppStartTime = DateTime.now();
 
-      await _ensureMetadataExists(newApp);
+      await _ensureMetadataExists(newAppId, newProgramName);
 
-      final metadata = _appDataStore?.getAppMetadata(newApp);
+      final metadata = _appDataStore?.getAppMetadata(newAppId);
       if (metadata != null && (!metadata.isTracking || !metadata.isVisible)) {
         _stopSelfTrackingHeartbeat();
         _appUpdateController.add(_currentApp);
@@ -605,17 +637,19 @@ class BackgroundAppTracker {
 
       // Never block Scolect's own window — per-app and overall checks below
       // both target whatever app the user just switched into.
-      if (newApp != _selfAppName) {
+      if (newAppId != _selfAppId) {
         // Check if this app is over its limit — fire blocking event if needed
         if (metadata != null &&
             metadata.limitStatus &&
             metadata.dailyLimit > Duration.zero) {
           final today = SettingsManager().getLogicalDate(DateTime.now());
-          final usage = _appDataStore?.getAppUsage(newApp, today);
+          final usage = _appDataStore?.getAppUsage(newAppId, today);
           final used = usage?.timeSpent ?? Duration.zero;
           if (used >= metadata.dailyLimit && activeInfo != null) {
             AppBlockingService().onLimitedAppFocused(
-              appName: newApp,
+              appId: newAppId,
+              displayName: _appDataStore?.displayNameFor(newAppId) ??
+                  newProgramName,
               pid: activeInfo.processId,
               usedTime: used,
               limitTime: metadata.dailyLimit,
@@ -630,7 +664,9 @@ class BackgroundAppTracker {
         final screenTimeController = ScreenTimeDataController();
         if (screenTimeController.isOverallLimitReached && activeInfo != null) {
           AppBlockingService().onLimitedAppFocused(
-            appName: newApp,
+            appId: newAppId,
+            displayName:
+                _appDataStore?.displayNameFor(newAppId) ?? newProgramName,
             pid: activeInfo.processId,
             usedTime: screenTimeController.getOverallUsage(),
             limitTime: screenTimeController.overallLimit,
@@ -638,13 +674,13 @@ class BackgroundAppTracker {
         }
       }
 
-      if (_currentApp == _selfAppName) {
+      if (_currentApp == _selfAppId) {
         _startSelfTrackingHeartbeat();
       } else {
         _stopSelfTrackingHeartbeat();
       }
 
-      debugPrint('📱 App: $newApp');
+      debugPrint('📱 App: $newProgramName ($newAppId)');
       _appUpdateController.add(_currentApp);
     }
   }
@@ -709,31 +745,46 @@ class BackgroundAppTracker {
   // ============================================================
   // METADATA
   // ============================================================
-  Future<AppMetadata?> _getOrCreateMetadata(String appTitle) async {
-    if (appTitle == "Productive ScreenTime" || appTitle == "screentime")
+  Future<AppMetadata?> _getOrCreateMetadata(String appId,
+      [String? programName]) async {
+    if (appId == "Productive ScreenTime" || appId == "screentime")
       return null;
 
+    final displayLabel = programName ?? appId;
+
     if (_appDataStore != null) {
-      final existing = _appDataStore!.getAppMetadata(appTitle);
+      final existing = _appDataStore!.getAppMetadata(appId);
       if (existing != null) {
-        _metadataCache[appTitle] = existing;
+        _metadataCache[appId] = existing;
         return existing;
+      }
+
+      // First time this appId has been seen — check whether it's really a
+      // known app whose display name previously fragmented under the old
+      // name-keyed scheme, and absorb that history if so.
+      final merged =
+          await _appDataStore!.absorbLegacyEntryIfPresent(appId, displayLabel);
+      if (merged != null) {
+        _metadataCache[appId] = merged;
+        return merged;
       }
     }
 
     String appCategory =
-        appTitle.isEmpty ? 'Idle' : _categorizeAppWithLocale(appTitle);
+        displayLabel.isEmpty ? 'Idle' : _categorizeAppWithLocale(displayLabel);
     bool isProductive = !(appCategory == "Social Media" ||
         appCategory == "Entertainment" ||
         appCategory == "Gaming" ||
         appCategory == "Uncategorized");
 
     if (_appDataStore != null) {
-      await _appDataStore!.updateAppMetadata(appTitle,
-          category: appCategory, isProductive: isProductive);
-      final created = _appDataStore!.getAppMetadata(appTitle);
+      await _appDataStore!.updateAppMetadata(appId,
+          category: appCategory,
+          isProductive: isProductive,
+          displayName: displayLabel);
+      final created = _appDataStore!.getAppMetadata(appId);
       if (created != null) {
-        _metadataCache[appTitle] = created;
+        _metadataCache[appId] = created;
         return created;
       }
     }
@@ -741,9 +792,9 @@ class BackgroundAppTracker {
     return null;
   }
 
-  Future<void> _ensureMetadataExists(String appTitle) async {
-    await _getOrCreateMetadata(appTitle).catchError((e) {
-      debugPrint('⚠️ Metadata error for $appTitle: $e');
+  Future<void> _ensureMetadataExists(String appId, [String? programName]) async {
+    await _getOrCreateMetadata(appId, programName).catchError((e) {
+      debugPrint('⚠️ Metadata error for $appId: $e');
     });
   }
 
@@ -779,7 +830,7 @@ class BackgroundAppTracker {
   Future<Map<String, dynamic>?> _getCurrentActiveAppInfo() async {
     try {
       WindowInfo info = await ForegroundWindowPlugin.getForegroundWindowInfo();
-      return {'title': info.programName};
+      return {'title': info.programName, 'appId': info.appId};
     } catch (e) {
       return null;
     }

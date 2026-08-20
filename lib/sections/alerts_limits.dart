@@ -245,7 +245,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
     try {
       final summaries = await _controller.getAllAppsSummary();
       for (final app in summaries) {
-        await _controller.updateAppLimit(app.appName, Duration.zero, false);
+        await _controller.updateAppLimit(app.appId, Duration.zero, false);
       }
 
       setState(() {

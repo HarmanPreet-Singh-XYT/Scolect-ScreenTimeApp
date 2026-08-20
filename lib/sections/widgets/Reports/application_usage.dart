@@ -405,7 +405,7 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
       // chrome.storage.local correctly.
       showWebsiteDetailsDialog(
         context,
-        domain: app.appName,  // always the raw domain in web reports
+        domain: app.appId,  // always the raw domain in web reports
         displayName: app.siteName.isNotEmpty ? app.siteName : app.appName,
         category: app.category,
         timeSpent: app.totalTime,

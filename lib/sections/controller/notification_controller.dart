@@ -466,11 +466,11 @@ class NotificationController with ChangeNotifier {
       if (!app.limitStatus) continue;
 
       if (app.currentUsage >= app.dailyLimit) {
-        if (_notifiedExceededApps.add(app.appName)) {
+        if (_notifiedExceededApps.add(app.appId)) {
           await sendAppLimitNotification(app.appName, app.dailyLimit.inMinutes);
         }
       } else if (app.percentageOfLimitUsed >= 0.9) {
-        if (_notifiedApproachingApps.add(app.appName)) {
+        if (_notifiedApproachingApps.add(app.appId)) {
           await showPopupAlert(
             'Approaching App Limit',
             "You're about to reach your daily limit for ${app.appName}",

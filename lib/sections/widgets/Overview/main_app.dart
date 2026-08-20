@@ -220,6 +220,9 @@ class TopApplicationsList extends StatelessWidget {
                           showAppDetailsDialog(
                             context,
                             AppUsageSummary(
+                              appId: (app['appId'] as String?)?.isNotEmpty == true
+                                  ? app['appId'] as String
+                                  : (app['name'] ?? ''),
                               appName: app['name'] ?? '',
                               category: app['category'] ?? '',
                               totalTime: app['duration'] ?? Duration.zero,

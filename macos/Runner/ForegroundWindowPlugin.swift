@@ -60,6 +60,11 @@ public class ForegroundWindowPlugin: NSObject, FlutterPlugin {
         let parentProcessId = getParentProcessId(for: processIdentifier)
         let parentProcessName = getProcessName(for: parentProcessId)
         
+        // Stable identity key: bundle identifier survives the .app being moved
+        // on disk, unlike executablePath. Falls back to executablePath for the
+        // rare frontmost app that reports no bundle identifier.
+        let appId = bundleIdentifier == "Unknown" ? executablePath : bundleIdentifier
+
         let resultMap: [String: Any] = [
             "windowTitle": programName,  // Using program name as window title
             "processName": executablePath,
@@ -67,7 +72,8 @@ public class ForegroundWindowPlugin: NSObject, FlutterPlugin {
             "programName": programName,
             "processId": Int(processIdentifier),
             "parentProcessId": parentProcessId,
-            "parentProcessName": parentProcessName
+            "parentProcessName": parentProcessName,
+            "appId": appId
         ]
         
         result(resultMap)

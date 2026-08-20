@@ -199,6 +199,9 @@ class SettingsManager {
           "audioThreshold": 0.01,
           "resetHour": 0,
         },
+        "migrations": {
+          "appIdKeyMigrationDone": false,
+        },
       };
 
   // --------------------------------------------------------------------------

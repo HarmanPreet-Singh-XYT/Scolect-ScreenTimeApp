@@ -103,6 +103,7 @@ class PersonalizationEngine {
             allUsage: allUsage,
             focusSessions: focusSessions,
             metadataByApp: _buildMetadataSnapshot(),
+            displayNameByApp: _buildDisplayNameSnapshot(),
             today: today,
           ));
 
@@ -208,7 +209,7 @@ class PersonalizationEngine {
         }
         if (totalOpens > maxOpenCount) {
           maxOpenCount = totalOpens;
-          distractionApp = appName;
+          distractionApp = _store.displayNameFor(appName);
         }
       }
       if (maxOpenCount < 5) distractionApp = null;
@@ -411,6 +412,18 @@ class PersonalizationEngine {
     return result;
   }
 
+  /// Snapshot of appId → display name, taken on the main isolate before
+  /// crossing into compute() — the detector pipeline runs in a separate
+  /// isolate where AppDataStore()'s in-memory caches aren't available, so
+  /// display-name resolution can't happen there.
+  Map<String, String> _buildDisplayNameSnapshot() {
+    final result = <String, String>{};
+    for (final appName in _store.allAppNames) {
+      result[appName] = _store.displayNameFor(appName);
+    }
+    return result;
+  }
+
   bool _categoryIsProductive(String category) {
     const productiveCategories = {
       'Productivity',
@@ -443,12 +456,14 @@ class _DetectorInput {
   final Map<String, List<AppUsageRecord>> allUsage;
   final List<FocusSessionRecord> focusSessions;
   final Map<String, bool> metadataByApp; // appName → isProductive
+  final Map<String, String> displayNameByApp; // appId → display name
   final DateTime today;
 
   _DetectorInput({
     required this.allUsage,
     required this.focusSessions,
     required this.metadataByApp,
+    required this.displayNameByApp,
     required this.today,
   });
 }
@@ -568,8 +583,8 @@ Insight? _detectStartupSequence(_DetectorInput input) {
       final rate = entry.value / totalDays;
       if (rate >= 0.70) {
         final parts = entry.key.split('___');
-        final app1 = _shortName(parts[0]);
-        final app2 = _shortName(parts[1]);
+        final app1 = _shortName(input.displayNameByApp[parts[0]] ?? parts[0]);
+        final app2 = _shortName(input.displayNameByApp[parts[1]] ?? parts[1]);
         return Insight(
           id: 'startup_sequence_${parts[0]}_${parts[1]}',
           title: 'Your daily startup ritual',
@@ -661,7 +676,8 @@ Insight? _detectPostHeavyUsage(_DetectorInput input) {
 
       final noReturnRate = singleVisitHeavy / heavyDays.length;
       if (noReturnRate >= 0.80) {
-        final short = _shortName(appName);
+        final short =
+            _shortName(input.displayNameByApp[appName] ?? appName);
         return Insight(
           id: 'post_heavy_$appName',
           title: 'Once you\'re in $short, you go deep',
@@ -698,9 +714,12 @@ String _weekdayName(int day) {
 String _fmtKey(DateTime d) =>
     '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
-String _shortName(String appName) {
+// Expects an already-resolved display name (see _DetectorInput.displayNameByApp)
+// — the detector pipeline runs inside compute(), where AppDataStore()'s
+// in-memory caches aren't available to resolve an appId itself.
+String _shortName(String displayName) {
   // Strip common suffixes like ".exe", long window titles
-  final cleaned = appName
+  final cleaned = displayName
       .replaceAll(RegExp(r'\.exe$', caseSensitive: false), '')
       .split(' — ')
       .first

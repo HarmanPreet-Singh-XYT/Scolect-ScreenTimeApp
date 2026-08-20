@@ -35,6 +35,10 @@ class DateRange {
 }
 
 class ApplicationBasicDetail {
+  /// Storage key — use this for lookups (getAppMetadata, updateAppLimit,
+  /// etc.), never for display.
+  final String appId;
+  /// Human-readable label — use this for anything shown to the user.
   final String name;
   final String siteName;
   final String category;
@@ -48,6 +52,7 @@ class ApplicationBasicDetail {
   final bool isPrivate;
 
   ApplicationBasicDetail({
+    required this.appId,
     required this.name,
     this.siteName = '',
     required this.category,
@@ -238,6 +243,7 @@ class ApplicationsDataProvider {
             ? site.category
             : AppCategories.categorizeApp(site.displayName);
         return ApplicationBasicDetail(
+          appId: site.domain,
           name: site.domain,
           siteName: site.siteName,
           category: category,
@@ -266,7 +272,8 @@ class ApplicationsDataProvider {
         final usageRecord = _dataStore.getAppUsage(appName, startOfDay);
 
         applications.add(ApplicationBasicDetail(
-          name: appName,
+          appId: appName,
+          name: _dataStore.displayNameFor(appName),
           siteName: metadata.siteName,
           category: metadata.category,
           screenTime: usageRecord?.timeSpent ?? Duration.zero,
@@ -302,7 +309,8 @@ class ApplicationsDataProvider {
         appName, SettingsManager().getLogicalDate(DateTime.now()));
 
     return ApplicationBasicDetail(
-      name: appName,
+      appId: appName,
+      name: _dataStore.displayNameFor(appName),
       category: metadata.category,
       screenTime: usageRecord?.timeSpent ?? Duration.zero,
       isTracking: metadata.isTracking,

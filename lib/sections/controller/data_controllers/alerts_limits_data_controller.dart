@@ -5,6 +5,9 @@ import '../../../web/web_browser_data_provider.dart' if (dart.library.io) '../..
 import '../../../utils/private_mode_access.dart';
 
 class AppUsageSummary {
+  /// Storage key — use for lookups/limit/category updates, never for display.
+  final String appId;
+  /// Human-readable label — use for anything shown to the user.
   final String appName;
   final String siteName;
   final String category;
@@ -18,6 +21,7 @@ class AppUsageSummary {
   final bool isPrivate;
 
   const AppUsageSummary({
+    required this.appId,
     required this.appName,
     this.siteName = '',
     required this.category,
@@ -33,6 +37,7 @@ class AppUsageSummary {
 
   factory AppUsageSummary.fromJson(Map<String, dynamic> json) {
     return AppUsageSummary(
+      appId: json['appId'] as String? ?? json['appName'] as String,
       appName: json['appName'] as String,
       siteName: json['siteName'] as String? ?? '',
       category: json['category'] as String,
@@ -55,6 +60,7 @@ class AppUsageSummary {
   };
 
   Map<String, dynamic> toJson() => {
+        'appId': appId,
         'appName': appName,
         'siteName': siteName,
         'category': category,
@@ -172,14 +178,14 @@ class ScreenTimeDataController extends ChangeNotifier {
     return _cachedSummaries!;
   }
 
-  AppUsageSummary? getAppSummary(String appName) {
-    final metadata = _dataStore.getAppMetadata(appName);
+  AppUsageSummary? getAppSummary(String appId) {
+    final metadata = _dataStore.getAppMetadata(appId);
     if (metadata == null) return null;
 
     final todayUsage = _dataStore.getAppUsage(
-        appName, SettingsManager().getLogicalDate(DateTime.now()));
+        appId, SettingsManager().getLogicalDate(DateTime.now()));
     return _createAppSummary(
-      appName: appName,
+      appId: appId,
       metadata: metadata,
       currentUsage: todayUsage?.timeSpent ?? Duration.zero,
     );
@@ -207,9 +213,9 @@ class ScreenTimeDataController extends ChangeNotifier {
   // ============================================================
 
   Future<bool> updateAppLimit(
-      String appName, Duration limit, bool enableLimit) async {
+      String appId, Duration limit, bool enableLimit) async {
     final result = await _dataStore.updateAppMetadata(
-      appName,
+      appId,
       dailyLimit: limit,
       limitStatus: enableLimit,
     );
@@ -218,9 +224,9 @@ class ScreenTimeDataController extends ChangeNotifier {
   }
 
   Future<bool> updateAppCategory(
-      String appName, String category, bool isProductive) async {
+      String appId, String category, bool isProductive) async {
     final result = await _dataStore.updateAppMetadata(
-      appName,
+      appId,
       category: category,
       isProductive: isProductive,
     );
@@ -302,6 +308,7 @@ class ScreenTimeDataController extends ChangeNotifier {
           isApproaching = remaining > Duration.zero && remaining <= const Duration(minutes: 5);
         }
         result.add(AppUsageSummary(
+          appId: site.domain,
           appName: site.domain,
           siteName: site.siteName,
           category: site.category,
@@ -319,15 +326,15 @@ class ScreenTimeDataController extends ChangeNotifier {
       final appNames = _dataStore.allAppNames;
       result = <AppUsageSummary>[];
 
-      for (final appName in appNames) {
-        if (appName.startsWith('web:')) continue;
-        final metadata = _dataStore.getAppMetadata(appName);
+      for (final appId in appNames) {
+        if (appId.startsWith('web:')) continue;
+        final metadata = _dataStore.getAppMetadata(appId);
         if (metadata == null || !metadata.isVisible) continue;
 
-        final todayUsage = _dataStore.getAppUsage(appName, today);
+        final todayUsage = _dataStore.getAppUsage(appId, today);
 
         result.add(_createAppSummary(
-          appName: appName,
+          appId: appId,
           metadata: metadata,
           currentUsage: todayUsage?.timeSpent ?? Duration.zero,
         ));
@@ -341,7 +348,7 @@ class ScreenTimeDataController extends ChangeNotifier {
   }
 
   AppUsageSummary _createAppSummary({
-    required String appName,
+    required String appId,
     required AppMetadata metadata,
     required Duration currentUsage,
   }) {
@@ -359,7 +366,8 @@ class ScreenTimeDataController extends ChangeNotifier {
     }
 
     return AppUsageSummary(
-      appName: appName,
+      appId: appId,
+      appName: _dataStore.displayNameFor(appId),
       siteName: metadata.siteName,
       category: metadata.category,
       dailyLimit: metadata.dailyLimit,
@@ -368,17 +376,17 @@ class ScreenTimeDataController extends ChangeNotifier {
       isProductive: metadata.isProductive,
       isAboutToReachLimit: isApproachingLimit,
       percentageOfLimitUsed: percentOfLimit,
-      trend: _calculateUsageTrend(appName),
+      trend: _calculateUsageTrend(appId),
       isPrivate: metadata.isPrivate,
     );
   }
 
-  UsageTrend _calculateUsageTrend(String appName) {
+  UsageTrend _calculateUsageTrend(String appId) {
     final today = SettingsManager().getLogicalDate(DateTime.now());
     final weekAgo = today.subtract(const Duration(days: 7));
 
     final weekUsage = _dataStore.getAppUsageRange(
-      appName,
+      appId,
       weekAgo,
       today.subtract(const Duration(days: 1)),
     );

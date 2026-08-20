@@ -114,6 +114,13 @@ class WindowInfo {
   final int parentProcessId;
   final String parentProcessName;
 
+  /// Stable identity key for this app (the executable path on Windows).
+  /// Unlike [programName], which can vary across launches (version-resource
+  /// reads or window-title heuristics for elevated processes), this stays
+  /// constant for the same installed executable and is used as the
+  /// tracking/storage key.
+  final String appId;
+
   const WindowInfo({
     required this.windowTitle,
     required this.processName,
@@ -122,6 +129,7 @@ class WindowInfo {
     required this.processId,
     required this.parentProcessId,
     required this.parentProcessName,
+    required this.appId,
   });
 
   /// Returns a safe fallback WindowInfo when no window can be found.
@@ -133,12 +141,13 @@ class WindowInfo {
         processId: 0,
         parentProcessId: 0,
         parentProcessName: 'Unknown',
+        appId: 'unknown',
       );
 
   @override
   String toString() => 'WindowInfo(title: $windowTitle, process: $processName, '
-      'executable: $executableName, program: $programName, pid: $processId, '
-      'parent: $parentProcessName, parentPid: $parentProcessId)';
+      'executable: $executableName, program: $programName, appId: $appId, '
+      'pid: $processId, parent: $parentProcessName, parentPid: $parentProcessId)';
 }
 
 class AppLaunchInfo {
@@ -321,6 +330,7 @@ class ForegroundWindowPlugin {
         processId: processId,
         parentProcessId: parentProcessId,
         parentProcessName: parentProcessName,
+        appId: processPath.isEmpty ? 'unknown' : processPath,
       );
     } catch (e, st) {
       debugPrint('ForegroundWindowPlugin: unexpected error: $e\n$st');

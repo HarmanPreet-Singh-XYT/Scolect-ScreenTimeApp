@@ -40,7 +40,10 @@ class DailyOverviewData {
     final Duration todayProductiveTime = _dataStore.getProductiveTime(today);
     final double todayProductivityScore =
         _dataStore.getProductivityScore(today);
-    final String mostUsedApp = _dataStore.getMostUsedApp(today);
+    final String mostUsedAppId = _dataStore.getMostUsedApp(today);
+    final String mostUsedApp = mostUsedAppId == "None"
+        ? mostUsedAppId
+        : _dataStore.displayNameFor(mostUsedAppId);
     final int focusSessionsCount = _dataStore.getFocusSessionsCount(today);
     final Duration totalFocusTime = _dataStore.getTotalFocusTime(today);
 
@@ -100,6 +103,7 @@ class DailyOverviewData {
     // rebuild category breakdown / limits scoped to private apps only.
     final rescaledApps = privateApps
         .map((a) => ApplicationDetail(
+              appId: a.appId,
               name: a.name,
               domain: a.domain,
               category: a.category,
@@ -173,6 +177,7 @@ class DailyOverviewData {
 
     final rescaledApps = privateApps
         .map((a) => ApplicationDetail(
+              appId: a.appId,
               name: a.name,
               domain: a.domain,
               category: a.category,
@@ -255,7 +260,8 @@ class DailyOverviewData {
       // Build top applications entry
       if (usageRecord != null) {
         applications.add(ApplicationDetail(
-          name: appName,
+          appId: appName,
+          name: _dataStore.displayNameFor(appName),
           category: metadata.category,
           screenTime: timeSpent,
           percentageOfTotalTime:
@@ -284,7 +290,7 @@ class DailyOverviewData {
         }
 
         limitDetails.add(ApplicationLimitDetail(
-          name: appName,
+          name: _dataStore.displayNameFor(appName),
           category: metadata.category,
           dailyLimit: metadata.dailyLimit,
           actualUsage: timeSpent,
@@ -571,6 +577,9 @@ class OverviewData {
 }
 
 class ApplicationDetail {
+  /// Storage key — use for lookups, never for display. Empty on the web
+  /// path, which uses [domain] as its identity instead.
+  final String appId;
   final String name;     // display name (siteName or domain)
   final String domain;  // raw domain key (web only; empty string on desktop)
   final String category;
@@ -582,6 +591,7 @@ class ApplicationDetail {
   final bool isPrivate;
 
   ApplicationDetail({
+    this.appId = '',
     required this.name,
     this.domain = '',
     required this.category,

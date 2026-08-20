@@ -19,6 +19,7 @@ class ForegroundWindowPlugin {
         processId: winInfo.processId,
         parentProcessId: winInfo.parentProcessId,
         parentProcessName: winInfo.parentProcessName,
+        appId: winInfo.appId,
       );
     } else if (Platform.isMacOS) {
       try {
@@ -33,6 +34,7 @@ class ForegroundWindowPlugin {
           processId: data['processId'] as int? ?? 0,
           parentProcessId: data['parentProcessId'] as int? ?? 0,
           parentProcessName: data['parentProcessName'] as String? ?? 'Unknown',
+          appId: data['appId'] as String? ?? 'unknown',
         );
       } catch (e) {
         throw Exception('Failed to get foreground window: $e');

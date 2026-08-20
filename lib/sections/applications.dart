@@ -34,6 +34,8 @@ const _kRedColor = Color(0xFFEF4444);
 // ─── Data Model ───────────────────────────────────────────────────────────────
 
 class AppViewModel {
+  /// Storage key — use for lookups/settings updates, never for display.
+  final String appId;
   final String name;
   final String siteName;
   final String category;
@@ -47,6 +49,7 @@ class AppViewModel {
   final bool limitStatus;
 
   AppViewModel({
+    required this.appId,
     required this.name,
     this.siteName = '',
     required this.category,
@@ -62,6 +65,7 @@ class AppViewModel {
 
   factory AppViewModel.fromDetail(ApplicationBasicDetail detail) {
     return AppViewModel(
+      appId: detail.appId,
       name: detail.name,
       siteName: detail.siteName,
       category: detail.category,
@@ -236,24 +240,25 @@ class _ApplicationsState extends State<Applications>
     _updateFilter("visibilityFilter", next, (s) => _visibilityFilter = s);
   }
 
-  Future<void> _toggleAppSetting(String type, bool value, String name) async {
-    final index = _apps.indexWhere((app) => app.name == name);
+  Future<void> _toggleAppSetting(String type, bool value, String appId) async {
+    final index = _apps.indexWhere((app) => app.appId == appId);
     if (index == -1) return;
 
     final tracker = BackgroundAppTracker();
     final currentApp = tracker.getTrackingInfo()['currentApp'];
+    final name = _apps[index].name;
 
     switch (type) {
       case 'isTracking':
         _apps[index].isTracking = value;
-        await _appDataStore.updateAppMetadata(name, isTracking: value);
-        if (!value && currentApp == name) {
+        await _appDataStore.updateAppMetadata(appId, isTracking: value);
+        if (!value && currentApp == appId) {
           debugPrint('🛑 Tracking disabled for currently active app: $name');
         }
       case 'isHidden':
         _apps[index].isHidden = value;
-        await _appDataStore.updateAppMetadata(name, isVisible: !value);
-        if (value && currentApp == name) {
+        await _appDataStore.updateAppMetadata(appId, isVisible: !value);
+        if (value && currentApp == appId) {
           debugPrint('🛑 Visibility disabled for currently active app: $name');
         }
     }
@@ -1297,7 +1302,7 @@ class _ApplicationRowState extends State<_ApplicationRow> {
                 child: _CompactToggle(
                   value: app.isTracking,
                   onChanged: (v) =>
-                      widget.toggleAppSetting('isTracking', v, app.name),
+                      widget.toggleAppSetting('isTracking', v, app.appId),
                   activeColor: _kGreenColor,
                 ),
               ),
@@ -1309,7 +1314,7 @@ class _ApplicationRowState extends State<_ApplicationRow> {
                 child: _CompactToggle(
                   value: app.isHidden,
                   onChanged: (v) =>
-                      widget.toggleAppSetting('isHidden', v, app.name),
+                      widget.toggleAppSetting('isHidden', v, app.appId),
                   activeColor: _kPurpleColor,
                 ),
               ),
@@ -1466,7 +1471,7 @@ class _ApplicationCardState extends State<_ApplicationCard> {
                     value: app.isTracking,
                     activeColor: _kGreenColor,
                     onChanged: (v) =>
-                        widget.toggleAppSetting('isTracking', v, app.name),
+                        widget.toggleAppSetting('isTracking', v, app.appId),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1476,7 +1481,7 @@ class _ApplicationCardState extends State<_ApplicationCard> {
                     value: app.isHidden,
                     activeColor: _kPurpleColor,
                     onChanged: (v) =>
-                        widget.toggleAppSetting('isHidden', v, app.name),
+                        widget.toggleAppSetting('isHidden', v, app.appId),
                   ),
                 ),
               ],
@@ -1627,7 +1632,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
 
     if (kIsWeb) {
       await ExtensionSettings().updateMetadata(
-        widget.app.name,
+        widget.app.appId,
         category: finalCategory,
         isProductive: _isProductive,
         isTracking: _isTracking,
@@ -1637,7 +1642,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
       );
     } else {
       await AppDataStore().updateAppMetadata(
-        widget.app.name,
+        widget.app.appId,
         category: finalCategory,
         isProductive: _isProductive,
         isTracking: _isTracking,

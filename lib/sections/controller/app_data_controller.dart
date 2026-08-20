@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:synchronized/synchronized.dart';
 import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 import '../../web/web_browser_data_provider.dart' if (dart.library.io) '../../web/web_browser_data_provider_stub.dart';
+import 'settings_data_controller.dart';
 
 // TypeAdapters for complex types
 @HiveType(typeId: 1)
@@ -133,6 +134,9 @@ class AppMetadata {
   @HiveField(7)
   final bool isPrivate;
 
+  @HiveField(8)
+  final String displayName; // empty string means "use the storage key as display name"
+
   AppMetadata({
     required this.category,
     required this.isProductive,
@@ -142,7 +146,32 @@ class AppMetadata {
     this.limitStatus = false,
     this.siteName = '',
     this.isPrivate = false,
+    this.displayName = '',
   });
+
+  AppMetadata copyWith({
+    String? category,
+    bool? isProductive,
+    bool? isTracking,
+    bool? isVisible,
+    Duration? dailyLimit,
+    bool? limitStatus,
+    String? siteName,
+    bool? isPrivate,
+    String? displayName,
+  }) {
+    return AppMetadata(
+      category: category ?? this.category,
+      isProductive: isProductive ?? this.isProductive,
+      isTracking: isTracking ?? this.isTracking,
+      isVisible: isVisible ?? this.isVisible,
+      dailyLimit: dailyLimit ?? this.dailyLimit,
+      limitStatus: limitStatus ?? this.limitStatus,
+      siteName: siteName ?? this.siteName,
+      isPrivate: isPrivate ?? this.isPrivate,
+      displayName: displayName ?? this.displayName,
+    );
+  }
 }
 
 class AppDataStore extends ChangeNotifier {
@@ -162,6 +191,11 @@ class AppDataStore extends ChangeNotifier {
   bool _isInitialized = false;
   String? _lastError;
   DateTime? _lastMaintenanceDate;
+
+  /// Directory the native Hive boxes are currently opened from. Used by the
+  /// appId-key migration to locate box files for backup. Native (desktop)
+  /// only — unset on web, where this migration never runs.
+  String? _activeHiveDirPath;
 
   // Locks for thread safety
   final Lock _initLock = Lock();
@@ -206,6 +240,12 @@ class AppDataStore extends ChangeNotifier {
   /// Track dirty records for periodic commits
   final Set<String> _dirtyUsageKeys = {};
   final Set<String> _dirtyFocusKeys = {};
+
+  /// In-memory-only delimiter for dirty-key composite strings (never
+  /// persisted to Hive). Uses the ASCII unit separator instead of "::"
+  /// because appId values (e.g. Windows executable paths) are otherwise
+  /// unconstrained strings and must never collide with the delimiter.
+  static const String _dirtyKeySeparator = '';
 
   /// Periodic persistence
   Timer? _persistenceTimer;
@@ -326,6 +366,7 @@ class AppDataStore extends ChangeNotifier {
             await Directory(hivePath).create(recursive: true);
           }
           Hive.init(hivePath);
+          _activeHiveDirPath = hivePath;
         } else {
           await Hive.initFlutter();
         }
@@ -353,6 +394,7 @@ class AppDataStore extends ChangeNotifier {
           await Hive.close();
           await Directory(fallbackPath).create(recursive: true);
           Hive.init(fallbackPath);
+          _activeHiveDirPath = fallbackPath;
           // Re-open all boxes from the fallback path — not just _usageBox.
           _usageBox     = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
           _focusBox     = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
@@ -374,6 +416,13 @@ class AppDataStore extends ChangeNotifier {
 
         // Load optimized cache
         await _loadOptimizedRuntimeCache();
+
+        // One-time migration: annotate legacy display-name-keyed metadata
+        // entries with a displayName field ahead of the appId key scheme.
+        // Native (desktop) only — never runs on web.
+        if (!kIsWeb) {
+          await _migrateToAppIdKeys();
+        }
 
         _isInitialized = true;
         _startPeriodicPersistence();
@@ -509,6 +558,115 @@ class AppDataStore extends ChangeNotifier {
     return key;
   }
 
+  // ============================================================
+  // ONE-TIME MIGRATION: appId key scheme
+  // ============================================================
+  //
+  // Historical native-app tracking was keyed by a volatile display name
+  // (programName), which can fragment a single real app into multiple
+  // entries if its resolved name changes across launches. Going forward,
+  // apps are tracked under a stable appId (bundle identifier on macOS,
+  // executable path on Windows) instead.
+  //
+  // There is no way to retroactively know what appId an old display-name
+  // key "should" have had (that data was never captured), so this
+  // migration only annotates existing metadata with a displayName field
+  // equal to its own current key — preserving existing category/limit/
+  // isPrivate settings exactly as they are. The actual reconciliation
+  // between an old name-keyed entry and a freshly observed appId happens
+  // lazily, the first time that appId is seen (see
+  // absorbLegacyEntryIfPresent, called from application_controller.dart).
+  static const String _appIdMigrationSettingKey =
+      'migrations.appIdKeyMigrationDone';
+
+  Future<void> _migrateToAppIdKeys() async {
+    try {
+      final alreadyDone =
+          SettingsManager().getSetting(_appIdMigrationSettingKey) == true;
+      if (alreadyDone) return;
+
+      // Fresh install: nothing to migrate, nothing to protect. Mark done
+      // immediately so this check is skipped on every future launch.
+      final isFreshInstall =
+          (_usageBox?.isEmpty ?? true) && (_metadataBox?.isEmpty ?? true);
+      if (isFreshInstall) {
+        SettingsManager()
+            .updateSetting(_appIdMigrationSettingKey, true);
+        debugPrint('🆕 appId migration: fresh install, nothing to migrate');
+        return;
+      }
+
+      debugPrint('📦 appId migration: backing up native Hive boxes...');
+      final backedUp = await _backupBoxesForMigration();
+      if (!backedUp) {
+        debugPrint(
+            '⚠️ appId migration: backup failed, aborting — will retry on next launch');
+        return;
+      }
+
+      int annotated = 0;
+      if (_metadataBox != null) {
+        for (final key in _metadataBox!.keys.whereType<String>().toList()) {
+          final metadata = _metadataBox!.get(key);
+          if (metadata == null || metadata.displayName.isNotEmpty) continue;
+
+          final updated = metadata.copyWith(displayName: key);
+          await _metadataBox!.put(key, updated);
+          _metadataCache[key] = updated;
+          annotated++;
+        }
+      }
+
+      SettingsManager().updateSetting(_appIdMigrationSettingKey, true);
+      debugPrint(
+          '✅ appId migration: annotated $annotated legacy metadata entries');
+    } catch (e) {
+      debugPrint('❌ appId migration failed: $e');
+      // Leave the flag unset so this is retried on next launch rather than
+      // silently skipped — nothing destructive has happened either way.
+    }
+  }
+
+  /// Copies (never moves) the current native Hive box files into a
+  /// timestamped backup folder before the appId migration writes anything.
+  /// Returns false if the backup could not be completed, in which case the
+  /// caller must not proceed with migration.
+  Future<bool> _backupBoxesForMigration() async {
+    final dirPath = _activeHiveDirPath;
+    if (dirPath == null) {
+      debugPrint('⚠️ appId migration: no active Hive directory known, skipping backup');
+      return false;
+    }
+
+    try {
+      await _usageBox?.flush();
+      await _metadataBox?.flush();
+
+      final timestamp = DateTime.now()
+          .toIso8601String()
+          .replaceAll(RegExp(r'[:.]'), '-');
+      final backupDir =
+          Directory('$dirPath/backup_pre_appid_migration_$timestamp');
+      await backupDir.create(recursive: true);
+
+      final boxNames = [_usageBoxName, _metadataBoxName];
+      for (final name in boxNames) {
+        for (final ext in ['.hive', '.lock']) {
+          final source = File('$dirPath/$name$ext');
+          if (await source.exists()) {
+            await source.copy('${backupDir.path}/$name$ext');
+          }
+        }
+      }
+
+      debugPrint('✅ appId migration: backup written to ${backupDir.path}');
+      return true;
+    } catch (e) {
+      debugPrint('❌ appId migration: backup failed: $e');
+      return false;
+    }
+  }
+
   Box<AppUsageRecord> _usageBoxFor(String appName) =>
       appName.startsWith('web:') ? _webUsageBox! : _usageBox!;
 
@@ -554,7 +712,7 @@ class AppDataStore extends ChangeNotifier {
           final batch = <String, AppUsageRecord>{};
 
           for (var key in _dirtyUsageKeys) {
-            final parts = key.split('::');
+            final parts = key.split(_dirtyKeySeparator);
             if (parts.length == 2) {
               final dateKey = parts[0];
               final appName = parts[1];
@@ -587,7 +745,7 @@ class AppDataStore extends ChangeNotifier {
           final batch = <String, FocusSessionRecord>{};
 
           for (var key in _dirtyFocusKeys) {
-            final parts = key.split('::');
+            final parts = key.split(_dirtyKeySeparator);
             if (parts.length == 2) {
               final dateKey = parts[0];
               final index = int.tryParse(parts[1]);
@@ -856,6 +1014,7 @@ class AppDataStore extends ChangeNotifier {
     bool? limitStatus,
     String? siteName,
     bool? isPrivate,
+    String? displayName,
   }) async {
     if (kIsWeb) {
       final effectiveLimit = (limitStatus == false) ? Duration.zero : dailyLimit;
@@ -887,6 +1046,7 @@ class AppDataStore extends ChangeNotifier {
         limitStatus: limitStatus ?? existing?.limitStatus ?? false,
         siteName: siteName ?? existing?.siteName ?? '',
         isPrivate: isPrivate ?? existing?.isPrivate ?? false,
+        displayName: displayName ?? existing?.displayName ?? '',
       );
 
       _metadataCache[appName] = updated;
@@ -914,6 +1074,95 @@ class AppDataStore extends ChangeNotifier {
     } catch (e) {
       _lastError = "Error getting metadata for $appName: $e";
       debugPrint(_lastError);
+      return null;
+    }
+  }
+
+  /// Resolves a storage key (appId, or a legacy display-name key) to the
+  /// text that should be shown to the user. Falls back to the raw key when
+  /// no display name has been recorded yet (e.g. legacy entries that predate
+  /// the appId migration, or brand-new entries not yet annotated).
+  String displayNameFor(String appId) {
+    final metadata = _metadataCache[appId];
+    if (metadata != null && metadata.displayName.isNotEmpty) {
+      return metadata.displayName;
+    }
+    return appId;
+  }
+
+  /// Best-effort merge of a legacy display-name-keyed entry into a newly
+  /// observed stable [newAppId]. Historical desktop-app records were keyed
+  /// by [programName] (a display string that can drift across launches),
+  /// so when [newAppId] is seen for the first time, this looks for an old
+  /// entry still sitting under that display name and — if found — absorbs
+  /// its usage history and metadata (category/limit/isPrivate/etc.) into
+  /// the new appId-keyed entry, then deletes the old one.
+  ///
+  /// Returns the merged metadata on success, or null if no legacy entry
+  /// was found under [programName] (caller should create fresh metadata).
+  /// Native (non-"web:") entries only — web/browser tracking is unaffected
+  /// by this migration.
+  Future<AppMetadata?> absorbLegacyEntryIfPresent(
+    String newAppId,
+    String programName,
+  ) async {
+    if (!_ensureInitialized()) return null;
+    if (programName.isEmpty || programName == newAppId) return null;
+    if (newAppId.startsWith('web:') || programName.startsWith('web:')) {
+      return null;
+    }
+    if (_metadataBox == null || _usageBox == null) return null;
+
+    try {
+      final legacyMetadata = _metadataBox!.get(programName);
+      if (legacyMetadata == null) return null;
+
+      // Move every usage record keyed under the old display-name to the
+      // new appId key, merging with anything already recorded under the
+      // new key (e.g. a few seconds tracked before this merge check ran).
+      final legacyKeys =
+          _usageBox!.keys.whereType<String>().where((k) {
+        final lastColon = k.lastIndexOf(':');
+        if (lastColon == -1) return false;
+        return k.substring(0, lastColon) == programName;
+      }).toList();
+
+      for (final legacyKey in legacyKeys) {
+        final legacyRecord = _usageBox!.get(legacyKey);
+        if (legacyRecord == null) continue;
+
+        final dateKey = _formatDateKey(legacyRecord.date);
+        final newHiveKey = _makeUsageKey(newAppId, legacyRecord.date);
+        final existingNewRecord = _usageBox!.get(newHiveKey);
+        final mergedRecord = existingNewRecord != null
+            ? existingNewRecord.merge(legacyRecord)
+            : legacyRecord;
+
+        await _usageBox!.put(newHiveKey, mergedRecord);
+        await _usageBox!.delete(legacyKey);
+
+        // Keep the in-memory cache consistent with what's now on disk.
+        _usageCacheByDate.putIfAbsent(dateKey, () => {});
+        _usageCacheByDate[dateKey]![newAppId] = mergedRecord;
+        _usageCacheByDate[dateKey]?.remove(programName);
+      }
+
+      final mergedMetadata = legacyMetadata.copyWith(displayName: programName);
+      await _metadataBox!.put(newAppId, mergedMetadata);
+      await _metadataBox!.delete(programName);
+
+      _metadataCache[newAppId] = mergedMetadata;
+      _metadataCache.remove(programName);
+      _cachedAppNames = null;
+
+      debugPrint(
+          '🔗 Merged legacy entry "$programName" into appId "$newAppId" '
+          '(${legacyKeys.length} usage record(s))');
+
+      notifyListeners();
+      return mergedMetadata;
+    } catch (e) {
+      debugPrint('⚠️ Error absorbing legacy entry for $programName: $e');
       return null;
     }
   }
@@ -946,6 +1195,11 @@ class AppDataStore extends ChangeNotifier {
   // APP USAGE OPERATIONS
   // ============================================================
 
+  // Safe even though appName may now be a Windows executable path containing
+  // its own colon (e.g. "C:\Program Files\App\app.exe"): _formatDateKey never
+  // produces a colon, so splitting on the LAST colon (see
+  // _extractAppNameFromKey and the commit-batch split above) always isolates
+  // the date suffix correctly regardless of how many colons precede it.
   String _makeUsageKey(String appName, DateTime date) {
     final safeName = appName.length > 244 ? appName.substring(0, 244) : appName;
     return '$safeName:${_formatDateKey(date)}';
@@ -998,7 +1252,7 @@ class AppDataStore extends ChangeNotifier {
         }
 
         // Mark as dirty for persistence
-        _dirtyUsageKeys.add('$dateKey::$appName');
+        _dirtyUsageKeys.add('$dateKey$_dirtyKeySeparator$appName');
         _markDirty();
 
         notifyListeners();
@@ -1033,7 +1287,7 @@ class AppDataStore extends ChangeNotifier {
         );
 
         _usageCacheByDate[dateKey]![appName] = record;
-        _dirtyUsageKeys.add('$dateKey::$appName');
+        _dirtyUsageKeys.add('$dateKey$_dirtyKeySeparator$appName');
         _markDirty();
 
         notifyListeners();
@@ -1311,7 +1565,7 @@ class AppDataStore extends ChangeNotifier {
 
         // Mark as dirty
         final index = sessions.length - 1;
-        _dirtyFocusKeys.add('$dateKey::$index');
+        _dirtyFocusKeys.add('$dateKey$_dirtyKeySeparator$index');
         _markDirty();
 
         notifyListeners();
@@ -2268,12 +2522,13 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
       limitStatus: fields[5] as bool,
       siteName: fields.containsKey(6) ? (fields[6] as String? ?? '') : '',
       isPrivate: fields.containsKey(7) ? (fields[7] as bool? ?? false) : false,
+      displayName: fields.containsKey(8) ? (fields[8] as String? ?? '') : '',
     );
   }
 
   @override
   void write(BinaryWriter writer, AppMetadata obj) {
-    writer.writeByte(8);
+    writer.writeByte(9);
     writer.writeByte(0);
     writer.write(obj.category);
     writer.writeByte(1);
@@ -2290,5 +2545,7 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
     writer.write(obj.siteName);
     writer.writeByte(7);
     writer.write(obj.isPrivate);
+    writer.writeByte(8);
+    writer.write(obj.displayName);
   }
 }

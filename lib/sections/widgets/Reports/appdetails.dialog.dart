@@ -50,14 +50,14 @@ Future<void> showAppDetailsDialog(
     BuildContext context, AppUsageSummary app) async {
   final l10n = AppLocalizations.of(context)!;
   final controller = app_summary_data.ScreenTimeDataController();
-  final appSummary = controller.getAppSummary(app.appName);
+  final appSummary = controller.getAppSummary(app.appId);
   if (appSummary == null) return;
 
   final appDataProvider = ApplicationsDataProvider();
   final appBasicDetails =
-      await appDataProvider.fetchApplicationByName(app.appName);
+      await appDataProvider.fetchApplicationByName(app.appId);
   final appDetails = await appDataProvider.fetchApplicationDetails(
-      app.appName, TimeRange.week);
+      app.appId, TimeRange.week);
 
   final weeklyData = appDetails.usageTrends.daily;
   final sortedDates = _sortedDateKeys(weeklyData);
@@ -239,6 +239,7 @@ Future<void> showWebsiteDetailsDialog(
 
   // Build the data objects AppDetailsDialog expects
   final appSummary = app_summary_data.AppUsageSummary(
+    appId: site.domain,
     appName: site.domain,
     siteName: site.siteName,
     category: site.category,
@@ -260,6 +261,7 @@ Future<void> showWebsiteDetailsDialog(
   );
 
   final appBasicDetails = ApplicationBasicDetail(
+    appId: site.domain,
     name: site.domain,
     siteName: site.siteName,
     category: site.category,
@@ -308,6 +310,7 @@ Future<void> showWebsiteDetailsDialog(
     barrierDismissible: true,
     builder: (_) => AppDetailsDialog(
       app: AppUsageSummary(
+        appId: site.domain,
         appName: site.displayName,
         category: site.category,
         totalTime: site.timeSpent,

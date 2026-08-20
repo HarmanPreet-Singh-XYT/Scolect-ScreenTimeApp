@@ -111,6 +111,7 @@ class _OverviewSnapshot {
   factory _OverviewSnapshot.fromOverviewData(OverviewData data) {
     final topApps = data.topApplications
         .map((app) => {
+              'appId': app.appId,
               'name': app.name,
               'domain': app.domain, // raw domain key for web lookup
               'category': app.category,

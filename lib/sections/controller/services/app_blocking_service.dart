@@ -17,11 +17,15 @@ class AppBlockingService {
   static const _settingsKey = 'limitsAlerts.blockingBehavior';
 
   // Current overlay state
-  String? _activeAppName;
+  String? _activeAppId;
   int? _activePid;
   Timer? _graceTimer;
 
-  // Per-day unblock: appName → 'yyyy-MM-dd'
+  // All per-app state below is keyed by the stable appId, not the display
+  // name, so "unblock for today"/grace/cooldown correctly survive a
+  // mid-day change in how an app's name resolves.
+
+  // Per-day unblock: appId → 'yyyy-MM-dd'
   final Map<String, String> _unblockedToday = {};
   // Grace expiry
   final Map<String, DateTime> _gracePeriods = {};
@@ -47,20 +51,21 @@ class AppBlockingService {
   // ── Called by BackgroundAppTracker ────────────────────────────────────────
 
   void onLimitedAppFocused({
-    required String appName,
+    required String appId,
+    required String displayName,
     required int pid,
     required Duration usedTime,
     required Duration limitTime,
   }) {
     if (behavior == BlockingBehavior.none) return;
     if (usedTime < limitTime) return;
-    if (_isUnblockedToday(appName)) return;
-    if (_isInGracePeriod(appName)) return;
-    if (_isInCooldown(appName)) return;
+    if (_isUnblockedToday(appId)) return;
+    if (_isInGracePeriod(appId)) return;
+    if (_isInCooldown(appId)) return;
     // Already showing overlay for this app — don't re-trigger
-    if (_activeAppName == appName && _activePid != null) return;
+    if (_activeAppId == appId && _activePid != null) return;
 
-    _activeAppName = appName;
+    _activeAppId = appId;
     _activePid = pid;
 
     if (!Platform.isMacOS && !Platform.isWindows) return;
@@ -68,7 +73,7 @@ class AppBlockingService {
     // Show native floating panel, then listen for the user's button choice
     _showNativeOverlay(
       pid: pid,
-      appName: appName,
+      appName: displayName,
       usedSeconds: usedTime.inSeconds,
       limitSeconds: limitTime.inSeconds,
     );
@@ -101,7 +106,7 @@ class AppBlockingService {
   Future<dynamic> _handleOverlayAction(MethodCall call) async {
     if (call.method != 'onAction') return;
     final action = call.arguments as String? ?? '';
-    final appName = _activeAppName ?? '';
+    final appId = _activeAppId ?? '';
     final pid = _activePid ?? 0;
 
     switch (action) {
@@ -112,9 +117,9 @@ class AppBlockingService {
         await terminateOtherApp(pid);
         _clearActive();
       case 'grace':
-        _startGrace(appName);
+        _startGrace(appId);
       case 'unblock':
-        unblockForToday(appName);
+        unblockForToday(appId);
         await _overlayChannel.invokeMethod('dismiss');
         _clearActive();
       case 'dismiss': // kept for safety but no longer surfaced in UI
@@ -122,8 +127,8 @@ class AppBlockingService {
     }
   }
 
-  void _startGrace(String appName) {
-    _gracePeriods[appName] = DateTime.now().add(const Duration(minutes: 5));
+  void _startGrace(String appId) {
+    _gracePeriods[appId] = DateTime.now().add(const Duration(minutes: 5));
     _graceTimer?.cancel();
     var secondsLeft = 300;
     // Tell native panel to show countdown
@@ -140,7 +145,7 @@ class AppBlockingService {
   }
 
   void _clearActive() {
-    _activeAppName = null;
+    _activeAppId = null;
     _activePid = null;
     _graceTimer?.cancel();
     _graceTimer = null;
@@ -149,18 +154,18 @@ class AppBlockingService {
 
   // ── State helpers ─────────────────────────────────────────────────────────
 
-  void grantGracePeriod(String appName) {
-    _gracePeriods[appName] = DateTime.now().add(const Duration(minutes: 5));
+  void grantGracePeriod(String appId) {
+    _gracePeriods[appId] = DateTime.now().add(const Duration(minutes: 5));
   }
 
-  void unblockForToday(String appName) {
+  void unblockForToday(String appId) {
     final today = DateTime.now();
-    _unblockedToday[appName] =
+    _unblockedToday[appId] =
         '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
   }
 
-  bool _isUnblockedToday(String appName) {
-    final stored = _unblockedToday[appName];
+  bool _isUnblockedToday(String appId) {
+    final stored = _unblockedToday[appId];
     if (stored == null) return false;
     final today = DateTime.now();
     final todayStr =
@@ -168,19 +173,19 @@ class AppBlockingService {
     return stored == todayStr;
   }
 
-  bool _isInGracePeriod(String appName) {
-    final expiry = _gracePeriods[appName];
+  bool _isInGracePeriod(String appId) {
+    final expiry = _gracePeriods[appId];
     if (expiry == null) return false;
     if (DateTime.now().isBefore(expiry)) return true;
-    _gracePeriods.remove(appName);
+    _gracePeriods.remove(appId);
     return false;
   }
 
-  bool _isInCooldown(String appName) {
-    final expiry = _cooldowns[appName];
+  bool _isInCooldown(String appId) {
+    final expiry = _cooldowns[appId];
     if (expiry == null) return false;
     if (DateTime.now().isBefore(expiry)) return true;
-    _cooldowns.remove(appName);
+    _cooldowns.remove(appId);
     return false;
   }
 

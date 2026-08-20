@@ -182,7 +182,7 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
     final l10n = AppLocalizations.of(context)!;
     final theme = FluentTheme.of(context);
 
-    String? selectedApp = app?.appName;
+    String? selectedApp = app?.appId;
     double hours = app?.dailyLimit.inHours.toDouble() ?? 1.0;
     double minutes = (app?.dailyLimit.inMinutes ?? 0) % 60.0;
     bool limitEnabled = app?.limitStatus ?? true;
@@ -225,7 +225,7 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
                       items: widget.appSummaries
                           .where((a) => a.appName.trim().isNotEmpty)
                           .map((a) => ComboBoxItem<String>(
-                                value: a.appName,
+                                value: a.appId,
                                 child: Text(a.appName,
                                     overflow: TextOverflow.ellipsis),
                               ))

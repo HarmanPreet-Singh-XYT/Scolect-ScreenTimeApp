@@ -9,6 +9,12 @@ class WindowInfo {
   final int parentProcessId;
   final String parentProcessName;
 
+  /// Stable identity key for this app: bundle identifier on macOS,
+  /// executable path on Windows. Unlike [programName] (a display label
+  /// that can change across launches), this is meant to stay constant
+  /// for the same real-world app and is used as the tracking/storage key.
+  final String appId;
+
   const WindowInfo({
     required this.windowTitle,
     required this.processName,
@@ -17,6 +23,7 @@ class WindowInfo {
     required this.processId,
     required this.parentProcessId,
     required this.parentProcessName,
+    required this.appId,
   });
 
   /// Returns a safe fallback WindowInfo when no window can be found.
@@ -28,12 +35,13 @@ class WindowInfo {
         processId: 0,
         parentProcessId: 0,
         parentProcessName: 'Unknown',
+        appId: 'unknown',
       );
 
   @override
   String toString() => 'WindowInfo(title: $windowTitle, process: $processName, '
-      'executable: $executableName, program: $programName, pid: $processId, '
-      'parent: $parentProcessName, parentPid: $parentProcessId)';
+      'executable: $executableName, program: $programName, appId: $appId, '
+      'pid: $processId, parent: $parentProcessName, parentPid: $parentProcessId)';
 }
 
 class AppLaunchInfo {

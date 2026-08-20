@@ -58,6 +58,8 @@ class DailyScreenTime {
 }
 
 class AppUsageSummary {
+  /// Storage key — use for lookups, never for display.
+  final String appId;
   final String appName;
   final String siteName;
   final String category;
@@ -67,6 +69,7 @@ class AppUsageSummary {
   final bool isPrivate;
 
   const AppUsageSummary({
+    required this.appId,
     required this.appName,
     this.siteName = '',
     required this.category,
@@ -365,7 +368,7 @@ class UsageAnalyticsController extends ChangeNotifier {
 
     appTotalUsage.forEach((app, duration) {
       if (duration > mostUsedAppTime) {
-        mostUsedApp = app;
+        mostUsedApp = _dataStore.displayNameFor(app);
         mostUsedAppTime = duration;
       }
     });
@@ -383,10 +386,11 @@ class UsageAnalyticsController extends ChangeNotifier {
 
     // ── App usage details sorted by time ──
     final appUsageDetails = <AppUsageSummary>[];
-    appTotalUsage.forEach((appName, totalTime) {
-      final metadata = _dataStore.getAppMetadata(appName);
+    appTotalUsage.forEach((appId, totalTime) {
+      final metadata = _dataStore.getAppMetadata(appId);
       appUsageDetails.add(AppUsageSummary(
-        appName: appName,
+        appId: appId,
+        appName: _dataStore.displayNameFor(appId),
         siteName: metadata?.siteName ?? '',
         category: metadata?.category ?? 'Uncategorized',
         totalTime: totalTime,
@@ -571,6 +575,7 @@ class UsageAnalyticsController extends ChangeNotifier {
           : AppCategories.categorizeApp(displayName);
 
       appUsageDetails.add(AppUsageSummary(
+        appId: domain,
         appName: domain,
         siteName: siteName,
         category: category,
