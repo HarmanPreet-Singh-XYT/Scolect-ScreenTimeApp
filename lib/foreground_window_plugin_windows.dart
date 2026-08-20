@@ -380,11 +380,16 @@ class ForegroundWindowPlugin {
   /// Step 2 — main-isolate cache lookup for programName & parentProcessName.
   ///           Only dispatches a second compute for cache misses.
   ///
+  /// [targetHwnd], if provided, resolves info for that exact window instead
+  /// of querying "whatever is foreground right now" — pass this whenever the
+  /// caller already knows which window it cares about (see
+  /// _getRawWindowInfo's doc comment for why this matters).
+  ///
   /// Never throws; returns [WindowInfo.unknown()] on any failure.
-  static Future<WindowInfo> getForegroundWindowInfo() async {
+  static Future<WindowInfo> getForegroundWindowInfo({int? targetHwnd}) async {
     try {
       // Step 1: lightweight — no disk I/O, no process snapshot.
-      final raw = await compute(_getRawWindowInfo, null);
+      final raw = await compute(_getRawWindowInfo, targetHwnd);
       if (raw == null) return WindowInfo.unknown();
 
       final String processPath = raw['processPath'] as String;
@@ -683,9 +688,20 @@ class ForegroundWindowPlugin {
   /// Step 1 (cheap): returns raw window/process info with NO disk I/O.
   /// Only calls Win32 APIs that are in-memory (no version resource reads,
   /// no CreateToolhelp32Snapshot).
-  /// Returns null if no foreground window is found.
-  static Map<String, dynamic>? _getRawWindowInfo(dynamic _) {
-    final hwnd = _getForegroundWindow();
+  ///
+  /// [targetHwndAddress], if provided, resolves info for that EXACT window
+  /// handle instead of querying GetForegroundWindow() fresh — used when the
+  /// caller already observed a specific window (e.g. the hwnd carried on a
+  /// window_focus onFocusChange event) and needs to avoid a second,
+  /// independent "what's foreground right now" query that could race with
+  /// focus changing again in between.
+  ///
+  /// Returns null if no foreground window is found (target mode) or the
+  /// target window no longer exists / has address 0.
+  static Map<String, dynamic>? _getRawWindowInfo(int? targetHwndAddress) {
+    final hwnd = (targetHwndAddress != null && targetHwndAddress != 0)
+        ? Pointer<Void>.fromAddress(targetHwndAddress)
+        : _getForegroundWindow();
     if (hwnd.address == 0) return null;
 
     // ── Process ID ──

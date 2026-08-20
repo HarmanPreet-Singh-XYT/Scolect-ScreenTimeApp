@@ -8,9 +8,10 @@ import 'foreground_window_plugin_windows.dart' as windows;
 class ForegroundWindowPlugin {
   static const MethodChannel _channel = MethodChannel('foreground_window_plugin');
 
-  static Future<WindowInfo> getForegroundWindowInfo() async {
+  static Future<WindowInfo> getForegroundWindowInfo({int? targetHwnd}) async {
     if (Platform.isWindows) {
-      final winInfo = await windows.ForegroundWindowPlugin.getForegroundWindowInfo();
+      final winInfo = await windows.ForegroundWindowPlugin.getForegroundWindowInfo(
+          targetHwnd: targetHwnd);
       return WindowInfo(
         windowTitle: winInfo.windowTitle,
         processName: winInfo.processName,

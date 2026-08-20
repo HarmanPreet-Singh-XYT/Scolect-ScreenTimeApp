@@ -3,7 +3,7 @@
 import 'foreground_window_info.dart';
 
 class ForegroundWindowPlugin {
-  static Future<WindowInfo> getForegroundWindowInfo() async {
+  static Future<WindowInfo> getForegroundWindowInfo({int? targetHwnd}) async {
     return WindowInfo.unknown();
   }
 

@@ -587,15 +587,20 @@ class BackgroundAppTracker {
         (window.appName == "explorer.exe" &&
             window.windowTitle == "Program Manager")) return;
 
-    // Snapshot the foreground window once so the app name and pid used below
-    // always refer to the same window — a second, later query can race with
-    // the OS handing focus to a different window (e.g. right after launching
-    // an app), which previously caused the block overlay to target whatever
-    // window happened to be foreground at that later point instead of the
-    // app that was actually detected as over its limit.
+    // Resolve richer info for the EXACT window window_focus observed (via
+    // window.hwnd on Windows), not "whatever is foreground right now" — a
+    // fresh, unpinned query can race with focus changing again in the
+    // moments between the trigger and this lookup (e.g. a transient Search/
+    // Widgets overlay flashing over the real app), which previously caused
+    // the block overlay — and, now, the tracked appId itself — to target
+    // whatever window happened to be foreground at that later point instead
+    // of the one that actually triggered this event. window.hwnd is null on
+    // macOS (no equivalent concept), where this race doesn't apply the same
+    // way since getForegroundWindowInfo() always queries fresh there.
     WindowInfo? activeInfo;
     try {
-      activeInfo = await ForegroundWindowPlugin.getForegroundWindowInfo();
+      activeInfo = await ForegroundWindowPlugin.getForegroundWindowInfo(
+          targetHwnd: window.hwnd);
     } catch (_) {}
     String newAppId = activeInfo?.appId ?? '';
     String newProgramName = activeInfo?.programName ?? '';
