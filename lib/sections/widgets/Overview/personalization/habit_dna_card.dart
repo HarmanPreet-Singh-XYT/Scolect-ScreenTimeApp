@@ -19,7 +19,7 @@ class HabitDNACard extends StatelessWidget {
         : '${avgMins}m';
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: theme.micaBackgroundColor,
         borderRadius: BorderRadius.circular(8),
@@ -29,6 +29,7 @@ class HabitDNACard extends StatelessWidget {
         ),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
@@ -53,7 +54,7 @@ class HabitDNACard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           // Grid of stats
           _GridRow(
             items: [
@@ -71,7 +72,7 @@ class HabitDNACard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           _GridRow(
             items: [
               _Stat(
@@ -88,7 +89,7 @@ class HabitDNACard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 6),
           _GridRow(
             items: [
               _Stat(
@@ -106,7 +107,7 @@ class HabitDNACard extends StatelessWidget {
             ],
           ),
           if (profile.mostCommonDistractionApp != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             _DistractionBadge(
               appName: profile.mostCommonDistractionApp!,
               theme: theme,

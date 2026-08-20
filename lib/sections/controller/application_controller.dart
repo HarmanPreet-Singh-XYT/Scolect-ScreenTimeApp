@@ -605,6 +605,10 @@ class BackgroundAppTracker {
     String newAppId = activeInfo?.appId ?? '';
     String newProgramName = activeInfo?.programName ?? '';
 
+    final currentTitle = (activeInfo?.windowTitle.isNotEmpty ?? false)
+        ? activeInfo!.windowTitle
+        : window.windowTitle;
+
     // A genuinely resolved appId — either a real AUMID (packaged/UWP apps
     // hosted under RuntimeBroker.exe, ApplicationFrameHost.exe, etc.) or a
     // real executable path — is always more stable than anything derived
@@ -614,15 +618,19 @@ class BackgroundAppTracker {
     // which has no AUMID or accessible exe path.
     const unresolvedAppIdSentinels = {'', 'unknown'};
     if (unresolvedAppIdSentinels.contains(newAppId.toLowerCase())) {
-      final sanitized = _sanitizeWindowTitle(window.windowTitle);
+      final sanitized = _sanitizeWindowTitle(currentTitle);
       newProgramName = sanitized;
       newAppId = sanitized;
     } else if (newProgramName == "SearchHost" ||
-        newProgramName == "Application Frame Host") {
+        newProgramName == "Application Frame Host" ||
+        newProgramName == "ApplicationFrameHost") {
       // We do have a resolved appId (kept as-is above), but the display
       // name resolved to a shell-host label rather than anything
       // meaningful — use the window title for display purposes only.
-      newProgramName = _sanitizeWindowTitle(window.windowTitle);
+      final sanitized = _sanitizeWindowTitle(currentTitle);
+      if (sanitized.isNotEmpty) {
+        newProgramName = sanitized;
+      }
     }
 
     if (newProgramName == "Productive ScreenTime") return;

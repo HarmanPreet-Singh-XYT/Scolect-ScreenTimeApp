@@ -18,6 +18,7 @@ void main() {
         processId: 1234,
         parentProcessId: 5678,
         parentProcessName: 'explorer.exe',
+        appId: r'C:\Users\user\AppData\Local\Programs\Microsoft VS Code\Code.exe',
       );
 
       expect(info.windowTitle, 'Visual Studio Code');
@@ -28,6 +29,8 @@ void main() {
       expect(info.processId, 1234);
       expect(info.parentProcessId, 5678);
       expect(info.parentProcessName, 'explorer.exe');
+      expect(info.appId,
+          r'C:\Users\user\AppData\Local\Programs\Microsoft VS Code\Code.exe');
     });
 
     test('WindowInfo.unknown() returns safe fallback values', () {
@@ -40,6 +43,7 @@ void main() {
       expect(info.processId, 0);
       expect(info.parentProcessId, 0);
       expect(info.parentProcessName, 'Unknown');
+      expect(info.appId, 'unknown');
     });
 
     test('toString() includes all key fields', () {
@@ -51,6 +55,7 @@ void main() {
         processId: 100,
         parentProcessId: 200,
         parentProcessName: 'explorer.exe',
+        appId: r'C:\Windows\notepad.exe',
       );
 
       final str = info.toString();
@@ -69,6 +74,7 @@ void main() {
         processId: 42,
         parentProcessId: 1,
         parentProcessName: 'System',
+        appId: 'app.exe',
       );
       const b = WindowInfo(
         windowTitle: 'App',
@@ -78,6 +84,7 @@ void main() {
         processId: 42,
         parentProcessId: 1,
         parentProcessName: 'System',
+        appId: 'app.exe',
       );
 
       expect(a.toString(), equals(b.toString()));

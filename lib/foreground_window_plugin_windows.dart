@@ -21,8 +21,25 @@ const int _kInvalidHandleValue = -1;
 typedef _GetForegroundWindowN = Pointer<Void> Function();
 typedef _GetForegroundWindowD = Pointer<Void> Function();
 
-typedef _GetWindowTextN = Int32 Function(Pointer<Void>, Pointer<Char>, Int32);
-typedef _GetWindowTextD = int Function(Pointer<Void>, Pointer<Char>, int);
+typedef _GetWindowTextWN = Int32 Function(
+    Pointer<Void>, Pointer<Utf16>, Int32);
+typedef _GetWindowTextWD = int Function(
+    Pointer<Void>, Pointer<Utf16>, int);
+
+typedef _GetClassNameWN = Int32 Function(
+    Pointer<Void>, Pointer<Utf16>, Int32);
+typedef _GetClassNameWD = int Function(
+    Pointer<Void>, Pointer<Utf16>, int);
+
+typedef _FindWindowExWN = Pointer<Void> Function(
+    Pointer<Void>, Pointer<Void>, Pointer<Utf16>, Pointer<Utf16>);
+typedef _FindWindowExWD = Pointer<Void> Function(
+    Pointer<Void>, Pointer<Void>, Pointer<Utf16>, Pointer<Utf16>);
+
+typedef _QueryFullProcessImageNameWN = Int32 Function(
+    Pointer<Void>, Uint32, Pointer<Utf16>, Pointer<Uint32>);
+typedef _QueryFullProcessImageNameWD = int Function(
+    Pointer<Void>, int, Pointer<Utf16>, Pointer<Uint32>);
 
 typedef _GetWindowThreadProcessIdN = Int32 Function(
     Pointer<Void>, Pointer<Uint32>);
@@ -295,8 +312,14 @@ class ForegroundWindowPlugin {
       _user32.lookupFunction<_GetForegroundWindowN, _GetForegroundWindowD>(
           'GetForegroundWindow');
 
-  static final _GetWindowTextD _getWindowText = _user32
-      .lookupFunction<_GetWindowTextN, _GetWindowTextD>('GetWindowTextA');
+  static final _GetWindowTextWD _getWindowTextW = _user32
+      .lookupFunction<_GetWindowTextWN, _GetWindowTextWD>('GetWindowTextW');
+
+  static final _GetClassNameWD _getClassNameW = _user32
+      .lookupFunction<_GetClassNameWN, _GetClassNameWD>('GetClassNameW');
+
+  static final _FindWindowExWD _findWindowExW = _user32
+      .lookupFunction<_FindWindowExWN, _FindWindowExWD>('FindWindowExW');
 
   static final _GetWindowThreadProcessIdD _getWindowThreadProcessId = _user32
       .lookupFunction<_GetWindowThreadProcessIdN, _GetWindowThreadProcessIdD>(
@@ -304,6 +327,10 @@ class ForegroundWindowPlugin {
 
   static final _OpenProcessD _openProcess =
       _kernel32.lookupFunction<_OpenProcessN, _OpenProcessD>('OpenProcess');
+
+  static final _QueryFullProcessImageNameWD _queryFullProcessImageNameW =
+      _kernel32.lookupFunction<_QueryFullProcessImageNameWN,
+          _QueryFullProcessImageNameWD>('QueryFullProcessImageNameW');
 
   static final _GetModuleFileNameExAD _getModuleFileNameExA =
       _psapi.lookupFunction<_GetModuleFileNameExAN, _GetModuleFileNameExAD>(
@@ -685,6 +712,34 @@ class ForegroundWindowPlugin {
     }
   }
 
+  /// Queries the full executable image path for [processId] using
+  /// QueryFullProcessImageNameW opened with PROCESS_QUERY_LIMITED_INFORMATION.
+  /// Works reliably for standard, sandboxed (UWP/AppContainer), and elevated processes.
+  static String _queryProcessPath(int processId) {
+    if (processId == 0 || processId == 4) return 'System';
+    final hProcess =
+        _openProcess(_kProcessQueryLimitedInformation, 0, processId);
+    if (hProcess.address == 0) return '';
+    try {
+      final buf = calloc<Uint16>(1024).cast<Utf16>();
+      final sizePtr = calloc<Uint32>();
+      sizePtr.value = 1024;
+      try {
+        final result =
+            _queryFullProcessImageNameW(hProcess, 0, buf, sizePtr);
+        if (result != 0) {
+          return buf.toDartString();
+        }
+        return '';
+      } finally {
+        calloc.free(buf);
+        calloc.free(sizePtr);
+      }
+    } finally {
+      _closeHandle(hProcess);
+    }
+  }
+
   /// Step 1 (cheap): returns raw window/process info with NO disk I/O.
   /// Only calls Win32 APIs that are in-memory (no version resource reads,
   /// no CreateToolhelp32Snapshot).
@@ -704,87 +759,142 @@ class ForegroundWindowPlugin {
         : _getForegroundWindow();
     if (hwnd.address == 0) return null;
 
-    // ── Process ID ──
+    // ── Process ID of top-level window ──
     final processIdPtr = calloc<Uint32>();
-    late final int processId;
+    late final int rawPid;
     try {
       _getWindowThreadProcessId(hwnd, processIdPtr);
-      processId = processIdPtr.value;
+      rawPid = processIdPtr.value;
     } finally {
       calloc.free(processIdPtr);
     }
-    if (processId == 0) return null;
+    if (rawPid == 0) return null;
 
-    // ── Window title ──
-    final titlePtr = calloc<Char>(_kMaxTitle);
+    // ── Window title (Unicode) ──
+    final titlePtr = calloc<Uint16>(_kMaxTitle).cast<Utf16>();
     late final String windowTitle;
     try {
-      final len = _getWindowText(hwnd, titlePtr, _kMaxTitle);
-      windowTitle = len > 0 ? _safeDartString(titlePtr, length: len) : '';
+      final len = _getWindowTextW(hwnd, titlePtr, _kMaxTitle);
+      windowTitle = len > 0 ? titlePtr.toDartString() : '';
     } finally {
       calloc.free(titlePtr);
     }
 
-    // ── Exe path (in-memory, no disk read) ──
-    String processPath = '';
+    // ── Window class name (Unicode) ──
+    final classPtr = calloc<Uint16>(256).cast<Utf16>();
+    late final String windowClass;
+    try {
+      final len = _getClassNameW(hwnd, classPtr, 256);
+      windowClass = len > 0 ? classPtr.toDartString() : '';
+    } finally {
+      calloc.free(classPtr);
+    }
+
+    int targetPid = rawPid;
+    Pointer<Void> targetHwnd = hwnd;
+
+    // ── Check for ApplicationFrameWindow (UWP host) ──
+    // In Windows 10/11, ApplicationFrameHost.exe hosts classic UWP / XAML apps.
+    // The top-level window is class "ApplicationFrameWindow" (owned by ApplicationFrameHost.exe).
+    // The actual UWP app lives in a child window ("Windows.UI.Core.CoreWindow")
+    // owned by the real app process (e.g. Screenbox.exe, CalculatorApp.exe, etc.).
+    if (windowClass.toLowerCase() == 'applicationframewindow') {
+      final coreClassPtr = 'Windows.UI.Core.CoreWindow'.toNativeUtf16();
+      try {
+        final childHwnd = _findWindowExW(hwnd, nullptr, coreClassPtr, nullptr);
+        if (childHwnd.address != 0) {
+          final childPidPtr = calloc<Uint32>();
+          try {
+            _getWindowThreadProcessId(childHwnd, childPidPtr);
+            if (childPidPtr.value != 0 && childPidPtr.value != rawPid) {
+              targetPid = childPidPtr.value;
+              targetHwnd = childHwnd;
+            }
+          } finally {
+            calloc.free(childPidPtr);
+          }
+        }
+      } finally {
+        calloc.free(coreClassPtr);
+      }
+    }
+
+    // ── Exe path via QueryFullProcessImageNameW (Unicode, works with limited query) ──
+    String processPath = _queryProcessPath(targetPid);
     String executableName = 'Unknown';
     bool elevated = false;
 
-    final hProcess =
-        _openProcess(_kProcessQueryInformation | _kProcessVMRead, 0, processId);
-
-    if (hProcess.address != 0) {
-      try {
-        final namePtr = calloc<Char>(_kMaxPath);
-        try {
-          final result =
-              _getModuleFileNameExA(hProcess, nullptr, namePtr, _kMaxPath);
-          if (result > 0) {
-            processPath = _safeDartString(namePtr, length: result);
-            executableName = _extractExecutableName(processPath);
-          }
-        } finally {
-          calloc.free(namePtr);
-        }
-        // Parent PID and parent name resolved on the main isolate with caching.
-      } finally {
-        _closeHandle(hProcess);
-      }
+    if (processPath.isNotEmpty) {
+      executableName = _extractExecutableName(processPath);
     } else {
-      elevated = true;
+      // Fallback: try rawPid if targetPid had no path
+      if (targetPid != rawPid) {
+        processPath = _queryProcessPath(rawPid);
+        if (processPath.isNotEmpty) {
+          executableName = _extractExecutableName(processPath);
+        }
+      }
+      if (processPath.isEmpty) {
+        elevated = true;
+      }
     }
 
-    // UWP/packaged apps (Screenbox, Photos, Calculator, etc.) run hosted
-    // inside a shared broker/host process — historically ApplicationFrameHost.exe
-    // for classic UWP XAML apps, but modern packaged apps (including Screenbox,
-    // a WinUI3 app) are commonly hosted under RuntimeBroker.exe instead. Either
-    // way, every such window shares that host's exe path, so it can't
-    // distinguish one hosted app from another, let alone stay stable as the
-    // host's window title changes with content (e.g. a video player's title
-    // showing the current filename). The AUMID is per-window and identifies
-    // the actual packaged app, not the host.
-    //
-    // RuntimeBroker.exe is typically a protected process OpenProcess can't
-    // open (elevated == true, executableName stays 'Unknown'), so this can't
-    // be gated on executableName alone — SHGetPropertyStoreForWindow operates
-    // on the window handle directly and doesn't require a process handle, so
-    // attempt it whenever the exe path is empty/unresolved OR the resolved
-    // executable is a known packaged-app host. An empty result just means
-    // "this window has no AUMID" (i.e. it's a normal app), so this is safe
-    // to attempt broadly rather than trying to enumerate every possible host.
-    const knownPackagedAppHosts = {
-      'applicationframehost.exe',
-      'runtimebroker.exe',
-    };
+    // If still ApplicationFrameHost after child search, check if child can be found again
+    if (processPath.toLowerCase().endsWith('applicationframehost.exe') &&
+        targetPid == rawPid) {
+      final coreClassPtr = 'Windows.UI.Core.CoreWindow'.toNativeUtf16();
+      try {
+        final childHwnd = _findWindowExW(hwnd, nullptr, coreClassPtr, nullptr);
+        if (childHwnd.address != 0) {
+          final childPidPtr = calloc<Uint32>();
+          try {
+            _getWindowThreadProcessId(childHwnd, childPidPtr);
+            if (childPidPtr.value != 0 && childPidPtr.value != rawPid) {
+              targetPid = childPidPtr.value;
+              targetHwnd = childHwnd;
+              final childPath = _queryProcessPath(targetPid);
+              if (childPath.isNotEmpty) {
+                processPath = childPath;
+                executableName = _extractExecutableName(processPath);
+              }
+            }
+          } finally {
+            calloc.free(childPidPtr);
+          }
+        }
+      } finally {
+        calloc.free(coreClassPtr);
+      }
+    }
+
+    // ── AUMID lookup ──
+    final lowerExe = executableName.toLowerCase();
+    final lowerPath = processPath.toLowerCase();
+    final isPackagedOrBroker = processPath.isEmpty ||
+        targetPid != rawPid ||
+        lowerExe == 'applicationframehost' ||
+        lowerExe == 'runtimebroker' ||
+        lowerExe == 'searchhost' ||
+        lowerPath.endsWith('applicationframehost.exe') ||
+        lowerPath.endsWith('runtimebroker.exe') ||
+        lowerPath.endsWith('searchhost.exe') ||
+        lowerPath.contains(r'\windowsapps\') ||
+        lowerPath.contains(r'\systemapps\');
+
     String aumid = '';
-    if (processPath.isEmpty ||
-        knownPackagedAppHosts.contains(executableName.toLowerCase())) {
-      // Try the simpler, non-COM API first (opens with QUERY_LIMITED_
-      // INFORMATION, which succeeds even on protected hosts like
-      // RuntimeBroker.exe). Fall back to the property-store/COM route only
-      // if that doesn't yield anything.
-      aumid = _getAumidForProcess(processId);
-      if (aumid.isEmpty) {
+    if (isPackagedOrBroker) {
+      // 1. Try querying the target PID
+      aumid = _getAumidForProcess(targetPid);
+      // 2. If targetPid != rawPid and empty, try rawPid
+      if (aumid.isEmpty && targetPid != rawPid) {
+        aumid = _getAumidForProcess(rawPid);
+      }
+      // 3. Fallback to COM SHGetPropertyStoreForWindow on target HWND
+      if (aumid.isEmpty && targetHwnd.address != 0) {
+        aumid = _getAumidForWindow(targetHwnd);
+      }
+      // 4. Fallback to top-level HWND
+      if (aumid.isEmpty && targetHwnd != hwnd) {
         aumid = _getAumidForWindow(hwnd);
       }
     }
@@ -793,7 +903,7 @@ class ForegroundWindowPlugin {
       'processPath': processPath,
       'windowTitle': windowTitle,
       'executableName': executableName,
-      'processId': processId,
+      'processId': targetPid,
       'elevated': elevated,
       'aumid': aumid,
     };
@@ -1039,22 +1149,9 @@ class ForegroundWindowPlugin {
   /// Returns the full executable path of the process with [processId],
   /// or a descriptive fallback string.
   static String _getProcessNameById(int processId) {
-    if (processId == 0) return 'System';
-    if (processId == 4) return 'System'; // Windows kernel process
-
-    final hProcess =
-        _openProcess(_kProcessQueryInformation | _kProcessVMRead, 0, processId);
-    if (hProcess.address == 0) return 'Unknown';
-
-    final namePtr = calloc<Char>(_kMaxPath);
-    try {
-      final result =
-          _getModuleFileNameExA(hProcess, nullptr, namePtr, _kMaxPath);
-      if (result > 0) return _safeDartString(namePtr, length: result);
-      return 'Unknown';
-    } finally {
-      calloc.free(namePtr);
-      _closeHandle(hProcess);
-    }
+    if (processId == 0 || processId == 4) return 'System';
+    final path = _queryProcessPath(processId);
+    if (path.isNotEmpty) return path;
+    return 'Unknown';
   }
 }
