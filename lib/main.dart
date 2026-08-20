@@ -21,6 +21,7 @@ import './sections/settings.dart';
 import './sections/help.dart';
 import './sections/browser.dart';
 import './sections/web_dashboard.dart';
+import './sections/UI sections/Privacy/private_mode_toggle_button.dart';
 import 'sections/controller/settings_data_controller.dart';
 import './adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -1618,6 +1619,8 @@ class EnhancedTitleBar extends StatelessWidget {
                 ),
               ),
             ),
+            PrivateModeToggleButton(isDark: isDark),
+            if (isMacOS) const SizedBox(width: AppDesign.spacingSm),
             if (!isMacOS) EnhancedWindowButtons(isDark: isDark),
           ],
         ),

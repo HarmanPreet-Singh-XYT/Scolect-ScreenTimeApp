@@ -181,6 +181,11 @@ class SettingsManager {
           "passwordSalt": "",
           "includePrivateInTotals": true,
           "sessionTimeoutMinutes": 5,
+          "backupCodeHash": "",
+          "backupCodeSalt": "",
+          "securityQuestion": "",
+          "securityAnswerHash": "",
+          "securityAnswerSalt": "",
         },
         "tracking": {
           "mode": TrackingModeOptions.defaultMode,

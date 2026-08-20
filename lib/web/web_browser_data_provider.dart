@@ -13,6 +13,7 @@
 import '../sections/controller/data_controllers/browser_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
 import '../sections/controller/settings_data_controller.dart';
+import '../utils/private_mode_access.dart';
 import 'chrome_storage_interop.dart';
 import 'extension_settings.dart';
 
@@ -152,6 +153,9 @@ class WebBrowserDataProvider {
         ));
       }
     }
+
+    final showPrivate = shouldShowPrivateOnly();
+    sites.removeWhere((s) => s.isPrivate != showPrivate);
 
     sites.sort((a, b) => b.timeSpent.compareTo(a.timeSpent));
 

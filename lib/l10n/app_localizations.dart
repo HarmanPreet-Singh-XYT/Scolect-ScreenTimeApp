@@ -262,6 +262,12 @@ abstract class AppLocalizations {
   /// **'Help'**
   String get navHelp;
 
+  /// Navigation item for the isolated Private Mode page
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get navPrivate;
+
   /// No description provided for @helpTitle.
   ///
   /// In en, this message translates to:
@@ -6840,6 +6846,18 @@ abstract class AppLocalizations {
   /// **'Hide private'**
   String get privateModeHideAction;
 
+  /// TRANSLATE: Secondary hint appended to the titlebar toggle's tooltip, telling the user right-click/long-press ends the session immediately
+  ///
+  /// In en, this message translates to:
+  /// **'Right-click to lock now'**
+  String get privateModeLockHint;
+
+  /// TRANSLATE: Description under the Settings toggle that switches every page to private-only data
+  ///
+  /// In en, this message translates to:
+  /// **'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.'**
+  String get privateModeShowOnlyDescription;
+
   /// TRANSLATE: Title of the Private Mode settings card
   ///
   /// In en, this message translates to:
@@ -6929,6 +6947,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reset Password'**
   String get privateModeResetPasswordAction;
+
+  /// TRANSLATE: Hyperlink button on the unlock dialog that opens the recovery flow
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get privateModeForgotPassword;
+
+  /// TRANSLATE: Title of the recovery dialog offering backup code or security question recovery
+  ///
+  /// In en, this message translates to:
+  /// **'Recover Private Mode'**
+  String get privateModeRecoveryTitle;
+
+  /// TRANSLATE: Tab/toggle label for recovering via backup code
+  ///
+  /// In en, this message translates to:
+  /// **'Backup code'**
+  String get privateModeRecoveryTabBackupCode;
+
+  /// TRANSLATE: Tab/toggle label for recovering via security question
+  ///
+  /// In en, this message translates to:
+  /// **'Security question'**
+  String get privateModeRecoveryTabSecurityQuestion;
+
+  /// TRANSLATE: Placeholder text for the backup code input field during recovery
+  ///
+  /// In en, this message translates to:
+  /// **'XXXX-XXXX-XXXX-XXXX'**
+  String get privateModeBackupCodePlaceholder;
+
+  /// TRANSLATE: Placeholder text for the security answer input field during recovery
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer'**
+  String get privateModeSecurityAnswerPlaceholder;
+
+  /// TRANSLATE: Error message shown when the backup code or security answer entered during recovery is incorrect
+  ///
+  /// In en, this message translates to:
+  /// **'That didn\'t match. Please try again.'**
+  String get privateModeRecoveryIncorrect;
+
+  /// TRANSLATE: Title shown after a successful recovery, before prompting to set a new password
+  ///
+  /// In en, this message translates to:
+  /// **'Identity verified'**
+  String get privateModeRecoverySuccessTitle;
+
+  /// TRANSLATE: Description shown after a successful recovery, explaining next steps
+  ///
+  /// In en, this message translates to:
+  /// **'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.'**
+  String get privateModeRecoverySuccessDescription;
+
+  /// TRANSLATE: Title of the recovery setup dialog shown after setting/changing a password
+  ///
+  /// In en, this message translates to:
+  /// **'Set Up Recovery'**
+  String get privateModeSetupRecoveryTitle;
+
+  /// TRANSLATE: Title of the step showing the newly generated backup code
+  ///
+  /// In en, this message translates to:
+  /// **'Your backup code'**
+  String get privateModeBackupCodeGeneratedTitle;
+
+  /// TRANSLATE: Warning text explaining the backup code is shown only once
+  ///
+  /// In en, this message translates to:
+  /// **'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.'**
+  String get privateModeBackupCodeWarning;
+
+  /// TRANSLATE: Button label to copy the backup code to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get privateModeCopyBackupCode;
+
+  /// TRANSLATE: Confirmation message shown after copying the backup code to the clipboard
+  ///
+  /// In en, this message translates to:
+  /// **'Backup code copied'**
+  String get privateModeBackupCodeCopied;
+
+  /// TRANSLATE: Button label to download the backup code as a text file
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get privateModeDownloadBackupCode;
+
+  /// TRANSLATE: Label above the security question picker in the recovery setup dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Security question'**
+  String get privateModeSecurityQuestionLabel;
+
+  /// TRANSLATE: Label above the security answer input in the recovery setup dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Your answer'**
+  String get privateModeSecurityAnswerLabel;
+
+  /// TRANSLATE: Option in the security question picker letting the user write a custom question
+  ///
+  /// In en, this message translates to:
+  /// **'Write my own question…'**
+  String get privateModeSecurityQuestionCustomOption;
+
+  /// TRANSLATE: Placeholder/prompt text for the security question picker
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a security question'**
+  String get privateModeChooseSecurityQuestion;
+
+  /// TRANSLATE: Validation error when submitting an empty security answer during recovery setup
+  ///
+  /// In en, this message translates to:
+  /// **'Answer cannot be empty'**
+  String get privateModeSecurityAnswerEmpty;
+
+  /// TRANSLATE: Confirmation checkbox label required before the backup-code setup dialog can be dismissed
+  ///
+  /// In en, this message translates to:
+  /// **'I\'ve saved this backup code'**
+  String get privateModeIveSavedThis;
+
+  /// TRANSLATE: Setting row title for viewing/regenerating recovery options (backup code + security question)
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery Options'**
+  String get privateModeRecoveryOptionsTitle;
+
+  /// TRANSLATE: Description under the Recovery Options setting row
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate your backup code and security question without changing your password.'**
+  String get privateModeRecoveryOptionsDescription;
+
+  /// TRANSLATE: Button label to regenerate recovery options (backup code + security question)
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get privateModeRegenerateRecoveryAction;
+
+  /// TRANSLATE: Preset security question option
+  ///
+  /// In en, this message translates to:
+  /// **'What was the name of your first pet?'**
+  String get privateModeQuestionPetName;
+
+  /// TRANSLATE: Preset security question option
+  ///
+  /// In en, this message translates to:
+  /// **'In what city were you born?'**
+  String get privateModeQuestionBirthCity;
+
+  /// TRANSLATE: Preset security question option
+  ///
+  /// In en, this message translates to:
+  /// **'What was the name of your first school?'**
+  String get privateModeQuestionFirstSchool;
+
+  /// TRANSLATE: Preset security question option
+  ///
+  /// In en, this message translates to:
+  /// **'What is your mother\'s maiden name?'**
+  String get privateModeQuestionMotherMaidenName;
+
+  /// TRANSLATE: Preset security question option
+  ///
+  /// In en, this message translates to:
+  /// **'What is your favorite book?'**
+  String get privateModeQuestionFavoriteBook;
+
+  /// TRANSLATE: Shown on the Private section when Private Mode hasn't been set up yet
+  ///
+  /// In en, this message translates to:
+  /// **'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.'**
+  String get privateModeNotSetUpDescription;
+
+  /// TRANSLATE: Button that navigates to Settings to set up Private Mode
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Settings'**
+  String get privateModeGoToSettingsAction;
+
+  /// TRANSLATE: Shown on the Private section's lock screen
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock to view your private apps and websites.'**
+  String get privateModeLockedDescription;
+
+  /// TRANSLATE: Subtitle shown above the private apps/websites list once unlocked
+  ///
+  /// In en, this message translates to:
+  /// **'Apps and websites you\'ve marked private.'**
+  String get privateModeUnlockedDescription;
+
+  /// TRANSLATE: Empty state shown when unlocked but no private-tagged items have any usage today
+  ///
+  /// In en, this message translates to:
+  /// **'No private apps or websites tracked yet. Mark an item as private from its details to see it here.'**
+  String get privateModeNoItemsDescription;
+
+  /// TRANSLATE: Stat tile label for the count of private apps/websites
+  ///
+  /// In en, this message translates to:
+  /// **'Private Items'**
+  String get privateModeItemsCount;
 }
 
 class _AppLocalizationsDelegate

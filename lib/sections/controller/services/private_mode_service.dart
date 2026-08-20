@@ -19,9 +19,15 @@ class PrivateModeController extends ChangeNotifier {
   static const _saltKey = 'privacy.passwordSalt';
   static const _includeInTotalsKey = 'privacy.includePrivateInTotals';
   static const _timeoutMinutesKey = 'privacy.sessionTimeoutMinutes';
+  static const _backupCodeHashKey = 'privacy.backupCodeHash';
+  static const _backupCodeSaltKey = 'privacy.backupCodeSalt';
+  static const _securityQuestionKey = 'privacy.securityQuestion';
+  static const _securityAnswerHashKey = 'privacy.securityAnswerHash';
+  static const _securityAnswerSaltKey = 'privacy.securityAnswerSalt';
 
   Timer? _relockTimer;
   DateTime? _unlockExpiry;
+  bool _showPrivateOnly = false;
 
   bool get isSetUp {
     final hash = SettingsManager().getSetting(_hashKey) as String?;
@@ -33,6 +39,21 @@ class PrivateModeController extends ChangeNotifier {
     if (DateTime.now().isBefore(_unlockExpiry!)) return true;
     lock();
     return false;
+  }
+
+  /// Whether existing pages (Overview, Applications, Browser, Reports,
+  /// Alerts & Limits) should show ONLY private-tagged items in place of
+  /// public ones. Driven by the titlebar toggle — distinct from [isUnlocked]
+  /// since unlocking and switching the view are two separate user actions
+  /// after the initial auto-switch-on-unlock.
+  bool get showPrivateOnly => isUnlocked && _showPrivateOnly;
+
+  /// Switches the view between public-only and private-only. Caller must
+  /// already be unlocked — the titlebar toggle unlocks first, then calls
+  /// this with `true` as part of the same interaction.
+  void setShowPrivateOnly(bool value) {
+    _showPrivateOnly = value;
+    notifyListeners();
   }
 
   bool get includePrivateInTotals =>
@@ -60,6 +81,9 @@ class PrivateModeController extends ChangeNotifier {
         .join();
   }
 
+  /// Sets/changes the Private Mode password. Does NOT itself (re)generate
+  /// backup code/security question — that's a separate explicit step via
+  /// [setRecoveryOptions], normally shown right after this succeeds.
   Future<void> setPassword(String password) async {
     final salt = _generateSalt();
     SettingsManager().updateSetting(_saltKey, salt);
@@ -68,12 +92,96 @@ class PrivateModeController extends ChangeNotifier {
   }
 
   /// Clears the password only — items already marked private stay private,
-  /// just inaccessible until a new password is set. There is no recovery
-  /// flow, matching the app's local-only, no-account threat model.
+  /// just inaccessible until a new password is set. Recovery is possible via
+  /// a backup code or security question, see [recoverWithBackupCode] /
+  /// [recoverWithSecurityAnswer].
   Future<void> resetPassword() async {
     SettingsManager().updateSetting(_hashKey, '');
     SettingsManager().updateSetting(_saltKey, '');
     lock();
+  }
+
+  /// Generates a human-friendly one-time backup code, e.g. `AB12-CD34-EF56-GH78`.
+  /// Returned in plaintext for the caller to display once — only its salted
+  /// hash is ever persisted.
+  String generateBackupCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    final rand = Random.secure();
+    String group() =>
+        List.generate(4, (_) => chars[rand.nextInt(chars.length)]).join();
+    return '${group()}-${group()}-${group()}-${group()}';
+  }
+
+  /// Persists a freshly generated backup code + security question/answer,
+  /// hashing+salting the code and answer (question text is stored in clear
+  /// since it must be displayed during recovery, not verified).
+  Future<void> setRecoveryOptions({
+    required String backupCode,
+    required String securityQuestion,
+    required String securityAnswer,
+  }) async {
+    final codeSalt = _generateSalt();
+    final answerSalt = _generateSalt();
+    SettingsManager().updateSetting(_backupCodeSaltKey, codeSalt);
+    SettingsManager()
+        .updateSetting(_backupCodeHashKey, _hash(backupCode, codeSalt));
+    SettingsManager().updateSetting(_securityQuestionKey, securityQuestion);
+    SettingsManager().updateSetting(_securityAnswerSaltKey, answerSalt);
+    SettingsManager().updateSetting(
+        _securityAnswerHashKey, _hash(securityAnswer, answerSalt));
+    notifyListeners();
+  }
+
+  /// The stored security question text, or null if recovery hasn't been set up.
+  String? get securityQuestion {
+    final q = SettingsManager().getSetting(_securityQuestionKey) as String?;
+    return (q == null || q.isEmpty) ? null : q;
+  }
+
+  /// Whether a backup code has been generated and not yet consumed.
+  bool get hasBackupCode {
+    final hash = SettingsManager().getSetting(_backupCodeHashKey) as String?;
+    return hash != null && hash.isNotEmpty;
+  }
+
+  /// Verifies [code] against the stored backup code. On success, clears the
+  /// password (same effect as [resetPassword]) AND consumes the backup code
+  /// so it cannot be reused — the user must set a new password and new
+  /// recovery options immediately after.
+  bool recoverWithBackupCode(String code) {
+    final storedHash =
+        SettingsManager().getSetting(_backupCodeHashKey) as String? ?? '';
+    final storedSalt =
+        SettingsManager().getSetting(_backupCodeSaltKey) as String? ?? '';
+    if (storedHash.isEmpty || _hash(code, storedSalt) != storedHash) {
+      return false;
+    }
+    SettingsManager().updateSetting(_hashKey, '');
+    SettingsManager().updateSetting(_saltKey, '');
+    SettingsManager().updateSetting(_backupCodeHashKey, '');
+    SettingsManager().updateSetting(_backupCodeSaltKey, '');
+    lock();
+    return true;
+  }
+
+  /// Verifies [answer] against the stored security answer. On success,
+  /// clears the password AND the now-consumed backup code (same as
+  /// [recoverWithBackupCode]) so the user must set both a new password and
+  /// new recovery options immediately after.
+  bool recoverWithSecurityAnswer(String answer) {
+    final storedHash =
+        SettingsManager().getSetting(_securityAnswerHashKey) as String? ?? '';
+    final storedSalt =
+        SettingsManager().getSetting(_securityAnswerSaltKey) as String? ?? '';
+    if (storedHash.isEmpty || _hash(answer, storedSalt) != storedHash) {
+      return false;
+    }
+    SettingsManager().updateSetting(_hashKey, '');
+    SettingsManager().updateSetting(_saltKey, '');
+    SettingsManager().updateSetting(_backupCodeHashKey, '');
+    SettingsManager().updateSetting(_backupCodeSaltKey, '');
+    lock();
+    return true;
   }
 
   bool unlock(String password) {
@@ -103,6 +211,7 @@ class PrivateModeController extends ChangeNotifier {
     _relockTimer?.cancel();
     _relockTimer = null;
     _unlockExpiry = null;
+    _showPrivateOnly = false;
     notifyListeners();
   }
 }

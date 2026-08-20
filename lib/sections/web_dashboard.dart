@@ -30,6 +30,7 @@ import 'widgets/Browser/browser_extension_status.dart';
 import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_shared.dart';
 import 'package:screentime/onboarding/web_onboarding_screen.dart';
+import 'UI sections/Privacy/private_mode_toggle_button.dart';
 
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
@@ -477,6 +478,9 @@ class _WebTitleBar extends StatelessWidget {
 
           // Theme Toggle
           _ThemeToggleButton(),
+
+          // Private Mode Toggle
+          PrivateModeToggleButton(isDark: isDark),
         ],
       ),
     );
@@ -573,17 +577,17 @@ class _WebSidebar extends StatelessWidget {
   });
 
   List<_WebNavItem> _buildNavItems() {
-    return const [
-      _WebNavItem(icon: FluentIcons.home, label: 'Overview', index: 0),
-      _WebNavItem(
+    return [
+      const _WebNavItem(icon: FluentIcons.home, label: 'Overview', index: 0),
+      const _WebNavItem(
           icon: FluentIcons.globe, label: 'Websites', index: 1),
-      _WebNavItem(
+      const _WebNavItem(
           icon: FluentIcons.report_document, label: 'Reports', index: 2),
-      _WebNavItem(icon: FluentIcons.timer, label: 'Limits', index: 3),
-      _WebNavItem(icon: FluentIcons.focus, label: 'Focus Mode', index: 4),
-      _WebNavItem.separator(),
-      _WebNavItem(icon: FluentIcons.settings, label: 'Settings', index: 5),
-      _WebNavItem(icon: FluentIcons.chat_bot, label: 'Help', index: 6),
+      const _WebNavItem(icon: FluentIcons.timer, label: 'Limits', index: 3),
+      const _WebNavItem(icon: FluentIcons.focus, label: 'Focus Mode', index: 4),
+      const _WebNavItem.separator(),
+      const _WebNavItem(icon: FluentIcons.settings, label: 'Settings', index: 5),
+      const _WebNavItem(icon: FluentIcons.chat_bot, label: 'Help', index: 6),
     ];
   }
 

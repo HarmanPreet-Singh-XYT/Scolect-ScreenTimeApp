@@ -15,6 +15,9 @@ import 'widgets/Overview/personalization/narrative_card.dart';
 import 'widgets/Overview/personalization/insight_card.dart';
 import 'widgets/Overview/personalization/habit_dna_card.dart';
 import 'widgets/Overview/personalization/weekly_story_card.dart';
+import 'controller/services/private_mode_service.dart';
+import '../web/web_private_mode_service.dart'
+    if (dart.library.io) '../web/web_private_mode_service_stub.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -183,6 +186,10 @@ class _OverviewState extends State<Overview>
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
 
+  void _onPrivateModeChanged() {
+    if (mounted) _loadData();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -197,6 +204,12 @@ class _OverviewState extends State<Overview>
 
     _loadData();
 
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       mn.navigationState.registerRefreshCallback(_loadData);
       ChangelogModal.showIfNeeded(context);
@@ -206,6 +219,11 @@ class _OverviewState extends State<Overview>
   @override
   void dispose() {
     _fadeController.dispose();
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
     super.dispose();
   }
 

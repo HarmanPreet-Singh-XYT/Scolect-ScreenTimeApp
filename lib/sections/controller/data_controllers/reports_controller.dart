@@ -5,6 +5,7 @@ import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io)
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'focus_mode_data_controller.dart';
+import 'package:screentime/utils/private_mode_access.dart';
 
 // ============================================================
 // DATA MODELS
@@ -42,6 +43,11 @@ class AnalyticsSummary {
   /// Total screen time with private apps' time excluded, for when the
   /// "include private items in totals" setting is off.
   Duration get visibleScreenTime => totalScreenTime - privateAppsTime;
+
+  /// Only the private-tagged app/site entries, for the isolated Private
+  /// Mode section's reports view.
+  List<AppUsageSummary> get privateAppUsageDetails =>
+      appUsageDetails.where((a) => a.isPrivate).toList();
 }
 
 class DailyScreenTime {
@@ -282,30 +288,25 @@ class UsageAnalyticsController extends ChangeNotifier {
 
   /// OPTIMIZED: Single-pass computation for all analytics data
   AnalyticsSummary _computeAnalytics(_AnalyticsDateRange range) {
+    final showPrivate = shouldShowPrivateOnly();
+
     // ── Collect per-day data in a single date iteration ──
     final dailyScreenTimeData = <DailyScreenTime>[];
-    Duration totalScreenTime = Duration.zero;
-    Duration productiveTime = Duration.zero;
     int focusSessionsCount = 0;
 
-    // Per-app accumulators (built during date iteration)
+    // Per-app accumulators (built during date iteration). Whole-day totals
+    // (totalScreenTime, productiveTime) can't be used directly when the
+    // titlebar toggle is active — they're not app-scoped — so those are
+    // re-derived from appTotalUsage below instead.
     final appTotalUsage = <String, Duration>{};
     final categoryTotalUsage = <String, Duration>{};
+    final dailyPrivateUsage = <DateTime, Duration>{};
 
     final appNames = _dataStore.allAppNames;
 
     DateTime currentDate = range.startDate;
     while (!currentDate.isAfter(range.endDate)) {
-      // Daily screen time
-      final dayScreenTime = _dataStore.getTotalScreenTime(currentDate);
-      totalScreenTime += dayScreenTime;
-      dailyScreenTimeData
-          .add(DailyScreenTime(date: currentDate, screenTime: dayScreenTime));
-
-      // Productive time
-      productiveTime += _dataStore.getProductiveTime(currentDate);
-
-      // Focus sessions
+      // Focus sessions (not app-scoped; left as whole-day regardless of toggle)
       focusSessionsCount += _dataStore.getFocusSessionsCount(currentDate);
 
       // Per-app usage for this day
@@ -313,13 +314,23 @@ class UsageAnalyticsController extends ChangeNotifier {
         if (appName.startsWith('web:')) continue;
         final record = _dataStore.getAppUsage(appName, currentDate);
         if (record != null && record.timeSpent > Duration.zero) {
+          final metadata = _dataStore.getAppMetadata(appName);
+          final isPrivate = metadata?.isPrivate ?? false;
+          if (isPrivate) {
+            dailyPrivateUsage.update(
+              currentDate,
+              (existing) => existing + record.timeSpent,
+              ifAbsent: () => record.timeSpent,
+            );
+          }
+          if (isPrivate != showPrivate) continue;
+
           appTotalUsage.update(
             appName,
             (existing) => existing + record.timeSpent,
             ifAbsent: () => record.timeSpent,
           );
 
-          final metadata = _dataStore.getAppMetadata(appName);
           if (metadata != null) {
             categoryTotalUsage.update(
               metadata.category,
@@ -330,8 +341,23 @@ class UsageAnalyticsController extends ChangeNotifier {
         }
       }
 
+      // Daily screen time chart series: whole-day total when showing public
+      // data (matches "includePrivateInTotals" semantics elsewhere), or the
+      // private-only subset accumulated above when the toggle is on.
+      final dayScreenTime = showPrivate
+          ? (dailyPrivateUsage[currentDate] ?? Duration.zero)
+          : _dataStore.getTotalScreenTime(currentDate);
+      dailyScreenTimeData
+          .add(DailyScreenTime(date: currentDate, screenTime: dayScreenTime));
+
       currentDate = currentDate.add(const Duration(days: 1));
     }
+
+    final totalScreenTime = appTotalUsage.values
+        .fold(Duration.zero, (sum, d) => sum + d);
+    final productiveTime = showPrivate
+        ? totalScreenTime
+        : _sumProductiveTime(range.startDate, range.endDate);
 
     // ── Most used app from accumulated totals ──
     String mostUsedApp = 'None';
@@ -357,11 +383,8 @@ class UsageAnalyticsController extends ChangeNotifier {
 
     // ── App usage details sorted by time ──
     final appUsageDetails = <AppUsageSummary>[];
-    Duration privateAppsTime = Duration.zero;
     appTotalUsage.forEach((appName, totalTime) {
       final metadata = _dataStore.getAppMetadata(appName);
-      final isPrivate = metadata?.isPrivate ?? false;
-      if (isPrivate) privateAppsTime += totalTime;
       appUsageDetails.add(AppUsageSummary(
         appName: appName,
         siteName: metadata?.siteName ?? '',
@@ -369,17 +392,19 @@ class UsageAnalyticsController extends ChangeNotifier {
         totalTime: totalTime,
         isProductive: metadata?.isProductive ?? false,
         isVisible: metadata?.isVisible ?? false,
-        isPrivate: isPrivate,
+        isPrivate: metadata?.isPrivate ?? false,
       ));
     });
     appUsageDetails.sort((a, b) => b.totalTime.compareTo(a.totalTime));
+    final privateAppsTime =
+        dailyPrivateUsage.values.fold(Duration.zero, (sum, d) => sum + d);
 
     // ── Comparison period (if any) ──
     double screenTimeComparisonPercent = 0;
     double productiveTimeComparisonPercent = 0;
     double focusSessionsComparisonPercent = 0;
 
-    if (range.hasComparison) {
+    if (range.hasComparison && !showPrivate) {
       final compData = _computeComparisonData(
         range.comparisonStartDate!,
         range.comparisonEndDate!,
@@ -408,6 +433,22 @@ class UsageAnalyticsController extends ChangeNotifier {
     );
   }
 
+  /// Sum of per-day productive time across the range — kept as a whole-day
+  /// aggregate for the public view (matches existing behavior). Not used
+  /// when [shouldShowPrivateOnly] is true; the private view derives
+  /// productiveTime from the private-only appTotalUsage sum instead, since
+  /// "productive" is a per-app property and the whole-day store total can't
+  /// be split into private/public without per-app data.
+  Duration _sumProductiveTime(DateTime start, DateTime end) {
+    Duration total = Duration.zero;
+    DateTime d = start;
+    while (!d.isAfter(end)) {
+      total += _dataStore.getProductiveTime(d);
+      d = d.add(const Duration(days: 1));
+    }
+    return total;
+  }
+
   /// Lightweight comparison data — only computes what's needed for % change
   _ComparisonData _computeComparisonData(DateTime startDate, DateTime endDate) {
     Duration totalScreenTime = Duration.zero;
@@ -430,13 +471,20 @@ class UsageAnalyticsController extends ChangeNotifier {
   }
 
   Future<AnalyticsSummary> _computeWebAnalytics(_AnalyticsDateRange range) async {
+    final showPrivate = shouldShowPrivateOnly();
     final metaRes = await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
     final siteMeta = (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
     final settingsMap = (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
     final customMeta = (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
 
+    bool isPrivateDomain(String domain) {
+      final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
+      return meta['isPrivate'] as bool? ?? false;
+    }
+
     final dailyScreenTimeData = <DailyScreenTime>[];
     Duration totalScreenTime = Duration.zero;
+    Duration privateAppsTime = Duration.zero;
     final domainTotals = <String, int>{};
     final categoryTotals = <String, int>{};
 
@@ -449,11 +497,17 @@ class UsageAnalyticsController extends ChangeNotifier {
       final domains = (dayData['domains'] as List<dynamic>?) ?? [];
 
       int daySeconds = 0;
+      int dayScopedSeconds = 0;
       for (var d in domains) {
         final domain = d['domain'] as String? ?? 'unknown';
         final secs = (d['seconds'] as num? ?? 0).toInt();
         daySeconds += secs;
 
+        final isPrivate = isPrivateDomain(domain);
+        if (isPrivate) privateAppsTime += Duration(seconds: secs);
+        if (isPrivate != showPrivate) continue;
+
+        dayScopedSeconds += secs;
         domainTotals[domain] = (domainTotals[domain] ?? 0) + secs;
 
         final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
@@ -472,8 +526,10 @@ class UsageAnalyticsController extends ChangeNotifier {
         categoryTotals[category] = (categoryTotals[category] ?? 0) + secs;
       }
 
-      totalScreenTime += Duration(seconds: daySeconds);
-      dailyScreenTimeData.add(DailyScreenTime(date: currentDate, screenTime: Duration(seconds: daySeconds)));
+      totalScreenTime += Duration(seconds: showPrivate ? dayScopedSeconds : daySeconds);
+      dailyScreenTimeData.add(DailyScreenTime(
+          date: currentDate,
+          screenTime: Duration(seconds: showPrivate ? dayScopedSeconds : daySeconds)));
       currentDate = currentDate.add(const Duration(days: 1));
     }
 
@@ -500,7 +556,6 @@ class UsageAnalyticsController extends ChangeNotifier {
     }
 
     final appUsageDetails = <AppUsageSummary>[];
-    Duration privateAppsTime = Duration.zero;
     domainTotals.forEach((domain, secs) {
       final meta = (customMeta[domain] as Map<dynamic, dynamic>?) ?? {};
       final rawSiteMeta = (siteMeta[domain] as Map<dynamic, dynamic>?) ?? {};
@@ -514,8 +569,6 @@ class UsageAnalyticsController extends ChangeNotifier {
       final category = (rawCat.isNotEmpty && rawCat != 'Uncategorized')
           ? rawCat
           : AppCategories.categorizeApp(displayName);
-      final isPrivate = meta['isPrivate'] as bool? ?? false;
-      if (isPrivate) privateAppsTime += Duration(seconds: secs);
 
       appUsageDetails.add(AppUsageSummary(
         appName: domain,
@@ -524,7 +577,7 @@ class UsageAnalyticsController extends ChangeNotifier {
         totalTime: Duration(seconds: secs),
         isProductive: meta['isProductive'] as bool? ?? false,
         isVisible: true,
-        isPrivate: isPrivate,
+        isPrivate: isPrivateDomain(domain),
       ));
     });
 

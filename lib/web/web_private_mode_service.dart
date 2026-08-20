@@ -19,6 +19,7 @@ class WebPrivateModeService extends ChangeNotifier {
 
   Timer? _relockTimer;
   DateTime? _unlockExpiry;
+  bool _showPrivateOnly = false;
 
   Future<bool> get isSetUp async {
     await _settings.load();
@@ -30,6 +31,21 @@ class WebPrivateModeService extends ChangeNotifier {
     if (DateTime.now().isBefore(_unlockExpiry!)) return true;
     lock();
     return false;
+  }
+
+  /// Whether existing pages (Overview, Applications, Browser, Reports,
+  /// Alerts & Limits) should show ONLY private-tagged items in place of
+  /// public ones. Driven by the titlebar toggle — distinct from [isUnlocked]
+  /// since unlocking and switching the view are two separate user actions
+  /// after the initial auto-switch-on-unlock.
+  bool get showPrivateOnly => isUnlocked && _showPrivateOnly;
+
+  /// Switches the view between public-only and private-only. Caller must
+  /// already be unlocked — the titlebar toggle unlocks first, then calls
+  /// this with `true` as part of the same interaction.
+  void setShowPrivateOnly(bool value) {
+    _showPrivateOnly = value;
+    notifyListeners();
   }
 
   bool get includePrivateInTotals => _settings.privacyIncludeInTotals;
@@ -55,6 +71,9 @@ class WebPrivateModeService extends ChangeNotifier {
         .join();
   }
 
+  /// Sets/changes the Private Mode password. Does NOT itself (re)generate
+  /// backup code/security question — that's a separate explicit step via
+  /// [setRecoveryOptions], normally shown right after this succeeds.
   Future<void> setPassword(String password) async {
     final salt = _generateSalt();
     await _settings.setPrivacyPassword(
@@ -65,11 +84,92 @@ class WebPrivateModeService extends ChangeNotifier {
   }
 
   /// Clears the password only — items already marked private stay private,
-  /// just inaccessible until a new password is set. There is no recovery
-  /// flow, matching the app's local-only, no-account threat model.
+  /// just inaccessible until a new password is set. Recovery is possible via
+  /// a backup code or security question, see [recoverWithBackupCode] /
+  /// [recoverWithSecurityAnswer].
   Future<void> resetPassword() async {
     await _settings.setPrivacyPassword(passwordHash: '', passwordSalt: '');
     lock();
+  }
+
+  /// Generates a human-friendly one-time backup code, e.g. `AB12-CD34-EF56-GH78`.
+  /// Returned in plaintext for the caller to display once — only its salted
+  /// hash is ever persisted.
+  String generateBackupCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    final rand = Random.secure();
+    String group() =>
+        List.generate(4, (_) => chars[rand.nextInt(chars.length)]).join();
+    return '${group()}-${group()}-${group()}-${group()}';
+  }
+
+  /// Persists a freshly generated backup code + security question/answer,
+  /// hashing+salting the code and answer (question text is stored in clear
+  /// since it must be displayed during recovery, not verified).
+  Future<void> setRecoveryOptions({
+    required String backupCode,
+    required String securityQuestion,
+    required String securityAnswer,
+  }) async {
+    final codeSalt = _generateSalt();
+    final answerSalt = _generateSalt();
+    await _settings.setPrivacyRecovery(
+      backupCodeHash: _hash(backupCode, codeSalt),
+      backupCodeSalt: codeSalt,
+      securityQuestion: securityQuestion,
+      securityAnswerHash: _hash(securityAnswer, answerSalt),
+      securityAnswerSalt: answerSalt,
+    );
+    notifyListeners();
+  }
+
+  /// The stored security question text, or null if recovery hasn't been set
+  /// up. Async on web, matching the async convention already established for
+  /// [isSetUp].
+  Future<String?> get securityQuestion async {
+    await _settings.load();
+    final q = _settings.privacySecurityQuestion;
+    return q.isEmpty ? null : q;
+  }
+
+  /// Whether a backup code has been generated and not yet consumed.
+  Future<bool> get hasBackupCode async {
+    await _settings.load();
+    return _settings.privacyBackupCodeHash.isNotEmpty;
+  }
+
+  /// Verifies [code] against the stored backup code. On success, clears the
+  /// password (same effect as [resetPassword]) AND consumes the backup code
+  /// so it cannot be reused — the user must set a new password and new
+  /// recovery options immediately after.
+  Future<bool> recoverWithBackupCode(String code) async {
+    await _settings.load();
+    final storedHash = _settings.privacyBackupCodeHash;
+    final storedSalt = _settings.privacyBackupCodeSalt;
+    if (storedHash.isEmpty || _hash(code, storedSalt) != storedHash) {
+      return false;
+    }
+    await _settings.setPrivacyPassword(passwordHash: '', passwordSalt: '');
+    await _settings.clearPrivacyBackupCode();
+    lock();
+    return true;
+  }
+
+  /// Verifies [answer] against the stored security answer. On success,
+  /// clears the password AND the now-consumed backup code (same as
+  /// [recoverWithBackupCode]) so the user must set both a new password and
+  /// new recovery options immediately after.
+  Future<bool> recoverWithSecurityAnswer(String answer) async {
+    await _settings.load();
+    final storedHash = _settings.privacySecurityAnswerHash;
+    final storedSalt = _settings.privacySecurityAnswerSalt;
+    if (storedHash.isEmpty || _hash(answer, storedSalt) != storedHash) {
+      return false;
+    }
+    await _settings.setPrivacyPassword(passwordHash: '', passwordSalt: '');
+    await _settings.clearPrivacyBackupCode();
+    lock();
+    return true;
   }
 
   Future<bool> unlock(String password) async {
@@ -100,6 +200,7 @@ class WebPrivateModeService extends ChangeNotifier {
     _relockTimer?.cancel();
     _relockTimer = null;
     _unlockExpiry = null;
+    _showPrivateOnly = false;
     notifyListeners();
   }
 }

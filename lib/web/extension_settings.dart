@@ -121,6 +121,11 @@ class ExtensionSettings {
   String _privacyPasswordSalt = '';
   bool _privacyIncludeInTotals = true;
   int _privacySessionTimeoutMinutes = 5;
+  String _privacyBackupCodeHash = '';
+  String _privacyBackupCodeSalt = '';
+  String _privacySecurityQuestion = '';
+  String _privacySecurityAnswerHash = '';
+  String _privacySecurityAnswerSalt = '';
 
   ExtensionMode get mode => _mode;
   String get desktopUrl => _desktopUrl;
@@ -136,6 +141,11 @@ class ExtensionSettings {
   String get privacyPasswordSalt => _privacyPasswordSalt;
   bool get privacyIncludeInTotals => _privacyIncludeInTotals;
   int get privacySessionTimeoutMinutes => _privacySessionTimeoutMinutes;
+  String get privacyBackupCodeHash => _privacyBackupCodeHash;
+  String get privacyBackupCodeSalt => _privacyBackupCodeSalt;
+  String get privacySecurityQuestion => _privacySecurityQuestion;
+  String get privacySecurityAnswerHash => _privacySecurityAnswerHash;
+  String get privacySecurityAnswerSalt => _privacySecurityAnswerSalt;
 
   // ── Load ────────────────────────────────────────────────────────────────────
 
@@ -157,6 +167,13 @@ class ExtensionSettings {
     _privacyIncludeInTotals = raw['privacyIncludeInTotals'] as bool? ?? true;
     _privacySessionTimeoutMinutes =
         raw['privacySessionTimeoutMinutes'] as int? ?? 5;
+    _privacyBackupCodeHash = raw['privacyBackupCodeHash'] as String? ?? '';
+    _privacyBackupCodeSalt = raw['privacyBackupCodeSalt'] as String? ?? '';
+    _privacySecurityQuestion = raw['privacySecurityQuestion'] as String? ?? '';
+    _privacySecurityAnswerHash =
+        raw['privacySecurityAnswerHash'] as String? ?? '';
+    _privacySecurityAnswerSalt =
+        raw['privacySecurityAnswerSalt'] as String? ?? '';
 
     final metaRaw = raw['metadata'] as Map<String, dynamic>? ?? {};
     _metadata.clear();
@@ -253,6 +270,35 @@ class ExtensionSettings {
     await _persist();
   }
 
+  /// Persists a freshly generated backup code + security question/answer.
+  /// Mirrors [setPrivacyPassword]'s shape — all fields are already
+  /// hashed/salted (or plaintext for the question) by the caller.
+  Future<void> setPrivacyRecovery({
+    required String backupCodeHash,
+    required String backupCodeSalt,
+    required String securityQuestion,
+    required String securityAnswerHash,
+    required String securityAnswerSalt,
+  }) async {
+    await _ensureLoaded();
+    _privacyBackupCodeHash = backupCodeHash;
+    _privacyBackupCodeSalt = backupCodeSalt;
+    _privacySecurityQuestion = securityQuestion;
+    _privacySecurityAnswerHash = securityAnswerHash;
+    _privacySecurityAnswerSalt = securityAnswerSalt;
+    await _persist();
+  }
+
+  /// Clears only the backup code fields (leaves the security question/answer
+  /// untouched) — used after a successful backup-code recovery to consume
+  /// the one-time code, forcing the user through [setPrivacyRecovery] again.
+  Future<void> clearPrivacyBackupCode() async {
+    await _ensureLoaded();
+    _privacyBackupCodeHash = '';
+    _privacyBackupCodeSalt = '';
+    await _persist();
+  }
+
   Future<void> updateMetadata(
     String domain, {
     String? category,
@@ -310,6 +356,11 @@ class ExtensionSettings {
     _privacyPasswordSalt = '';
     _privacyIncludeInTotals = true;
     _privacySessionTimeoutMinutes = 5;
+    _privacyBackupCodeHash = '';
+    _privacyBackupCodeSalt = '';
+    _privacySecurityQuestion = '';
+    _privacySecurityAnswerHash = '';
+    _privacySecurityAnswerSalt = '';
     _loaded = false;
     await chromeStorageSet({
       _kSettingsKey: {
@@ -366,6 +417,11 @@ class ExtensionSettings {
         'privacyPasswordSalt': _privacyPasswordSalt,
         'privacyIncludeInTotals': _privacyIncludeInTotals,
         'privacySessionTimeoutMinutes': _privacySessionTimeoutMinutes,
+        'privacyBackupCodeHash': _privacyBackupCodeHash,
+        'privacyBackupCodeSalt': _privacyBackupCodeSalt,
+        'privacySecurityQuestion': _privacySecurityQuestion,
+        'privacySecurityAnswerHash': _privacySecurityAnswerHash,
+        'privacySecurityAnswerSalt': _privacySecurityAnswerSalt,
         'metadata': {
           for (final e in _metadata.entries) e.key: e.value.toMap(),
         },

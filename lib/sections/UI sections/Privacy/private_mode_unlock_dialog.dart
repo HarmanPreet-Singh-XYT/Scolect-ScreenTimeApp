@@ -9,7 +9,16 @@ class PrivateModeUnlockDialog extends StatefulWidget {
   /// Returns true on a correct password.
   final Future<bool> Function(String password) onUnlock;
 
-  const PrivateModeUnlockDialog({super.key, required this.onUnlock});
+  /// Called when the user taps "Forgot password?" — the caller drives the
+  /// actual recovery dialog + follow-up new-password flow since those pop
+  /// this dialog first. If null, no "Forgot password?" link is shown.
+  final VoidCallback? onForgotPassword;
+
+  const PrivateModeUnlockDialog({
+    super.key,
+    required this.onUnlock,
+    this.onForgotPassword,
+  });
 
   @override
   State<PrivateModeUnlockDialog> createState() =>
@@ -87,6 +96,19 @@ class _PrivateModeUnlockDialogState extends State<PrivateModeUnlockDialog> {
             Text(
               l10n.privateModeIncorrectPassword,
               style: TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          ],
+          if (widget.onForgotPassword != null) ...[
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: HyperlinkButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                  widget.onForgotPassword!();
+                },
+                child: Text(l10n.privateModeForgotPassword),
+              ),
             ),
           ],
         ],

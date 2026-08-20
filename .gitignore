@@ -49,3 +49,7 @@ local.md
 
 # Rust related
 **/target/
+
+# Sparkle private keys
+*.key
+sparkle_priv.key

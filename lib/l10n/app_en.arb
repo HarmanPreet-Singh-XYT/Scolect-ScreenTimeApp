@@ -102,6 +102,10 @@
   "@navHelp": {
     "description": "Navigation item for help page"
   },
+  "navPrivate": "Private",
+  "@navPrivate": {
+    "description": "Navigation item for the isolated Private Mode page"
+  },
   "helpTitle": "Help",
   "faqCategoryGeneral": "General Questions",
   "faqCategoryApplications": "Applications Management",
@@ -2389,6 +2393,14 @@
   "@privateModeHideAction": {
     "description": "TRANSLATE: Button label to re-lock and hide private items"
   },
+  "privateModeLockHint": "Right-click to lock now",
+  "@privateModeLockHint": {
+    "description": "TRANSLATE: Secondary hint appended to the titlebar toggle's tooltip, telling the user right-click/long-press ends the session immediately"
+  },
+  "privateModeShowOnlyDescription": "Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.",
+  "@privateModeShowOnlyDescription": {
+    "description": "TRANSLATE: Description under the Settings toggle that switches every page to private-only data"
+  },
   "privateModeSectionTitle": "Private Mode",
   "@privateModeSectionTitle": {
     "description": "TRANSLATE: Title of the Private Mode settings card"
@@ -2448,5 +2460,145 @@
   "privateModeResetPasswordAction": "Reset Password",
   "@privateModeResetPasswordAction": {
     "description": "TRANSLATE: Button label to confirm resetting the private mode password"
+  },
+  "privateModeForgotPassword": "Forgot password?",
+  "@privateModeForgotPassword": {
+    "description": "TRANSLATE: Hyperlink button on the unlock dialog that opens the recovery flow"
+  },
+  "privateModeRecoveryTitle": "Recover Private Mode",
+  "@privateModeRecoveryTitle": {
+    "description": "TRANSLATE: Title of the recovery dialog offering backup code or security question recovery"
+  },
+  "privateModeRecoveryTabBackupCode": "Backup code",
+  "@privateModeRecoveryTabBackupCode": {
+    "description": "TRANSLATE: Tab/toggle label for recovering via backup code"
+  },
+  "privateModeRecoveryTabSecurityQuestion": "Security question",
+  "@privateModeRecoveryTabSecurityQuestion": {
+    "description": "TRANSLATE: Tab/toggle label for recovering via security question"
+  },
+  "privateModeBackupCodePlaceholder": "XXXX-XXXX-XXXX-XXXX",
+  "@privateModeBackupCodePlaceholder": {
+    "description": "TRANSLATE: Placeholder text for the backup code input field during recovery"
+  },
+  "privateModeSecurityAnswerPlaceholder": "Your answer",
+  "@privateModeSecurityAnswerPlaceholder": {
+    "description": "TRANSLATE: Placeholder text for the security answer input field during recovery"
+  },
+  "privateModeRecoveryIncorrect": "That didn't match. Please try again.",
+  "@privateModeRecoveryIncorrect": {
+    "description": "TRANSLATE: Error message shown when the backup code or security answer entered during recovery is incorrect"
+  },
+  "privateModeRecoverySuccessTitle": "Identity verified",
+  "@privateModeRecoverySuccessTitle": {
+    "description": "TRANSLATE: Title shown after a successful recovery, before prompting to set a new password"
+  },
+  "privateModeRecoverySuccessDescription": "Your old password has been cleared. Set a new password to continue — you'll also get a new backup code and security question.",
+  "@privateModeRecoverySuccessDescription": {
+    "description": "TRANSLATE: Description shown after a successful recovery, explaining next steps"
+  },
+  "privateModeSetupRecoveryTitle": "Set Up Recovery",
+  "@privateModeSetupRecoveryTitle": {
+    "description": "TRANSLATE: Title of the recovery setup dialog shown after setting/changing a password"
+  },
+  "privateModeBackupCodeGeneratedTitle": "Your backup code",
+  "@privateModeBackupCodeGeneratedTitle": {
+    "description": "TRANSLATE: Title of the step showing the newly generated backup code"
+  },
+  "privateModeBackupCodeWarning": "Save this code somewhere safe. It will only be shown once, and you'll need it if you forget your password.",
+  "@privateModeBackupCodeWarning": {
+    "description": "TRANSLATE: Warning text explaining the backup code is shown only once"
+  },
+  "privateModeCopyBackupCode": "Copy",
+  "@privateModeCopyBackupCode": {
+    "description": "TRANSLATE: Button label to copy the backup code to the clipboard"
+  },
+  "privateModeBackupCodeCopied": "Backup code copied",
+  "@privateModeBackupCodeCopied": {
+    "description": "TRANSLATE: Confirmation message shown after copying the backup code to the clipboard"
+  },
+  "privateModeDownloadBackupCode": "Download",
+  "@privateModeDownloadBackupCode": {
+    "description": "TRANSLATE: Button label to download the backup code as a text file"
+  },
+  "privateModeSecurityQuestionLabel": "Security question",
+  "@privateModeSecurityQuestionLabel": {
+    "description": "TRANSLATE: Label above the security question picker in the recovery setup dialog"
+  },
+  "privateModeSecurityAnswerLabel": "Your answer",
+  "@privateModeSecurityAnswerLabel": {
+    "description": "TRANSLATE: Label above the security answer input in the recovery setup dialog"
+  },
+  "privateModeSecurityQuestionCustomOption": "Write my own question…",
+  "@privateModeSecurityQuestionCustomOption": {
+    "description": "TRANSLATE: Option in the security question picker letting the user write a custom question"
+  },
+  "privateModeChooseSecurityQuestion": "Choose a security question",
+  "@privateModeChooseSecurityQuestion": {
+    "description": "TRANSLATE: Placeholder/prompt text for the security question picker"
+  },
+  "privateModeSecurityAnswerEmpty": "Answer cannot be empty",
+  "@privateModeSecurityAnswerEmpty": {
+    "description": "TRANSLATE: Validation error when submitting an empty security answer during recovery setup"
+  },
+  "privateModeIveSavedThis": "I've saved this backup code",
+  "@privateModeIveSavedThis": {
+    "description": "TRANSLATE: Confirmation checkbox label required before the backup-code setup dialog can be dismissed"
+  },
+  "privateModeRecoveryOptionsTitle": "Recovery Options",
+  "@privateModeRecoveryOptionsTitle": {
+    "description": "TRANSLATE: Setting row title for viewing/regenerating recovery options (backup code + security question)"
+  },
+  "privateModeRecoveryOptionsDescription": "Regenerate your backup code and security question without changing your password.",
+  "@privateModeRecoveryOptionsDescription": {
+    "description": "TRANSLATE: Description under the Recovery Options setting row"
+  },
+  "privateModeRegenerateRecoveryAction": "Regenerate",
+  "@privateModeRegenerateRecoveryAction": {
+    "description": "TRANSLATE: Button label to regenerate recovery options (backup code + security question)"
+  },
+  "privateModeQuestionPetName": "What was the name of your first pet?",
+  "@privateModeQuestionPetName": {
+    "description": "TRANSLATE: Preset security question option"
+  },
+  "privateModeQuestionBirthCity": "In what city were you born?",
+  "@privateModeQuestionBirthCity": {
+    "description": "TRANSLATE: Preset security question option"
+  },
+  "privateModeQuestionFirstSchool": "What was the name of your first school?",
+  "@privateModeQuestionFirstSchool": {
+    "description": "TRANSLATE: Preset security question option"
+  },
+  "privateModeQuestionMotherMaidenName": "What is your mother's maiden name?",
+  "@privateModeQuestionMotherMaidenName": {
+    "description": "TRANSLATE: Preset security question option"
+  },
+  "privateModeQuestionFavoriteBook": "What is your favorite book?",
+  "@privateModeQuestionFavoriteBook": {
+    "description": "TRANSLATE: Preset security question option"
+  },
+  "privateModeNotSetUpDescription": "Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.",
+  "@privateModeNotSetUpDescription": {
+    "description": "TRANSLATE: Shown on the Private section when Private Mode hasn't been set up yet"
+  },
+  "privateModeGoToSettingsAction": "Go to Settings",
+  "@privateModeGoToSettingsAction": {
+    "description": "TRANSLATE: Button that navigates to Settings to set up Private Mode"
+  },
+  "privateModeLockedDescription": "Unlock to view your private apps and websites.",
+  "@privateModeLockedDescription": {
+    "description": "TRANSLATE: Shown on the Private section's lock screen"
+  },
+  "privateModeUnlockedDescription": "Apps and websites you've marked private.",
+  "@privateModeUnlockedDescription": {
+    "description": "TRANSLATE: Subtitle shown above the private apps/websites list once unlocked"
+  },
+  "privateModeNoItemsDescription": "No private apps or websites tracked yet. Mark an item as private from its details to see it here.",
+  "@privateModeNoItemsDescription": {
+    "description": "TRANSLATE: Empty state shown when unlocked but no private-tagged items have any usage today"
+  },
+  "privateModeItemsCount": "Private Items",
+  "@privateModeItemsCount": {
+    "description": "TRANSLATE: Stat tile label for the count of private apps/websites"
   }
 }

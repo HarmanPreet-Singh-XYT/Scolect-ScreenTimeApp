@@ -5,6 +5,9 @@ import 'package:screentime/sections/widgets/Settings/reusables.dart';
 import 'package:screentime/sections/controller/services/private_mode_service.dart';
 import 'package:screentime/web/web_private_mode_service.dart'
     if (dart.library.io) 'package:screentime/web/web_private_mode_service_stub.dart';
+import 'package:screentime/sections/UI sections/Privacy/private_mode_recovery_setup_dialog.dart';
+import 'package:screentime/sections/UI sections/Privacy/private_mode_recovery_dialog.dart';
+import 'package:screentime/sections/UI sections/Privacy/private_mode_unlock_dialog.dart';
 
 // ============== PRIVACY SECTION ==============
 //
@@ -24,12 +27,32 @@ class _PrivacySectionState extends State<PrivacySection> {
   bool _isSetUp = false;
   bool _includeInTotals = true;
   int _timeoutMinutes = 5;
+  bool _showPrivateOnly = false;
   bool _loading = true;
+
+  void _onPrivateModeChanged() {
+    if (mounted) _refresh();
+  }
 
   @override
   void initState() {
     super.initState();
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
     _refresh();
+  }
+
+  @override
+  void dispose() {
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
+    super.dispose();
   }
 
   Future<void> _refresh() async {
@@ -41,6 +64,7 @@ class _PrivacySectionState extends State<PrivacySection> {
         _isSetUp = setUp;
         _includeInTotals = service.includePrivateInTotals;
         _timeoutMinutes = service.sessionTimeoutMinutes;
+        _showPrivateOnly = service.showPrivateOnly;
         _loading = false;
       });
     } else {
@@ -49,8 +73,52 @@ class _PrivacySectionState extends State<PrivacySection> {
         _isSetUp = controller.isSetUp;
         _includeInTotals = controller.includePrivateInTotals;
         _timeoutMinutes = controller.sessionTimeoutMinutes;
+        _showPrivateOnly = controller.showPrivateOnly;
         _loading = false;
       });
+    }
+  }
+
+  /// Mirrors PrivateModeToggleButton's tap behavior — same auto-switch-on-
+  /// unlock UX, just reachable from Settings too.
+  Future<void> _toggleShowPrivateOnly(bool value) async {
+    if (!value) {
+      if (kIsWeb) {
+        WebPrivateModeService().setShowPrivateOnly(false);
+      } else {
+        PrivateModeController().setShowPrivateOnly(false);
+      }
+      return;
+    }
+
+    final alreadyUnlocked = kIsWeb
+        ? WebPrivateModeService().isUnlocked
+        : PrivateModeController().isUnlocked;
+    if (alreadyUnlocked) {
+      if (kIsWeb) {
+        WebPrivateModeService().setShowPrivateOnly(true);
+      } else {
+        PrivateModeController().setShowPrivateOnly(true);
+      }
+      return;
+    }
+
+    final unlocked = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => PrivateModeUnlockDialog(
+        onUnlock: (password) => kIsWeb
+            ? WebPrivateModeService().unlock(password)
+            : Future.value(PrivateModeController().unlock(password)),
+        onForgotPassword: () => showPrivateModeRecoveryFlow(context),
+      ),
+    );
+    if (unlocked == true) {
+      if (kIsWeb) {
+        WebPrivateModeService().setShowPrivateOnly(true);
+      } else {
+        PrivateModeController().setShowPrivateOnly(true);
+      }
     }
   }
 
@@ -78,7 +146,20 @@ class _PrivacySectionState extends State<PrivacySection> {
       barrierDismissible: true,
       builder: (_) => _SetPasswordDialog(isChange: isChange),
     );
-    if (result == true) await _refresh();
+    if (result != true) return;
+    await _refresh();
+    // Regenerate recovery options whenever the password is set/changed —
+    // both first-time setup and password change go through this dialog.
+    if (!mounted) return;
+    await _openRecoverySetupDialog();
+  }
+
+  Future<void> _openRecoverySetupDialog() async {
+    await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const PrivateModeRecoverySetupDialog(),
+    );
   }
 
   Future<void> _resetPassword() async {
@@ -135,6 +216,16 @@ class _PrivacySectionState extends State<PrivacySection> {
               ),
               if (_isSetUp) ...[
                 SettingRow(
+                  title: _showPrivateOnly
+                      ? l10n.privateModeHideAction
+                      : l10n.privateModeShowAction,
+                  description: l10n.privateModeShowOnlyDescription,
+                  control: ToggleSwitch(
+                    checked: _showPrivateOnly,
+                    onChanged: _toggleShowPrivateOnly,
+                  ),
+                ),
+                SettingRow(
                   title: l10n.privateModeIncludeInTotalsTitle,
                   description: l10n.privateModeIncludeInTotalsDescription,
                   control: ToggleSwitch(
@@ -153,6 +244,14 @@ class _PrivacySectionState extends State<PrivacySection> {
                     onChanged: (v) {
                       if (v != null) _setTimeoutMinutes(v);
                     },
+                  ),
+                ),
+                SettingRow(
+                  title: l10n.privateModeRecoveryOptionsTitle,
+                  description: l10n.privateModeRecoveryOptionsDescription,
+                  control: Button(
+                    onPressed: _openRecoverySetupDialog,
+                    child: Text(l10n.privateModeRegenerateRecoveryAction),
                   ),
                 ),
                 SettingRow(
@@ -258,4 +357,35 @@ class _SetPasswordDialogState extends State<_SetPasswordDialog> {
       ],
     );
   }
+}
+
+// ============== SHARED RECOVERY FLOW ==============
+//
+// Entry point for the "Forgot password?" link on PrivateModeUnlockDialog.
+// Call sites (applications.dart, browser_websites.dart) wire this in as
+// `onForgotPassword` after popping their own unlock dialog. On successful
+// recovery, walks the user through: recovery dialog -> new password ->
+// new recovery setup (backup code is single-use and gets consumed on
+// successful recovery, so both password and recovery options must be
+// re-established immediately).
+Future<void> showPrivateModeRecoveryFlow(BuildContext context) async {
+  final recovered = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const PrivateModeRecoveryDialog(),
+  );
+  if (recovered != true || !context.mounted) return;
+
+  final passwordSet = await showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) => const _SetPasswordDialog(isChange: false),
+  );
+  if (passwordSet != true || !context.mounted) return;
+
+  await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const PrivateModeRecoverySetupDialog(),
+  );
 }

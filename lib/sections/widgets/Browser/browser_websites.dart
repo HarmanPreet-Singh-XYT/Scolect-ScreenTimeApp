@@ -9,7 +9,6 @@ import 'package:screentime/sections/controller/data_controllers/browser_data_con
 import 'package:screentime/sections/controller/services/private_mode_service.dart';
 import 'package:screentime/web/web_private_mode_service.dart'
     if (dart.library.io) 'package:screentime/web/web_private_mode_service_stub.dart';
-import 'package:screentime/sections/UI sections/Privacy/private_mode_unlock_dialog.dart';
 import 'package:screentime/utils/responsive.dart';
 import 'browser_shared.dart';
 
@@ -141,40 +140,12 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
   String _productivityFilter = 'all';
   Timer? _debounce;
 
-  bool _privateModeUnlocked = false;
-  bool _privateModeSetUpWeb = false;
-
   void _onPrivateModeChanged() {
-    final unlocked =
-        kIsWeb ? WebPrivateModeService().isUnlocked : PrivateModeController().isUnlocked;
-    if (mounted && unlocked != _privateModeUnlocked) {
-      setState(() => _privateModeUnlocked = unlocked);
-    }
-  }
-
-  Future<void> _togglePrivateItemsVisibility() async {
-    if (_privateModeUnlocked) {
-      if (kIsWeb) {
-        WebPrivateModeService().lock();
-      } else {
-        PrivateModeController().lock();
-      }
-      setState(() => _privateModeUnlocked = false);
-      return;
-    }
-
-    final unlocked = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => PrivateModeUnlockDialog(
-        onUnlock: (password) => kIsWeb
-            ? WebPrivateModeService().unlock(password)
-            : Future.value(PrivateModeController().unlock(password)),
-      ),
-    );
-    if (unlocked == true && mounted) {
-      setState(() => _privateModeUnlocked = true);
-    }
+    // Private-item filtering happens inside fetchAllWebsites() itself
+    // (data-layer centralization), so _allSites must be re-fetched whenever
+    // the titlebar private-mode toggle flips — otherwise the list won't
+    // switch between public/private sites until the next unrelated reload.
+    if (mounted) _loadData();
   }
 
   @override
@@ -182,9 +153,6 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
     super.initState();
     if (kIsWeb) {
       WebPrivateModeService().addListener(_onPrivateModeChanged);
-      WebPrivateModeService().isSetUp.then((setUp) {
-        if (mounted) setState(() => _privateModeSetUpWeb = setUp);
-      });
     } else {
       PrivateModeController().addListener(_onPrivateModeChanged);
     }
@@ -216,13 +184,16 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
     );
   }
 
+  // Note: private-item filtering happens upstream in
+  // BrowserDataProvider.fetchAllWebsites() (data-layer centralization), so
+  // _allSites is already filtered by the titlebar toggle — no local
+  // isPrivate check needed here.
   List<WebsiteBasicDetail> get _filtered => _allSites
       .where((s) =>
           s.matchesSearch(_search) &&
           s.matchesCategory(_categoryFilter) &&
           s.matchesTracking(_trackingFilter) &&
-          s.matchesProductivity(_productivityFilter) &&
-          (!s.isPrivate || _privateModeUnlocked))
+          s.matchesProductivity(_productivityFilter))
       .toList();
 
   @override
@@ -368,37 +339,6 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                if ((kIsWeb
-                    ? _privateModeSetUpWeb
-                    : PrivateModeController().isSetUp)) ...[
-                  const SizedBox(width: 12),
-                  Button(
-                    style: ButtonStyle(
-                      padding: WidgetStatePropertyAll(
-                          const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6)),
-                    ),
-                    onPressed: _togglePrivateItemsVisibility,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          _privateModeUnlocked
-                              ? FluentIcons.unlock
-                              : FluentIcons.lock,
-                          size: 12,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          _privateModeUnlocked
-                              ? l10n.privateModeHideAction
-                              : l10n.privateModeShowAction,
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

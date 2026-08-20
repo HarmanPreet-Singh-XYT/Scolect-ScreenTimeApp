@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../../../web/web_browser_data_provider.dart' if (dart.library.io) '../../../web/web_browser_data_provider_stub.dart';
+import '../../../utils/private_mode_access.dart';
 
 class AppUsageSummary {
   final String appName;
@@ -14,6 +15,7 @@ class AppUsageSummary {
   final bool isAboutToReachLimit;
   final double percentageOfLimitUsed;
   final UsageTrend trend;
+  final bool isPrivate;
 
   const AppUsageSummary({
     required this.appName,
@@ -26,6 +28,7 @@ class AppUsageSummary {
     required this.isAboutToReachLimit,
     required this.percentageOfLimitUsed,
     required this.trend,
+    this.isPrivate = false,
   });
 
   factory AppUsageSummary.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,7 @@ class AppUsageSummary {
       isAboutToReachLimit: json['isAboutToReachLimit'] as bool,
       percentageOfLimitUsed: (json['percentageOfLimitUsed'] as num).toDouble(),
       trend: _trendFromString[json['trend']] ?? UsageTrend.noData,
+      isPrivate: json['isPrivate'] as bool? ?? false,
     );
   }
 
@@ -61,6 +65,7 @@ class AppUsageSummary {
         'isAboutToReachLimit': isAboutToReachLimit,
         'percentageOfLimitUsed': percentageOfLimitUsed,
         'trend': trend.toString(),
+        'isPrivate': isPrivate,
       };
 }
 
@@ -282,9 +287,11 @@ class ScreenTimeDataController extends ChangeNotifier {
   // ============================================================
 
   Future<List<AppUsageSummary>> _buildAppSummaries(DateTime today) async {
+    List<AppUsageSummary> result;
+
     if (kIsWeb) {
       final webSites = await WebBrowserDataProvider().fetchAllWebsites();
-      final result = <AppUsageSummary>[];
+      result = <AppUsageSummary>[];
       for (final site in webSites) {
         final hasActiveLimit = site.dailyLimit > Duration.zero;
         double percentOfLimit = 0.0;
@@ -305,27 +312,30 @@ class ScreenTimeDataController extends ChangeNotifier {
           isAboutToReachLimit: isApproaching,
           percentageOfLimitUsed: percentOfLimit,
           trend: UsageTrend.stable,
+          isPrivate: site.isPrivate,
         ));
       }
-      return result;
+    } else {
+      final appNames = _dataStore.allAppNames;
+      result = <AppUsageSummary>[];
+
+      for (final appName in appNames) {
+        if (appName.startsWith('web:')) continue;
+        final metadata = _dataStore.getAppMetadata(appName);
+        if (metadata == null || !metadata.isVisible) continue;
+
+        final todayUsage = _dataStore.getAppUsage(appName, today);
+
+        result.add(_createAppSummary(
+          appName: appName,
+          metadata: metadata,
+          currentUsage: todayUsage?.timeSpent ?? Duration.zero,
+        ));
+      }
     }
 
-    final appNames = _dataStore.allAppNames;
-    final result = <AppUsageSummary>[];
-
-    for (final appName in appNames) {
-      if (appName.startsWith('web:')) continue;
-      final metadata = _dataStore.getAppMetadata(appName);
-      if (metadata == null || !metadata.isVisible) continue;
-
-      final todayUsage = _dataStore.getAppUsage(appName, today);
-
-      result.add(_createAppSummary(
-        appName: appName,
-        metadata: metadata,
-        currentUsage: todayUsage?.timeSpent ?? Duration.zero,
-      ));
-    }
+    final showPrivate = shouldShowPrivateOnly();
+    result.removeWhere((s) => s.isPrivate != showPrivate);
 
     return result;
   }
@@ -359,6 +369,7 @@ class ScreenTimeDataController extends ChangeNotifier {
       isAboutToReachLimit: isApproachingLimit,
       percentageOfLimitUsed: percentOfLimit,
       trend: _calculateUsageTrend(appName),
+      isPrivate: metadata.isPrivate,
     );
   }
 

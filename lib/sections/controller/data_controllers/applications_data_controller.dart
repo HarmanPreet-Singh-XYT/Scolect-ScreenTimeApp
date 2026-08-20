@@ -6,6 +6,7 @@ import 'package:screentime/web/web_browser_data_provider.dart'
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../categories_controller.dart';
+import '../../../utils/private_mode_access.dart';
 
 // Extension for formatting Duration objects
 extension DurationFormatter on Duration {
@@ -228,9 +229,11 @@ class ApplicationsDataProvider {
   // ============================================================
 
   Future<List<ApplicationBasicDetail>> fetchAllApplications() async {
+    List<ApplicationBasicDetail> applications;
+
     if (kIsWeb) {
       final webSites = await WebBrowserDataProvider().fetchAllWebsites();
-      final apps = webSites.map((site) {
+      applications = webSites.map((site) {
         final category = site.category.isNotEmpty
             ? site.category
             : AppCategories.categorizeApp(site.displayName);
@@ -247,37 +250,41 @@ class ApplicationsDataProvider {
           isPrivate: site.isPrivate,
         );
       }).toList();
-      apps.sort((a, b) => b.screenTime.compareTo(a.screenTime));
-      return apps;
+    } else {
+      await _ensureInitialized();
+
+      final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
+      final DateTime startOfDay = DateTime(today.year, today.month, today.day);
+      final appNames = _dataStore.allAppNames;
+      applications = <ApplicationBasicDetail>[];
+
+      for (final appName in appNames) {
+        if (appName.startsWith('web:')) continue;
+        final metadata = _dataStore.getAppMetadata(appName);
+        if (metadata == null) continue;
+
+        final usageRecord = _dataStore.getAppUsage(appName, startOfDay);
+
+        applications.add(ApplicationBasicDetail(
+          name: appName,
+          siteName: metadata.siteName,
+          category: metadata.category,
+          screenTime: usageRecord?.timeSpent ?? Duration.zero,
+          isTracking: metadata.isTracking,
+          isHidden: !metadata.isVisible,
+          isProductive: metadata.isProductive,
+          dailyLimit: metadata.dailyLimit,
+          limitStatus: metadata.limitStatus,
+          isPrivate: metadata.isPrivate,
+        ));
+      }
     }
 
-    await _ensureInitialized();
-
-    final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
-    final DateTime startOfDay = DateTime(today.year, today.month, today.day);
-    final appNames = _dataStore.allAppNames;
-    final applications = <ApplicationBasicDetail>[];
-
-    for (final appName in appNames) {
-      if (appName.startsWith('web:')) continue;
-      final metadata = _dataStore.getAppMetadata(appName);
-      if (metadata == null) continue;
-
-      final usageRecord = _dataStore.getAppUsage(appName, startOfDay);
-
-      applications.add(ApplicationBasicDetail(
-        name: appName,
-        siteName: metadata.siteName,
-        category: metadata.category,
-        screenTime: usageRecord?.timeSpent ?? Duration.zero,
-        isTracking: metadata.isTracking,
-        isHidden: !metadata.isVisible,
-        isProductive: metadata.isProductive,
-        dailyLimit: metadata.dailyLimit,
-        limitStatus: metadata.limitStatus,
-        isPrivate: metadata.isPrivate,
-      ));
-    }
+    // Centralized private-item filtering: shows only private items when the
+    // titlebar toggle has switched the view to private-only, otherwise only
+    // public items.
+    final showPrivate = shouldShowPrivateOnly();
+    applications.removeWhere((a) => a.isPrivate != showPrivate);
 
     applications.sort((a, b) => b.screenTime.compareTo(a.screenTime));
     return applications;

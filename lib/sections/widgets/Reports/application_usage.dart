@@ -36,9 +36,9 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   int _totalApps = 0;
   int _productiveApps = 0;
 
-  bool get _privateModeUnlocked => kIsWeb
-      ? WebPrivateModeService().isUnlocked
-      : PrivateModeController().isUnlocked;
+  bool get _showPrivateOnly => kIsWeb
+      ? WebPrivateModeService().showPrivateOnly
+      : PrivateModeController().showPrivateOnly;
 
   void _onPrivateModeChanged() {
     if (mounted) setState(_applyFilterAndSort);
@@ -79,7 +79,7 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
   void _applyFilterAndSort() {
     final query = _searchQuery.toLowerCase();
 
-    final privateModeUnlocked = _privateModeUnlocked;
+    final showPrivateOnly = _showPrivateOnly;
     _filteredAppUsageDetails = widget.appUsageDetails.where((app) {
       final matchesQuery =
           query.isEmpty || app.appName.toLowerCase().contains(query);
@@ -88,7 +88,7 @@ class _ApplicationUsageState extends State<ApplicationUsage> {
         'NonProductive' => !app.isProductive,
         _ => true,
       };
-      final matchesPrivate = !app.isPrivate || privateModeUnlocked;
+      final matchesPrivate = app.isPrivate == showPrivateOnly;
       return matchesQuery && matchesProductivity && matchesPrivate;
     }).toList();
 

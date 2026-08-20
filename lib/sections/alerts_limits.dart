@@ -12,6 +12,9 @@ import 'widgets/AlertsLimits/blockingBehaviorCard.dart';
 import 'widgets/AlertsLimits/notificationCard.dart';
 import 'widgets/AlertsLimits/overalllimit.dart';
 import 'widgets/AlertsLimits/quickStats.dart';
+import 'controller/services/private_mode_service.dart';
+import '../web/web_private_mode_service.dart'
+    if (dart.library.io) '../web/web_private_mode_service_stub.dart';
 
 // ──────────────── Settings Keys ────────────────
 
@@ -68,6 +71,10 @@ class _AlertsLimitsState extends State<AlertsLimits> {
 
   // ──────────────── lifecycle ────────────────
 
+  void _onPrivateModeChanged() {
+    if (mounted) _loadData();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -75,11 +82,27 @@ class _AlertsLimitsState extends State<AlertsLimits> {
     _settings = widget.settingsManager ?? SettingsManager();
     _loadSettings();
 
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       navigationState.registerRefreshCallback(_loadData);
     });
 
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
+    super.dispose();
   }
 
   void _loadSettings() {

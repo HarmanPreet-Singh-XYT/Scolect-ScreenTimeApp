@@ -9,6 +9,9 @@ import 'package:screentime/sections/widgets/Reports/application_usage.dart';
 import 'package:screentime/sections/widgets/Reports/top_boxes.dart';
 import 'package:screentime/sections/controller/analytics_xlsx_exporter.dart';
 import 'package:screentime/utils/responsive.dart';
+import 'controller/services/private_mode_service.dart';
+import '../web/web_private_mode_service.dart'
+    if (dart.library.io) '../web/web_private_mode_service_stub.dart';
 
 enum PeriodType { last7Days, lastMonth, last3Months, lifetime, custom }
 
@@ -37,6 +40,30 @@ class _ReportsState extends State<Reports> {
   List<DailyScreenTime> graphData = [];
 
   AppLocalizations get _l10n => AppLocalizations.of(context)!;
+
+  void _onPrivateModeChanged() {
+    if (mounted) _loadAnalyticsData();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (kIsWeb) {
+      WebPrivateModeService().addListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().addListener(_onPrivateModeChanged);
+    }
+  }
+
+  @override
+  void dispose() {
+    if (kIsWeb) {
+      WebPrivateModeService().removeListener(_onPrivateModeChanged);
+    } else {
+      PrivateModeController().removeListener(_onPrivateModeChanged);
+    }
+    super.dispose();
+  }
 
   @override
   void didChangeDependencies() {

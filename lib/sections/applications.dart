@@ -17,7 +17,6 @@ import 'package:screentime/utils/responsive.dart';
 import 'controller/services/private_mode_service.dart';
 import '../web/web_private_mode_service.dart'
     if (dart.library.io) '../web/web_private_mode_service_stub.dart';
-import 'UI sections/Privacy/private_mode_unlock_dialog.dart';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -97,10 +96,6 @@ class AppViewModel {
         _ => true,
       };
 
-  /// Private items are excluded from normal-mode lists unless Private Mode
-  /// is currently unlocked.
-  bool matchesPrivate(bool privateModeUnlocked) =>
-      !isPrivate || privateModeUnlocked;
 }
 
 // ─── Main Widget ──────────────────────────────────────────────────────────────
@@ -133,40 +128,14 @@ class _ApplicationsState extends State<Applications>
 
   SettingsProvider? _settingsProvider;
 
-  bool _privateModeUnlocked = false;
-  bool _privateModeSetUpWeb = false;
-
   void _onPrivateModeChanged() {
-    final unlocked =
-        kIsWeb ? WebPrivateModeService().isUnlocked : PrivateModeController().isUnlocked;
-    if (mounted && unlocked != _privateModeUnlocked) {
-      setState(() => _privateModeUnlocked = unlocked);
-    }
-  }
-
-  Future<void> _togglePrivateItemsVisibility() async {
-    if (_privateModeUnlocked) {
-      if (kIsWeb) {
-        WebPrivateModeService().lock();
-      } else {
-        PrivateModeController().lock();
-      }
-      setState(() => _privateModeUnlocked = false);
-      return;
-    }
-
-    final unlocked = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => PrivateModeUnlockDialog(
-        onUnlock: (password) => kIsWeb
-            ? WebPrivateModeService().unlock(password)
-            : Future.value(PrivateModeController().unlock(password)),
-      ),
-    );
-    if (unlocked == true && mounted) {
-      setState(() => _privateModeUnlocked = true);
-    }
+    // Private-item filtering happens inside
+    // ApplicationsDataProvider.fetchAllApplications() (data-layer
+    // centralization), so the underlying app list must be re-fetched
+    // whenever the titlebar private-mode toggle flips — otherwise the list
+    // won't switch between public/private items until the next unrelated
+    // reload.
+    if (mounted) _loadData();
   }
 
   @override
@@ -176,9 +145,6 @@ class _ApplicationsState extends State<Applications>
     _loadFilterPreferences();
     if (kIsWeb) {
       WebPrivateModeService().addListener(_onPrivateModeChanged);
-      WebPrivateModeService().isSetUp.then((setUp) {
-        if (mounted) setState(() => _privateModeSetUpWeb = setUp);
-      });
     } else {
       PrivateModeController().addListener(_onPrivateModeChanged);
     }
@@ -300,7 +266,6 @@ class _ApplicationsState extends State<Applications>
             app.hasData &&
             app.matchesTracking(_trackingFilter) &&
             app.matchesVisibility(_visibilityFilter) &&
-            app.matchesPrivate(_privateModeUnlocked) &&
             app.matchesCategory(_selectedCategory) &&
             app.matchesSearch(_searchValue))
         .toList();
@@ -418,37 +383,6 @@ class _ApplicationsState extends State<Applications>
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    if ((kIsWeb
-                        ? _privateModeSetUpWeb
-                        : PrivateModeController().isSetUp)) ...[
-                      const SizedBox(width: 12),
-                      Button(
-                        style: ButtonStyle(
-                          padding: WidgetStatePropertyAll(
-                              const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6)),
-                        ),
-                        onPressed: _togglePrivateItemsVisibility,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _privateModeUnlocked
-                                  ? FluentIcons.unlock
-                                  : FluentIcons.lock,
-                              size: 12,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              _privateModeUnlocked
-                                  ? l10n.privateModeHideAction
-                                  : l10n.privateModeShowAction,
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),

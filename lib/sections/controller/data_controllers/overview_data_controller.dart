@@ -4,6 +4,7 @@ import '../categories_controller.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/web/chrome_storage_interop.dart'
     if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
+import 'package:screentime/utils/private_mode_access.dart';
 
 class DailyOverviewData {
   static final DailyOverviewData _instance = DailyOverviewData._internal();
@@ -21,6 +22,11 @@ class DailyOverviewData {
 
   /// Fetch today's overview data - OPTIMIZED: Single pass through all apps
   Future<OverviewData> fetchTodayOverview() async {
+    // When the titlebar toggle has switched the view to private-only,
+    // delegate to the fully-rescoped private variant so aggregate stats
+    // (totalScreenTime, categoryBreakdown, applicationLimits) reflect the
+    // private subset too, not just the topApplications list.
+    if (shouldShowPrivateOnly()) return fetchTodayPrivateOverview();
     if (kIsWeb) return _fetchWebOverview();
     await _ensureInitialized();
 
@@ -41,6 +47,15 @@ class DailyOverviewData {
     // ── OPTIMIZED: Single pass builds all three lists simultaneously ──
     final result = _buildAllAppData(today, todayScreenTime);
 
+    // Filter the visible top-applications list only — aggregate stats
+    // (totalScreenTime, category breakdown, limits) are left untouched by
+    // this filter, matching the "includePrivateInTotals" setting semantics
+    // established elsewhere (e.g. AnalyticsSummary.visibleScreenTime).
+    final showPrivate = shouldShowPrivateOnly();
+    final topApplications = result.topApplications
+        .where((a) => a.isPrivate == showPrivate)
+        .toList();
+
     return OverviewData(
       totalScreenTime: todayScreenTime,
       averageScreenTime: averageWeekScreenTime,
@@ -51,9 +66,170 @@ class DailyOverviewData {
       mostUsedApp: mostUsedApp,
       focusSessions: focusSessionsCount,
       totalFocusTime: totalFocusTime,
-      topApplications: result.topApplications,
+      topApplications: topApplications,
       categoryBreakdown: result.categoryBreakdown,
       applicationLimits: result.applicationLimits,
+    );
+  }
+
+  /// Fetch today's overview data scoped ONLY to private-tagged apps/sites.
+  /// Called directly by [fetchTodayOverview] when the titlebar toggle has
+  /// switched the view to private-only. Unlike the public path, every stat
+  /// here (totalScreenTime, topApplications, categoryBreakdown,
+  /// applicationLimits, mostUsedApp) is computed from the private-only
+  /// subset, not the full day's data with private items merely hidden from
+  /// one list. Caller is expected to only invoke this while unlocked; it
+  /// does not itself gate on [isPrivateModeUnlocked].
+  Future<OverviewData> fetchTodayPrivateOverview() async {
+    if (kIsWeb) return _fetchWebPrivateOverview();
+    await _ensureInitialized();
+
+    final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
+    final result = _buildAllAppData(today, _dataStore.getTotalScreenTime(today));
+
+    final privateApps = result.topApplications
+        .where((a) => a.isPrivate)
+        .toList()
+      ..sort((a, b) => b.screenTime.compareTo(a.screenTime));
+
+    final Duration privateTotal = privateApps.fold(
+        Duration.zero, (sum, a) => sum + a.screenTime);
+    final int privateTotalSeconds = privateTotal.inSeconds;
+
+    // Recompute percentage-of-total against the private-only total, and
+    // rebuild category breakdown / limits scoped to private apps only.
+    final rescaledApps = privateApps
+        .map((a) => ApplicationDetail(
+              name: a.name,
+              domain: a.domain,
+              category: a.category,
+              screenTime: a.screenTime,
+              percentageOfTotalTime: privateTotalSeconds > 0
+                  ? (a.screenTime.inSeconds / privateTotalSeconds) * 100
+                  : 0.0,
+              isVisible: a.isVisible,
+              isProductive: a.isProductive,
+              isPrivate: a.isPrivate,
+            ))
+        .toList();
+
+    final Map<String, Duration> categoryTotals = {};
+    for (final a in privateApps) {
+      categoryTotals.update(
+        a.category,
+        (existing) => existing + a.screenTime,
+        ifAbsent: () => a.screenTime,
+      );
+    }
+    final categoryBreakdown = privateTotalSeconds > 0
+        ? categoryTotals.entries
+            .map((entry) => CategoryDetail(
+                  name: entry.key,
+                  totalScreenTime: entry.value,
+                  percentageOfTotalTime:
+                      (entry.value.inSeconds / privateTotalSeconds) * 100,
+                ))
+            .toList()
+        : <CategoryDetail>[];
+    if (categoryBreakdown.isNotEmpty) {
+      categoryBreakdown
+          .sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
+    }
+
+    final privateNames = privateApps.map((a) => a.name).toSet();
+    final applicationLimits = result.applicationLimits
+        .where((l) => privateNames.contains(l.name))
+        .toList();
+
+    final String mostUsedApp =
+        rescaledApps.isNotEmpty ? rescaledApps.first.name : 'None';
+
+    return OverviewData(
+      totalScreenTime: privateTotal,
+      averageScreenTime: privateTotal,
+      screenTimePercentage: 0,
+      productiveTime: privateTotal,
+      productivityScore: 0,
+      mostUsedApp: mostUsedApp,
+      focusSessions: 0,
+      totalFocusTime: Duration.zero,
+      topApplications: rescaledApps,
+      categoryBreakdown: categoryBreakdown,
+      applicationLimits: applicationLimits,
+    );
+  }
+
+  /// Web counterpart of [fetchTodayPrivateOverview] — re-derives from
+  /// chrome.storage the same way [_fetchWebOverview] does, but scopes every
+  /// stat to `isPrivate: true` domains only.
+  Future<OverviewData> _fetchWebPrivateOverview() async {
+    final full = await _fetchWebOverview();
+    final privateApps = full.topApplications.where((a) => a.isPrivate).toList()
+      ..sort((a, b) => b.screenTime.compareTo(a.screenTime));
+
+    final Duration privateTotal = privateApps.fold(
+        Duration.zero, (sum, a) => sum + a.screenTime);
+    final int privateTotalSeconds = privateTotal.inSeconds;
+
+    final rescaledApps = privateApps
+        .map((a) => ApplicationDetail(
+              name: a.name,
+              domain: a.domain,
+              category: a.category,
+              screenTime: a.screenTime,
+              percentageOfTotalTime: privateTotalSeconds > 0
+                  ? (a.screenTime.inSeconds / privateTotalSeconds) * 100
+                  : 0.0,
+              isVisible: a.isVisible,
+              isProductive: a.isProductive,
+              isPrivate: a.isPrivate,
+            ))
+        .toList();
+
+    final Map<String, Duration> categoryTotals = {};
+    for (final a in privateApps) {
+      categoryTotals.update(
+        a.category,
+        (existing) => existing + a.screenTime,
+        ifAbsent: () => a.screenTime,
+      );
+    }
+    final categoryBreakdown = privateTotalSeconds > 0
+        ? categoryTotals.entries
+            .map((entry) => CategoryDetail(
+                  name: entry.key,
+                  totalScreenTime: entry.value,
+                  percentageOfTotalTime:
+                      (entry.value.inSeconds / privateTotalSeconds) * 100,
+                ))
+            .toList()
+        : <CategoryDetail>[];
+    if (categoryBreakdown.isNotEmpty) {
+      categoryBreakdown
+          .sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
+    }
+
+    final privateDomains = privateApps.map((a) => a.domain).toSet();
+    final applicationLimits = full.applicationLimits
+        .where((l) => privateDomains.contains(l.name) ||
+            privateApps.any((a) => a.name == l.name))
+        .toList();
+
+    final String mostUsedApp =
+        rescaledApps.isNotEmpty ? rescaledApps.first.name : 'None';
+
+    return OverviewData(
+      totalScreenTime: privateTotal,
+      averageScreenTime: privateTotal,
+      screenTimePercentage: 0,
+      productiveTime: privateTotal,
+      productivityScore: 0,
+      mostUsedApp: mostUsedApp,
+      focusSessions: 0,
+      totalFocusTime: Duration.zero,
+      topApplications: rescaledApps,
+      categoryBreakdown: categoryBreakdown,
+      applicationLimits: applicationLimits,
     );
   }
 
@@ -86,6 +262,7 @@ class DailyOverviewData {
               hasTotalTime ? (timeSpent.inSeconds / totalSeconds) * 100 : 0.0,
           isVisible: metadata.isVisible,
           isProductive: metadata.isProductive,
+          isPrivate: metadata.isPrivate,
         ));
       }
 
@@ -211,6 +388,7 @@ class DailyOverviewData {
           : (rawSiteMeta['category'] as String?)?.isNotEmpty == true
               ? rawSiteMeta['category'] as String
               : AppCategories.categorizeApp(displayName);
+      final isPrivate = meta['isPrivate'] as bool? ?? false;
 
       // Mark domain as seen (dedup guard for the second loop)
       seenDomains.add(domain);
@@ -239,6 +417,7 @@ class DailyOverviewData {
         percentageOfTotalTime: 0,
         isVisible: true,
         isProductive: true,
+        isPrivate: isPrivate,
       ));
     }
 
@@ -270,11 +449,13 @@ class DailyOverviewData {
         final pct = (app.screenTime.inSeconds / totalSecs) * 100;
         applications[i] = ApplicationDetail(
           name: app.name,
+          domain: app.domain,
           category: app.category,
           screenTime: app.screenTime,
           percentageOfTotalTime: pct,
           isVisible: true,
           isProductive: true,
+          isPrivate: app.isPrivate,
         );
       }
     }
@@ -313,6 +494,13 @@ class DailyOverviewData {
     categoryBreakdown
         .sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
 
+    // Filter the visible top-applications list only — aggregate stats
+    // (totalTime, categoryBreakdown, applicationLimits) are left untouched
+    // by this filter, same rule as the native branch above.
+    final showPrivate = shouldShowPrivateOnly();
+    final topApplications =
+        applications.where((a) => a.isPrivate == showPrivate).toList();
+
     return OverviewData(
       totalScreenTime: totalTime,
       averageScreenTime: totalTime,
@@ -322,7 +510,7 @@ class DailyOverviewData {
       mostUsedApp: mostUsed,
       focusSessions: 0,
       totalFocusTime: Duration.zero,
-      topApplications: applications,
+      topApplications: topApplications,
       categoryBreakdown: categoryBreakdown,
       applicationLimits: applicationLimits,
     );
@@ -391,6 +579,7 @@ class ApplicationDetail {
   final String formattedScreenTime;
   final bool isVisible;
   final bool isProductive;
+  final bool isPrivate;
 
   ApplicationDetail({
     required this.name,
@@ -400,6 +589,7 @@ class ApplicationDetail {
     required this.percentageOfTotalTime,
     required this.isVisible,
     required this.isProductive,
+    this.isPrivate = false,
   }) : formattedScreenTime = DailyOverviewData.formatDuration(screenTime);
 }
 

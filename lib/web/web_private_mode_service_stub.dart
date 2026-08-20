@@ -12,6 +12,8 @@ class WebPrivateModeService extends ChangeNotifier {
 
   Future<bool> get isSetUp async => false;
   bool get isUnlocked => false;
+  bool get showPrivateOnly => false;
+  void setShowPrivateOnly(bool value) {}
   bool get includePrivateInTotals => true;
   int get sessionTimeoutMinutes => 5;
 
@@ -22,4 +24,15 @@ class WebPrivateModeService extends ChangeNotifier {
   Future<bool> unlock(String password) async => false;
   void extendSession() {}
   void lock() {}
+
+  String generateBackupCode() => '';
+  Future<void> setRecoveryOptions({
+    required String backupCode,
+    required String securityQuestion,
+    required String securityAnswer,
+  }) async {}
+  Future<String?> get securityQuestion async => null;
+  Future<bool> get hasBackupCode async => false;
+  Future<bool> recoverWithBackupCode(String code) async => false;
+  Future<bool> recoverWithSecurityAnswer(String answer) async => false;
 }

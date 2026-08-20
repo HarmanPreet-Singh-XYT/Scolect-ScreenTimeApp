@@ -84,6 +84,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get navHelp => 'Bantuan';
 
   @override
+  String get navPrivate => 'Private';
+
+  @override
   String get helpTitle => 'Bantuan';
 
   @override
@@ -3808,6 +3811,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get privateModeHideAction => 'Sembunyikan item pribadi';
 
   @override
+  String get privateModeLockHint => 'Right-click to lock now';
+
+  @override
+  String get privateModeShowOnlyDescription =>
+      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+
+  @override
   String get privateModeSectionTitle => 'Mode Pribadi';
 
   @override
@@ -3856,4 +3866,121 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get privateModeResetPasswordAction => 'Reset Kata Sandi';
+
+  @override
+  String get privateModeForgotPassword => 'Forgot password?';
+
+  @override
+  String get privateModeRecoveryTitle => 'Recover Private Mode';
+
+  @override
+  String get privateModeRecoveryTabBackupCode => 'Backup code';
+
+  @override
+  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+
+  @override
+  String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
+
+  @override
+  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+
+  @override
+  String get privateModeRecoveryIncorrect =>
+      'That didn\'t match. Please try again.';
+
+  @override
+  String get privateModeRecoverySuccessTitle => 'Identity verified';
+
+  @override
+  String get privateModeRecoverySuccessDescription =>
+      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+
+  @override
+  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+
+  @override
+  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+
+  @override
+  String get privateModeBackupCodeWarning =>
+      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+
+  @override
+  String get privateModeCopyBackupCode => 'Copy';
+
+  @override
+  String get privateModeBackupCodeCopied => 'Backup code copied';
+
+  @override
+  String get privateModeDownloadBackupCode => 'Download';
+
+  @override
+  String get privateModeSecurityQuestionLabel => 'Security question';
+
+  @override
+  String get privateModeSecurityAnswerLabel => 'Your answer';
+
+  @override
+  String get privateModeSecurityQuestionCustomOption =>
+      'Write my own question…';
+
+  @override
+  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+
+  @override
+  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+
+  @override
+  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+
+  @override
+  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+
+  @override
+  String get privateModeRecoveryOptionsDescription =>
+      'Regenerate your backup code and security question without changing your password.';
+
+  @override
+  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+
+  @override
+  String get privateModeQuestionPetName =>
+      'What was the name of your first pet?';
+
+  @override
+  String get privateModeQuestionBirthCity => 'In what city were you born?';
+
+  @override
+  String get privateModeQuestionFirstSchool =>
+      'What was the name of your first school?';
+
+  @override
+  String get privateModeQuestionMotherMaidenName =>
+      'What is your mother\'s maiden name?';
+
+  @override
+  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+
+  @override
+  String get privateModeNotSetUpDescription =>
+      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+
+  @override
+  String get privateModeGoToSettingsAction => 'Go to Settings';
+
+  @override
+  String get privateModeLockedDescription =>
+      'Unlock to view your private apps and websites.';
+
+  @override
+  String get privateModeUnlockedDescription =>
+      'Apps and websites you\'ve marked private.';
+
+  @override
+  String get privateModeNoItemsDescription =>
+      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+
+  @override
+  String get privateModeItemsCount => 'Private Items';
 }

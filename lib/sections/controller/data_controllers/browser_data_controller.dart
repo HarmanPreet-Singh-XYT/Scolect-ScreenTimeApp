@@ -5,6 +5,7 @@ import '../settings_data_controller.dart';
 import 'applications_data_controller.dart';
 import '../../../web/web_browser_data_provider.dart'
     if (dart.library.io) '../../../web/web_browser_data_provider_stub.dart';
+import '../../../utils/private_mode_access.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -157,6 +158,9 @@ class BrowserDataProvider {
         isPrivate: metadata.isPrivate,
       ));
     }
+
+    final showPrivate = shouldShowPrivateOnly();
+    sites.removeWhere((s) => s.isPrivate != showPrivate);
 
     sites.sort((a, b) => b.timeSpent.compareTo(a.timeSpent));
     return sites;
