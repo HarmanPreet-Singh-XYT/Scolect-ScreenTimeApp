@@ -724,13 +724,30 @@ class ForegroundWindowPlugin {
     }
 
     // UWP/packaged apps (Screenbox, Photos, Calculator, etc.) run hosted
-    // inside ApplicationFrameHost.exe — every such window shares that same
-    // host exe path, so it can't distinguish one hosted app from another,
-    // let alone stay stable as the host's window title changes with content
-    // (e.g. a video player's title showing the current filename). The AUMID
-    // is per-window and identifies the actual packaged app, not the host.
+    // inside a shared broker/host process — historically ApplicationFrameHost.exe
+    // for classic UWP XAML apps, but modern packaged apps (including Screenbox,
+    // a WinUI3 app) are commonly hosted under RuntimeBroker.exe instead. Either
+    // way, every such window shares that host's exe path, so it can't
+    // distinguish one hosted app from another, let alone stay stable as the
+    // host's window title changes with content (e.g. a video player's title
+    // showing the current filename). The AUMID is per-window and identifies
+    // the actual packaged app, not the host.
+    //
+    // RuntimeBroker.exe is typically a protected process OpenProcess can't
+    // open (elevated == true, executableName stays 'Unknown'), so this can't
+    // be gated on executableName alone — SHGetPropertyStoreForWindow operates
+    // on the window handle directly and doesn't require a process handle, so
+    // attempt it whenever the exe path is empty/unresolved OR the resolved
+    // executable is a known packaged-app host. An empty result just means
+    // "this window has no AUMID" (i.e. it's a normal app), so this is safe
+    // to attempt broadly rather than trying to enumerate every possible host.
+    const knownPackagedAppHosts = {
+      'applicationframehost.exe',
+      'runtimebroker.exe',
+    };
     String aumid = '';
-    if (executableName.toLowerCase() == 'applicationframehost.exe') {
+    if (processPath.isEmpty ||
+        knownPackagedAppHosts.contains(executableName.toLowerCase())) {
       aumid = _getAumidForWindow(hwnd);
     }
 

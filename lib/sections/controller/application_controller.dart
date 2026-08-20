@@ -384,7 +384,7 @@ class BackgroundAppTracker {
       if (appTitle == "Productive ScreenTime" || appTitle == "screentime")
         return;
       if (appTitle == "loginwindow" || appTitle == "LockApp") return;
-      if (appId.isEmpty) appId = appTitle;
+      if (appId.isEmpty || appId.toLowerCase() == 'unknown') appId = appTitle;
 
       AppMetadata? metadata = await _getOrCreateMetadata(appId, appTitle);
 
@@ -599,26 +599,25 @@ class BackgroundAppTracker {
     } catch (_) {}
     String newAppId = activeInfo?.appId ?? '';
     String newProgramName = activeInfo?.programName ?? '';
-    if (newProgramName == "SearchHost") {
-      // Windows Search's host has no per-hosted-app identity mechanism —
-      // fall back to the (volatile) window title for both the key and the
-      // label, same pre-existing limitation.
+
+    // A genuinely resolved appId — either a real AUMID (packaged/UWP apps
+    // hosted under RuntimeBroker.exe, ApplicationFrameHost.exe, etc.) or a
+    // real executable path — is always more stable than anything derived
+    // from the window title, so trust it whenever the plugin produced one.
+    // Only fall back to the (volatile) window title when the plugin
+    // couldn't resolve an identity at all — e.g. Windows Search's host,
+    // which has no AUMID or accessible exe path.
+    const unresolvedAppIdSentinels = {'', 'unknown'};
+    if (unresolvedAppIdSentinels.contains(newAppId.toLowerCase())) {
       final sanitized = _sanitizeWindowTitle(window.windowTitle);
       newProgramName = sanitized;
       newAppId = sanitized;
-    } else if (newProgramName == "Application Frame Host") {
-      // UWP/packaged apps (Screenbox, Photos, Calculator, ...) all run
-      // hosted under this same process — the plugin resolves a per-window
-      // AUMID as appId in this case (see foreground_window_plugin_windows.dart),
-      // which is stable across launches/content changes, unlike this
-      // process's own title. Only fall back to the volatile title if that
-      // AUMID lookup failed (appId still points at the shared host exe).
-      final sanitized = _sanitizeWindowTitle(window.windowTitle);
-      newProgramName = sanitized;
-      if (newAppId.isEmpty ||
-          newAppId.toLowerCase().endsWith('applicationframehost.exe')) {
-        newAppId = sanitized;
-      }
+    } else if (newProgramName == "SearchHost" ||
+        newProgramName == "Application Frame Host") {
+      // We do have a resolved appId (kept as-is above), but the display
+      // name resolved to a shell-host label rather than anything
+      // meaningful — use the window title for display purposes only.
+      newProgramName = _sanitizeWindowTitle(window.windowTitle);
     }
 
     if (newProgramName == "Productive ScreenTime") return;
