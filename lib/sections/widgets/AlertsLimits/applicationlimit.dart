@@ -36,8 +36,8 @@ class ApplicationLimitsCard extends StatefulWidget {
 }
 
 class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
-  String _sortColumn = 'name';
-  SortDirection _sortDirection = SortDirection.ascending;
+  String _sortColumn = 'currentUsage';
+  SortDirection _sortDirection = SortDirection.descending;
   String _searchQuery = '';
   final _searchController = TextEditingController();
 
@@ -55,7 +55,9 @@ class _ApplicationLimitsCardState extends State<ApplicationLimitsCard> {
             : SortDirection.ascending;
       } else {
         _sortColumn = column;
-        _sortDirection = SortDirection.ascending;
+        _sortDirection = (column == 'currentUsage' || column == 'dailyLimit')
+            ? SortDirection.descending
+            : SortDirection.ascending;
       }
     });
   }

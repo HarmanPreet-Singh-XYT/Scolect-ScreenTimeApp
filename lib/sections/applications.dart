@@ -127,8 +127,8 @@ class _ApplicationsState extends State<Applications>
   bool _isLoading = true;
   Timer? _debounce;
 
-  String _sortColumn = 'name';
-  SortDirection _sortDirection = SortDirection.ascending;
+  String _sortColumn = 'screenTime';
+  SortDirection _sortDirection = SortDirection.descending;
 
   SettingsProvider? _settingsProvider;
 
@@ -304,7 +304,9 @@ class _ApplicationsState extends State<Applications>
             : SortDirection.ascending;
       } else {
         _sortColumn = column;
-        _sortDirection = SortDirection.ascending;
+        _sortDirection = column == 'screenTime'
+            ? SortDirection.descending
+            : SortDirection.ascending;
       }
     });
   }

@@ -48,6 +48,7 @@ void main() {
       expect(info.processName, 'Unknown');
       expect(info.executableName, 'Unknown');
       expect(info.programName, 'Unknown');
+      expect(info.appId, 'unknown');
     });
 
     test('all numeric fields default to 0', () {
@@ -75,9 +76,11 @@ void main() {
         processId: 1,
         parentProcessId: 0,
         parentProcessName: 'System',
+        appId: r'C:\Windows\System32\notepad.exe',
       );
 
       expect(info.executableName, 'Notepad');
+      expect(info.appId, r'C:\Windows\System32\notepad.exe');
     });
   });
 
@@ -104,14 +107,16 @@ void main() {
           await channel.invokeMethod<dynamic>('getForegroundWindow');
 
       final data = Map<String, dynamic>.from(result as Map);
+      final processPath = data['processName'] as String? ?? 'Unknown';
       final info = windows_impl.WindowInfo(
         windowTitle: data['windowTitle'] as String? ?? 'Unknown',
-        processName: data['processName'] as String? ?? 'Unknown',
+        processName: processPath,
         executableName: data['executableName'] as String? ?? 'Unknown',
         programName: data['programName'] as String? ?? 'Unknown',
         processId: data['processId'] as int? ?? 0,
         parentProcessId: data['parentProcessId'] as int? ?? 0,
         parentProcessName: data['parentProcessName'] as String? ?? 'Unknown',
+        appId: processPath.isNotEmpty ? processPath : 'unknown',
       );
 
       expect(info.windowTitle, 'Safari');
@@ -119,6 +124,7 @@ void main() {
       expect(info.processId, 4321);
       expect(info.parentProcessId, 1);
       expect(info.parentProcessName, '/sbin/launchd');
+      expect(info.appId, '/Applications/Safari.app/Contents/MacOS/Safari');
     });
 
     test('missing optional fields fall back to "Unknown"/0', () async {
@@ -163,9 +169,11 @@ void main() {
         processId: 99999,
         parentProcessId: 88888,
         parentProcessName: '',
+        appId: 'test_app',
       );
       expect(info.processId, 99999);
       expect(info.parentProcessId, 88888);
+      expect(info.appId, 'test_app');
     });
 
     test('empty strings are valid for string fields', () {
@@ -177,9 +185,11 @@ void main() {
         processId: 0,
         parentProcessId: 0,
         parentProcessName: '',
+        appId: '',
       );
       expect(info.windowTitle, '');
       expect(info.programName, '');
+      expect(info.appId, '');
     });
   });
 
