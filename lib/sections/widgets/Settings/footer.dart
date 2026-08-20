@@ -44,7 +44,7 @@ class FooterSection extends StatelessWidget {
     final callbacks = [onContact, onReport, onFeedback, onGithub];
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
@@ -52,18 +52,18 @@ class FooterSection extends StatelessWidget {
           ),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 12,
+        runSpacing: 8,
         children: [
-          for (int i = 0; i < icons.length; i++) ...[
-            if (i > 0) const SizedBox(width: 12),
+          for (int i = 0; i < icons.length; i++)
             _FooterButton(
               icon: icons[i],
               label: labels[i],
               onPressed: callbacks[i],
               isPrimary: i == icons.length - 1,
             ),
-          ],
         ],
       ),
     );
