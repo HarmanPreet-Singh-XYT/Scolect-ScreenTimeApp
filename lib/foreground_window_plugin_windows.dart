@@ -71,7 +71,80 @@ typedef _EnumWindowsD = int Function(
 typedef _TerminateProcessN = Int32 Function(Pointer<Void>, Uint32);
 typedef _TerminateProcessD = int Function(Pointer<Void>, int);
 
+// ── COM / AUMID lookup (for UWP-hosted windows, e.g. ApplicationFrameHost) ──
+
+typedef _CoInitializeExN = Int32 Function(Pointer<Void>, Uint32);
+typedef _CoInitializeExD = int Function(Pointer<Void>, int);
+
+typedef _CoUninitializeN = Void Function();
+typedef _CoUninitializeD = void Function();
+
+typedef _CoTaskMemFreeN = Void Function(Pointer<Void>);
+typedef _CoTaskMemFreeD = void Function(Pointer<Void>);
+
+// HRESULT SHGetPropertyStoreForWindow(HWND hwnd, REFIID riid, void **ppv);
+typedef _SHGetPropertyStoreForWindowN = Int32 Function(
+    Pointer<Void>, Pointer<GUID>, Pointer<Pointer<Void>>);
+typedef _SHGetPropertyStoreForWindowD = int Function(
+    Pointer<Void>, Pointer<GUID>, Pointer<Pointer<Void>>);
+
 // ─── Structs ──────────────────────────────────────────────────────────────────
+
+base class GUID extends Struct {
+  @Uint32()
+  external int data1;
+  @Uint16()
+  external int data2;
+  @Uint16()
+  external int data3;
+  @Array(8)
+  external Array<Uint8> data4;
+
+  static Pointer<GUID> allocate(
+      int d1, int d2, int d3, List<int> d4) {
+    final ptr = calloc<GUID>();
+    final g = ptr.ref;
+    g.data1 = d1;
+    g.data2 = d2;
+    g.data3 = d3;
+    for (int i = 0; i < 8; i++) {
+      g.data4[i] = d4[i];
+    }
+    return ptr;
+  }
+}
+
+// PROPERTYKEY: a GUID (fmtid) + a DWORD (pid). PKEY_AppUserModel_ID =
+// {9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, pid 5.
+base class PROPERTYKEY extends Struct {
+  @Uint32()
+  external int fmtidData1;
+  @Uint16()
+  external int fmtidData2;
+  @Uint16()
+  external int fmtidData3;
+  @Array(8)
+  external Array<Uint8> fmtidData4;
+  @Uint32()
+  external int pid;
+}
+
+// Minimal PROPVARIANT: only the fields needed to read a VT_LPWSTR value.
+// Real PROPVARIANT is a tagged union; we only ever expect VT_LPWSTR (31)
+// back for PKEY_AppUserModel_ID, and treat anything else as "not present".
+base class PROPVARIANT extends Struct {
+  @Uint16()
+  external int vt;
+  @Uint16()
+  external int wReserved1;
+  @Uint16()
+  external int wReserved2;
+  @Uint16()
+  external int wReserved3;
+  external Pointer<Utf16> pwszVal; // valid only when vt == VT_LPWSTR
+  @IntPtr()
+  external int padding; // pad union to a safe size for PropVariantClear
+}
 
 base class PROCESSENTRY32 extends Struct {
   @Uint32()
@@ -202,6 +275,8 @@ class ForegroundWindowPlugin {
   static final DynamicLibrary _kernel32 = DynamicLibrary.open('kernel32.dll');
   static final DynamicLibrary _psapi = DynamicLibrary.open('psapi.dll');
   static final DynamicLibrary _version = DynamicLibrary.open('version.dll');
+  static final DynamicLibrary _ole32 = DynamicLibrary.open('ole32.dll');
+  static final DynamicLibrary _shell32 = DynamicLibrary.open('shell32.dll');
 
   // ── Native function bindings ──
 
@@ -247,6 +322,19 @@ class ForegroundWindowPlugin {
   static final _VerQueryValueAD _verQueryValueA = _version
       .lookupFunction<_VerQueryValueAN, _VerQueryValueAD>('VerQueryValueA');
 
+  static final _CoInitializeExD _coInitializeEx = _ole32
+      .lookupFunction<_CoInitializeExN, _CoInitializeExD>('CoInitializeEx');
+
+  static final _CoUninitializeD _coUninitialize = _ole32
+      .lookupFunction<_CoUninitializeN, _CoUninitializeD>('CoUninitialize');
+
+  static final _CoTaskMemFreeD _coTaskMemFree = _ole32
+      .lookupFunction<_CoTaskMemFreeN, _CoTaskMemFreeD>('CoTaskMemFree');
+
+  static final _SHGetPropertyStoreForWindowD _shGetPropertyStoreForWindow =
+      _shell32.lookupFunction<_SHGetPropertyStoreForWindowN,
+          _SHGetPropertyStoreForWindowD>('SHGetPropertyStoreForWindow');
+
   // ── Public API ────────────────────────────────────────────────────────────
 
   /// Minimizes all visible windows belonging to [pid].
@@ -289,6 +377,7 @@ class ForegroundWindowPlugin {
       final String executableName = raw['executableName'] as String;
       final int processId = raw['processId'] as int;
       final bool elevated = raw['elevated'] as bool;
+      final String aumid = raw['aumid'] as String? ?? '';
 
       // Step 2: resolve human-readable names using main-isolate caches.
       String programName;
@@ -322,6 +411,13 @@ class ForegroundWindowPlugin {
         _parentNameCache[parentProcessId] = parentProcessName;
       }
 
+      // AUMID is per-window and identifies the actual packaged app (e.g.
+      // "36186RyanBevan.Screenbox_...") rather than the shared
+      // ApplicationFrameHost.exe process — prefer it whenever available.
+      final String appId = aumid.isNotEmpty
+          ? aumid
+          : (processPath.isEmpty ? 'unknown' : processPath);
+
       return WindowInfo(
         windowTitle: windowTitle,
         processName: processPath,
@@ -330,7 +426,7 @@ class ForegroundWindowPlugin {
         processId: processId,
         parentProcessId: parentProcessId,
         parentProcessName: parentProcessName,
-        appId: processPath.isEmpty ? 'unknown' : processPath,
+        appId: appId,
       );
     } catch (e, st) {
       debugPrint('ForegroundWindowPlugin: unexpected error: $e\n$st');
@@ -627,12 +723,24 @@ class ForegroundWindowPlugin {
       elevated = true;
     }
 
+    // UWP/packaged apps (Screenbox, Photos, Calculator, etc.) run hosted
+    // inside ApplicationFrameHost.exe — every such window shares that same
+    // host exe path, so it can't distinguish one hosted app from another,
+    // let alone stay stable as the host's window title changes with content
+    // (e.g. a video player's title showing the current filename). The AUMID
+    // is per-window and identifies the actual packaged app, not the host.
+    String aumid = '';
+    if (executableName.toLowerCase() == 'applicationframehost.exe') {
+      aumid = _getAumidForWindow(hwnd);
+    }
+
     return {
       'processPath': processPath,
       'windowTitle': windowTitle,
       'executableName': executableName,
       'processId': processId,
       'elevated': elevated,
+      'aumid': aumid,
     };
   }
 
@@ -652,6 +760,120 @@ class ForegroundWindowPlugin {
   /// Only called once per unique parent PID.
   static String _resolveParentProcessName(int processId) {
     return _getProcessNameById(processId);
+  }
+
+  /// Reads the Application User Model ID (AUMID) for [hwnd] via
+  /// SHGetPropertyStoreForWindow + IPropertyStore::GetValue(PKEY_AppUserModel_ID).
+  /// This is the stable identity Windows itself uses for UWP/packaged apps,
+  /// which is otherwise unreachable — apps hosted under
+  /// ApplicationFrameHost.exe all share that host's exe path, so the only
+  /// way to distinguish "Screenbox" from "Photos" from "Calculator" is the
+  /// per-window AUMID, not the process.
+  ///
+  /// Returns '' if the window has no AUMID (i.e. it's a normal Win32 app —
+  /// callers should only invoke this for ApplicationFrameHost-hosted windows)
+  /// or if anything in the COM call chain fails.
+  ///
+  /// NOT part of the "cheap, no I/O" Step 1 path in the general case — only
+  /// called for the ApplicationFrameHost special case, gated by the caller.
+  static String _getAumidForWindow(Pointer<Void> hwnd) {
+    // COM requires per-thread initialization; this runs inside a compute()
+    // isolate, so there is no ambient apartment to rely on — init/uninit on
+    // every call.
+    final hr = _coInitializeEx(nullptr, 0 /* COINIT_MULTITHREADED */);
+    // S_OK = 0, S_FALSE = 1 (already initialized) are both fine; anything
+    // else means COM isn't usable here.
+    final comInitialized = hr == 0 || hr == 1;
+    if (!comInitialized) return '';
+
+    Pointer<GUID>? iidPropertyStorePtr;
+    Pointer<Pointer<Void>>? propertyStorePtrPtr;
+    Pointer<PROPERTYKEY>? pkeyPtr;
+    Pointer<PROPVARIANT>? propvarPtr;
+
+    try {
+      // IID_IPropertyStore = {886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}
+      iidPropertyStorePtr = GUID.allocate(
+        0x886D8EEB,
+        0x8CF2,
+        0x4446,
+        [0x8D, 0x02, 0xCD, 0xBA, 0x1D, 0xBD, 0xCF, 0x99],
+      );
+
+      propertyStorePtrPtr = calloc<Pointer<Void>>();
+      final hrStore = _shGetPropertyStoreForWindow(
+          hwnd, iidPropertyStorePtr, propertyStorePtrPtr);
+      if (hrStore != 0 || propertyStorePtrPtr.value.address == 0) return '';
+
+      final propertyStore = propertyStorePtrPtr.value;
+      // IUnknown/IPropertyStore vtable layout:
+      // 0 QueryInterface, 1 AddRef, 2 Release,
+      // 3 GetCount, 4 GetAt, 5 GetValue, 6 SetValue, 7 Commit
+      final vtable = propertyStore.cast<Pointer<NativeFunction>>().value;
+      final vtablePtrs = vtable.cast<Pointer<NativeFunction>>();
+
+      try {
+        final getValue = (vtablePtrs + 5)
+            .value
+            .cast<
+                NativeFunction<
+                    Int32 Function(Pointer<Void>, Pointer<PROPERTYKEY>,
+                        Pointer<PROPVARIANT>)>>()
+            .asFunction<
+                int Function(
+                    Pointer<Void>, Pointer<PROPERTYKEY>, Pointer<PROPVARIANT>)>();
+
+        // PKEY_AppUserModel_ID = {9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3}, pid 5
+        pkeyPtr = calloc<PROPERTYKEY>();
+        final pkey = pkeyPtr.ref;
+        pkey.fmtidData1 = 0x9F4C2855;
+        pkey.fmtidData2 = 0x9F79;
+        pkey.fmtidData3 = 0x4B39;
+        const fmtidTail = [0xA8, 0xD0, 0xE1, 0xD4, 0x2D, 0xE1, 0xD5, 0xF3];
+        for (int i = 0; i < 8; i++) {
+          pkey.fmtidData4[i] = fmtidTail[i];
+        }
+        pkey.pid = 5;
+
+        propvarPtr = calloc<PROPVARIANT>();
+        final hrValue = getValue(propertyStore, pkeyPtr, propvarPtr);
+
+        String aumid = '';
+        if (hrValue == 0) {
+          const vtLpwstr = 31;
+          final propvar = propvarPtr.ref;
+          if (propvar.vt == vtLpwstr && propvar.pwszVal.address != 0) {
+            aumid = propvar.pwszVal.toDartString();
+          }
+        }
+        return aumid;
+      } finally {
+        // Release the IPropertyStore (vtable index 2).
+        final release = (vtablePtrs + 2)
+            .value
+            .cast<NativeFunction<Int32 Function(Pointer<Void>)>>()
+            .asFunction<int Function(Pointer<Void>)>();
+        release(propertyStore);
+      }
+    } catch (e) {
+      debugPrint('ForegroundWindowPlugin: AUMID lookup failed: $e');
+      return '';
+    } finally {
+      if (iidPropertyStorePtr != null) calloc.free(iidPropertyStorePtr);
+      if (propertyStorePtrPtr != null) calloc.free(propertyStorePtrPtr);
+      if (pkeyPtr != null) calloc.free(pkeyPtr);
+      if (propvarPtr != null) {
+        // pwszVal inside the PROPVARIANT was allocated by the shell via
+        // CoTaskMemAlloc; PropVariantClear is the "correct" API to free the
+        // whole variant, but ole32 exports it too — free just the string
+        // pointer directly via CoTaskMemFree to keep this self-contained.
+        if (propvarPtr.ref.vt == 31 && propvarPtr.ref.pwszVal.address != 0) {
+          _coTaskMemFree(propvarPtr.ref.pwszVal.cast<Void>());
+        }
+        calloc.free(propvarPtr);
+      }
+      if (comInitialized) _coUninitialize();
+    }
   }
 
   /// Very lightweight heuristic for protected processes we can't open.

@@ -599,15 +599,26 @@ class BackgroundAppTracker {
     } catch (_) {}
     String newAppId = activeInfo?.appId ?? '';
     String newProgramName = activeInfo?.programName ?? '';
-    if (newProgramName == "SearchHost" ||
-        newProgramName == "Application Frame Host") {
-      // These Windows shell hosts don't have a meaningful stable identity
-      // distinct per hosted app — fall back to the (volatile) window title
-      // for both the key and the label, same limitation as before this
-      // change.
+    if (newProgramName == "SearchHost") {
+      // Windows Search's host has no per-hosted-app identity mechanism —
+      // fall back to the (volatile) window title for both the key and the
+      // label, same pre-existing limitation.
       final sanitized = _sanitizeWindowTitle(window.windowTitle);
       newProgramName = sanitized;
       newAppId = sanitized;
+    } else if (newProgramName == "Application Frame Host") {
+      // UWP/packaged apps (Screenbox, Photos, Calculator, ...) all run
+      // hosted under this same process — the plugin resolves a per-window
+      // AUMID as appId in this case (see foreground_window_plugin_windows.dart),
+      // which is stable across launches/content changes, unlike this
+      // process's own title. Only fall back to the volatile title if that
+      // AUMID lookup failed (appId still points at the shared host exe).
+      final sanitized = _sanitizeWindowTitle(window.windowTitle);
+      newProgramName = sanitized;
+      if (newAppId.isEmpty ||
+          newAppId.toLowerCase().endsWith('applicationframehost.exe')) {
+        newAppId = sanitized;
+      }
     }
 
     if (newProgramName == "Productive ScreenTime") return;
