@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 const int _kMaxPath = 260;
 const int _kMaxTitle = 512; // increased from 256 for longer titles
 const int _kProcessQueryInformation = 0x0400;
+const int _kProcessQueryLimitedInformation = 0x1000;
 const int _kProcessVMRead = 0x0010;
 const int _kProcessTerminate = 0x0001;
 const int _kSwHide = 0;
@@ -87,6 +88,16 @@ typedef _SHGetPropertyStoreForWindowN = Int32 Function(
     Pointer<Void>, Pointer<GUID>, Pointer<Pointer<Void>>);
 typedef _SHGetPropertyStoreForWindowD = int Function(
     Pointer<Void>, Pointer<GUID>, Pointer<Pointer<Void>>);
+
+// LONG GetApplicationUserModelId(HANDLE hProcess, UINT32 *len, PWSTR buf);
+// kernel32.dll — simpler, non-COM alternative to the property-store route.
+// Returns ERROR_SUCCESS (0) with the AUMID written to buf, or a non-zero
+// win32 error (e.g. APPMODEL_ERROR_NO_APPLICATION = 15703 for non-packaged
+// processes) if the process has no AUMID.
+typedef _GetApplicationUserModelIdN = Uint32 Function(
+    Pointer<Void>, Pointer<Uint32>, Pointer<Utf16>);
+typedef _GetApplicationUserModelIdD = int Function(
+    Pointer<Void>, Pointer<Uint32>, Pointer<Utf16>);
 
 // ─── Structs ──────────────────────────────────────────────────────────────────
 
@@ -334,6 +345,10 @@ class ForegroundWindowPlugin {
   static final _SHGetPropertyStoreForWindowD _shGetPropertyStoreForWindow =
       _shell32.lookupFunction<_SHGetPropertyStoreForWindowN,
           _SHGetPropertyStoreForWindowD>('SHGetPropertyStoreForWindow');
+
+  static final _GetApplicationUserModelIdD _getApplicationUserModelId =
+      _kernel32.lookupFunction<_GetApplicationUserModelIdN,
+          _GetApplicationUserModelIdD>('GetApplicationUserModelId');
 
   // ── Public API ────────────────────────────────────────────────────────────
 
@@ -748,7 +763,14 @@ class ForegroundWindowPlugin {
     String aumid = '';
     if (processPath.isEmpty ||
         knownPackagedAppHosts.contains(executableName.toLowerCase())) {
-      aumid = _getAumidForWindow(hwnd);
+      // Try the simpler, non-COM API first (opens with QUERY_LIMITED_
+      // INFORMATION, which succeeds even on protected hosts like
+      // RuntimeBroker.exe). Fall back to the property-store/COM route only
+      // if that doesn't yield anything.
+      aumid = _getAumidForProcess(processId);
+      if (aumid.isEmpty) {
+        aumid = _getAumidForWindow(hwnd);
+      }
     }
 
     return {
@@ -779,6 +801,55 @@ class ForegroundWindowPlugin {
     return _getProcessNameById(processId);
   }
 
+  /// Reads the Application User Model ID (AUMID) for the window with process
+  /// ID [processId] via GetApplicationUserModelId (kernel32.dll) — a direct,
+  /// non-COM lookup on a process handle opened with
+  /// PROCESS_QUERY_LIMITED_INFORMATION, which succeeds even on protected
+  /// processes (like RuntimeBroker.exe) that PROCESS_QUERY_INFORMATION
+  /// cannot open. This is the simpler, preferred path — the COM-based
+  /// _getAumidForWindow is a fallback for cases this doesn't cover.
+  ///
+  /// Returns '' if the process isn't a packaged/UWP app (most commonly
+  /// error 15703, APPMODEL_ERROR_NO_APPLICATION) or the handle can't be
+  /// opened at all.
+  static String _getAumidForProcess(int processId) {
+    final hProcess = _openProcess(
+        _kProcessQueryLimitedInformation, 0, processId);
+    if (hProcess.address == 0) {
+      debugPrint('AUMID: OpenProcess(QUERY_LIMITED_INFORMATION) failed for '
+          'pid=$processId');
+      return '';
+    }
+
+    try {
+      // First call with a generous buffer — GetApplicationUserModelId wants
+      // the buffer length in WCHARs (not bytes) both in and out.
+      const bufferChars = 130; // AUMIDs are capped at 128 chars + null
+      final lenPtr = calloc<Uint32>();
+      final bufPtr = calloc<Uint16>(bufferChars).cast<Utf16>();
+      try {
+        lenPtr.value = bufferChars;
+        final result =
+            _getApplicationUserModelId(hProcess, lenPtr, bufPtr);
+        if (result != 0) {
+          // Not an error we need to surface loudly — this is the expected,
+          // common outcome for every non-packaged Win32 process.
+          if (result != 15703 /* APPMODEL_ERROR_NO_APPLICATION */) {
+            debugPrint('AUMID: GetApplicationUserModelId failed for '
+                'pid=$processId, error=$result');
+          }
+          return '';
+        }
+        return bufPtr.toDartString();
+      } finally {
+        calloc.free(lenPtr);
+        calloc.free(bufPtr);
+      }
+    } finally {
+      _closeHandle(hProcess);
+    }
+  }
+
   /// Reads the Application User Model ID (AUMID) for [hwnd] via
   /// SHGetPropertyStoreForWindow + IPropertyStore::GetValue(PKEY_AppUserModel_ID).
   /// This is the stable identity Windows itself uses for UWP/packaged apps,
@@ -786,6 +857,10 @@ class ForegroundWindowPlugin {
   /// ApplicationFrameHost.exe all share that host's exe path, so the only
   /// way to distinguish "Screenbox" from "Photos" from "Calculator" is the
   /// per-window AUMID, not the process.
+  ///
+  /// Fallback only — tried when [_getAumidForProcess] doesn't return a
+  /// value, e.g. if the window's owning process differs from the one the
+  /// AUMID needs to be queried against.
   ///
   /// Returns '' if the window has no AUMID (i.e. it's a normal Win32 app —
   /// callers should only invoke this for ApplicationFrameHost-hosted windows)
@@ -801,7 +876,10 @@ class ForegroundWindowPlugin {
     // S_OK = 0, S_FALSE = 1 (already initialized) are both fine; anything
     // else means COM isn't usable here.
     final comInitialized = hr == 0 || hr == 1;
-    if (!comInitialized) return '';
+    if (!comInitialized) {
+      debugPrint('AUMID: CoInitializeEx failed, hr=0x${hr.toRadixString(16)}');
+      return '';
+    }
 
     Pointer<GUID>? iidPropertyStorePtr;
     Pointer<Pointer<Void>>? propertyStorePtrPtr;
@@ -820,7 +898,12 @@ class ForegroundWindowPlugin {
       propertyStorePtrPtr = calloc<Pointer<Void>>();
       final hrStore = _shGetPropertyStoreForWindow(
           hwnd, iidPropertyStorePtr, propertyStorePtrPtr);
-      if (hrStore != 0 || propertyStorePtrPtr.value.address == 0) return '';
+      if (hrStore != 0 || propertyStorePtrPtr.value.address == 0) {
+        debugPrint('AUMID: SHGetPropertyStoreForWindow failed, '
+            'hr=0x${(hrStore & 0xFFFFFFFF).toRadixString(16)}, '
+            'ptr=${propertyStorePtrPtr.value.address}');
+        return '';
+      }
 
       final propertyStore = propertyStorePtrPtr.value;
       // IUnknown/IPropertyStore vtable layout:
@@ -861,7 +944,14 @@ class ForegroundWindowPlugin {
           final propvar = propvarPtr.ref;
           if (propvar.vt == vtLpwstr && propvar.pwszVal.address != 0) {
             aumid = propvar.pwszVal.toDartString();
+          } else {
+            debugPrint('AUMID: GetValue returned S_OK but vt=${propvar.vt} '
+                '(expected $vtLpwstr), ptr=${propvar.pwszVal.address} '
+                '— property not present on this window');
           }
+        } else {
+          debugPrint('AUMID: IPropertyStore::GetValue failed, '
+              'hr=0x${(hrValue & 0xFFFFFFFF).toRadixString(16)}');
         }
         return aumid;
       } finally {
