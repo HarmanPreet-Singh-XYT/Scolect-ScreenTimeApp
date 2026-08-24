@@ -3780,6 +3780,25 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tu extensión de navegador ahora puede conectarse y sincronizar datos.';
 
   @override
+  String get browserSyncedJustNow => 'Synced just now';
+
+  @override
+  String browserSyncedMinutesAgo(int minutes) {
+    return 'Synced ${minutes}m ago';
+  }
+
+  @override
+  String browserSyncedHoursAgo(int hours) {
+    return 'Synced ${hours}h ago';
+  }
+
+  @override
+  String get browserNeverSynced => 'Not synced yet';
+
+  @override
+  String get browserSyncStalled => 'Sync stalled — check the extension';
+
+  @override
   String get browserServerPort => 'Puerto del Servidor';
 
   @override

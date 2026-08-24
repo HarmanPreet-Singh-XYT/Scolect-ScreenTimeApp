@@ -3696,6 +3696,25 @@ class AppLocalizationsBn extends AppLocalizations {
       'আপনার ব্রাউজার এক্সটেনশন এখন সংযুক্ত হতে এবং ডেটা সিঙ্ক করতে পারবে।';
 
   @override
+  String get browserSyncedJustNow => 'Synced just now';
+
+  @override
+  String browserSyncedMinutesAgo(int minutes) {
+    return 'Synced ${minutes}m ago';
+  }
+
+  @override
+  String browserSyncedHoursAgo(int hours) {
+    return 'Synced ${hours}h ago';
+  }
+
+  @override
+  String get browserNeverSynced => 'Not synced yet';
+
+  @override
+  String get browserSyncStalled => 'Sync stalled — check the extension';
+
+  @override
   String get browserServerPort => 'সার্ভার পোর্ট';
 
   @override

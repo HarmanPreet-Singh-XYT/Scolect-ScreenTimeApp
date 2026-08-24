@@ -1,6 +1,11 @@
 {
   "ar": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -42,6 +47,11 @@
 
   "bn": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -83,6 +93,11 @@
 
   "es": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -124,6 +139,11 @@
 
   "fr": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -165,6 +185,11 @@
 
   "hi": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -206,6 +231,11 @@
 
   "id": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -247,6 +277,11 @@
 
   "ja": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -288,6 +323,11 @@
 
   "pt": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -329,6 +369,11 @@
 
   "ru": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -370,6 +415,11 @@
 
   "ur": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",
@@ -411,6 +461,11 @@
 
   "zh": [
     "navPrivate",
+    "browserSyncedJustNow",
+    "browserSyncedMinutesAgo",
+    "browserSyncedHoursAgo",
+    "browserNeverSynced",
+    "browserSyncStalled",
     "privateModeLockHint",
     "privateModeShowOnlyDescription",
     "privateModeForgotPassword",

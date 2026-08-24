@@ -3576,6 +3576,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserSetupServerActiveDesc => '您的浏览器扩展现在可以连接并同步数据。';
 
   @override
+  String get browserSyncedJustNow => 'Synced just now';
+
+  @override
+  String browserSyncedMinutesAgo(int minutes) {
+    return 'Synced ${minutes}m ago';
+  }
+
+  @override
+  String browserSyncedHoursAgo(int hours) {
+    return 'Synced ${hours}h ago';
+  }
+
+  @override
+  String get browserNeverSynced => 'Not synced yet';
+
+  @override
+  String get browserSyncStalled => 'Sync stalled — check the extension';
+
+  @override
   String get browserServerPort => '服务器端口';
 
   @override

@@ -26,12 +26,17 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   }
 
   Future<void> _loadData() async {
-    final sites = await _provider.fetchAllWebsites();
-    if (!mounted) return;
-    setState(() {
-      _sites = sites;
-      _isLoading = false;
-    });
+    try {
+      final sites = await _provider.fetchAllWebsites(includeHistorical: true);
+      if (!mounted) return;
+      setState(() {
+        _sites = sites;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+    }
   }
 
   @override

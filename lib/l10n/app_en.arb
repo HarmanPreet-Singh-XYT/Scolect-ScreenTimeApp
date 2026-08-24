@@ -2319,6 +2319,17 @@
   "browserSetupHowTo": "How to get started",
   "browserSetupServerActive": "Server Active",
   "browserSetupServerActiveDesc": "Your browser extension can now connect and sync data.",
+  "browserSyncedJustNow": "Synced just now",
+  "browserSyncedMinutesAgo": "Synced {minutes}m ago",
+  "@browserSyncedMinutesAgo": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "browserSyncedHoursAgo": "Synced {hours}h ago",
+  "@browserSyncedHoursAgo": {
+    "placeholders": { "hours": { "type": "int" } }
+  },
+  "browserNeverSynced": "Not synced yet",
+  "browserSyncStalled": "Sync stalled — check the extension",
   "browserServerPort": "Server Port",
   "browserServerPortDesc": "Port the local server listens on. Change this if port 46000 is already in use.",
   "browserServerPortSaved": "Port updated — extension reconnecting",

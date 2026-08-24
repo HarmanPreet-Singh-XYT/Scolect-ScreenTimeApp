@@ -5,7 +5,9 @@ class WebBrowserDataProvider {
   factory WebBrowserDataProvider() => _instance;
   WebBrowserDataProvider._();
 
-  Future<List<WebsiteBasicDetail>> fetchAllWebsites() async => [];
+  Future<List<WebsiteBasicDetail>> fetchAllWebsites({
+    bool includeHistorical = false,
+  }) async => [];
   
   Future<({Duration totalTime, int siteCount, int visitCount})> fetchTodaySummary() async => 
       (totalTime: Duration.zero, siteCount: 0, visitCount: 0);

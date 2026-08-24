@@ -6,6 +6,8 @@ import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'package:screentime/sections/settings.dart';
+import 'package:screentime/utils/browser_extension_server_stub.dart'
+    if (dart.library.io) 'package:screentime/utils/browser_extension_server.dart';
 import 'dart:async';
 import 'widgets/Browser/browser_shared.dart';
 import 'widgets/Browser/browser_overview.dart';
@@ -33,6 +35,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   int _refreshKey = 0;
   ({Duration totalTime, int siteCount, int visitCount})? _summary;
+  Timer? _syncStatusTimer;
 
   @override
   void initState() {
@@ -51,6 +54,12 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     });
 
     _loadSummary();
+
+    // Repaint the "last synced" badge periodically so its relative time
+    // ("Xs ago") and stale/warning state stay current without user action.
+    _syncStatusTimer = Timer.periodic(const Duration(seconds: 5), (_) {
+      if (mounted) setState(() {});
+    });
   }
 
   Future<void> _loadSummary() async {
@@ -78,6 +87,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
+    _syncStatusTimer?.cancel();
     _animationController.dispose();
     super.dispose();
   }
@@ -159,7 +169,9 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                   Row(
                     children: [
                       if (serverEnabled)
-                        _ServerBadge(),
+                        _ServerBadge(
+                          lastSyncAt: BrowserExtensionServer.lastUsageSyncAt,
+                        ),
 
                       if (_summary != null) ...[
                         const SizedBox(width: 16),
@@ -849,37 +861,68 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
 // ─── Server running badge (desktop) ──────────────────────────────────────────
 
 class _ServerBadge extends StatelessWidget {
+  final DateTime? lastSyncAt;
+
+  const _ServerBadge({this.lastSyncAt});
+
+  // A sync gap longer than this (well past the extension's 1-minute alarm
+  // cadence) is treated as stalled rather than just "quiet for a moment".
+  static const _staleAfter = Duration(minutes: 3);
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: kBrowserGreen.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: kBrowserGreen.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: kBrowserGreen,
+    final now = DateTime.now();
+    final synced = lastSyncAt;
+    final isStale = synced == null || now.difference(synced) > _staleAfter;
+
+    final String label;
+    if (synced == null) {
+      label = l10n.browserNeverSynced;
+    } else {
+      final elapsed = now.difference(synced);
+      if (elapsed.inMinutes < 1) {
+        label = l10n.browserSyncedJustNow;
+      } else if (elapsed.inHours < 1) {
+        label = l10n.browserSyncedMinutesAgo(elapsed.inMinutes);
+      } else {
+        label = l10n.browserSyncedHoursAgo(elapsed.inHours);
+      }
+    }
+
+    final color = isStale ? kBrowserAmber : kBrowserGreen;
+
+    return Tooltip(
+      message: isStale ? l10n.browserSyncStalled : label,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 6,
+              height: 6,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
             ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            l10n.browserSetupServerActive,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: kBrowserGreen.withValues(alpha: 0.9),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: color.withValues(alpha: 0.9),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

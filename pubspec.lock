@@ -1081,7 +1081,7 @@ packages:
     description:
       path: "."
       ref: rust
-      resolved-ref: eacfe465f1b9f0ff4e5637438d65bc7c47946984
+      resolved-ref: a3cd09c3fcdae9587aa13b7c525f44d1b8e62e2b
       url: "https://github.com/HarmanPreet-Singh-XYT/Window_focus"
     source: git
     version: "1.2.1"

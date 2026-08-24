@@ -119,7 +119,14 @@ class BrowserDataProvider {
 
   // ─── Fetch all websites for today ────────────────────────────────────────
 
-  Future<List<WebsiteBasicDetail>> fetchAllWebsites() async {
+  /// [includeHistorical] is a no-op on desktop: every synced domain always
+  /// gets a metadata entry (see BrowserExtensionServer._ingestDomains), so
+  /// the metadata scan below already covers all-time domains. It only
+  /// matters for the web extension, where a domain with no limit/category
+  /// ever set has no metadata record at all — see WebBrowserDataProvider.
+  Future<List<WebsiteBasicDetail>> fetchAllWebsites({
+    bool includeHistorical = false,
+  }) async {
     await _ensureInitialized();
 
     final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
@@ -335,7 +342,10 @@ class _WebDelegatingProvider extends BrowserDataProvider {
   _WebDelegatingProvider(this._web) : super._internal();
 
   @override
-  Future<List<WebsiteBasicDetail>> fetchAllWebsites() => _web.fetchAllWebsites();
+  Future<List<WebsiteBasicDetail>> fetchAllWebsites({
+    bool includeHistorical = false,
+  }) =>
+      _web.fetchAllWebsites(includeHistorical: includeHistorical);
 
   @override
   Future<({Duration totalTime, int siteCount, int visitCount})> fetchTodaySummary() =>

@@ -3679,6 +3679,25 @@ class AppLocalizationsUr extends AppLocalizations {
       'آپ کی براؤزر ایکسٹینشن اب جڑ سکتی ہے اور ڈیٹا مطابقت پذیر کر سکتی ہے۔';
 
   @override
+  String get browserSyncedJustNow => 'Synced just now';
+
+  @override
+  String browserSyncedMinutesAgo(int minutes) {
+    return 'Synced ${minutes}m ago';
+  }
+
+  @override
+  String browserSyncedHoursAgo(int hours) {
+    return 'Synced ${hours}h ago';
+  }
+
+  @override
+  String get browserNeverSynced => 'Not synced yet';
+
+  @override
+  String get browserSyncStalled => 'Sync stalled — check the extension';
+
+  @override
   String get browserServerPort => 'سرور پورٹ';
 
   @override

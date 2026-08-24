@@ -320,7 +320,10 @@ Future<void> _appMain(List<String> args) async {
   final bool isBrowserExtensionEnabled =
       await SettingsManager().getSetting("browserExtensionEnabled") ?? false;
   if (isBrowserExtensionEnabled) {
-    await BrowserExtensionServer.startServer();
+    final int browserServerPort = await SettingsManager()
+            .getSetting("browserServerPort") ??
+        BrowserExtensionServer.defaultPort;
+    await BrowserExtensionServer.startServer(port: browserServerPort);
   }
 
   final bool isMinimizeAtLaunch =

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import '../sections/controller/app_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
 import '../sections/controller/focus_mode_controller.dart';
+import '../sections/controller/settings_data_controller.dart';
 
 /// Lightweight server on port 46000 for the Scolect browser extension.
 ///
@@ -26,6 +27,11 @@ class BrowserExtensionServer {
   static HttpServer? _server;
   static int _currentPort = defaultPort;
   static final AppDataStore _dataStore = AppDataStore();
+
+  // Timestamp of the last successfully ingested usage push (HTTP or WS), so
+  // the UI can show "last synced" / warn when the extension has gone quiet.
+  static DateTime? _lastUsageSyncAt;
+  static DateTime? get lastUsageSyncAt => _lastUsageSyncAt;
 
   // ─── WebSocket state ─────────────────────────────────────────────────────
   static final Set<WebSocket> _clients = {};
@@ -71,6 +77,7 @@ class BrowserExtensionServer {
     _timerSubscription = null;
     _lastBroadcastState = null;
     _lastBroadcastRunning = null;
+    _lastUsageSyncAt = null;
 
     for (final ws in List.of(_clients)) {
       await ws.close(WebSocketStatus.goingAway).catchError((_) {});
@@ -259,7 +266,16 @@ class BrowserExtensionServer {
 
   // ─── Shared domain ingestion (used by both HTTP and WebSocket paths) ──────
 
-  static Future<void> _ingestDomains(DateTime date, List<dynamic> domains) async {
+  // The extension always reports a literal calendar date (no concept of the
+  // desktop's configurable day-reset hour), so [reportedDate] is only used
+  // to reject malformed payloads. Bucketing always uses the desktop's own
+  // logical date so it agrees with how the UI reads usage back out via
+  // SettingsManager().getLogicalDate() — otherwise usage synced during the
+  // reset-hour window lands under a date key the UI never queries.
+  static Future<void> _ingestDomains(
+      DateTime reportedDate, List<dynamic> domains) async {
+    _lastUsageSyncAt = DateTime.now();
+    final date = SettingsManager().getLogicalDate(DateTime.now());
     for (final raw in domains) {
       final entry = raw as Map<String, dynamic>;
       final domain = entry['domain'] as String?;
@@ -307,7 +323,7 @@ class BrowserExtensionServer {
           isTracking: extIsTracking ?? true,
           isVisible: true,
           siteName: siteName,
-          dailyLimit: extLimitSecs != null && extLimitSecs > 0
+          dailyLimit: extLimitSecs != null
               ? Duration(seconds: extLimitSecs)
               : null,
         );
@@ -323,7 +339,7 @@ class BrowserExtensionServer {
         if (siteName.isNotEmpty && existingMeta.siteName.isEmpty) {
           await _dataStore.updateAppMetadata(appName, siteName: siteName);
         }
-        if (extLimitSecs != null && extLimitSecs > 0) {
+        if (extLimitSecs != null) {
           final extDuration = Duration(seconds: extLimitSecs);
           if (existingMeta.dailyLimit != extDuration) {
             await _dataStore.updateAppMetadata(appName, dailyLimit: extDuration);
@@ -367,8 +383,7 @@ class BrowserExtensionServer {
           DateTime.now().millisecondsSinceEpoch + (timer.secondsRemaining * 1000);
     }
 
-    final now = DateTime.now();
-    final startOfDay = DateTime(now.year, now.month, now.day);
+    final startOfDay = SettingsManager().getLogicalDate(DateTime.now());
     final blockedDomains = <String>[];
     final domainLimits = <String, Map<String, dynamic>>{};
 

@@ -6630,6 +6630,36 @@ abstract class AppLocalizations {
   /// **'Your browser extension can now connect and sync data.'**
   String get browserSetupServerActiveDesc;
 
+  /// No description provided for @browserSyncedJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced just now'**
+  String get browserSyncedJustNow;
+
+  /// No description provided for @browserSyncedMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {minutes}m ago'**
+  String browserSyncedMinutesAgo(int minutes);
+
+  /// No description provided for @browserSyncedHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced {hours}h ago'**
+  String browserSyncedHoursAgo(int hours);
+
+  /// No description provided for @browserNeverSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Not synced yet'**
+  String get browserNeverSynced;
+
+  /// No description provided for @browserSyncStalled.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync stalled — check the extension'**
+  String get browserSyncStalled;
+
   /// No description provided for @browserServerPort.
   ///
   /// In en, this message translates to:

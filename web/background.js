@@ -34,6 +34,13 @@ function getWs() {
   _ws.onmessage = handleDesktopMessage;
   _ws.onerror   = () => { _ws = null; };
   _ws.onclose   = () => { _ws = null; };
+  // A fresh open means the desktop just became reachable — either it just
+  // started, or this is the first connection attempt since the service
+  // worker woke up. Either way, push current usage immediately instead of
+  // waiting for the next 1-minute alarm tick.
+  _ws.addEventListener('open', () => {
+    tick().catch(console.error);
+  }, { once: true });
   return _ws;
 }
 
@@ -85,14 +92,20 @@ async function _applyFocusState(focusJson) {
     let changed = false;
 
     for (const [domain, desktopMeta] of Object.entries(focusJson.domainLimits)) {
+      // A domain the extension has never recorded metadata for yet (first
+      // time seeing it, e.g. desktop synced it before the extension did)
+      // has no opinion — take the desktop's values to fill the gap. Once the
+      // extension has its own entry, it is authoritative for every field,
+      // including "no limit" (0) — a 0 is a real, explicit user choice, not
+      // an absence of one, so it must not be overridden by a stale desktop
+      // value on the next merge.
+      const hasExtEntry = currentMeta[domain] !== undefined;
       const ext = currentMeta[domain] ?? {};
       const merged = {
-        category:          ext.category          || desktopMeta.category          || 'Uncategorized',
-        isTracking:        ext.isTracking  !== undefined ? ext.isTracking  : (desktopMeta.isTracking  ?? true),
-        isProductive:      ext.isProductive !== undefined ? ext.isProductive : (desktopMeta.isProductive ?? false),
-        dailyLimitSeconds: (ext.dailyLimitSeconds ?? 0) > 0
-          ? ext.dailyLimitSeconds
-          : (desktopMeta.dailyLimitSeconds ?? 0),
+        category:          hasExtEntry ? (ext.category ?? 'Uncategorized') : (desktopMeta.category || 'Uncategorized'),
+        isTracking:        hasExtEntry ? (ext.isTracking ?? true) : (desktopMeta.isTracking ?? true),
+        isProductive:      hasExtEntry ? (ext.isProductive ?? false) : (desktopMeta.isProductive ?? false),
+        dailyLimitSeconds: hasExtEntry ? (ext.dailyLimitSeconds ?? 0) : (desktopMeta.dailyLimitSeconds ?? 0),
         // siteName is always sourced from the browser (scolect_app_metadata via
         // updateSiteName). Never import it from the desktop — desktop may have
         // stale or wrong titles accumulated from earlier sessions.

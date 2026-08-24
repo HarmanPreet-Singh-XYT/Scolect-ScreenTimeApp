@@ -80,6 +80,31 @@ class WebBrowserDataProvider {
     return merged.values.toList();
   }
 
+  // ── All-time known domains ────────────────────────────────────────────────
+
+  /// Every domain that has ever appeared in any 'scolect_day_*' record, not
+  /// just today's. A domain visited on a past day that never had metadata
+  /// written for it (no limit/category ever set) would otherwise be
+  /// invisible to fetchAllWebsites() — it has no entry in today's usage and
+  /// no entry in ExtensionSettings metadata, so it silently never shows up
+  /// in the Limits tab even though the user genuinely tracked time on it.
+  Future<Set<String>> _fetchAllKnownDomains() async {
+    final all = await chromeStorageGetAll();
+    final domains = <String>{};
+    for (final entry in all.entries) {
+      if (!entry.key.startsWith('scolect_day_')) continue;
+      final day = entry.value;
+      if (day is! Map) continue;
+      final rawDomains = day['domains'];
+      if (rawDomains is! List) continue;
+      for (final raw in rawDomains.whereType<Map<String, dynamic>>()) {
+        final domain = (raw['domain'] as String? ?? '').trim();
+        if (domain.isNotEmpty) domains.add(domain);
+      }
+    }
+    return domains;
+  }
+
   // ── fetchAllWebsites ──────────────────────────────────────────────────────
 
   /// Reads site names captured by background.js from scolect_app_metadata.
@@ -92,7 +117,15 @@ class WebBrowserDataProvider {
     };
   }
 
-  Future<List<WebsiteBasicDetail>> fetchAllWebsites() async {
+  /// [includeHistorical] additionally unions in every domain ever seen in
+  /// past 'scolect_day_*' records, not just today + anything with metadata.
+  /// This requires a full chrome.storage.local scan, so it's opt-in — only
+  /// the Limits tab needs "every site I could set a limit on", the
+  /// Websites/Categories/Overview tabs are about today's activity and
+  /// shouldn't pay for the extra scan on every load.
+  Future<List<WebsiteBasicDetail>> fetchAllWebsites({
+    bool includeHistorical = false,
+  }) async {
     // Active sync: trigger immediate background flush & desktop push when viewing analytics
     await triggerExtensionSync();
     final domains = await _fetchTodayDomains();
@@ -151,6 +184,31 @@ class WebBrowserDataProvider {
           visits: 0,
           isPrivate: entry.value.isPrivate,
         ));
+        seenDomains.add(entry.key);
+      }
+    }
+
+    if (includeHistorical) {
+      // Add domains tracked on past days that never got a metadata entry
+      // (e.g. briefly visited once, no limit/category ever set) so they
+      // still show up to have a limit applied — otherwise they're invisible.
+      final allKnownDomains = await _fetchAllKnownDomains();
+      for (final domain in allKnownDomains) {
+        if (seenDomains.contains(domain)) continue;
+        sites.add(WebsiteBasicDetail(
+          domain: domain,
+          siteName: '',
+          category: AppCategories.categorizeApp(domain),
+          timeSpent: Duration.zero,
+          isTracking: true,
+          isHidden: false,
+          isProductive: false,
+          dailyLimit: Duration.zero,
+          limitStatus: false,
+          visits: 0,
+          isPrivate: false,
+        ));
+        seenDomains.add(domain);
       }
     }
 

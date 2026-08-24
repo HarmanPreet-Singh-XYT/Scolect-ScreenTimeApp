@@ -3611,6 +3611,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserSetupServerActiveDesc => 'ブラウザ拡張機能が接続してデータを同期できるようになりました。';
 
   @override
+  String get browserSyncedJustNow => 'Synced just now';
+
+  @override
+  String browserSyncedMinutesAgo(int minutes) {
+    return 'Synced ${minutes}m ago';
+  }
+
+  @override
+  String browserSyncedHoursAgo(int hours) {
+    return 'Synced ${hours}h ago';
+  }
+
+  @override
+  String get browserNeverSynced => 'Not synced yet';
+
+  @override
+  String get browserSyncStalled => 'Sync stalled — check the extension';
+
+  @override
   String get browserServerPort => 'サーバーポート';
 
   @override
