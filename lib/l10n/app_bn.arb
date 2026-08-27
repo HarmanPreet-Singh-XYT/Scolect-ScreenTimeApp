@@ -1598,6 +1598,28 @@
   "pasteFromClipboard": "ক্লিপবোর্ড থেকে পেস্ট করুন",
   "importFromClipboardJSON": "ক্লিপবোর্ড JSON ডেটা থেকে থিম আমদানি করুন",
   "importFromFile": "একটি ফাইল থেকে থিম আমদানি করুন",
+  "clipboardImportTitle": "ক্লিপবোর্ড থেকে আমদানি করুন",
+  "clipboardImportDescription": "নিচে থিম JSON ডেটা পেস্ট করুন বা সম্পাদনা করুন:",
+  "clipboardImportPlaceholder": "এখানে থিম JSON পেস্ট করুন...",
+  "clipboardImportErrorLoadFailed": "ক্লিপবোর্ড লোড করতে ব্যর্থ: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "একটি JSON অবজেক্ট প্রত্যাশিত",
+  "clipboardImportErrorMissingField": "প্রয়োজনীয় ফিল্ড অনুপস্থিত: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "অবৈধ JSON ফরম্যাট",
+  "clipboardImportValidData": "বৈধ থিম ডেটা",
   "themeCreatedSuccessfully": "থিম সফলভাবে তৈরি হয়েছে!",
   "themeUpdatedSuccessfully": "থিম সফলভাবে আপডেট হয়েছে!",
   "themeDeletedSuccessfully": "থিম সফলভাবে মুছে ফেলা হয়েছে!",
@@ -1911,6 +1933,7 @@
   "browserSubtitle": "আপনার ওয়েবসাইট ব্যবহার ট্র্যাক করুন এবং পরিচালনা করুন",
   "browserToday": "আজ",
   "browserSites": "সাইট",
+  "browserSevenDayActivity": "৭-দিনের কার্যকলাপ",
   "browserExtensionSettings": "এক্সটেনশন সেটিংস",
   "browserSyncing": "সিঙ্ক হচ্ছে",
   "browserTabOverview": "সারসংক্ষেপ",
@@ -2060,6 +2083,11 @@
   "browserServerPortSaved": "পোর্ট আপডেট হয়েছে — এক্সটেনশন পুনরায় সংযুক্ত হচ্ছে",
   "browserServerPortInvalid": "1024 থেকে 65535-এর মধ্যে একটি পোর্ট দিন",
   "browserDisableServer": "এক্সটেনশন সার্ভার অক্ষম করুন",
+  "browserDesktopClearDataTitle": "ব্রাউজার ডেটা মুছুন",
+  "browserDesktopClearDataDescription": "ব্রাউজার এক্সটেনশন থেকে সিঙ্ক করা সমস্ত ওয়েবসাইট ব্যবহারের ইতিহাস এবং সেটিংস মুছে দিন। আপনার নেটিভ অ্যাপ ট্র্যাকিং ডেটা প্রভাবিত হবে না।",
+  "browserDesktopClearDataButtonLabel": "ব্রাউজার ডেটা মুছুন",
+  "browserDesktopClearDataDialogTitle": "ব্রাউজার ডেটা মুছবেন?",
+  "browserDesktopClearDataDialogContent": "এটি ব্রাউজার এক্সটেনশন থেকে সিঙ্ক করা সমস্ত ওয়েবসাইট ব্যবহারের ইতিহাস এবং সাইট সেটিংস স্থায়ীভাবে মুছে ফেলবে। আপনার নেটিভ অ্যাপ ট্র্যাকিং ডেটা প্রভাবিত হবে না। আপনি এই ডেটা পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?",
   "browserEditSiteName": "প্রদর্শন নাম সম্পাদনা করুন",
   "browserSiteNameHint": "প্রদর্শন নাম (যেমন: YouTube)",
   "webExportDataDescription": "একটি JSON ব্যাকআপ ফাইল হিসেবে এক্সটেনশনের সমস্ত ডেটা ডাউনলোড করুন",

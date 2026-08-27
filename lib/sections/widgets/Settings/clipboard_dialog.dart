@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 
 /// Enhanced clipboard import dialog with validation
 class ClipboardImportDialog extends StatefulWidget {
@@ -49,12 +50,15 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
         _validateJson(text);
       }
     } catch (e) {
-      if (mounted)
-        setState(() => _errorMessage = 'Failed to load clipboard: $e');
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        setState(() => _errorMessage = l10n.clipboardImportErrorLoadFailed(e.toString()));
+      }
     }
   }
 
   void _validateJson(String text) {
+    final l10n = AppLocalizations.of(context)!;
     if (text.isEmpty) {
       setState(() => _errorMessage = null);
       return;
@@ -64,15 +68,15 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
     try {
       final json = jsonDecode(text);
       if (json is! Map<String, dynamic>) {
-        error = 'Expected a JSON object';
+        error = l10n.clipboardImportErrorNotJsonObject;
       } else {
         final missing = _requiredFields.where((f) => !json.containsKey(f));
         if (missing.isNotEmpty) {
-          error = 'Missing required field: ${missing.first}';
+          error = l10n.clipboardImportErrorMissingField(missing.first);
         }
       }
     } on FormatException {
-      error = 'Invalid JSON format';
+      error = l10n.clipboardImportErrorInvalidJson;
     }
 
     setState(() => _errorMessage = error);
@@ -83,13 +87,14 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return ContentDialog(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(FluentIcons.paste, size: 20),
-          SizedBox(width: 12),
-          Text('Import from Clipboard'),
+          const Icon(FluentIcons.paste, size: 20),
+          const SizedBox(width: 12),
+          Text(l10n.clipboardImportTitle),
         ],
       ),
       content: SizedBox(
@@ -98,26 +103,26 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Paste or edit the theme JSON data below:',
-              style: TextStyle(fontSize: 12),
+            Text(
+              l10n.clipboardImportDescription,
+              style: const TextStyle(fontSize: 12),
             ),
             const SizedBox(height: 12),
             TextBox(
               controller: _controller,
               maxLines: 12,
-              placeholder: 'Paste theme JSON here...',
+              placeholder: l10n.clipboardImportPlaceholder,
               style: const TextStyle(fontFamily: 'monospace', fontSize: 11),
               onChanged: _validateJson,
             ),
             const SizedBox(height: 12),
-            _buildValidationStatus(theme),
+            _buildValidationStatus(theme, l10n),
           ],
         ),
       ),
       actions: [
         Button(
-          child: const Text('Cancel'),
+          child: Text(l10n.cancelButton),
           onPressed: () => Navigator.pop(context),
         ),
         FilledButton(
@@ -127,13 +132,13 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
                   Navigator.pop(context);
                 }
               : null,
-          child: const Text('Import'),
+          child: Text(l10n.import),
         ),
       ],
     );
   }
 
-  Widget _buildValidationStatus(FluentThemeData theme) {
+  Widget _buildValidationStatus(FluentThemeData theme, AppLocalizations l10n) {
     if (_errorMessage != null) {
       return _ValidationRow(
         icon: FluentIcons.error_badge,
@@ -147,7 +152,7 @@ class _ClipboardImportDialogState extends State<ClipboardImportDialog> {
       return _ValidationRow(
         icon: FluentIcons.completed,
         color: Colors.green,
-        text: 'Valid theme data',
+        text: l10n.clipboardImportValidData,
       );
     }
 

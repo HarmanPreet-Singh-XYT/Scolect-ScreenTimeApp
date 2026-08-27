@@ -2932,6 +2932,35 @@ class AppLocalizationsUr extends AppLocalizations {
   String get importFromFile => 'فائل سے تھیم درآمد کریں';
 
   @override
+  String get clipboardImportTitle => 'کلپ بورڈ سے درآمد کریں';
+
+  @override
+  String get clipboardImportDescription =>
+      'نیچے تھیم JSON ڈیٹا پیسٹ یا ترمیم کریں:';
+
+  @override
+  String get clipboardImportPlaceholder => 'یہاں تھیم JSON پیسٹ کریں...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'کلپ بورڈ لوڈ کرنے میں ناکامی: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'ایک JSON آبجیکٹ متوقع تھا';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'مطلوبہ فیلڈ غائب ہے: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'غلط JSON فارمیٹ';
+
+  @override
+  String get clipboardImportValidData => 'درست تھیم ڈیٹا';
+
+  @override
   String get themeCreatedSuccessfully => 'تھیم کامیابی سے بنائی گئی!';
 
   @override
@@ -3340,6 +3369,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get browserSites => 'سائٹس';
 
   @override
+  String get browserSevenDayActivity => '7 دن کی سرگرمی';
+
+  @override
   String get browserExtensionSettings => 'ایکسٹینشن کی ترتیبات';
 
   @override
@@ -3714,6 +3746,23 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'ایکسٹینشن سرور غیر فعال کریں';
+
+  @override
+  String get browserDesktopClearDataTitle => 'براؤزر ڈیٹا حذف کریں';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'براؤزر ایکسٹینشن سے ہم آہنگ کردہ تمام ویب سائٹ استعمال کی تاریخ اور ترتیبات حذف کریں۔ آپ کے نیٹو ایپ ٹریکنگ ڈیٹا پر کوئی اثر نہیں پڑے گا۔';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'براؤزر ڈیٹا حذف کریں';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'براؤزر ڈیٹا حذف کریں؟';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'اس سے براؤزر ایکسٹینشن سے ہم آہنگ کردہ تمام ویب سائٹ استعمال کی تاریخ اور سائٹ کی ترتیبات مستقل طور پر حذف ہو جائیں گی۔ آپ کے نیٹو ایپ ٹریکنگ ڈیٹا پر کوئی اثر نہیں پڑے گا۔ آپ اس ڈیٹا کو بحال نہیں کر سکیں گے۔ کیا آپ آگے بڑھنا چاہتے ہیں؟';
 
   @override
   String get browserEditSiteName => 'ڈسپلے نام ترمیم کریں';

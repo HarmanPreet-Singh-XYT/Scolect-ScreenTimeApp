@@ -2943,6 +2943,35 @@ class AppLocalizationsId extends AppLocalizations {
   String get importFromFile => 'Impor tema dari file';
 
   @override
+  String get clipboardImportTitle => 'Impor dari Papan Klip';
+
+  @override
+  String get clipboardImportDescription =>
+      'Tempel atau edit data JSON tema di bawah ini:';
+
+  @override
+  String get clipboardImportPlaceholder => 'Tempel JSON tema di sini...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'Gagal memuat papan klip: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'Diharapkan objek JSON';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'Kolom wajib tidak ada: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'Format JSON tidak valid';
+
+  @override
+  String get clipboardImportValidData => 'Data tema valid';
+
+  @override
   String get themeCreatedSuccessfully => 'Tema berhasil dibuat!';
 
   @override
@@ -3351,6 +3380,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserSites => 'Situs';
 
   @override
+  String get browserSevenDayActivity => 'Aktivitas 7 Hari';
+
+  @override
   String get browserExtensionSettings => 'Pengaturan Ekstensi';
 
   @override
@@ -3727,6 +3759,23 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'Nonaktifkan Server Ekstensi';
+
+  @override
+  String get browserDesktopClearDataTitle => 'Hapus Data Browser';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'Hapus semua riwayat penggunaan situs web dan pengaturan yang disinkronkan dari ekstensi browser. Data pelacakan aplikasi native Anda tidak akan terpengaruh.';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'Hapus Data Browser';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'Hapus Data Browser?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'Ini akan menghapus secara permanen semua riwayat penggunaan situs web dan pengaturan situs yang disinkronkan dari ekstensi browser. Data pelacakan aplikasi native Anda tidak akan terpengaruh. Anda tidak akan dapat memulihkan data ini. Apakah Anda ingin melanjutkan?';
 
   @override
   String get browserEditSiteName => 'Edit nama tampilan';

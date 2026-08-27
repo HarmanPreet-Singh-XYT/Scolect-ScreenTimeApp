@@ -2947,6 +2947,36 @@ class AppLocalizationsBn extends AppLocalizations {
   String get importFromFile => 'একটি ফাইল থেকে থিম আমদানি করুন';
 
   @override
+  String get clipboardImportTitle => 'ক্লিপবোর্ড থেকে আমদানি করুন';
+
+  @override
+  String get clipboardImportDescription =>
+      'নিচে থিম JSON ডেটা পেস্ট করুন বা সম্পাদনা করুন:';
+
+  @override
+  String get clipboardImportPlaceholder => 'এখানে থিম JSON পেস্ট করুন...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'ক্লিপবোর্ড লোড করতে ব্যর্থ: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject =>
+      'একটি JSON অবজেক্ট প্রত্যাশিত';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'প্রয়োজনীয় ফিল্ড অনুপস্থিত: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'অবৈধ JSON ফরম্যাট';
+
+  @override
+  String get clipboardImportValidData => 'বৈধ থিম ডেটা';
+
+  @override
   String get themeCreatedSuccessfully => 'থিম সফলভাবে তৈরি হয়েছে!';
 
   @override
@@ -3354,6 +3384,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get browserSites => 'সাইট';
 
   @override
+  String get browserSevenDayActivity => '৭-দিনের কার্যকলাপ';
+
+  @override
   String get browserExtensionSettings => 'এক্সটেনশন সেটিংস';
 
   @override
@@ -3731,6 +3764,23 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'এক্সটেনশন সার্ভার অক্ষম করুন';
+
+  @override
+  String get browserDesktopClearDataTitle => 'ব্রাউজার ডেটা মুছুন';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'ব্রাউজার এক্সটেনশন থেকে সিঙ্ক করা সমস্ত ওয়েবসাইট ব্যবহারের ইতিহাস এবং সেটিংস মুছে দিন। আপনার নেটিভ অ্যাপ ট্র্যাকিং ডেটা প্রভাবিত হবে না।';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'ব্রাউজার ডেটা মুছুন';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'ব্রাউজার ডেটা মুছবেন?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'এটি ব্রাউজার এক্সটেনশন থেকে সিঙ্ক করা সমস্ত ওয়েবসাইট ব্যবহারের ইতিহাস এবং সাইট সেটিংস স্থায়ীভাবে মুছে ফেলবে। আপনার নেটিভ অ্যাপ ট্র্যাকিং ডেটা প্রভাবিত হবে না। আপনি এই ডেটা পুনরুদ্ধার করতে পারবেন না। আপনি কি এগিয়ে যেতে চান?';
 
   @override
   String get browserEditSiteName => 'প্রদর্শন নাম সম্পাদনা করুন';

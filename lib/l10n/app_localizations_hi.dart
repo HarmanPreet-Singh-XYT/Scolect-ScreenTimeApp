@@ -2939,6 +2939,36 @@ class AppLocalizationsHi extends AppLocalizations {
   String get importFromFile => 'फ़ाइल से थीम आयात करें';
 
   @override
+  String get clipboardImportTitle => 'क्लिपबोर्ड से आयात करें';
+
+  @override
+  String get clipboardImportDescription =>
+      'नीचे थीम JSON डेटा पेस्ट करें या संपादित करें:';
+
+  @override
+  String get clipboardImportPlaceholder => 'यहां थीम JSON पेस्ट करें...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'क्लिपबोर्ड लोड करने में विफल: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject =>
+      'एक JSON ऑब्जेक्ट अपेक्षित था';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'आवश्यक फ़ील्ड गायब है: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'अमान्य JSON प्रारूप';
+
+  @override
+  String get clipboardImportValidData => 'मान्य थीम डेटा';
+
+  @override
   String get themeCreatedSuccessfully => 'थीम सफलतापूर्वक बनाई गई!';
 
   @override
@@ -3346,6 +3376,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get browserSites => 'साइटें';
 
   @override
+  String get browserSevenDayActivity => '7-दिन की गतिविधि';
+
+  @override
   String get browserExtensionSettings => 'एक्सटेंशन सेटिंग्स';
 
   @override
@@ -3720,6 +3753,23 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'एक्सटेंशन सर्वर अक्षम करें';
+
+  @override
+  String get browserDesktopClearDataTitle => 'ब्राउज़र डेटा हटाएं';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'ब्राउज़र एक्सटेंशन से सिंक किए गए सभी वेबसाइट उपयोग इतिहास और सेटिंग्स हटाएं। आपके नेटिव ऐप ट्रैकिंग डेटा पर कोई असर नहीं पड़ेगा।';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'ब्राउज़र डेटा हटाएं';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'ब्राउज़र डेटा हटाएं?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'इससे ब्राउज़र एक्सटेंशन से सिंक किया गया सभी वेबसाइट उपयोग इतिहास और साइट सेटिंग्स स्थायी रूप से हटा दी जाएंगी। आपके नेटिव ऐप ट्रैकिंग डेटा पर कोई असर नहीं पड़ेगा। आप इस डेटा को पुनर्प्राप्त नहीं कर पाएंगे। क्या आप आगे बढ़ना चाहते हैं?';
 
   @override
   String get browserEditSiteName => 'प्रदर्शन नाम संपादित करें';

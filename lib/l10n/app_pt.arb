@@ -1596,6 +1596,28 @@
   "pasteFromClipboard": "Colar da área de transferência",
   "importFromClipboardJSON": "Importar tema dos dados JSON da área de transferência",
   "importFromFile": "Importar tema de um arquivo",
+  "clipboardImportTitle": "Importar da Área de Transferência",
+  "clipboardImportDescription": "Cole ou edite os dados JSON do tema abaixo:",
+  "clipboardImportPlaceholder": "Cole o JSON do tema aqui...",
+  "clipboardImportErrorLoadFailed": "Falha ao carregar a área de transferência: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "Esperava-se um objeto JSON",
+  "clipboardImportErrorMissingField": "Campo obrigatório ausente: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "Formato JSON inválido",
+  "clipboardImportValidData": "Dados do tema válidos",
   "themeCreatedSuccessfully": "Tema criado com sucesso!",
   "themeUpdatedSuccessfully": "Tema atualizado com sucesso!",
   "themeDeletedSuccessfully": "Tema excluído com sucesso!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "Acompanhe e gerencie o uso dos seus sites",
   "browserToday": "Hoje",
   "browserSites": "Sites",
+  "browserSevenDayActivity": "Atividade de 7 Dias",
   "browserExtensionSettings": "Configurações da Extensão",
   "browserSyncing": "Sincronizando",
   "browserTabOverview": "Visão Geral",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "Porta atualizada — extensão reconectando",
   "browserServerPortInvalid": "Insira uma porta entre 1024 e 65535",
   "browserDisableServer": "Desativar Servidor da Extensão",
+  "browserDesktopClearDataTitle": "Excluir Dados do Navegador",
+  "browserDesktopClearDataDescription": "Exclui todo o histórico de uso de sites e configurações sincronizadas da extensão do navegador. Seus dados de rastreamento de aplicativos nativos não serão afetados.",
+  "browserDesktopClearDataButtonLabel": "Excluir Dados do Navegador",
+  "browserDesktopClearDataDialogTitle": "Excluir Dados do Navegador?",
+  "browserDesktopClearDataDialogContent": "Isso excluirá permanentemente todo o histórico de uso de sites e configurações de sites sincronizadas da extensão do navegador. Seus dados de rastreamento de aplicativos nativos não serão afetados. Você não poderá recuperar esses dados. Deseja continuar?",
   "browserEditSiteName": "Editar nome de exibição",
   "browserSiteNameHint": "Nome de exibição (ex.: YouTube)",
   "webExportDataDescription": "Baixar todos os dados da extensão como um arquivo de backup JSON",

@@ -1596,6 +1596,28 @@
   "pasteFromClipboard": "Вставить из буфера обмена",
   "importFromClipboardJSON": "Импортировать тему из JSON-данных буфера обмена",
   "importFromFile": "Импортировать тему из файла",
+  "clipboardImportTitle": "Импорт из буфера обмена",
+  "clipboardImportDescription": "Вставьте или отредактируйте данные JSON темы ниже:",
+  "clipboardImportPlaceholder": "Вставьте JSON темы сюда...",
+  "clipboardImportErrorLoadFailed": "Не удалось загрузить буфер обмена: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "Ожидался объект JSON",
+  "clipboardImportErrorMissingField": "Отсутствует обязательное поле: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "Неверный формат JSON",
+  "clipboardImportValidData": "Данные темы верны",
   "themeCreatedSuccessfully": "Тема успешно создана!",
   "themeUpdatedSuccessfully": "Тема успешно обновлена!",
   "themeDeletedSuccessfully": "Тема успешно удалена!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "Отслеживайте и управляйте использованием сайтов",
   "browserToday": "Сегодня",
   "browserSites": "Сайты",
+  "browserSevenDayActivity": "Активность за 7 дней",
   "browserExtensionSettings": "Настройки расширения",
   "browserSyncing": "Синхронизация",
   "browserTabOverview": "Обзор",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "Порт обновлён — расширение переподключается",
   "browserServerPortInvalid": "Введите порт от 1024 до 65535",
   "browserDisableServer": "Отключить сервер расширения",
+  "browserDesktopClearDataTitle": "Удалить данные браузера",
+  "browserDesktopClearDataDescription": "Удаляет всю историю посещений сайтов и настройки, синхронизированные из расширения браузера. Данные отслеживания нативных приложений не пострадают.",
+  "browserDesktopClearDataButtonLabel": "Удалить данные браузера",
+  "browserDesktopClearDataDialogTitle": "Удалить данные браузера?",
+  "browserDesktopClearDataDialogContent": "Это приведёт к безвозвратному удалению всей истории посещений сайтов и настроек сайтов, синхронизированных из расширения браузера. Данные отслеживания нативных приложений не пострадают. Восстановить эти данные будет невозможно. Продолжить?",
   "browserEditSiteName": "Изменить отображаемое имя",
   "browserSiteNameHint": "Отображаемое имя (например, YouTube)",
   "webExportDataDescription": "Скачать все данные расширения в виде резервного файла JSON",

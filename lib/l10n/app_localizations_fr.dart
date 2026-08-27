@@ -3039,6 +3039,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get importFromFile => 'Importer le thème depuis un fichier';
 
   @override
+  String get clipboardImportTitle => 'Importer depuis le presse-papiers';
+
+  @override
+  String get clipboardImportDescription =>
+      'Collez ou modifiez les données JSON du thème ci-dessous :';
+
+  @override
+  String get clipboardImportPlaceholder => 'Collez le JSON du thème ici...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'Échec du chargement du presse-papiers : $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'Un objet JSON était attendu';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'Champ requis manquant : $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'Format JSON invalide';
+
+  @override
+  String get clipboardImportValidData => 'Données de thème valides';
+
+  @override
   String get themeCreatedSuccessfully => 'Thème créé avec succès !';
 
   @override
@@ -3450,6 +3479,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get browserSites => 'Sites';
 
   @override
+  String get browserSevenDayActivity => 'Activité sur 7 jours';
+
+  @override
   String get browserExtensionSettings => 'Paramètres de l\'extension';
 
   @override
@@ -3830,6 +3862,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'Désactiver le serveur d\'extension';
+
+  @override
+  String get browserDesktopClearDataTitle =>
+      'Supprimer les données du navigateur';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'Supprime tout l\'historique d\'utilisation des sites web et les paramètres synchronisés depuis l\'extension de navigateur. Les données de suivi des applications natives ne seront pas affectées.';
+
+  @override
+  String get browserDesktopClearDataButtonLabel =>
+      'Supprimer les données du navigateur';
+
+  @override
+  String get browserDesktopClearDataDialogTitle =>
+      'Supprimer les données du navigateur ?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'Cela supprimera définitivement tout l\'historique d\'utilisation des sites web et les paramètres de sites synchronisés depuis l\'extension de navigateur. Les données de suivi des applications natives ne seront pas affectées. Vous ne pourrez pas récupérer ces données. Voulez-vous continuer ?';
 
   @override
   String get browserEditSiteName => 'Modifier le nom affiché';

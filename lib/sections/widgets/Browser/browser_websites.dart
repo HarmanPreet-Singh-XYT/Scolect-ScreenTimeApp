@@ -1456,7 +1456,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
 
             // ── 7-day chart ───────────────────────────────────────────────
             Text(
-              '7-Day Activity',
+              AppLocalizations.of(context)!.browserSevenDayActivity,
               style: theme.typography.bodyStrong?.copyWith(fontSize: 13),
             ),
             const SizedBox(height: 12),
@@ -1475,7 +1475,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
       actions: [
         FilledButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(AppLocalizations.of(context)!.close),
         ),
       ],
     );

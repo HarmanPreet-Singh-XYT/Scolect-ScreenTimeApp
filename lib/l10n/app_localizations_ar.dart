@@ -2931,6 +2931,35 @@ class AppLocalizationsAr extends AppLocalizations {
   String get importFromFile => 'استيراد السمة من ملف';
 
   @override
+  String get clipboardImportTitle => 'الاستيراد من الحافظة';
+
+  @override
+  String get clipboardImportDescription =>
+      'الصق أو عدّل بيانات JSON الخاصة بالسمة أدناه:';
+
+  @override
+  String get clipboardImportPlaceholder => 'الصق JSON الخاص بالسمة هنا...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'فشل تحميل الحافظة: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'المتوقع كائن JSON';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'الحقل المطلوب مفقود: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'تنسيق JSON غير صالح';
+
+  @override
+  String get clipboardImportValidData => 'بيانات السمة صالحة';
+
+  @override
   String get themeCreatedSuccessfully => 'تم إنشاء السمة بنجاح!';
 
   @override
@@ -3335,6 +3364,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browserSites => 'المواقع';
 
   @override
+  String get browserSevenDayActivity => 'نشاط 7 أيام';
+
+  @override
   String get browserExtensionSettings => 'إعدادات الامتداد';
 
   @override
@@ -3703,6 +3735,23 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'تعطيل خادم الامتداد';
+
+  @override
+  String get browserDesktopClearDataTitle => 'حذف بيانات المتصفح';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'حذف كل سجل استخدام المواقع والإعدادات المتزامنة من امتداد المتصفح. لن تتأثر بيانات تتبع التطبيقات الأصلية.';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'حذف بيانات المتصفح';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'حذف بيانات المتصفح؟';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'سيؤدي هذا إلى حذف كل سجل استخدام المواقع وإعدادات المواقع المتزامنة من امتداد المتصفح بشكل دائم. لن تتأثر بيانات تتبع التطبيقات الأصلية. لن تتمكن من استعادة هذه البيانات. هل تريد المتابعة؟';
 
   @override
   String get browserEditSiteName => 'تعديل اسم العرض';

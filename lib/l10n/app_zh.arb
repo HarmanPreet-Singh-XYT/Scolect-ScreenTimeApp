@@ -1596,6 +1596,28 @@
   "pasteFromClipboard": "从剪贴板粘贴",
   "importFromClipboardJSON": "从剪贴板 JSON 数据导入主题",
   "importFromFile": "从文件导入主题",
+  "clipboardImportTitle": "从剪贴板导入",
+  "clipboardImportDescription": "在下方粘贴或编辑主题 JSON 数据：",
+  "clipboardImportPlaceholder": "在此粘贴主题 JSON...",
+  "clipboardImportErrorLoadFailed": "读取剪贴板失败：{error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "需要一个 JSON 对象",
+  "clipboardImportErrorMissingField": "缺少必需字段：{field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "JSON 格式无效",
+  "clipboardImportValidData": "主题数据有效",
   "themeCreatedSuccessfully": "主题创建成功！",
   "themeUpdatedSuccessfully": "主题更新成功！",
   "themeDeletedSuccessfully": "主题删除成功！",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "追踪并管理您的网站使用情况",
   "browserToday": "今天",
   "browserSites": "网站",
+  "browserSevenDayActivity": "7天活动",
   "browserExtensionSettings": "扩展设置",
   "browserSyncing": "同步中",
   "browserTabOverview": "概览",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "端口已更新 — 扩展正在重新连接",
   "browserServerPortInvalid": "请输入 1024 到 65535 之间的端口",
   "browserDisableServer": "禁用扩展服务器",
+  "browserDesktopClearDataTitle": "删除浏览器数据",
+  "browserDesktopClearDataDescription": "删除从浏览器扩展同步的所有网站使用记录和设置。不会影响您的原生应用跟踪数据。",
+  "browserDesktopClearDataButtonLabel": "删除浏览器数据",
+  "browserDesktopClearDataDialogTitle": "删除浏览器数据？",
+  "browserDesktopClearDataDialogContent": "此操作将永久删除从浏览器扩展同步的所有网站使用记录和网站设置，不会影响您的原生应用跟踪数据。删除后将无法恢复。是否继续？",
   "browserEditSiteName": "编辑显示名称",
   "browserSiteNameHint": "显示名称（例如：YouTube）",
   "webExportDataDescription": "将所有扩展程序数据下载为 JSON 备份文件",

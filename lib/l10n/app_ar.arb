@@ -1595,6 +1595,28 @@
   "pasteFromClipboard": "لصق من الحافظة",
   "importFromClipboardJSON": "استيراد السمة من بيانات JSON في الحافظة",
   "importFromFile": "استيراد السمة من ملف",
+  "clipboardImportTitle": "الاستيراد من الحافظة",
+  "clipboardImportDescription": "الصق أو عدّل بيانات JSON الخاصة بالسمة أدناه:",
+  "clipboardImportPlaceholder": "الصق JSON الخاص بالسمة هنا...",
+  "clipboardImportErrorLoadFailed": "فشل تحميل الحافظة: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "المتوقع كائن JSON",
+  "clipboardImportErrorMissingField": "الحقل المطلوب مفقود: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "تنسيق JSON غير صالح",
+  "clipboardImportValidData": "بيانات السمة صالحة",
   "themeCreatedSuccessfully": "تم إنشاء السمة بنجاح!",
   "themeUpdatedSuccessfully": "تم تحديث السمة بنجاح!",
   "themeDeletedSuccessfully": "تم حذف السمة بنجاح!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "تتبع استخدامك للمواقع وإدارته",
   "browserToday": "اليوم",
   "browserSites": "المواقع",
+  "browserSevenDayActivity": "نشاط 7 أيام",
   "browserExtensionSettings": "إعدادات الامتداد",
   "browserSyncing": "جارٍ المزامنة",
   "browserTabOverview": "نظرة عامة",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "تم تحديث المنفذ — جارٍ إعادة اتصال الامتداد",
   "browserServerPortInvalid": "أدخل منفذاً بين 1024 و 65535",
   "browserDisableServer": "تعطيل خادم الامتداد",
+  "browserDesktopClearDataTitle": "حذف بيانات المتصفح",
+  "browserDesktopClearDataDescription": "حذف كل سجل استخدام المواقع والإعدادات المتزامنة من امتداد المتصفح. لن تتأثر بيانات تتبع التطبيقات الأصلية.",
+  "browserDesktopClearDataButtonLabel": "حذف بيانات المتصفح",
+  "browserDesktopClearDataDialogTitle": "حذف بيانات المتصفح؟",
+  "browserDesktopClearDataDialogContent": "سيؤدي هذا إلى حذف كل سجل استخدام المواقع وإعدادات المواقع المتزامنة من امتداد المتصفح بشكل دائم. لن تتأثر بيانات تتبع التطبيقات الأصلية. لن تتمكن من استعادة هذه البيانات. هل تريد المتابعة؟",
   "browserEditSiteName": "تعديل اسم العرض",
   "browserSiteNameHint": "اسم العرض (مثال: YouTube)",
   "webExportDataDescription": "تنزيل جميع بيانات الإضافة كملف نسخ احتياطي بصيغة JSON",

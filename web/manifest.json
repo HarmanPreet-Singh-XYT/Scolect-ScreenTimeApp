@@ -3,7 +3,7 @@
   "name": "Scolect – Screen Time & Website Tracker",
   "short_name": "Scolect",
   "description": "Track time spent on websites, set daily limits, block distracting sites, and run focus sessions. Open source screen time tracker.",
-  "version": "2.2.3",
+  "version": "2.3.0",
 
   "browser_specific_settings": {
     "gecko": {

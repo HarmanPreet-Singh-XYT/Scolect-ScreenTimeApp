@@ -411,7 +411,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
   void _showError(BuildContext context, String message) => displayInfoBar(
         context,
         builder: (_, __) => InfoBar(
-          title: const Text('Error'),
+          title: Text(AppLocalizations.of(context)!.error),
           content: Text(message),
           severity: InfoBarSeverity.error,
         ),

@@ -1596,6 +1596,28 @@
   "pasteFromClipboard": "クリップボードから貼り付け",
   "importFromClipboardJSON": "クリップボードのJSONデータからテーマをインポート",
   "importFromFile": "ファイルからテーマをインポート",
+  "clipboardImportTitle": "クリップボードからインポート",
+  "clipboardImportDescription": "以下にテーマのJSONデータを貼り付けるか編集してください：",
+  "clipboardImportPlaceholder": "ここにテーマのJSONを貼り付けてください...",
+  "clipboardImportErrorLoadFailed": "クリップボードの読み込みに失敗しました: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "JSONオブジェクトが必要です",
+  "clipboardImportErrorMissingField": "必須フィールドがありません: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "無効なJSON形式です",
+  "clipboardImportValidData": "有効なテーマデータです",
   "themeCreatedSuccessfully": "テーマが正常に作成されました！",
   "themeUpdatedSuccessfully": "テーマが正常に更新されました！",
   "themeDeletedSuccessfully": "テーマが正常に削除されました！",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "ウェブサイトの利用状況を追跡・管理する",
   "browserToday": "今日",
   "browserSites": "サイト",
+  "browserSevenDayActivity": "7日間のアクティビティ",
   "browserExtensionSettings": "拡張機能の設定",
   "browserSyncing": "同期中",
   "browserTabOverview": "概要",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "ポートを更新しました — 拡張機能が再接続中",
   "browserServerPortInvalid": "1024〜65535の間のポートを入力してください",
   "browserDisableServer": "拡張機能サーバーを無効化",
+  "browserDesktopClearDataTitle": "ブラウザデータを削除",
+  "browserDesktopClearDataDescription": "ブラウザ拡張機能から同期されたすべてのウェブサイト利用履歴と設定を削除します。ネイティブアプリの追跡データには影響しません。",
+  "browserDesktopClearDataButtonLabel": "ブラウザデータを削除",
+  "browserDesktopClearDataDialogTitle": "ブラウザデータを削除しますか？",
+  "browserDesktopClearDataDialogContent": "ブラウザ拡張機能から同期されたすべてのウェブサイト利用履歴とサイト設定が完全に削除されます。ネイティブアプリの追跡データには影響しません。このデータは復元できません。続行しますか？",
   "browserEditSiteName": "表示名を編集",
   "browserSiteNameHint": "表示名（例：YouTube）",
   "webExportDataDescription": "すべての拡張機能データを JSON バックアップファイルとしてダウンロードします",

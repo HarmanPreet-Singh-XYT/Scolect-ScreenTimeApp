@@ -1595,6 +1595,28 @@
   "pasteFromClipboard": "क्लिपबोर्ड से पेस्ट करें",
   "importFromClipboardJSON": "क्लिपबोर्ड JSON डेटा से थीम आयात करें",
   "importFromFile": "फ़ाइल से थीम आयात करें",
+  "clipboardImportTitle": "क्लिपबोर्ड से आयात करें",
+  "clipboardImportDescription": "नीचे थीम JSON डेटा पेस्ट करें या संपादित करें:",
+  "clipboardImportPlaceholder": "यहां थीम JSON पेस्ट करें...",
+  "clipboardImportErrorLoadFailed": "क्लिपबोर्ड लोड करने में विफल: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "एक JSON ऑब्जेक्ट अपेक्षित था",
+  "clipboardImportErrorMissingField": "आवश्यक फ़ील्ड गायब है: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "अमान्य JSON प्रारूप",
+  "clipboardImportValidData": "मान्य थीम डेटा",
   "themeCreatedSuccessfully": "थीम सफलतापूर्वक बनाई गई!",
   "themeUpdatedSuccessfully": "थीम सफलतापूर्वक अपडेट की गई!",
   "themeDeletedSuccessfully": "थीम सफलतापूर्वक हटाई गई!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "अपनी वेबसाइट उपयोग को ट्रैक और प्रबंधित करें",
   "browserToday": "आज",
   "browserSites": "साइटें",
+  "browserSevenDayActivity": "7-दिन की गतिविधि",
   "browserExtensionSettings": "एक्सटेंशन सेटिंग्स",
   "browserSyncing": "सिंक हो रहा है",
   "browserTabOverview": "अवलोकन",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "पोर्ट अपडेट किया गया — एक्सटेंशन पुनः कनेक्ट हो रहा है",
   "browserServerPortInvalid": "1024 और 65535 के बीच पोर्ट दर्ज करें",
   "browserDisableServer": "एक्सटेंशन सर्वर अक्षम करें",
+  "browserDesktopClearDataTitle": "ब्राउज़र डेटा हटाएं",
+  "browserDesktopClearDataDescription": "ब्राउज़र एक्सटेंशन से सिंक किए गए सभी वेबसाइट उपयोग इतिहास और सेटिंग्स हटाएं। आपके नेटिव ऐप ट्रैकिंग डेटा पर कोई असर नहीं पड़ेगा।",
+  "browserDesktopClearDataButtonLabel": "ब्राउज़र डेटा हटाएं",
+  "browserDesktopClearDataDialogTitle": "ब्राउज़र डेटा हटाएं?",
+  "browserDesktopClearDataDialogContent": "इससे ब्राउज़र एक्सटेंशन से सिंक किया गया सभी वेबसाइट उपयोग इतिहास और साइट सेटिंग्स स्थायी रूप से हटा दी जाएंगी। आपके नेटिव ऐप ट्रैकिंग डेटा पर कोई असर नहीं पड़ेगा। आप इस डेटा को पुनर्प्राप्त नहीं कर पाएंगे। क्या आप आगे बढ़ना चाहते हैं?",
   "browserEditSiteName": "प्रदर्शन नाम संपादित करें",
   "browserSiteNameHint": "प्रदर्शन नाम (जैसे YouTube)",
   "webExportDataDescription": "सभी एक्सटेंशन डेटा को JSON बैकअप फ़ाइल के रूप में डाउनलोड करें",

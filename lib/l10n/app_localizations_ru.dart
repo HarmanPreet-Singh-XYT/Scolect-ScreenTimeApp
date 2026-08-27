@@ -3018,6 +3018,35 @@ class AppLocalizationsRu extends AppLocalizations {
   String get importFromFile => 'Импортировать тему из файла';
 
   @override
+  String get clipboardImportTitle => 'Импорт из буфера обмена';
+
+  @override
+  String get clipboardImportDescription =>
+      'Вставьте или отредактируйте данные JSON темы ниже:';
+
+  @override
+  String get clipboardImportPlaceholder => 'Вставьте JSON темы сюда...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'Не удалось загрузить буфер обмена: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'Ожидался объект JSON';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'Отсутствует обязательное поле: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'Неверный формат JSON';
+
+  @override
+  String get clipboardImportValidData => 'Данные темы верны';
+
+  @override
   String get themeCreatedSuccessfully => 'Тема успешно создана!';
 
   @override
@@ -3426,6 +3455,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get browserSites => 'Сайты';
 
   @override
+  String get browserSevenDayActivity => 'Активность за 7 дней';
+
+  @override
   String get browserExtensionSettings => 'Настройки расширения';
 
   @override
@@ -3799,6 +3831,23 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'Отключить сервер расширения';
+
+  @override
+  String get browserDesktopClearDataTitle => 'Удалить данные браузера';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'Удаляет всю историю посещений сайтов и настройки, синхронизированные из расширения браузера. Данные отслеживания нативных приложений не пострадают.';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'Удалить данные браузера';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'Удалить данные браузера?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'Это приведёт к безвозвратному удалению всей истории посещений сайтов и настроек сайтов, синхронизированных из расширения браузера. Данные отслеживания нативных приложений не пострадают. Восстановить эти данные будет невозможно. Продолжить?';
 
   @override
   String get browserEditSiteName => 'Изменить отображаемое имя';

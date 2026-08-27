@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
+import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'package:screentime/sections/settings.dart';
 import 'package:screentime/utils/browser_extension_server_stub.dart'
@@ -276,7 +277,10 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       BrowserTab.history => BrowserHistory(
           key: ValueKey('browser_history_$_refreshKey'),
         ),
-      BrowserTab.settings => const _DesktopServerSettings(key: ValueKey('desktop_server_settings')),
+      BrowserTab.settings => _DesktopServerSettings(
+          key: const ValueKey('desktop_server_settings'),
+          onDataCleared: _refreshData,
+        ),
     };
   }
 }
@@ -697,7 +701,8 @@ class _SetupStep extends StatelessWidget {
 // ─── Desktop server settings tab ─────────────────────────────────────────────
 
 class _DesktopServerSettings extends StatefulWidget {
-  const _DesktopServerSettings({super.key});
+  final VoidCallback? onDataCleared;
+  const _DesktopServerSettings({super.key, this.onDataCleared});
 
   @override
   State<_DesktopServerSettings> createState() => _DesktopServerSettingsState();
@@ -851,6 +856,98 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                 ],
               ],
             ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Delete browser data ────────────────────────────────────────
+          Text(
+            l10n.browserDesktopClearDataTitle,
+            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 8),
+          BrowserCard(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.browserDesktopClearDataDescription,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: captionColor?.withValues(alpha: 0.6),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Button(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      const Color(0xFFE53935).withValues(alpha: 0.1),
+                    ),
+                    foregroundColor: const WidgetStatePropertyAll(Color(0xFFE53935)),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(6),
+                        side: const BorderSide(color: Color(0xFFE53935)),
+                      ),
+                    ),
+                  ),
+                  onPressed: () => _confirmClearWebData(context, l10n),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(FluentIcons.delete, size: 12, color: Color(0xFFE53935)),
+                      const SizedBox(width: 6),
+                      Text(l10n.browserDesktopClearDataButtonLabel),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _confirmClearWebData(BuildContext context, AppLocalizations l10n) {
+    return showDialog<void>(
+      context: context,
+      builder: (ctx) => ContentDialog(
+        title: Row(
+          children: [
+            const Icon(FluentIcons.warning, color: Color(0xFFE53935), size: 20),
+            const SizedBox(width: 10),
+            Text(l10n.browserDesktopClearDataDialogTitle),
+          ],
+        ),
+        content: Text(l10n.browserDesktopClearDataDialogContent),
+        actions: [
+          Button(
+            child: Text(l10n.cancelButton),
+            onPressed: () => Navigator.pop(ctx),
+          ),
+          FilledButton(
+            style: const ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Color(0xFFE53935)),
+            ),
+            child: Text(l10n.browserDesktopClearDataButtonLabel),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              await AppDataStore().clearWebData();
+              widget.onDataCleared?.call();
+              navigationState.refreshCurrentScreen();
+              if (context.mounted) {
+                displayInfoBar(
+                  context,
+                  builder: (infoCtx, close) => InfoBar(
+                    title: Text(l10n.browserDesktopClearDataTitle),
+                    action: Button(onPressed: close, child: Text(l10n.ok)),
+                  ),
+                );
+              }
+            },
           ),
         ],
       ),

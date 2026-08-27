@@ -1869,6 +1869,28 @@
   "pasteFromClipboard": "Paste from Clipboard",
   "importFromClipboardJSON": "Import theme from clipboard JSON data",
   "importFromFile": "Import theme from a file",
+  "clipboardImportTitle": "Import from Clipboard",
+  "clipboardImportDescription": "Paste or edit the theme JSON data below:",
+  "clipboardImportPlaceholder": "Paste theme JSON here...",
+  "clipboardImportErrorLoadFailed": "Failed to load clipboard: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "Expected a JSON object",
+  "clipboardImportErrorMissingField": "Missing required field: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "Invalid JSON format",
+  "clipboardImportValidData": "Valid theme data",
   "themeCreatedSuccessfully": "Theme created successfully!",
   "themeUpdatedSuccessfully": "Theme updated successfully!",
   "themeDeletedSuccessfully": "Theme deleted successfully!",
@@ -2177,6 +2199,7 @@
   "browserSubtitle": "Track and manage your website usage",
   "browserToday": "Today",
   "browserSites": "Sites",
+  "browserSevenDayActivity": "7-Day Activity",
   "browserExtensionSettings": "Extension Settings",
   "browserSyncing": "Syncing",
   "browserTabOverview": "Overview",
@@ -2335,6 +2358,11 @@
   "browserServerPortSaved": "Port updated — extension reconnecting",
   "browserServerPortInvalid": "Enter a port between 1024 and 65535",
   "browserDisableServer": "Disable Extension Server",
+  "browserDesktopClearDataTitle": "Delete Browser Data",
+  "browserDesktopClearDataDescription": "Delete all website usage history and settings synced from the browser extension. Your native app tracking data is not affected.",
+  "browserDesktopClearDataButtonLabel": "Delete Browser Data",
+  "browserDesktopClearDataDialogTitle": "Delete Browser Data?",
+  "browserDesktopClearDataDialogContent": "This will permanently delete all website usage history and site settings synced from the browser extension. Your native app tracking data will not be affected. You won't be able to recover this data. Do you want to proceed?",
   "browserEditSiteName": "Edit display name",
   "browserSiteNameHint": "Display name (e.g. YouTube)",
   "webExportDataDescription": "Download all extension data as a JSON backup file",

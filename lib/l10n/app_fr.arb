@@ -1595,6 +1595,28 @@
   "pasteFromClipboard": "Coller depuis le presse-papiers",
   "importFromClipboardJSON": "Importer le thème depuis les données JSON du presse-papiers",
   "importFromFile": "Importer le thème depuis un fichier",
+  "clipboardImportTitle": "Importer depuis le presse-papiers",
+  "clipboardImportDescription": "Collez ou modifiez les données JSON du thème ci-dessous :",
+  "clipboardImportPlaceholder": "Collez le JSON du thème ici...",
+  "clipboardImportErrorLoadFailed": "Échec du chargement du presse-papiers : {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "Un objet JSON était attendu",
+  "clipboardImportErrorMissingField": "Champ requis manquant : {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "Format JSON invalide",
+  "clipboardImportValidData": "Données de thème valides",
   "themeCreatedSuccessfully": "Thème créé avec succès !",
   "themeUpdatedSuccessfully": "Thème mis à jour avec succès !",
   "themeDeletedSuccessfully": "Thème supprimé avec succès !",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "Suivez et gérez votre utilisation des sites web",
   "browserToday": "Aujourd'hui",
   "browserSites": "Sites",
+  "browserSevenDayActivity": "Activité sur 7 jours",
   "browserExtensionSettings": "Paramètres de l'extension",
   "browserSyncing": "Synchronisation",
   "browserTabOverview": "Aperçu",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "Port mis à jour — reconnexion de l'extension",
   "browserServerPortInvalid": "Entrez un port entre 1024 et 65535",
   "browserDisableServer": "Désactiver le serveur d'extension",
+  "browserDesktopClearDataTitle": "Supprimer les données du navigateur",
+  "browserDesktopClearDataDescription": "Supprime tout l'historique d'utilisation des sites web et les paramètres synchronisés depuis l'extension de navigateur. Les données de suivi des applications natives ne seront pas affectées.",
+  "browserDesktopClearDataButtonLabel": "Supprimer les données du navigateur",
+  "browserDesktopClearDataDialogTitle": "Supprimer les données du navigateur ?",
+  "browserDesktopClearDataDialogContent": "Cela supprimera définitivement tout l'historique d'utilisation des sites web et les paramètres de sites synchronisés depuis l'extension de navigateur. Les données de suivi des applications natives ne seront pas affectées. Vous ne pourrez pas récupérer ces données. Voulez-vous continuer ?",
   "browserEditSiteName": "Modifier le nom affiché",
   "browserSiteNameHint": "Nom affiché (ex. YouTube)",
   "webExportDataDescription": "Télécharger toutes les données de l'extension sous forme de fichier de sauvegarde JSON",

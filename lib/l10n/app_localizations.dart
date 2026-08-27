@@ -5374,6 +5374,54 @@ abstract class AppLocalizations {
   /// **'Import theme from a file'**
   String get importFromFile;
 
+  /// No description provided for @clipboardImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from Clipboard'**
+  String get clipboardImportTitle;
+
+  /// No description provided for @clipboardImportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste or edit the theme JSON data below:'**
+  String get clipboardImportDescription;
+
+  /// No description provided for @clipboardImportPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste theme JSON here...'**
+  String get clipboardImportPlaceholder;
+
+  /// No description provided for @clipboardImportErrorLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load clipboard: {error}'**
+  String clipboardImportErrorLoadFailed(String error);
+
+  /// No description provided for @clipboardImportErrorNotJsonObject.
+  ///
+  /// In en, this message translates to:
+  /// **'Expected a JSON object'**
+  String get clipboardImportErrorNotJsonObject;
+
+  /// No description provided for @clipboardImportErrorMissingField.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing required field: {field}'**
+  String clipboardImportErrorMissingField(String field);
+
+  /// No description provided for @clipboardImportErrorInvalidJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid JSON format'**
+  String get clipboardImportErrorInvalidJson;
+
+  /// No description provided for @clipboardImportValidData.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid theme data'**
+  String get clipboardImportValidData;
+
   /// No description provided for @themeCreatedSuccessfully.
   ///
   /// In en, this message translates to:
@@ -6060,6 +6108,12 @@ abstract class AppLocalizations {
   /// **'Sites'**
   String get browserSites;
 
+  /// No description provided for @browserSevenDayActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'7-Day Activity'**
+  String get browserSevenDayActivity;
+
   /// No description provided for @browserExtensionSettings.
   ///
   /// In en, this message translates to:
@@ -6689,6 +6743,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Disable Extension Server'**
   String get browserDisableServer;
+
+  /// No description provided for @browserDesktopClearDataTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Browser Data'**
+  String get browserDesktopClearDataTitle;
+
+  /// No description provided for @browserDesktopClearDataDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete all website usage history and settings synced from the browser extension. Your native app tracking data is not affected.'**
+  String get browserDesktopClearDataDescription;
+
+  /// No description provided for @browserDesktopClearDataButtonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Browser Data'**
+  String get browserDesktopClearDataButtonLabel;
+
+  /// No description provided for @browserDesktopClearDataDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Browser Data?'**
+  String get browserDesktopClearDataDialogTitle;
+
+  /// No description provided for @browserDesktopClearDataDialogContent.
+  ///
+  /// In en, this message translates to:
+  /// **'This will permanently delete all website usage history and site settings synced from the browser extension. Your native app tracking data will not be affected. You won\'t be able to recover this data. Do you want to proceed?'**
+  String get browserDesktopClearDataDialogContent;
 
   /// No description provided for @browserEditSiteName.
   ///

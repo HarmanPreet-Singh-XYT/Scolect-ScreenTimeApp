@@ -2885,6 +2885,34 @@ class AppLocalizationsJa extends AppLocalizations {
   String get importFromFile => 'ファイルからテーマをインポート';
 
   @override
+  String get clipboardImportTitle => 'クリップボードからインポート';
+
+  @override
+  String get clipboardImportDescription => '以下にテーマのJSONデータを貼り付けるか編集してください：';
+
+  @override
+  String get clipboardImportPlaceholder => 'ここにテーマのJSONを貼り付けてください...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'クリップボードの読み込みに失敗しました: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'JSONオブジェクトが必要です';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return '必須フィールドがありません: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => '無効なJSON形式です';
+
+  @override
+  String get clipboardImportValidData => '有効なテーマデータです';
+
+  @override
   String get themeCreatedSuccessfully => 'テーマが正常に作成されました！';
 
   @override
@@ -3284,6 +3312,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserSites => 'サイト';
 
   @override
+  String get browserSevenDayActivity => '7日間のアクティビティ';
+
+  @override
   String get browserExtensionSettings => '拡張機能の設定';
 
   @override
@@ -3644,6 +3675,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get browserDisableServer => '拡張機能サーバーを無効化';
+
+  @override
+  String get browserDesktopClearDataTitle => 'ブラウザデータを削除';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'ブラウザ拡張機能から同期されたすべてのウェブサイト利用履歴と設定を削除します。ネイティブアプリの追跡データには影響しません。';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'ブラウザデータを削除';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'ブラウザデータを削除しますか？';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'ブラウザ拡張機能から同期されたすべてのウェブサイト利用履歴とサイト設定が完全に削除されます。ネイティブアプリの追跡データには影響しません。このデータは復元できません。続行しますか？';
 
   @override
   String get browserEditSiteName => '表示名を編集';

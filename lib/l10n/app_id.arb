@@ -1595,6 +1595,28 @@
   "pasteFromClipboard": "Tempel dari Papan Klip",
   "importFromClipboardJSON": "Impor tema dari data JSON papan klip",
   "importFromFile": "Impor tema dari file",
+  "clipboardImportTitle": "Impor dari Papan Klip",
+  "clipboardImportDescription": "Tempel atau edit data JSON tema di bawah ini:",
+  "clipboardImportPlaceholder": "Tempel JSON tema di sini...",
+  "clipboardImportErrorLoadFailed": "Gagal memuat papan klip: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "Diharapkan objek JSON",
+  "clipboardImportErrorMissingField": "Kolom wajib tidak ada: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "Format JSON tidak valid",
+  "clipboardImportValidData": "Data tema valid",
   "themeCreatedSuccessfully": "Tema berhasil dibuat!",
   "themeUpdatedSuccessfully": "Tema berhasil diperbarui!",
   "themeDeletedSuccessfully": "Tema berhasil dihapus!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "Lacak dan kelola penggunaan situs web Anda",
   "browserToday": "Hari ini",
   "browserSites": "Situs",
+  "browserSevenDayActivity": "Aktivitas 7 Hari",
   "browserExtensionSettings": "Pengaturan Ekstensi",
   "browserSyncing": "Menyinkronkan",
   "browserTabOverview": "Ikhtisar",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "Port diperbarui — ekstensi menyambung kembali",
   "browserServerPortInvalid": "Masukkan port antara 1024 dan 65535",
   "browserDisableServer": "Nonaktifkan Server Ekstensi",
+  "browserDesktopClearDataTitle": "Hapus Data Browser",
+  "browserDesktopClearDataDescription": "Hapus semua riwayat penggunaan situs web dan pengaturan yang disinkronkan dari ekstensi browser. Data pelacakan aplikasi native Anda tidak akan terpengaruh.",
+  "browserDesktopClearDataButtonLabel": "Hapus Data Browser",
+  "browserDesktopClearDataDialogTitle": "Hapus Data Browser?",
+  "browserDesktopClearDataDialogContent": "Ini akan menghapus secara permanen semua riwayat penggunaan situs web dan pengaturan situs yang disinkronkan dari ekstensi browser. Data pelacakan aplikasi native Anda tidak akan terpengaruh. Anda tidak akan dapat memulihkan data ini. Apakah Anda ingin melanjutkan?",
   "browserEditSiteName": "Edit nama tampilan",
   "browserSiteNameHint": "Nama tampilan (mis. YouTube)",
   "webExportDataDescription": "Unduh semua data ekstensi sebagai berkas cadangan JSON",

@@ -1596,6 +1596,28 @@
   "pasteFromClipboard": "کلپ بورڈ سے پیسٹ کریں",
   "importFromClipboardJSON": "کلپ بورڈ JSON ڈیٹا سے تھیم درآمد کریں",
   "importFromFile": "فائل سے تھیم درآمد کریں",
+  "clipboardImportTitle": "کلپ بورڈ سے درآمد کریں",
+  "clipboardImportDescription": "نیچے تھیم JSON ڈیٹا پیسٹ یا ترمیم کریں:",
+  "clipboardImportPlaceholder": "یہاں تھیم JSON پیسٹ کریں...",
+  "clipboardImportErrorLoadFailed": "کلپ بورڈ لوڈ کرنے میں ناکامی: {error}",
+  "@clipboardImportErrorLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorNotJsonObject": "ایک JSON آبجیکٹ متوقع تھا",
+  "clipboardImportErrorMissingField": "مطلوبہ فیلڈ غائب ہے: {field}",
+  "@clipboardImportErrorMissingField": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "clipboardImportErrorInvalidJson": "غلط JSON فارمیٹ",
+  "clipboardImportValidData": "درست تھیم ڈیٹا",
   "themeCreatedSuccessfully": "تھیم کامیابی سے بنائی گئی!",
   "themeUpdatedSuccessfully": "تھیم کامیابی سے اپڈیٹ ہوگئی!",
   "themeDeletedSuccessfully": "تھیم کامیابی سے حذف ہوگئی!",
@@ -1908,6 +1930,7 @@
   "browserSubtitle": "اپنی ویب سائٹ کے استعمال کو ٹریک اور منظم کریں",
   "browserToday": "آج",
   "browserSites": "سائٹس",
+  "browserSevenDayActivity": "7 دن کی سرگرمی",
   "browserExtensionSettings": "ایکسٹینشن کی ترتیبات",
   "browserSyncing": "مطابقت پذیری",
   "browserTabOverview": "جائزہ",
@@ -2057,6 +2080,11 @@
   "browserServerPortSaved": "پورٹ اپڈیٹ ہوا — ایکسٹینشن دوبارہ جڑ رہی ہے",
   "browserServerPortInvalid": "1024 سے 65535 کے درمیان پورٹ درج کریں",
   "browserDisableServer": "ایکسٹینشن سرور غیر فعال کریں",
+  "browserDesktopClearDataTitle": "براؤزر ڈیٹا حذف کریں",
+  "browserDesktopClearDataDescription": "براؤزر ایکسٹینشن سے ہم آہنگ کردہ تمام ویب سائٹ استعمال کی تاریخ اور ترتیبات حذف کریں۔ آپ کے نیٹو ایپ ٹریکنگ ڈیٹا پر کوئی اثر نہیں پڑے گا۔",
+  "browserDesktopClearDataButtonLabel": "براؤزر ڈیٹا حذف کریں",
+  "browserDesktopClearDataDialogTitle": "براؤزر ڈیٹا حذف کریں؟",
+  "browserDesktopClearDataDialogContent": "اس سے براؤزر ایکسٹینشن سے ہم آہنگ کردہ تمام ویب سائٹ استعمال کی تاریخ اور سائٹ کی ترتیبات مستقل طور پر حذف ہو جائیں گی۔ آپ کے نیٹو ایپ ٹریکنگ ڈیٹا پر کوئی اثر نہیں پڑے گا۔ آپ اس ڈیٹا کو بحال نہیں کر سکیں گے۔ کیا آپ آگے بڑھنا چاہتے ہیں؟",
   "browserEditSiteName": "ڈسپلے نام ترمیم کریں",
   "browserSiteNameHint": "ڈسپلے نام (مثلاً YouTube)",
   "webExportDataDescription": "تمام ایکسٹینشن ڈیٹا کو JSON بیک اپ فائل کے طور پر ڈاؤن لوڈ کریں",

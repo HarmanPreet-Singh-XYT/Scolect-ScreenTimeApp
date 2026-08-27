@@ -2979,6 +2979,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importFromFile => 'Import theme from a file';
 
   @override
+  String get clipboardImportTitle => 'Import from Clipboard';
+
+  @override
+  String get clipboardImportDescription =>
+      'Paste or edit the theme JSON data below:';
+
+  @override
+  String get clipboardImportPlaceholder => 'Paste theme JSON here...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return 'Failed to load clipboard: $error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => 'Expected a JSON object';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return 'Missing required field: $field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'Invalid JSON format';
+
+  @override
+  String get clipboardImportValidData => 'Valid theme data';
+
+  @override
   String get themeCreatedSuccessfully => 'Theme created successfully!';
 
   @override
@@ -3384,6 +3413,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browserSites => 'Sites';
 
   @override
+  String get browserSevenDayActivity => '7-Day Activity';
+
+  @override
   String get browserExtensionSettings => 'Extension Settings';
 
   @override
@@ -3756,6 +3788,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get browserDisableServer => 'Disable Extension Server';
+
+  @override
+  String get browserDesktopClearDataTitle => 'Delete Browser Data';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      'Delete all website usage history and settings synced from the browser extension. Your native app tracking data is not affected.';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => 'Delete Browser Data';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => 'Delete Browser Data?';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      'This will permanently delete all website usage history and site settings synced from the browser extension. Your native app tracking data will not be affected. You won\'t be able to recover this data. Do you want to proceed?';
 
   @override
   String get browserEditSiteName => 'Edit display name';

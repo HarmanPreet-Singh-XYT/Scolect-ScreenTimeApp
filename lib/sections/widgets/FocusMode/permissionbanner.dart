@@ -298,47 +298,48 @@ class _CompactNotificationBannerState extends State<CompactNotificationBanner>
   }
 
   Future<void> _showSystemSettingsInfo() async {
+    final l10n = AppLocalizations.of(context)!;
     await showDialog(
       context: context,
       barrierDismissible: true,
       builder: (ctx) => ContentDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(FluentIcons.system, size: 20),
-            SizedBox(width: 12),
-            Text('System Settings Required'),
+            const Icon(FluentIcons.system, size: 20),
+            const SizedBox(width: 12),
+            Text(l10n.systemSettingsRequired),
           ],
         ),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Notifications are disabled at the system level. To enable:',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              l10n.notificationsDisabledSystemLevel,
+              style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            SizedBox(height: 16),
-            Text('1. Open System Settings (System Preferences)'),
-            SizedBox(height: 8),
-            Text('2. Go to Notifications'),
-            SizedBox(height: 8),
-            Text('3. Find and select TimeMark'),
-            SizedBox(height: 8),
-            Text('4. Enable "Allow notifications"'),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
+            Text(l10n.step1OpenSystemSettings),
+            const SizedBox(height: 8),
+            Text(l10n.step2GoToNotifications),
+            const SizedBox(height: 8),
+            Text(l10n.step3FindApp),
+            const SizedBox(height: 8),
+            Text(l10n.step4EnableNotifications),
+            const SizedBox(height: 16),
             Text(
-              'Then return to this app and notifications will work.',
-              style: TextStyle(fontStyle: FontStyle.italic),
+              l10n.returnToAppMessage,
+              style: const TextStyle(fontStyle: FontStyle.italic),
             ),
           ],
         ),
         actions: [
           Button(
-            child: const Text('Cancel'),
+            child: Text(l10n.cancelButton),
             onPressed: () => Navigator.pop(ctx),
           ),
           FilledButton(
-            child: const Text('Got it'),
+            child: Text(l10n.gotIt),
             onPressed: () => Navigator.pop(ctx),
           ),
         ],

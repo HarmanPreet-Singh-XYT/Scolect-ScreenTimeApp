@@ -2853,6 +2853,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get importFromFile => '从文件导入主题';
 
   @override
+  String get clipboardImportTitle => '从剪贴板导入';
+
+  @override
+  String get clipboardImportDescription => '在下方粘贴或编辑主题 JSON 数据：';
+
+  @override
+  String get clipboardImportPlaceholder => '在此粘贴主题 JSON...';
+
+  @override
+  String clipboardImportErrorLoadFailed(String error) {
+    return '读取剪贴板失败：$error';
+  }
+
+  @override
+  String get clipboardImportErrorNotJsonObject => '需要一个 JSON 对象';
+
+  @override
+  String clipboardImportErrorMissingField(String field) {
+    return '缺少必需字段：$field';
+  }
+
+  @override
+  String get clipboardImportErrorInvalidJson => 'JSON 格式无效';
+
+  @override
+  String get clipboardImportValidData => '主题数据有效';
+
+  @override
   String get themeCreatedSuccessfully => '主题创建成功！';
 
   @override
@@ -3252,6 +3280,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserSites => '网站';
 
   @override
+  String get browserSevenDayActivity => '7天活动';
+
+  @override
   String get browserExtensionSettings => '扩展设置';
 
   @override
@@ -3608,6 +3639,23 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get browserDisableServer => '禁用扩展服务器';
+
+  @override
+  String get browserDesktopClearDataTitle => '删除浏览器数据';
+
+  @override
+  String get browserDesktopClearDataDescription =>
+      '删除从浏览器扩展同步的所有网站使用记录和设置。不会影响您的原生应用跟踪数据。';
+
+  @override
+  String get browserDesktopClearDataButtonLabel => '删除浏览器数据';
+
+  @override
+  String get browserDesktopClearDataDialogTitle => '删除浏览器数据？';
+
+  @override
+  String get browserDesktopClearDataDialogContent =>
+      '此操作将永久删除从浏览器扩展同步的所有网站使用记录和网站设置，不会影响您的原生应用跟踪数据。删除后将无法恢复。是否继续？';
 
   @override
   String get browserEditSiteName => '编辑显示名称';

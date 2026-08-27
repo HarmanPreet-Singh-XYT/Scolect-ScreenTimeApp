@@ -2092,6 +2092,11 @@ class AppDataStore extends ChangeNotifier {
     await _initLock.synchronized(() async {
       if (!_ensureInitialized()) return;
       await _runtimeCacheLock.synchronized(() async {
+        for (final dateMap in _usageCacheByDate.values) {
+          dateMap.removeWhere((key, _) => key.startsWith('web:'));
+        }
+        _metadataCache.removeWhere((key, _) => key.startsWith('web:'));
+        _dirtyUsageKeys.removeWhere((key) => key.contains('web:'));
         _cachedAppNames = null;
       });
       if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
