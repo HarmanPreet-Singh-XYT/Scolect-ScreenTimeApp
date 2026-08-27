@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "Riwayat",
   "browserAboutHistoryValue": "30 hari terakhir disimpan",
+  "browserConnectedBrowsers": "Browser Terhubung",
+  "browserConnectedBrowsersDesc": "Browser yang telah menyinkronkan data situs web ke aplikasi desktop ini. Ganti nama untuk referensi, atau hapus yang sudah tidak digunakan.",
+  "browserConnectedBrowsersEmpty": "Belum ada browser yang terhubung.",
+  "browserSourceAllBrowsers": "Semua Browser",
+  "browserSourceDefaultName": "Browser {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "Terakhir terlihat",
+  "browserSourceLastSeenDaysAgo": "{days} hari lalu",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "Ganti Nama Browser",
+  "browserSourceRemoveTitle": "Hapus Browser?",
+  "browserSourceRemoveConfirm": "Hapus \"{name}\" dari browser yang terhubung? Riwayat penggunaannya akan tetap disimpan, tetapi browser tersebut perlu terhubung kembali untuk sinkronisasi ulang.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "Hapus",
   "browserDangerZone": "Zona Berbahaya",
   "browserClearDataTitle": "Hapus Semua Data Situs Web",
   "browserClearDataDesc": "Menghapus secara permanen semua riwayat situs web yang dilacak. Tindakan ini tidak dapat dibatalkan.",

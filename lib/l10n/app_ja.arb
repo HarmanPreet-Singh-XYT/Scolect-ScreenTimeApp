@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "履歴",
   "browserAboutHistoryValue": "過去30日間保持",
+  "browserConnectedBrowsers": "接続済みブラウザ",
+  "browserConnectedBrowsersDesc": "このデスクトップアプリにウェブサイトデータを同期したブラウザです。わかりやすいように名前を変更したり、使わなくなったものを削除したりできます。",
+  "browserConnectedBrowsersEmpty": "まだ接続されたブラウザはありません。",
+  "browserSourceAllBrowsers": "すべてのブラウザ",
+  "browserSourceDefaultName": "ブラウザ {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "最終確認",
+  "browserSourceLastSeenDaysAgo": "{days}日前",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "ブラウザ名を変更",
+  "browserSourceRemoveTitle": "ブラウザを削除しますか？",
+  "browserSourceRemoveConfirm": "「{name}」を接続済みブラウザから削除しますか？ 使用履歴は保持されますが、再度同期するには再接続が必要です。",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "削除",
   "browserDangerZone": "危険ゾーン",
   "browserClearDataTitle": "すべてのウェブサイトデータを削除",
   "browserClearDataDesc": "追跡されたすべてのウェブサイト履歴を完全に削除します。この操作は元に戻せません。",

@@ -3670,6 +3670,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browserAboutHistoryValue => 'Last 30 days retained';
 
   @override
+  String get browserConnectedBrowsers => 'Connected Browsers';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'Browsers that have synced website data to this desktop app. Rename them for reference, or remove ones you no longer use.';
+
+  @override
+  String get browserConnectedBrowsersEmpty => 'No browsers have connected yet.';
+
+  @override
+  String get browserSourceAllBrowsers => 'All Browsers';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'Browser $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'Last seen';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'Rename Browser';
+
+  @override
+  String get browserSourceRemoveTitle => 'Remove Browser?';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'Remove \"$name\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'Remove';
+
+  @override
   String get browserDangerZone => 'Danger Zone';
 
   @override

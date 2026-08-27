@@ -9,6 +9,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 import '../../web/web_browser_data_provider.dart' if (dart.library.io) '../../web/web_browser_data_provider_stub.dart';
 import 'settings_data_controller.dart';
+import '../../l10n/app_localizations.dart';
 
 // TypeAdapters for complex types
 @HiveType(typeId: 1)
@@ -174,6 +175,77 @@ class AppMetadata {
   }
 }
 
+@HiveType(typeId: 6)
+class BrowserSource {
+  @HiveField(0)
+  final String id;
+
+  @HiveField(1)
+  final String detectedBrowser;
+
+  @HiveField(2)
+  final DateTime firstSeen;
+
+  @HiveField(3)
+  final DateTime lastSeen;
+
+  @HiveField(4)
+  final String displayName; // empty string means "use the default label"
+
+  /// Stable ordinal assigned once when this source is first registered
+  /// (1, 2, 3, ...), used to build the default "Browser N" label. Kept
+  /// separate from displayName so the default label can be localized at
+  /// display time instead of being frozen as an English string in storage.
+  /// 0 means "unset" (sources created before this field existed) — those
+  /// fall back to showing detectedBrowser instead of a numbered label.
+  @HiveField(5)
+  final int sourceIndex;
+
+  BrowserSource({
+    required this.id,
+    required this.detectedBrowser,
+    required this.firstSeen,
+    required this.lastSeen,
+    this.displayName = '',
+    this.sourceIndex = 0,
+  });
+
+  /// Plain-English fallback label, for call sites without a BuildContext.
+  /// Prefer [localizedLabel] wherever an AppLocalizations instance is
+  /// available (anywhere in the widget tree).
+  String get label =>
+      displayName.isNotEmpty
+          ? displayName
+          : (sourceIndex > 0 ? 'Browser $sourceIndex' : detectedBrowser);
+
+  /// User-assigned name if set, otherwise a localized "Browser N" default,
+  /// falling back to the detected browser name for legacy entries that
+  /// predate [sourceIndex].
+  String localizedLabel(AppLocalizations l10n) =>
+      displayName.isNotEmpty
+          ? displayName
+          : (sourceIndex > 0
+              ? l10n.browserSourceDefaultName(sourceIndex)
+              : detectedBrowser);
+
+  BrowserSource copyWith({
+    String? detectedBrowser,
+    DateTime? firstSeen,
+    DateTime? lastSeen,
+    String? displayName,
+    int? sourceIndex,
+  }) {
+    return BrowserSource(
+      id: id,
+      detectedBrowser: detectedBrowser ?? this.detectedBrowser,
+      firstSeen: firstSeen ?? this.firstSeen,
+      lastSeen: lastSeen ?? this.lastSeen,
+      displayName: displayName ?? this.displayName,
+      sourceIndex: sourceIndex ?? this.sourceIndex,
+    );
+  }
+}
+
 class AppDataStore extends ChangeNotifier {
   static final AppDataStore _instance = AppDataStore._internal();
   static const String _usageBoxName = 'harman_screentime_app_usage_box';
@@ -181,12 +253,14 @@ class AppDataStore extends ChangeNotifier {
   static const String _metadataBoxName = 'harman_screentime_app_metadata_box';
   static const String _webUsageBoxName = 'scolect_web_usage_box';
   static const String _webMetadataBoxName = 'scolect_web_metadata_box';
+  static const String _browserSourcesBoxName = 'scolect_browser_sources_box';
 
   Box<AppUsageRecord>? _usageBox;
   Box<FocusSessionRecord>? _focusBox;
   Box<AppMetadata>? _metadataBox;
   Box<AppUsageRecord>? _webUsageBox;
   Box<AppMetadata>? _webMetadataBox;
+  Box<BrowserSource>? _browserSourcesBox;
 
   bool _isInitialized = false;
   String? _lastError;
@@ -305,7 +379,7 @@ class AppDataStore extends ChangeNotifier {
                   hivePath = newHivePath;
                 } else if (Platform.isWindows) {
                   // On Windows, we move only the specific box files if they exist in root
-                  final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName, _webUsageBoxName, _webMetadataBoxName];
+                  final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName, _webUsageBoxName, _webMetadataBoxName, _browserSourcesBoxName];
                   bool migratedAny = false;
 
                   await newDir.create(recursive: true);
@@ -382,6 +456,8 @@ class AppDataStore extends ChangeNotifier {
           Hive.registerAdapter(AppMetadataAdapter());
         if (!Hive.isAdapterRegistered(5))
           Hive.registerAdapter(DurationAdapter());
+        if (!Hive.isAdapterRegistered(6))
+          Hive.registerAdapter(BrowserSourceAdapter());
 
         // Open boxes — on macOS, the probe may pass but Hive's internal file
         // access can still be blocked by the sandbox (errno = 1). If that
@@ -401,15 +477,17 @@ class AppDataStore extends ChangeNotifier {
           _metadataBox  = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
           _webUsageBox  = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
           _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
+          _browserSourcesBox = await _openBoxWithRetry<BrowserSource>(_browserSourcesBoxName);
         } else {
           _focusBox       = await _openBoxWithRetry<FocusSessionRecord>(_focusBoxName);
           _metadataBox    = await _openBoxWithRetry<AppMetadata>(_metadataBoxName);
           _webUsageBox    = await _openBoxWithRetry<AppUsageRecord>(_webUsageBoxName);
           _webMetadataBox = await _openBoxWithRetry<AppMetadata>(_webMetadataBoxName);
+          _browserSourcesBox = await _openBoxWithRetry<BrowserSource>(_browserSourcesBoxName);
         }
 
         if (_usageBox == null || _focusBox == null || _metadataBox == null ||
-            _webUsageBox == null || _webMetadataBox == null) {
+            _webUsageBox == null || _webMetadataBox == null || _browserSourcesBox == null) {
           _lastError = "Failed to open one or more Hive boxes";
           return false;
         }
@@ -672,6 +750,66 @@ class AppDataStore extends ChangeNotifier {
 
   Box<AppMetadata> _metadataBoxFor(String appName) =>
       appName.startsWith('web:') ? _webMetadataBox! : _metadataBox!;
+
+  // ============================================================
+  // BROWSER SOURCE REGISTRY
+  // ============================================================
+  //
+  // Tracks which browser extensions/profiles have ever synced to this
+  // desktop app, keyed by the UUID each extension generates once and
+  // persists forever (see web/background.js getBrowserId()). This is
+  // metadata about *sources*, not usage — it is intentionally untouched by
+  // clearWebData() (which only deletes usage history) so a renamed browser
+  // doesn't need to be renamed again after clearing data.
+
+  /// Registers a sync from [id], updating lastSeen (and detectedBrowser, in
+  /// case the same browser reports a more specific UA than before). Creates
+  /// a new entry with firstSeen = now if this id has never been seen, given
+  /// the next sourceIndex so it defaults to a localized "Browser N" label
+  /// rather than the detected browser name — multiple profiles/machines
+  /// running the same browser (e.g. two Chrome installs) would otherwise all
+  /// default to the indistinguishable label "Chrome". The detected type is
+  /// still shown as an icon alongside the name. User-assigned displayName is
+  /// always preserved across calls once set.
+  Future<void> upsertBrowserSource(String id, String detectedBrowser) async {
+    if (!_ensureInitialized() || _browserSourcesBox == null) return;
+    final now = DateTime.now();
+    final existing = _browserSourcesBox!.get(id);
+    final updated = existing == null
+        ? BrowserSource(
+            id: id,
+            detectedBrowser: detectedBrowser,
+            firstSeen: now,
+            lastSeen: now,
+            sourceIndex: _browserSourcesBox!.length + 1,
+          )
+        : existing.copyWith(detectedBrowser: detectedBrowser, lastSeen: now);
+    await _browserSourcesBox!.put(id, updated).catchError((e) {
+      debugPrint('⚠️ Error saving browser source to Hive: $e');
+    });
+    notifyListeners();
+  }
+
+  Future<void> renameBrowserSource(String id, String displayName) async {
+    if (!_ensureInitialized() || _browserSourcesBox == null) return;
+    final existing = _browserSourcesBox!.get(id);
+    if (existing == null) return;
+    await _browserSourcesBox!.put(id, existing.copyWith(displayName: displayName));
+    notifyListeners();
+  }
+
+  Future<void> removeBrowserSource(String id) async {
+    if (!_ensureInitialized() || _browserSourcesBox == null) return;
+    await _browserSourcesBox!.delete(id);
+    notifyListeners();
+  }
+
+  List<BrowserSource> get browserSources {
+    if (!_ensureInitialized() || _browserSourcesBox == null) return [];
+    final sources = _browserSourcesBox!.values.toList();
+    sources.sort((a, b) => b.lastSeen.compareTo(a.lastSeen));
+    return sources;
+  }
 
   // ============================================================
   // PERIODIC PERSISTENCE - Only runs when needed
@@ -1380,6 +1518,30 @@ class AppDataStore extends ChangeNotifier {
       debugPrint(_lastError);
       return null;
     }
+  }
+
+  /// Aggregates website usage for [webAppName] (a plain 'web:$domain' key,
+  /// no source suffix) across per-browser-source records.
+  ///
+  /// - [sourceId] == null: combines the legacy untagged record ('web:$domain',
+  ///   written before multi-browser support existed) with every per-source
+  ///   record ('web:$domain::$id') for every known [browserSources] entry —
+  ///   this is the "All Browsers" view.
+  /// - [sourceId] != null: returns only the record for that one source
+  ///   ('web:$domain::$sourceId'). Legacy untagged data is intentionally
+  ///   excluded here since it can't be attributed to any specific browser.
+  AppUsageRecord? getWebsiteUsage(String webAppName, DateTime date, {String? sourceId}) {
+    if (sourceId != null) {
+      return getAppUsage('$webAppName::$sourceId', date);
+    }
+
+    AppUsageRecord? combined = getAppUsage(webAppName, date);
+    for (final source in browserSources) {
+      final perSource = getAppUsage('$webAppName::${source.id}', date);
+      if (perSource == null) continue;
+      combined = combined == null ? perSource : combined.merge(perSource);
+    }
+    return combined;
   }
 
   /// Get app usage for date range - optimized for batch queries
@@ -2552,5 +2714,45 @@ class AppMetadataAdapter extends TypeAdapter<AppMetadata> {
     writer.write(obj.isPrivate);
     writer.writeByte(8);
     writer.write(obj.displayName);
+  }
+}
+
+class BrowserSourceAdapter extends TypeAdapter<BrowserSource> {
+  @override
+  final int typeId = 6;
+
+  @override
+  BrowserSource read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{};
+    for (int i = 0; i < numOfFields; i++) {
+      final key = reader.readByte();
+      fields[key] = reader.read();
+    }
+    return BrowserSource(
+      id: fields[0] as String,
+      detectedBrowser: fields[1] as String,
+      firstSeen: fields[2] as DateTime,
+      lastSeen: fields[3] as DateTime,
+      displayName: fields.containsKey(4) ? (fields[4] as String? ?? '') : '',
+      sourceIndex: fields.containsKey(5) ? (fields[5] as int? ?? 0) : 0,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, BrowserSource obj) {
+    writer.writeByte(6);
+    writer.writeByte(0);
+    writer.write(obj.id);
+    writer.writeByte(1);
+    writer.write(obj.detectedBrowser);
+    writer.writeByte(2);
+    writer.write(obj.firstSeen);
+    writer.writeByte(3);
+    writer.write(obj.lastSeen);
+    writer.writeByte(4);
+    writer.write(obj.displayName);
+    writer.writeByte(5);
+    writer.write(obj.sourceIndex);
   }
 }

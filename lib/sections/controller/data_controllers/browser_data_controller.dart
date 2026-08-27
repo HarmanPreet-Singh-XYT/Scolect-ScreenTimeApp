@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../app_data_controller.dart';
+import '../browser_source_filter.dart';
 import '../categories_controller.dart';
 import '../settings_data_controller.dart';
 import 'applications_data_controller.dart';
@@ -117,6 +118,18 @@ class BrowserDataProvider {
   /// Strip the "web:" prefix to get the display domain
   String _toDomain(String appName) => appName.replaceFirst(_kWebPrefix, '');
 
+  /// Reads usage for a website [appName], honoring the app-wide browser
+  /// source filter (see [BrowserSourceFilterProvider]): "All Browsers" sums
+  /// every source's usage plus any legacy untagged data; a specific
+  /// selection reads only that browser's usage.
+  AppUsageRecord? _readUsage(String appName, DateTime date) {
+    return _dataStore.getWebsiteUsage(
+      appName,
+      date,
+      sourceId: BrowserSourceFilterProvider().selectedBrowserId,
+    );
+  }
+
   // ─── Fetch all websites for today ────────────────────────────────────────
 
   /// [includeHistorical] is a no-op on desktop: every synced domain always
@@ -137,7 +150,7 @@ class BrowserDataProvider {
       final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null) continue;
 
-      final record = _dataStore.getAppUsage(appName, startOfDay);
+      final record = _readUsage(appName, startOfDay);
       final domain = _toDomain(appName);
 
       // Auto-categorize on read if the stored category is still a placeholder
@@ -187,7 +200,7 @@ class BrowserDataProvider {
     int sites = 0;
 
     for (final appName in _webAppNames) {
-      final record = _dataStore.getAppUsage(appName, startOfDay);
+      final record = _readUsage(appName, startOfDay);
       if (record != null && record.timeSpent > Duration.zero) {
         total += record.timeSpent;
         visits += record.openCount;
@@ -214,7 +227,7 @@ class BrowserDataProvider {
       final metadata = _dataStore.getAppMetadata(appName);
       if (metadata == null) continue;
 
-      final record = _dataStore.getAppUsage(appName, startOfDay);
+      final record = _readUsage(appName, startOfDay);
       final time = record?.timeSpent ?? Duration.zero;
       if (time == Duration.zero) continue;
 
@@ -252,7 +265,7 @@ class BrowserDataProvider {
       final startOfDay = DateTime(date.year, date.month, date.day);
       final dateKey =
           '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-      final record = _dataStore.getAppUsage('$_kWebPrefix$domain', startOfDay);
+      final record = _readUsage('$_kWebPrefix$domain', startOfDay);
       result.add((
         date: dateKey,
         timeSpent: record?.timeSpent ?? Duration.zero,
@@ -280,7 +293,7 @@ class BrowserDataProvider {
       int sites = 0;
 
       for (final appName in _webAppNames) {
-        final record = _dataStore.getAppUsage(appName, startOfDay);
+        final record = _readUsage(appName, startOfDay);
         if (record != null && record.timeSpent > Duration.zero) {
           total += record.timeSpent;
           sites++;

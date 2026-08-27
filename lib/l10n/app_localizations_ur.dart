@@ -3626,6 +3626,47 @@ class AppLocalizationsUr extends AppLocalizations {
   String get browserAboutHistoryValue => 'آخری 30 دن محفوظ';
 
   @override
+  String get browserConnectedBrowsers => 'منسلک براؤزرز';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'وہ براؤزرز جنہوں نے اس ڈیسک ٹاپ ایپ کے ساتھ ویب سائٹ ڈیٹا سنک کیا ہے۔ حوالے کے لیے انہیں نام دیں، یا جو اب استعمال نہیں ہوتے انہیں ہٹا دیں۔';
+
+  @override
+  String get browserConnectedBrowsersEmpty =>
+      'ابھی تک کوئی براؤزر منسلک نہیں ہوا۔';
+
+  @override
+  String get browserSourceAllBrowsers => 'تمام براؤزرز';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'براؤزر $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'آخری بار دیکھا گیا';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days دن پہلے';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'براؤزر کا نام تبدیل کریں';
+
+  @override
+  String get browserSourceRemoveTitle => 'براؤزر ہٹا دیں؟';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'کیا \"$name\" کو منسلک براؤزرز سے ہٹا دیں؟ اس کی استعمال کی تاریخ محفوظ رہے گی، لیکن دوبارہ سنک کرنے کے لیے اسے دوبارہ منسلک ہونا ہوگا۔';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'ہٹائیں';
+
+  @override
   String get browserDangerZone => 'خطرے کا علاقہ';
 
   @override

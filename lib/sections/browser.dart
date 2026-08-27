@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
+import 'package:screentime/sections/controller/browser_source_filter.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'package:screentime/sections/settings.dart';
 import 'package:screentime/utils/browser_extension_server_stub.dart'
@@ -16,6 +17,7 @@ import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_categories.dart';
 import 'widgets/Browser/browser_limits.dart';
 import 'widgets/Browser/browser_history.dart';
+import 'widgets/Browser/browser_source_filter_dropdown.dart' show iconForBrowser;
 
 // ─── Main section widget ──────────────────────────────────────────────────────
 
@@ -61,6 +63,10 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     _syncStatusTimer = Timer.periodic(const Duration(seconds: 5), (_) {
       if (mounted) setState(() {});
     });
+
+    // Swapping the header's browser-source filter should immediately re-fetch
+    // every website number on this page under the new selection.
+    BrowserSourceFilterProvider().addListener(_refreshData);
   }
 
   Future<void> _loadSummary() async {
@@ -89,6 +95,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _syncStatusTimer?.cancel();
+    BrowserSourceFilterProvider().removeListener(_refreshData);
     _animationController.dispose();
     super.dispose();
   }
@@ -860,6 +867,21 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
 
           const SizedBox(height: 20),
 
+          // ── Connected browsers ──────────────────────────────────────────
+          Text(
+            l10n.browserConnectedBrowsers,
+            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.browserConnectedBrowsersDesc,
+            style: TextStyle(fontSize: 12, color: captionColor?.withValues(alpha: 0.6)),
+          ),
+          const SizedBox(height: 8),
+          const _ConnectedBrowsersList(),
+
+          const SizedBox(height: 20),
+
           // ── Delete browser data ────────────────────────────────────────
           Text(
             l10n.browserDesktopClearDataTitle,
@@ -951,6 +973,257 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Connected browsers (desktop) ────────────────────────────────────────────
+
+class _ConnectedBrowsersList extends StatefulWidget {
+  const _ConnectedBrowsersList();
+
+  @override
+  State<_ConnectedBrowsersList> createState() => _ConnectedBrowsersListState();
+}
+
+class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
+  final _dataStore = AppDataStore();
+
+  @override
+  void initState() {
+    super.initState();
+    _dataStore.addListener(_onChanged);
+  }
+
+  @override
+  void dispose() {
+    _dataStore.removeListener(_onChanged);
+    super.dispose();
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _rename(BrowserSource source) async {
+    final result = await showDialog<String>(
+      context: context,
+      builder: (_) => _RenameBrowserDialog(source: source),
+    );
+    if (result != null) {
+      await _dataStore.renameBrowserSource(source.id, result);
+    }
+  }
+
+  Future<void> _remove(BrowserSource source) async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => ContentDialog(
+        title: Text(l10n.browserSourceRemoveTitle),
+        content: Text(l10n.browserSourceRemoveConfirm(source.localizedLabel(l10n))),
+        actions: [
+          Button(
+            child: Text(l10n.cancelButton),
+            onPressed: () => Navigator.pop(ctx, false),
+          ),
+          FilledButton(
+            child: Text(l10n.browserSourceRemoveAction),
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      BrowserSourceFilterProvider().clearIfSelected(source.id);
+      await _dataStore.removeBrowserSource(source.id);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final sources = _dataStore.browserSources;
+
+    if (sources.isEmpty) {
+      final theme = FluentTheme.of(context);
+      return BrowserCard(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Center(
+          child: Text(
+            l10n.browserConnectedBrowsersEmpty,
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.typography.caption?.color?.withValues(alpha: 0.5),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return BrowserCard(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: Column(
+        children: [
+          for (int i = 0; i < sources.length; i++) ...[
+            if (i > 0) const Divider(size: double.infinity),
+            _BrowserSourceRow(
+              source: sources[i],
+              onRename: () => _rename(sources[i]),
+              onRemove: () => _remove(sources[i]),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _BrowserSourceRow extends StatelessWidget {
+  final BrowserSource source;
+  final VoidCallback onRename;
+  final VoidCallback onRemove;
+
+  const _BrowserSourceRow({
+    required this.source,
+    required this.onRename,
+    required this.onRemove,
+  });
+
+  String _lastSeenLabel(AppLocalizations l10n) {
+    final elapsed = DateTime.now().difference(source.lastSeen);
+    if (elapsed.inMinutes < 1) return l10n.browserSyncedJustNow;
+    if (elapsed.inHours < 1) return l10n.browserSyncedMinutesAgo(elapsed.inMinutes);
+    if (elapsed.inDays < 1) return l10n.browserSyncedHoursAgo(elapsed.inHours);
+    return l10n.browserSourceLastSeenDaysAgo(elapsed.inDays);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: kBrowserBlue.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(iconForBrowser(source.detectedBrowser), size: 16, color: kBrowserBlue),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  source.localizedLabel(l10n),
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  '${l10n.browserSourceLastSeen}: ${_lastSeenLabel(l10n)}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: theme.typography.caption?.color?.withValues(alpha: 0.55),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(FluentIcons.edit, size: 14),
+            onPressed: onRename,
+          ),
+          IconButton(
+            icon: Icon(FluentIcons.delete, size: 14, color: kBrowserRed),
+            onPressed: onRemove,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RenameBrowserDialog extends StatefulWidget {
+  final BrowserSource source;
+  const _RenameBrowserDialog({required this.source});
+
+  @override
+  State<_RenameBrowserDialog> createState() => _RenameBrowserDialogState();
+}
+
+class _RenameBrowserDialogState extends State<_RenameBrowserDialog> {
+  // Prefill only an actual user-assigned name — leaving this empty for a
+  // source still on its default "Browser N" label means saving without
+  // typing anything keeps that default live (and localized) instead of
+  // freezing today's display language into displayName as literal text.
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.source.displayName);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    Navigator.pop(context, _controller.text.trim());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = FluentTheme.of(context);
+
+    return ContentDialog(
+      constraints: const BoxConstraints(maxWidth: 400),
+      title: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: theme.accentColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(FluentIcons.edit, size: 18, color: theme.accentColor),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              l10n.browserRenameDialogTitle,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextBox(
+            controller: _controller,
+            placeholder: widget.source.localizedLabel(l10n),
+            autofocus: true,
+            style: const TextStyle(fontSize: 13),
+            onSubmitted: (_) => _submit(),
+          ),
+        ],
+      ),
+      actions: [
+        Button(
+          child: Text(l10n.cancelButton),
+          onPressed: () => Navigator.pop(context),
+        ),
+        FilledButton(
+          child: Text(l10n.saveButton),
+          onPressed: _submit,
+        ),
+      ],
     );
   }
 }

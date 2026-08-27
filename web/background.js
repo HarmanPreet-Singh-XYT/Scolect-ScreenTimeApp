@@ -8,6 +8,39 @@ const FLUTTER_PORT      = 46000;
 const TICK_PERIOD       = 1; // minutes (Chrome enforces ≥1 min for published extensions)
 const WS_URL            = `ws://localhost:${FLUTTER_PORT}/ws`;
 
+// ─── Browser identity ─────────────────────────────────────────────────────────
+// A UUID generated once on first run and persisted forever in chrome.storage.local
+// so the desktop app can tell apart usage synced from different browsers/profiles.
+// Never regenerated once set — this is the whole point of the identifier.
+
+const BROWSER_ID_KEY = `${STORAGE_PREFIX}browser_id`;
+let _browserId = null;
+
+async function getBrowserId() {
+  if (_browserId) return _browserId;
+  const result = await chrome.storage.local.get(BROWSER_ID_KEY);
+  if (result[BROWSER_ID_KEY]) {
+    _browserId = result[BROWSER_ID_KEY];
+    return _browserId;
+  }
+  _browserId = crypto.randomUUID();
+  await chrome.storage.local.set({ [BROWSER_ID_KEY]: _browserId });
+  return _browserId;
+}
+
+// Best-effort browser family detection from the extension's own user agent.
+// Order matters: Edge/Opera/Brave UAs also contain "Chrome", so check them first.
+function detectBrowserName() {
+  const ua = navigator.userAgent || '';
+  if (ua.includes('Edg/')) return 'Edge';
+  if (ua.includes('OPR/') || ua.includes('Opera')) return 'Opera';
+  if (navigator.brave) return 'Brave';
+  if (ua.includes('Firefox/')) return 'Firefox';
+  if (ua.includes('Chrome/')) return 'Chrome';
+  if (ua.includes('Safari/')) return 'Safari';
+  return 'Unknown';
+}
+
 // ─── WebSocket state ──────────────────────────────────────────────────────────
 // MV3 service workers can be killed at any time; _ws is reconnected on demand
 // inside tick() and refreshBlockedDomains(). On localhost a reconnect is <1ms.
@@ -37,8 +70,14 @@ function getWs() {
   // A fresh open means the desktop just became reachable — either it just
   // started, or this is the first connection attempt since the service
   // worker woke up. Either way, push current usage immediately instead of
-  // waiting for the next 1-minute alarm tick.
-  _ws.addEventListener('open', () => {
+  // waiting for the next 1-minute alarm tick, and register this browser's
+  // identity so it shows up in the desktop's browser list even before any
+  // usage has been recorded today.
+  _ws.addEventListener('open', async () => {
+    try {
+      const browserId = await getBrowserId();
+      await _sendWhenOpen(_ws, { type: 'register', browserId, browserName: detectBrowserName() });
+    } catch (e) { console.warn('Browser registration send failed:', e); }
     tick().catch(console.error);
   }, { once: true });
   return _ws;
@@ -907,6 +946,8 @@ async function runSync() {
   const payload = {
     type: 'usage',
     date: today,
+    browserId: await getBrowserId(),
+    browserName: detectBrowserName(),
     domains: day.domains.map(d => ({
       ...d,
       siteName:          siteMeta[d.domain]?.siteName    ?? meta[d.domain]?.siteName    ?? null,

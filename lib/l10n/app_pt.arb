@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "Histórico",
   "browserAboutHistoryValue": "Últimos 30 dias retidos",
+  "browserConnectedBrowsers": "Navegadores conectados",
+  "browserConnectedBrowsersDesc": "Navegadores que sincronizaram dados de sites com este app de desktop. Renomeie-os para referência ou remova os que não usa mais.",
+  "browserConnectedBrowsersEmpty": "Nenhum navegador conectado ainda.",
+  "browserSourceAllBrowsers": "Todos os navegadores",
+  "browserSourceDefaultName": "Navegador {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "Visto pela última vez",
+  "browserSourceLastSeenDaysAgo": "há {days} dias",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "Renomear navegador",
+  "browserSourceRemoveTitle": "Remover navegador?",
+  "browserSourceRemoveConfirm": "Remover \"{name}\" dos seus navegadores conectados? O histórico de uso será mantido, mas ele precisará se reconectar para sincronizar novamente.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "Remover",
   "browserDangerZone": "Zona de Perigo",
   "browserClearDataTitle": "Limpar Todos os Dados de Sites",
   "browserClearDataDesc": "Exclui permanentemente todo o histórico de sites rastreados. Isso não pode ser desfeito.",

@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "السجل",
   "browserAboutHistoryValue": "الاحتفاظ بآخر 30 يوماً",
+  "browserConnectedBrowsers": "المتصفحات المتصلة",
+  "browserConnectedBrowsersDesc": "المتصفحات التي زامنت بيانات المواقع مع تطبيق سطح المكتب هذا. أعد تسميتها للرجوع إليها، أو أزل ما لم تعد تستخدمه.",
+  "browserConnectedBrowsersEmpty": "لم يتصل أي متصفح بعد.",
+  "browserSourceAllBrowsers": "كل المتصفحات",
+  "browserSourceDefaultName": "المتصفح {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "آخر ظهور",
+  "browserSourceLastSeenDaysAgo": "قبل {days} يوم",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "إعادة تسمية المتصفح",
+  "browserSourceRemoveTitle": "إزالة المتصفح؟",
+  "browserSourceRemoveConfirm": "هل تريد إزالة \"{name}\" من متصفحاتك المتصلة؟ سيتم الاحتفاظ بسجل استخدامه، لكنه سيحتاج إلى إعادة الاتصال للمزامنة مرة أخرى.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "إزالة",
   "browserDangerZone": "منطقة الخطر",
   "browserClearDataTitle": "مسح جميع بيانات المواقع",
   "browserClearDataDesc": "يحذف نهائياً جميع سجلات المواقع المُتتبَّعة. لا يمكن التراجع عن هذا.",

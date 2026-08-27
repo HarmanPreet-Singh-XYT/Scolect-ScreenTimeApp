@@ -744,7 +744,7 @@
   "modeDeepWork": "ডিপ ওয়ার্ক (৬০ মিনিট)",
   "modeQuickTasks": "কুইক টাস্ক (২৫ মিনিট)",
   "modeReading": "রিডিং (৪৫ মিনিট)",
-  "idleDetectionTitle": "অলসতা সনাক্তকরণ",
+  "idleDetectionTitle": "নিষ্ক্রিয় সনাক্তকরণ",
   "idleDetectionDescription": "নিষ্ক্রিয় থাকলে ট্র্যাকিং বন্ধ করুন",
   "keepActiveDuringMediaTitle": "মিডিয়া চলাকালীন সক্রিয় রাখুন",
   "keepActiveDuringMediaDescription": "ভিডিও বা অডিও চলাকালীন অলস বিরতি উপেক্ষা করুন (যেমন YouTube, Netflix)",
@@ -754,7 +754,7 @@
   "ignoreWindowBlurOnMediaDescription": "ভিডিও বা অডিও চলাকালীন স্ক্রিন পরিবর্তন করলেও ট্র্যাকিং সক্রিয় রাখুন",
   "pauseOnTabUnfocusTitle": "ট্যাব পরিবর্তন বা আনফোকাসে বিরতি দিন",
   "pauseOnTabUnfocusDescription": "ট্যাব নিষ্ক্রিয় বা ব্যাকগ্রাউন্ডে থাকলে ট্র্যাকিং বিরতি দিন",
-  "idleTimeoutTitle": "অলসতার সময়সীমা",
+  "idleTimeoutTitle": "নিষ্ক্রিয় সময়সীমা",
   "workDurationLabel": "কাজের সময়কাল: {minutes} মিনিট",
   "@workDurationLabel": {
     "placeholders": {
@@ -1129,9 +1129,6 @@
   "faqTroubleQ4": "Extension and desktop app are not syncing",
   "faqTroubleA4": "Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app's Settings and the extension's Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test.",
   "activityTrackingSection": "কার্যকলাপ ট্র্যাকিং",
-  "idleDetectionTitle": "নিষ্ক্রিয় সনাক্তকরণ",
-  "idleDetectionDescription": "নিষ্ক্রিয় থাকলে ট্র্যাকিং বন্ধ করুন",
-  "idleTimeoutTitle": "নিষ্ক্রিয় সময়সীমা",
   "idleTimeoutDescription": "নিষ্ক্রিয় বিবেচনা করার আগে সময় ({timeout})",
   "advancedWarning": "উন্নত বৈশিষ্ট্যগুলি সম্পদের ব্যবহার বাড়াতে পারে। শুধুমাত্র প্রয়োজন হলে সক্ষম করুন।",
   "monitorAudioTitle": "সিস্টেম অডিও মনিটর করুন",
@@ -2045,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "ইতিহাস",
   "browserAboutHistoryValue": "শেষ ৩০ দিন সংরক্ষিত",
+  "browserConnectedBrowsers": "সংযুক্ত ব্রাউজার",
+  "browserConnectedBrowsersDesc": "যেসব ব্রাউজার এই ডেস্কটপ অ্যাপে ওয়েবসাইট ডেটা সিঙ্ক করেছে। রেফারেন্সের জন্য এগুলোর নাম পরিবর্তন করুন, অথবা আর ব্যবহার করেন না এমনগুলো সরিয়ে ফেলুন।",
+  "browserConnectedBrowsersEmpty": "এখনো কোনো ব্রাউজার সংযুক্ত হয়নি।",
+  "browserSourceAllBrowsers": "সব ব্রাউজার",
+  "browserSourceDefaultName": "ব্রাউজার {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "সর্বশেষ দেখা গেছে",
+  "browserSourceLastSeenDaysAgo": "{days} দিন আগে",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "ব্রাউজারের নাম পরিবর্তন করুন",
+  "browserSourceRemoveTitle": "ব্রাউজার সরিয়ে ফেলবেন?",
+  "browserSourceRemoveConfirm": "আপনার সংযুক্ত ব্রাউজারগুলো থেকে \"{name}\" সরিয়ে ফেলবেন? এর ব্যবহারের ইতিহাস রাখা হবে, তবে আবার সিঙ্ক করতে এটিকে পুনরায় সংযুক্ত হতে হবে।",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "সরিয়ে ফেলুন",
   "browserDangerZone": "বিপজ্জনক অঞ্চল",
   "browserClearDataTitle": "সব ওয়েবসাইট ডেটা মুছুন",
   "browserClearDataDesc": "ট্র্যাক করা সমস্ত ওয়েবসাইট ইতিহাস স্থায়ীভাবে মুছে দেয়। এটি পূর্বাবস্থায় ফেরানো যাবে না।",

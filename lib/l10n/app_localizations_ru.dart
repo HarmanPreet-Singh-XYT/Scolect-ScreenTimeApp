@@ -3711,6 +3711,47 @@ class AppLocalizationsRu extends AppLocalizations {
   String get browserAboutHistoryValue => 'Хранится 30 дней';
 
   @override
+  String get browserConnectedBrowsers => 'Подключённые браузеры';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'Браузеры, которые синхронизировали данные о сайтах с этим настольным приложением. Переименуйте их для удобства или удалите те, которыми больше не пользуетесь.';
+
+  @override
+  String get browserConnectedBrowsersEmpty =>
+      'Пока нет подключённых браузеров.';
+
+  @override
+  String get browserSourceAllBrowsers => 'Все браузеры';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'Браузер $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'Последний раз замечен';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days дн. назад';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'Переименовать браузер';
+
+  @override
+  String get browserSourceRemoveTitle => 'Удалить браузер?';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'Удалить «$name» из подключённых браузеров? История использования сохранится, но для повторной синхронизации потребуется переподключение.';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'Удалить';
+
+  @override
   String get browserDangerZone => 'Опасная зона';
 
   @override

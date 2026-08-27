@@ -6528,6 +6528,72 @@ abstract class AppLocalizations {
   /// **'Last 30 days retained'**
   String get browserAboutHistoryValue;
 
+  /// No description provided for @browserConnectedBrowsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Browsers'**
+  String get browserConnectedBrowsers;
+
+  /// No description provided for @browserConnectedBrowsersDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Browsers that have synced website data to this desktop app. Rename them for reference, or remove ones you no longer use.'**
+  String get browserConnectedBrowsersDesc;
+
+  /// No description provided for @browserConnectedBrowsersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No browsers have connected yet.'**
+  String get browserConnectedBrowsersEmpty;
+
+  /// No description provided for @browserSourceAllBrowsers.
+  ///
+  /// In en, this message translates to:
+  /// **'All Browsers'**
+  String get browserSourceAllBrowsers;
+
+  /// No description provided for @browserSourceDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser {index}'**
+  String browserSourceDefaultName(int index);
+
+  /// No description provided for @browserSourceLastSeen.
+  ///
+  /// In en, this message translates to:
+  /// **'Last seen'**
+  String get browserSourceLastSeen;
+
+  /// No description provided for @browserSourceLastSeenDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d ago'**
+  String browserSourceLastSeenDaysAgo(int days);
+
+  /// No description provided for @browserRenameDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Browser'**
+  String get browserRenameDialogTitle;
+
+  /// No description provided for @browserSourceRemoveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Browser?'**
+  String get browserSourceRemoveTitle;
+
+  /// No description provided for @browserSourceRemoveConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove \"{name}\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.'**
+  String browserSourceRemoveConfirm(String name);
+
+  /// No description provided for @browserSourceRemoveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get browserSourceRemoveAction;
+
   /// No description provided for @browserDangerZone.
   ///
   /// In en, this message translates to:

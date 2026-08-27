@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "تاریخ",
   "browserAboutHistoryValue": "آخری 30 دن محفوظ",
+  "browserConnectedBrowsers": "منسلک براؤزرز",
+  "browserConnectedBrowsersDesc": "وہ براؤزرز جنہوں نے اس ڈیسک ٹاپ ایپ کے ساتھ ویب سائٹ ڈیٹا سنک کیا ہے۔ حوالے کے لیے انہیں نام دیں، یا جو اب استعمال نہیں ہوتے انہیں ہٹا دیں۔",
+  "browserConnectedBrowsersEmpty": "ابھی تک کوئی براؤزر منسلک نہیں ہوا۔",
+  "browserSourceAllBrowsers": "تمام براؤزرز",
+  "browserSourceDefaultName": "براؤزر {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "آخری بار دیکھا گیا",
+  "browserSourceLastSeenDaysAgo": "{days} دن پہلے",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "براؤزر کا نام تبدیل کریں",
+  "browserSourceRemoveTitle": "براؤزر ہٹا دیں؟",
+  "browserSourceRemoveConfirm": "کیا \"{name}\" کو منسلک براؤزرز سے ہٹا دیں؟ اس کی استعمال کی تاریخ محفوظ رہے گی، لیکن دوبارہ سنک کرنے کے لیے اسے دوبارہ منسلک ہونا ہوگا۔",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "ہٹائیں",
   "browserDangerZone": "خطرے کا علاقہ",
   "browserClearDataTitle": "تمام ویب سائٹ ڈیٹا صاف کریں",
   "browserClearDataDesc": "تمام ٹریک شدہ ویب سائٹ کی تاریخ مستقل طور پر حذف کرتا ہے۔ یہ واپس نہیں ہو سکتا۔",

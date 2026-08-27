@@ -3617,6 +3617,46 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browserAboutHistoryValue => 'الاحتفاظ بآخر 30 يوماً';
 
   @override
+  String get browserConnectedBrowsers => 'المتصفحات المتصلة';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'المتصفحات التي زامنت بيانات المواقع مع تطبيق سطح المكتب هذا. أعد تسميتها للرجوع إليها، أو أزل ما لم تعد تستخدمه.';
+
+  @override
+  String get browserConnectedBrowsersEmpty => 'لم يتصل أي متصفح بعد.';
+
+  @override
+  String get browserSourceAllBrowsers => 'كل المتصفحات';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'المتصفح $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'آخر ظهور';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return 'قبل $days يوم';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'إعادة تسمية المتصفح';
+
+  @override
+  String get browserSourceRemoveTitle => 'إزالة المتصفح؟';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'هل تريد إزالة \"$name\" من متصفحاتك المتصلة؟ سيتم الاحتفاظ بسجل استخدامه، لكنه سيحتاج إلى إعادة الاتصال للمزامنة مرة أخرى.';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'إزالة';
+
+  @override
   String get browserDangerZone => 'منطقة الخطر';
 
   @override

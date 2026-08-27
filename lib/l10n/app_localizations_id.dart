@@ -3638,6 +3638,47 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserAboutHistoryValue => '30 hari terakhir disimpan';
 
   @override
+  String get browserConnectedBrowsers => 'Browser Terhubung';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'Browser yang telah menyinkronkan data situs web ke aplikasi desktop ini. Ganti nama untuk referensi, atau hapus yang sudah tidak digunakan.';
+
+  @override
+  String get browserConnectedBrowsersEmpty =>
+      'Belum ada browser yang terhubung.';
+
+  @override
+  String get browserSourceAllBrowsers => 'Semua Browser';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'Browser $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'Terakhir terlihat';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days hari lalu';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'Ganti Nama Browser';
+
+  @override
+  String get browserSourceRemoveTitle => 'Hapus Browser?';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'Hapus \"$name\" dari browser yang terhubung? Riwayat penggunaannya akan tetap disimpan, tetapi browser tersebut perlu terhubung kembali untuk sinkronisasi ulang.';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'Hapus';
+
+  @override
   String get browserDangerZone => 'Zona Berbahaya';
 
   @override

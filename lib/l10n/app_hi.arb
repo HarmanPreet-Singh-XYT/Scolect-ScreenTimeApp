@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "इतिहास",
   "browserAboutHistoryValue": "अंतिम 30 दिन सुरक्षित",
+  "browserConnectedBrowsers": "कनेक्टेड ब्राउज़र",
+  "browserConnectedBrowsersDesc": "वे ब्राउज़र जिन्होंने इस डेस्कटॉप ऐप के साथ वेबसाइट डेटा सिंक किया है। संदर्भ के लिए उनका नाम बदलें, या जिनका अब उपयोग नहीं करते उन्हें हटाएं।",
+  "browserConnectedBrowsersEmpty": "अभी तक कोई ब्राउज़र कनेक्ट नहीं हुआ है।",
+  "browserSourceAllBrowsers": "सभी ब्राउज़र",
+  "browserSourceDefaultName": "ब्राउज़र {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "अंतिम बार देखा गया",
+  "browserSourceLastSeenDaysAgo": "{days} दिन पहले",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "ब्राउज़र का नाम बदलें",
+  "browserSourceRemoveTitle": "ब्राउज़र हटाएं?",
+  "browserSourceRemoveConfirm": "क्या आप अपने कनेक्टेड ब्राउज़र से \"{name}\" हटाना चाहते हैं? इसका उपयोग इतिहास सुरक्षित रहेगा, लेकिन दोबारा सिंक करने के लिए इसे फिर से कनेक्ट करना होगा।",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "हटाएं",
   "browserDangerZone": "खतरा क्षेत्र",
   "browserClearDataTitle": "सभी वेबसाइट डेटा साफ़ करें",
   "browserClearDataDesc": "सभी ट्रैक किए गए वेबसाइट इतिहास को स्थायी रूप से हटाता है। इसे पूर्ववत नहीं किया जा सकता।",

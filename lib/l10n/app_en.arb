@@ -2311,6 +2311,26 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "History",
   "browserAboutHistoryValue": "Last 30 days retained",
+  "browserConnectedBrowsers": "Connected Browsers",
+  "browserConnectedBrowsersDesc": "Browsers that have synced website data to this desktop app. Rename them for reference, or remove ones you no longer use.",
+  "browserConnectedBrowsersEmpty": "No browsers have connected yet.",
+  "browserSourceAllBrowsers": "All Browsers",
+  "browserSourceDefaultName": "Browser {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": { "index": { "type": "int" } }
+  },
+  "browserSourceLastSeen": "Last seen",
+  "browserSourceLastSeenDaysAgo": "{days}d ago",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": { "days": { "type": "int" } }
+  },
+  "browserRenameDialogTitle": "Rename Browser",
+  "browserSourceRemoveTitle": "Remove Browser?",
+  "browserSourceRemoveConfirm": "Remove \"{name}\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "browserSourceRemoveAction": "Remove",
   "browserDangerZone": "Danger Zone",
   "browserClearDataTitle": "Clear All Website Data",
   "browserClearDataDesc": "Permanently deletes all tracked website history. This cannot be undone.",

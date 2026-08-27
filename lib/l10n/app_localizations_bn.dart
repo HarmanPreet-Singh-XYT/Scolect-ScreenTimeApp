@@ -3641,6 +3641,47 @@ class AppLocalizationsBn extends AppLocalizations {
   String get browserAboutHistoryValue => 'শেষ ৩০ দিন সংরক্ষিত';
 
   @override
+  String get browserConnectedBrowsers => 'সংযুক্ত ব্রাউজার';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'যেসব ব্রাউজার এই ডেস্কটপ অ্যাপে ওয়েবসাইট ডেটা সিঙ্ক করেছে। রেফারেন্সের জন্য এগুলোর নাম পরিবর্তন করুন, অথবা আর ব্যবহার করেন না এমনগুলো সরিয়ে ফেলুন।';
+
+  @override
+  String get browserConnectedBrowsersEmpty =>
+      'এখনো কোনো ব্রাউজার সংযুক্ত হয়নি।';
+
+  @override
+  String get browserSourceAllBrowsers => 'সব ব্রাউজার';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'ব্রাউজার $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'সর্বশেষ দেখা গেছে';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days দিন আগে';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'ব্রাউজারের নাম পরিবর্তন করুন';
+
+  @override
+  String get browserSourceRemoveTitle => 'ব্রাউজার সরিয়ে ফেলবেন?';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'আপনার সংযুক্ত ব্রাউজারগুলো থেকে \"$name\" সরিয়ে ফেলবেন? এর ব্যবহারের ইতিহাস রাখা হবে, তবে আবার সিঙ্ক করতে এটিকে পুনরায় সংযুক্ত হতে হবে।';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'সরিয়ে ফেলুন';
+
+  @override
   String get browserDangerZone => 'বিপজ্জনক অঞ্চল';
 
   @override

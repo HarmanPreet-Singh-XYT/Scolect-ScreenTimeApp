@@ -8,6 +8,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
+import 'package:screentime/sections/controller/browser_source_filter.dart';
 import 'package:screentime/sections/controller/notification_controller.dart';
 import 'package:screentime/utils/mac_launch.dart';
 import 'package:screentime/utils/macos_window.dart';
@@ -22,6 +23,7 @@ import './sections/help.dart';
 import './sections/browser.dart';
 import './sections/web_dashboard.dart';
 import './sections/UI sections/Privacy/private_mode_toggle_button.dart';
+import './sections/widgets/Browser/browser_source_filter_dropdown.dart';
 import 'sections/controller/settings_data_controller.dart';
 import './adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -759,6 +761,7 @@ class _MyAppState extends State<MyApp>
         ChangeNotifierProvider.value(value: navigationState),
         if (autoUpdates) ChangeNotifierProvider.value(value: UpdateService()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider.value(value: BrowserSourceFilterProvider()),
       ],
       child: _AppWithTheme(
         initialTheme: widget.initialTheme,
@@ -1583,6 +1586,8 @@ class EnhancedTitleBar extends StatelessWidget {
     final isDark = FluentTheme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
     final isMacOS = Platform.isMacOS;
+    final isBrowserTab =
+        context.select<NavigationState, bool>((s) => s.selectedIndex == 5);
 
     return WindowTitleBarBox(
       child: Container(
@@ -1622,6 +1627,7 @@ class EnhancedTitleBar extends StatelessWidget {
                 ),
               ),
             ),
+            if (isBrowserTab) BrowserSourceFilterDropdown(isDark: isDark),
             PrivateModeToggleButton(isDark: isDark),
             if (isMacOS) const SizedBox(width: AppDesign.spacingSm),
             if (!isMacOS) EnhancedWindowButtons(isDark: isDark),

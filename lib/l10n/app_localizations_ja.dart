@@ -3560,6 +3560,46 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserAboutHistoryValue => '過去30日間保持';
 
   @override
+  String get browserConnectedBrowsers => '接続済みブラウザ';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'このデスクトップアプリにウェブサイトデータを同期したブラウザです。わかりやすいように名前を変更したり、使わなくなったものを削除したりできます。';
+
+  @override
+  String get browserConnectedBrowsersEmpty => 'まだ接続されたブラウザはありません。';
+
+  @override
+  String get browserSourceAllBrowsers => 'すべてのブラウザ';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'ブラウザ $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => '最終確認';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days日前';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'ブラウザ名を変更';
+
+  @override
+  String get browserSourceRemoveTitle => 'ブラウザを削除しますか？';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return '「$name」を接続済みブラウザから削除しますか？ 使用履歴は保持されますが、再度同期するには再接続が必要です。';
+  }
+
+  @override
+  String get browserSourceRemoveAction => '削除';
+
+  @override
   String get browserDangerZone => '危険ゾーン';
 
   @override

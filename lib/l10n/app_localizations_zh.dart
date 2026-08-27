@@ -3526,6 +3526,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserAboutHistoryValue => '保留最近30天';
 
   @override
+  String get browserConnectedBrowsers => '已连接的浏览器';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      '已将网站数据同步到此桌面应用的浏览器。可为其重命名以便识别，或移除不再使用的浏览器。';
+
+  @override
+  String get browserConnectedBrowsersEmpty => '尚未有浏览器连接。';
+
+  @override
+  String get browserSourceAllBrowsers => '所有浏览器';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return '浏览器 $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => '最近活跃';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days天前';
+  }
+
+  @override
+  String get browserRenameDialogTitle => '重命名浏览器';
+
+  @override
+  String get browserSourceRemoveTitle => '移除该浏览器？';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return '要将“$name”从已连接的浏览器中移除吗？其使用记录会保留，但需要重新连接才能再次同步。';
+  }
+
+  @override
+  String get browserSourceRemoveAction => '移除';
+
+  @override
   String get browserDangerZone => '危险区域';
 
   @override

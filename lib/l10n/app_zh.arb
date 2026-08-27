@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "历史",
   "browserAboutHistoryValue": "保留最近30天",
+  "browserConnectedBrowsers": "已连接的浏览器",
+  "browserConnectedBrowsersDesc": "已将网站数据同步到此桌面应用的浏览器。可为其重命名以便识别，或移除不再使用的浏览器。",
+  "browserConnectedBrowsersEmpty": "尚未有浏览器连接。",
+  "browserSourceAllBrowsers": "所有浏览器",
+  "browserSourceDefaultName": "浏览器 {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "最近活跃",
+  "browserSourceLastSeenDaysAgo": "{days}天前",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "重命名浏览器",
+  "browserSourceRemoveTitle": "移除该浏览器？",
+  "browserSourceRemoveConfirm": "要将“{name}”从已连接的浏览器中移除吗？其使用记录会保留，但需要重新连接才能再次同步。",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "移除",
   "browserDangerZone": "危险区域",
   "browserClearDataTitle": "清除所有网站数据",
   "browserClearDataDesc": "永久删除所有已追踪网站的历史记录。此操作无法撤销。",

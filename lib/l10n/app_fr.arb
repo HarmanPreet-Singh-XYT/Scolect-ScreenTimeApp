@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "Historique",
   "browserAboutHistoryValue": "30 derniers jours conservés",
+  "browserConnectedBrowsers": "Navigateurs connectés",
+  "browserConnectedBrowsersDesc": "Navigateurs ayant synchronisé des données de sites Web avec cette application de bureau. Renommez-les pour vous y retrouver, ou supprimez ceux que vous n'utilisez plus.",
+  "browserConnectedBrowsersEmpty": "Aucun navigateur connecté pour le moment.",
+  "browserSourceAllBrowsers": "Tous les navigateurs",
+  "browserSourceDefaultName": "Navigateur {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "Vu pour la dernière fois",
+  "browserSourceLastSeenDaysAgo": "il y a {days} j",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "Renommer le navigateur",
+  "browserSourceRemoveTitle": "Supprimer le navigateur ?",
+  "browserSourceRemoveConfirm": "Supprimer « {name} » de vos navigateurs connectés ? Son historique d'utilisation est conservé, mais il devra se reconnecter pour se resynchroniser.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "Supprimer",
   "browserDangerZone": "Zone dangereuse",
   "browserClearDataTitle": "Effacer toutes les données de sites web",
   "browserClearDataDesc": "Supprime définitivement tout l'historique des sites web suivis. Cette action est irréversible.",

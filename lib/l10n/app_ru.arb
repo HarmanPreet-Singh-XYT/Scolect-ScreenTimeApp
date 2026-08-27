@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "История",
   "browserAboutHistoryValue": "Хранится 30 дней",
+  "browserConnectedBrowsers": "Подключённые браузеры",
+  "browserConnectedBrowsersDesc": "Браузеры, которые синхронизировали данные о сайтах с этим настольным приложением. Переименуйте их для удобства или удалите те, которыми больше не пользуетесь.",
+  "browserConnectedBrowsersEmpty": "Пока нет подключённых браузеров.",
+  "browserSourceAllBrowsers": "Все браузеры",
+  "browserSourceDefaultName": "Браузер {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "Последний раз замечен",
+  "browserSourceLastSeenDaysAgo": "{days} дн. назад",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "Переименовать браузер",
+  "browserSourceRemoveTitle": "Удалить браузер?",
+  "browserSourceRemoveConfirm": "Удалить «{name}» из подключённых браузеров? История использования сохранится, но для повторной синхронизации потребуется переподключение.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "Удалить",
   "browserDangerZone": "Опасная зона",
   "browserClearDataTitle": "Очистить все данные сайтов",
   "browserClearDataDesc": "Навсегда удаляет всю историю отслеживаемых сайтов. Это действие нельзя отменить.",

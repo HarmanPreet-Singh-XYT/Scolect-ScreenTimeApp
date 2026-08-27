@@ -3633,6 +3633,47 @@ class AppLocalizationsHi extends AppLocalizations {
   String get browserAboutHistoryValue => 'अंतिम 30 दिन सुरक्षित';
 
   @override
+  String get browserConnectedBrowsers => 'कनेक्टेड ब्राउज़र';
+
+  @override
+  String get browserConnectedBrowsersDesc =>
+      'वे ब्राउज़र जिन्होंने इस डेस्कटॉप ऐप के साथ वेबसाइट डेटा सिंक किया है। संदर्भ के लिए उनका नाम बदलें, या जिनका अब उपयोग नहीं करते उन्हें हटाएं।';
+
+  @override
+  String get browserConnectedBrowsersEmpty =>
+      'अभी तक कोई ब्राउज़र कनेक्ट नहीं हुआ है।';
+
+  @override
+  String get browserSourceAllBrowsers => 'सभी ब्राउज़र';
+
+  @override
+  String browserSourceDefaultName(int index) {
+    return 'ब्राउज़र $index';
+  }
+
+  @override
+  String get browserSourceLastSeen => 'अंतिम बार देखा गया';
+
+  @override
+  String browserSourceLastSeenDaysAgo(int days) {
+    return '$days दिन पहले';
+  }
+
+  @override
+  String get browserRenameDialogTitle => 'ब्राउज़र का नाम बदलें';
+
+  @override
+  String get browserSourceRemoveTitle => 'ब्राउज़र हटाएं?';
+
+  @override
+  String browserSourceRemoveConfirm(String name) {
+    return 'क्या आप अपने कनेक्टेड ब्राउज़र से \"$name\" हटाना चाहते हैं? इसका उपयोग इतिहास सुरक्षित रहेगा, लेकिन दोबारा सिंक करने के लिए इसे फिर से कनेक्ट करना होगा।';
+  }
+
+  @override
+  String get browserSourceRemoveAction => 'हटाएं';
+
+  @override
   String get browserDangerZone => 'खतरा क्षेत्र';
 
   @override

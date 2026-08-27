@@ -2042,6 +2042,38 @@
   "browserAboutStorageValue": "chrome.storage.local",
   "browserAboutHistory": "Historial",
   "browserAboutHistoryValue": "Últimos 30 días conservados",
+  "browserConnectedBrowsers": "Navegadores conectados",
+  "browserConnectedBrowsersDesc": "Navegadores que han sincronizado datos de sitios web con esta app de escritorio. Renómbralos para tu referencia o elimina los que ya no uses.",
+  "browserConnectedBrowsersEmpty": "Aún no se ha conectado ningún navegador.",
+  "browserSourceAllBrowsers": "Todos los navegadores",
+  "browserSourceDefaultName": "Navegador {index}",
+  "@browserSourceDefaultName": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "browserSourceLastSeen": "Visto por última vez",
+  "browserSourceLastSeenDaysAgo": "hace {days} días",
+  "@browserSourceLastSeenDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "browserRenameDialogTitle": "Renombrar navegador",
+  "browserSourceRemoveTitle": "¿Eliminar navegador?",
+  "browserSourceRemoveConfirm": "¿Quitar \"{name}\" de tus navegadores conectados? Su historial de uso se conservará, pero deberá volver a conectarse para sincronizar de nuevo.",
+  "@browserSourceRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "browserSourceRemoveAction": "Eliminar",
   "browserDangerZone": "Zona de Peligro",
   "browserClearDataTitle": "Borrar Todos los Datos de Sitios Web",
   "browserClearDataDesc": "Elimina permanentemente todo el historial de sitios web rastreados. Esto no se puede deshacer.",

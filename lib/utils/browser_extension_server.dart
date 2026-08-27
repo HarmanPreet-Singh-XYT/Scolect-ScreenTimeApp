@@ -195,7 +195,17 @@ class BrowserExtensionServer {
         if (dateStr == null || domains == null) return;
         final date = DateTime.tryParse(dateStr);
         if (date == null) return;
-        await _ingestDomains(date, domains);
+        final browserId = msg['browserId'] as String?;
+        final browserName = msg['browserName'] as String?;
+        await _ingestDomains(date, domains, browserId: browserId, browserName: browserName);
+        return;
+      }
+
+      if (msg['type'] == 'register') {
+        final browserId = msg['browserId'] as String?;
+        final browserName = msg['browserName'] as String? ?? 'Unknown';
+        if (browserId == null || browserId.isEmpty) return;
+        await _dataStore.upsertBrowserSource(browserId, browserName);
         return;
       }
 
@@ -260,7 +270,9 @@ class BrowserExtensionServer {
       return;
     }
 
-    await _ingestDomains(date, domains);
+    final browserId = json['browserId'] as String?;
+    final browserName = json['browserName'] as String?;
+    await _ingestDomains(date, domains, browserId: browserId, browserName: browserName);
     await _sendJson(req.response, HttpStatus.ok, {'ok': true});
   }
 
@@ -272,10 +284,25 @@ class BrowserExtensionServer {
   // logical date so it agrees with how the UI reads usage back out via
   // SettingsManager().getLogicalDate() — otherwise usage synced during the
   // reset-hour window lands under a date key the UI never queries.
+  //
+  // [browserId] identifies which browser extension sent this payload (see
+  // web/background.js getBrowserId()) — usage TIME is stored per-source
+  // ('web:$domain::$browserId') so the desktop can filter/break down by
+  // browser, but metadata (category/limits/tracking) stays keyed by plain
+  // domain ('web:$domain') since categorization is a property of the site,
+  // not of which browser visited it. Payloads without a browserId (should
+  // not happen with the current extension, but kept for robustness) fall
+  // back to the legacy plain-domain usage key.
   static Future<void> _ingestDomains(
-      DateTime reportedDate, List<dynamic> domains) async {
+      DateTime reportedDate, List<dynamic> domains,
+      {String? browserId, String? browserName}) async {
     _lastUsageSyncAt = DateTime.now();
     final date = SettingsManager().getLogicalDate(DateTime.now());
+
+    if (browserId != null && browserId.isNotEmpty) {
+      await _dataStore.upsertBrowserSource(browserId, browserName ?? 'Unknown');
+    }
+
     for (final raw in domains) {
       final entry = raw as Map<String, dynamic>;
       final domain = entry['domain'] as String?;
@@ -291,10 +318,13 @@ class BrowserExtensionServer {
       if (domain == null || domain.isEmpty || seconds < 0) continue;
 
       final appName = 'web:$domain';
+      final usageAppName = (browserId != null && browserId.isNotEmpty)
+          ? '$appName::$browserId'
+          : appName;
       final timeSpent = Duration(seconds: seconds);
       final now = DateTime.now();
 
-      final existingUsage = _dataStore.getAppUsage(appName, date);
+      final existingUsage = _dataStore.getAppUsage(usageAppName, date);
       final shouldUpdate = existingUsage == null || timeSpent > existingUsage.timeSpent;
 
       if (shouldUpdate) {
@@ -304,7 +334,7 @@ class BrowserExtensionServer {
             : (seconds > 0
                 ? [TimeRange(startTime: now.subtract(timeSpent), endTime: now)]
                 : <TimeRange>[]);
-        await _dataStore.setAppUsage(appName, date, timeSpent, visits, usagePeriods);
+        await _dataStore.setAppUsage(usageAppName, date, timeSpent, visits, usagePeriods);
       }
 
       final existingMeta = _dataStore.getAppMetadata(appName);
@@ -402,7 +432,10 @@ class BrowserExtensionServer {
       };
 
       if (meta.dailyLimit == Duration.zero) continue;
-      final record = _dataStore.getAppUsage(appName, startOfDay);
+      // Daily limits apply to the domain as a whole, across every browser
+      // that visited it — not per-source — so this always uses the combined
+      // total regardless of what the UI's browser filter is currently set to.
+      final record = _dataStore.getWebsiteUsage(appName, startOfDay);
       if (record != null && record.timeSpent >= meta.dailyLimit) {
         blockedDomains.add(domain);
       }
