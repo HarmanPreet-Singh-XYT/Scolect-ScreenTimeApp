@@ -3861,6 +3861,156 @@ class AppLocalizationsBn extends AppLocalizations {
   String get browserSiteNameHint => 'প্রদর্শন নাম (যেমন: YouTube)';
 
   @override
+  String get browserNoDataYet => 'এখনও কোনও ডেটা নেই';
+
+  @override
+  String get browserNoProductiveSites => 'কোনও ফলপ্রসূ সাইট সংরক্ষিত নেই';
+
+  @override
+  String get browserDays => 'দিন';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% ফলপ্রসূ';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    return '$count টি সীমা';
+  }
+
+  @override
+  String get browserTopFocus => 'প্রধান ফোকাস';
+
+  @override
+  String get browserLimitsHealth => 'সীমার অবস্থা';
+
+  @override
+  String get browserAllRespected => 'সব সীমায় রয়েছে';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    return '$count টি অতিক্রান্ত';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    return '$count টি সীমা সক্রিয়';
+  }
+
+  @override
+  String get browserCategoryShare => 'ক্যাটাগরি ভাগ';
+
+  @override
+  String get browserProductiveTime => 'ফলপ্রসূ সময়';
+
+  @override
+  String get browserColumnDailyLimit => 'দৈনিক সীমা';
+
+  @override
+  String get browserDistracting => 'মনোযোগ বিঘ্নকারী';
+
+  @override
+  String get browserClassification => 'শ্রেণীবিভাগ';
+
+  @override
+  String get browserPageSessions => 'পৃষ্ঠা সেশন';
+
+  @override
+  String get browserTotalTimeToday => 'আজকের মোট সময়';
+
+  @override
+  String get browserOpenInBrowser => 'ব্রাউজারে খুলুন';
+
+  @override
+  String get browserEditDailyLimit => 'সীমা সম্পাদনা করুন';
+
+  @override
+  String get browserSetDailyLimit => 'দৈনিক সীমা নির্ধারণ করুন';
+
+  @override
+  String get browserRecommendedLimits => 'প্রস্তাবিত সীমা';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'সীমাহীন এই সাইটগুলিতে আজ বেশি সময় ব্যয় হয়েছে';
+
+  @override
+  String get browserSetOneHourLimit => '১ ঘণ্টার সীমা দিন';
+
+  @override
+  String get browserCustom => 'কাস্টম';
+
+  @override
+  String get browserPeriodTotal => 'মোট সময়কাল';
+
+  @override
+  String get browserActiveDays => 'সক্রিয় দিন';
+
+  @override
+  String get browserDayInspector => 'দিনের বিবরণ';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'সেই দিনের শীর্ষ ওয়েবসাইটগুলি দেখতে চার্টে ক্লিক করুন।';
+
+  @override
+  String browserVsAverage(String percent) {
+    return 'গড়ের তুলনায় $percent%';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return '$date তারিখে শীর্ষ সাইটগুলি';
+  }
+
+  @override
+  String get browserLast7Days => '৭ দিন';
+
+  @override
+  String get browserLast14Days => '১৪ দিন';
+
+  @override
+  String get browserLast30Days => '৩০ দিন';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'ব্রাউজার সীমা ক্রোম এক্সটেনশন দ্বারা নিয়ন্ত্রিত হয়';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'দৈনিক সীমা অতিক্রম করলে এক্সটেনশন স্বয়ংক্রিয়ভাবে ব্রাউজারে সেই ডোমেইনটি ব্লক করে দেয়।';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return '৭ দিনের মোট: $time · $visits বার পরিদর্শন';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'ট্র্যাক করা সমস্ত ওয়েবসাইটে বর্তমানে সক্রিয় সীমা কনফিগার করা আছে।';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'সমস্ত সীমা নিরাপদ সীমার মধ্যে রয়েছে।';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    return '$count টি ওয়েবসাইট দৈনিক সীমা অতিক্রম করেছে!';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return 'ওয়েবের $percent%';
+  }
+
+  @override
+  String get browserLimitEnforced => 'সীমা কার্যকর';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'সীমা নির্ধারণ করতে ক্লিক করুন';
+
+  @override
   String get webExportDataDescription =>
       'একটি JSON ব্যাকআপ ফাইল হিসেবে এক্সটেনশনের সমস্ত ডেটা ডাউনলোড করুন';
 

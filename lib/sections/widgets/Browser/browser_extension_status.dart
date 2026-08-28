@@ -64,9 +64,6 @@ class _BrowserExtensionStatusState extends State<BrowserExtensionStatus>
 
       // Also verify via web-compatible fetch if available
       try {
-        final serverUrl = settings.desktopUrl.isNotEmpty
-            ? settings.desktopUrl
-            : 'http://localhost:46000';
         final result = await chromeStorageGet(['scolect_app_state']);
         final updatedState = result['scolect_app_state'] as Map<String, dynamic>?;
         if (updatedState != null && updatedState['appConnected'] != null) {

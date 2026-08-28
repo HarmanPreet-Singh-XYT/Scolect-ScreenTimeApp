@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart'
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
-import 'package:screentime/main.dart';
+import 'package:screentime/main.dart' show navigationState;
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/browser_source_filter.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
@@ -40,6 +40,10 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   int _refreshKey = 0;
   ({Duration totalTime, int siteCount, int visitCount})? _summary;
+  int _siteCount = 0;
+  int _categoryCount = 0;
+  int _activeLimitsCount = 0;
+  int _productivePercentage = 0;
   Timer? _syncStatusTimer;
 
   @override
@@ -74,9 +78,23 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 
   Future<void> _loadSummary() async {
     final summary = await _provider.fetchTodaySummary();
+    final sites = await _provider.fetchAllWebsites();
+    final cats = await _provider.fetchAllCategories();
     if (!mounted) return;
+
+    final activeLimits = sites.where((s) => s.dailyLimit > Duration.zero).length;
+    final totalWebSecs = summary.totalTime.inSeconds;
+    final productiveSecs = sites
+        .where((s) => s.isProductive)
+        .fold<int>(0, (sum, s) => sum + s.timeSpent.inSeconds);
+    final prodPct = totalWebSecs > 0 ? (productiveSecs / totalWebSecs * 100).round() : 0;
+
     setState(() {
       _summary = summary;
+      _siteCount = sites.length;
+      _categoryCount = cats.where((c) => c != 'All').length;
+      _activeLimitsCount = activeLimits;
+      _productivePercentage = prodPct;
       _isLoading = false;
     });
     _animationController.forward();
@@ -148,15 +166,19 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
           children: [
             // ── Page header ──────────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isNarrow = constraints.maxWidth < 620;
+
+                  final titleSection = Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       BrowserGradientIconBox(
                         icon: FluentIcons.globe,
                         color: theme.accentColor,
+                        size: 22,
+                        boxSize: 42,
                       ),
                       const SizedBox(width: 14),
                       Column(
@@ -165,63 +187,155 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                           Text(
                             l10n.browserTitle,
                             style: theme.typography.subtitle?.copyWith(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
                             ),
                           ),
+                          const SizedBox(height: 1),
                           Text(
                             l10n.browserSubtitle,
                             style: TextStyle(
                               fontSize: 12,
-                              color: captionColor?.withValues(alpha: 0.6),
+                              color: captionColor?.withValues(alpha: 0.65),
                             ),
                           ),
                         ],
                       ),
                     ],
-                  ),
-                  Row(
+                  );
+
+                  if (isNarrow) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(child: titleSection),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                BrowserIconButton(
+                                  tooltip: l10n.refresh,
+                                  icon: FluentIcons.refresh,
+                                  onPressed: _refreshData,
+                                ),
+                                if (serverEnabled) ...[
+                                  const SizedBox(width: 8),
+                                  BrowserIconButton(
+                                    tooltip: l10n.browserExtensionSettings,
+                                    icon: FluentIcons.settings,
+                                    color: _currentTab == BrowserTab.settings ? theme.accentColor : null,
+                                    onPressed: () => _switchTab(BrowserTab.settings),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            if (serverEnabled)
+                              _ServerBadge(
+                                lastSyncAt: BrowserExtensionServer.lastUsageSyncAt,
+                              ),
+                            if (_summary != null && _summary!.totalTime > Duration.zero) ...[
+                              _HeaderStatBadge(
+                                icon: FluentIcons.timer,
+                                label: _summary!.totalTime.toHourMinuteFormat(),
+                                sublabel: l10n.browserToday,
+                                color: theme.accentColor,
+                              ),
+                              _HeaderStatBadge(
+                                icon: FluentIcons.check_mark,
+                                label: '$_productivePercentage%',
+                                sublabel: l10n.productive,
+                                color: _productivePercentage >= 60
+                                    ? kBrowserGreen
+                                    : kBrowserAmber,
+                              ),
+                              if (_activeLimitsCount > 0)
+                                _HeaderStatBadge(
+                                  icon: FluentIcons.time_picker,
+                                  label: '$_activeLimitsCount',
+                                  sublabel: l10n.browserTabLimits,
+                                  color: kBrowserPurple,
+                                ),
+                            ],
+                          ],
+                        ),
+                      ],
+                    );
+                  }
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (serverEnabled)
-                        _ServerBadge(
-                          lastSyncAt: BrowserExtensionServer.lastUsageSyncAt,
-                        ),
-                      if (_summary != null) ...[
-                        const SizedBox(width: 16),
-                        _QuickStat(
-                          label: l10n.browserToday,
-                          value: _summary!.totalTime.toHourMinuteFormat(),
-                          color: theme.accentColor,
-                        ),
-                        const SizedBox(width: 20),
-                        _QuickStat(
-                          label: l10n.browserSites,
-                          value: '${_summary!.siteCount}',
-                          color: kBrowserPurple,
-                        ),
-                        const SizedBox(width: 16),
-                      ],
-                      BrowserIconButton(
-                        tooltip: l10n.refresh,
-                        icon: FluentIcons.refresh,
-                        onPressed: _refreshData,
+                      titleSection,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (serverEnabled)
+                            _ServerBadge(
+                              lastSyncAt: BrowserExtensionServer.lastUsageSyncAt,
+                            ),
+                          if (_summary != null && _summary!.totalTime > Duration.zero) ...[
+                            const SizedBox(width: 12),
+                            _HeaderStatBadge(
+                              icon: FluentIcons.timer,
+                              label: _summary!.totalTime.toHourMinuteFormat(),
+                              sublabel: l10n.browserToday,
+                              color: theme.accentColor,
+                            ),
+                            const SizedBox(width: 8),
+                            _HeaderStatBadge(
+                              icon: FluentIcons.check_mark,
+                              label: '$_productivePercentage%',
+                              sublabel: l10n.productive,
+                              color: _productivePercentage >= 60
+                                  ? kBrowserGreen
+                                  : kBrowserAmber,
+                            ),
+                            if (_activeLimitsCount > 0) ...[
+                              const SizedBox(width: 8),
+                              _HeaderStatBadge(
+                                icon: FluentIcons.time_picker,
+                                label: '$_activeLimitsCount',
+                                sublabel: l10n.browserTabLimits,
+                                color: kBrowserPurple,
+                              ),
+                            ],
+                          ],
+                          const SizedBox(width: 12),
+                          BrowserIconButton(
+                            tooltip: l10n.refresh,
+                            icon: FluentIcons.refresh,
+                            onPressed: _refreshData,
+                          ),
+                          if (serverEnabled) ...[
+                            const SizedBox(width: 8),
+                            BrowserIconButton(
+                              tooltip: l10n.browserExtensionSettings,
+                              icon: FluentIcons.settings,
+                              color: _currentTab == BrowserTab.settings ? theme.accentColor : null,
+                              onPressed: () => _switchTab(BrowserTab.settings),
+                            ),
+                          ],
+                        ],
                       ),
-                      if (serverEnabled) ...[
-                        const SizedBox(width: 8),
-                        BrowserIconButton(
-                          tooltip: l10n.browserExtensionSettings,
-                          icon: FluentIcons.settings,
-                          onPressed: () => _switchTab(BrowserTab.settings),
-                        ),
-                      ],
                     ],
-                  ),
-                ],
+                  );
+                },
               ),
             ),
 
-            // ── Tab bar ───────────────────────────────────────────────────
+            // ── Segmented Tab bar ─────────────────────────────────────────
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+              padding: const EdgeInsets.fromLTRB(24, 14, 24, 0),
               child: _buildTabBar(theme, l10n),
             ),
             const SizedBox(height: 4),
@@ -229,7 +343,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
             // ── Content ──────────────────────────────────────────────────
             Expanded(
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
+                duration: const Duration(milliseconds: 220),
                 layoutBuilder: (currentChild, previousChildren) => Stack(
                   alignment: Alignment.topLeft,
                   children: [
@@ -247,24 +361,18 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildTabBar(FluentThemeData theme, AppLocalizations l10n) {
-    final tabs =
-        BrowserTab.values.where((t) => t != BrowserTab.settings).toList();
-
-    return BrowserCard(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: tabs.map((tab) {
-          final selected = _currentTab == tab;
-          return _TabButton(
-            label: _tabLabel(tab, l10n),
-            icon: tab.icon,
-            selected: selected,
-            onTap: () => _switchTab(tab),
-            accent: theme.accentColor,
-          );
-        }).toList(),
-      ),
+    return BrowserSegmentedTabBar(
+      currentTab: _currentTab,
+      onTabChanged: _switchTab,
+      tabLabels: {
+        for (final tab in BrowserTab.values)
+          tab: _tabLabel(tab, l10n),
+      },
+      tabCounts: {
+        BrowserTab.websites: _siteCount,
+        BrowserTab.categories: _categoryCount,
+        BrowserTab.limits: _activeLimitsCount,
+      },
     );
   }
 
@@ -349,9 +457,9 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
 
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        child: SizedBox(
-          width: 520,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -534,14 +642,14 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Browser limits are enforced by the Chrome Extension',
-                            style: TextStyle(
+                          Text(
+                            l10n.browserLimitsExtensionInfo,
+                            style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Daily limits and website blocking only work inside Chrome. Install the extension and enable this server — the extension handles all enforcement and syncs data here.',
+                            l10n.browserLimitsExtensionInfoDesc,
                             style: TextStyle(
                               fontSize: 12,
                               color: captionColor?.withValues(alpha: 0.65),
@@ -560,46 +668,52 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
               // Chrome Extension Promo Card
               BrowserCard(
                 padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 44,
-                      height: 44,
-                      decoration: BoxDecoration(
-                        color: theme.accentColor.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(
-                        FluentIcons.globe,
-                        size: 22,
-                        color: theme.accentColor,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Get the Scolect Chrome Extension',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            ),
+                child: LayoutBuilder(
+                  builder: (context, cardConstraints) {
+                    final isCardNarrow = cardConstraints.maxWidth < 440;
+
+                    final iconAndText = Row(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: theme.accentColor.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          const SizedBox(height: 3),
-                          Text(
-                            'Set daily limits, block sites when limits are reached, and sync website usage to this app — all enforced directly in Chrome.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: captionColor?.withValues(alpha: 0.65),
-                            ),
+                          child: Icon(
+                            FluentIcons.globe,
+                            size: 22,
+                            color: theme.accentColor,
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Button(
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Get the Scolect Chrome Extension',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                'Set daily limits, block sites when limits are reached, and sync website usage to this app — all enforced directly in Chrome.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: captionColor?.withValues(alpha: 0.65),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+
+                    final actionButton = Button(
                       onPressed: () {
                         final platformStr = defaultTargetPlatform ==
                                 TargetPlatform.macOS
@@ -633,8 +747,27 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    );
+
+                    if (isCardNarrow) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          iconAndText,
+                          const SizedBox(height: 12),
+                          actionButton,
+                        ],
+                      );
+                    }
+
+                    return Row(
+                      children: [
+                        Expanded(child: iconAndText),
+                        const SizedBox(width: 16),
+                        actionButton,
+                      ],
+                    );
+                  },
                 ),
               ),
 
@@ -1298,22 +1431,114 @@ class _RenameBrowserDialogState extends State<_RenameBrowserDialog> {
   }
 }
 
+// ─── Header Stat Badge ────────────────────────────────────────────────────────
+
+class _HeaderStatBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String sublabel;
+  final Color color;
+
+  const _HeaderStatBadge({
+    required this.icon,
+    required this.label,
+    required this.sublabel,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: isDark
+            ? color.withValues(alpha: 0.12)
+            : color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: color.withValues(alpha: 0.25),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 6),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                  height: 1.1,
+                ),
+              ),
+              Text(
+                sublabel,
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                  color: theme.typography.caption?.color?.withValues(alpha: 0.65),
+                  height: 1.1,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // ─── Server running badge (desktop) ──────────────────────────────────────────
 
-class _ServerBadge extends StatelessWidget {
+class _ServerBadge extends StatefulWidget {
   final DateTime? lastSyncAt;
 
   const _ServerBadge({this.lastSyncAt});
 
-  // A sync gap longer than this (well past the extension's 1-minute alarm
-  // cadence) is treated as stalled rather than just "quiet for a moment".
+  @override
+  State<_ServerBadge> createState() => _ServerBadgeState();
+}
+
+class _ServerBadgeState extends State<_ServerBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnimation;
+
   static const _staleAfter = Duration(minutes: 3);
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    )..repeat(reverse: true);
+    _pulseAnimation = Tween<double>(begin: 0.4, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
-    final synced = lastSyncAt;
+    final synced = widget.lastSyncAt;
     final isStale = synced == null || now.difference(synced) > _staleAfter;
 
     final String label;
@@ -1335,21 +1560,33 @@ class _ServerBadge extends StatelessWidget {
     return Tooltip(
       message: isStale ? l10n.browserSyncStalled : label,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: color,
+            AnimatedBuilder(
+              animation: _pulseAnimation,
+              builder: (context, _) => Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color.withValues(alpha: isStale ? 0.8 : _pulseAnimation.value),
+                  boxShadow: !isStale
+                      ? [
+                          BoxShadow(
+                            color: color.withValues(alpha: 0.4 * _pulseAnimation.value),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                        ]
+                      : null,
+                ),
               ),
             ),
             const SizedBox(width: 6),
@@ -1365,128 +1602,5 @@ class _ServerBadge extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// ─── Quick stat chip in header ────────────────────────────────────────────────
-
-class _QuickStat extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-
-  const _QuickStat({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: color,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            color: theme.typography.caption?.color?.withValues(alpha: 0.5),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Tab button ───────────────────────────────────────────────────────────────
-
-class _TabButton extends StatefulWidget {
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-  final Color accent;
-
-  const _TabButton({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-    required this.accent,
-  });
-
-  @override
-  State<_TabButton> createState() => _TabButtonState();
-}
-
-class _TabButtonState extends State<_TabButton> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: kBrowserHoverDuration,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: widget.selected
-                ? widget.accent.withValues(alpha: 0.15)
-                : _hovered
-                    ? theme.inactiveBackgroundColor.withValues(alpha: 0.5)
-                    : Colors.transparent,
-            borderRadius: BorderRadius.circular(6.0),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                widget.icon,
-                size: 14,
-                color: widget.selected
-                    ? widget.accent
-                    : theme.typography.caption?.color?.withValues(alpha: 0.6),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                widget.label,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight:
-                      widget.selected ? FontWeight.w600 : FontWeight.w400,
-                  color: widget.selected
-                      ? widget.accent
-                      : theme.typography.caption?.color?.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-extension on Duration {
-  String toHourMinuteFormat() {
-    if (inSeconds < 60) return '${inSeconds}s';
-    final h = inHours;
-    final m = inMinutes % 60;
-    if (h > 0) return m > 0 ? '${h}h ${m}m' : '${h}h';
-    return '${m}m';
   }
 }

@@ -3764,7 +3764,154 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserEditSiteName => '表示名を編集';
 
   @override
-  String get browserSiteNameHint => '表示名（例：YouTube）';
+  String get browserSiteNameHint => '表示名（例: YouTube）';
+
+  @override
+  String get browserNoDataYet => 'データはまだありません';
+
+  @override
+  String get browserNoProductiveSites => '記録された生産的サイトはありません';
+
+  @override
+  String get browserDays => '日';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% 生産的';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    return '$count 件の制限';
+  }
+
+  @override
+  String get browserTopFocus => '主なフォーカス';
+
+  @override
+  String get browserLimitsHealth => '制限ステータス';
+
+  @override
+  String get browserAllRespected => 'すべて順守';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    return '$count 件超過';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    return '$count 件の制限が有効';
+  }
+
+  @override
+  String get browserCategoryShare => 'カテゴリ割合';
+
+  @override
+  String get browserProductiveTime => '生産的時間';
+
+  @override
+  String get browserColumnDailyLimit => '1日の制限';
+
+  @override
+  String get browserDistracting => '気を散らす';
+
+  @override
+  String get browserClassification => '分類';
+
+  @override
+  String get browserPageSessions => 'ページセッション';
+
+  @override
+  String get browserTotalTimeToday => '今日の合計時間';
+
+  @override
+  String get browserOpenInBrowser => 'ブラウザで開く';
+
+  @override
+  String get browserEditDailyLimit => '制限を編集';
+
+  @override
+  String get browserSetDailyLimit => '1日の制限を設定';
+
+  @override
+  String get browserRecommendedLimits => 'おすすめの制限';
+
+  @override
+  String get browserRecommendedLimitsDesc => '制限のないサイトで長時間の利用が検出されました';
+
+  @override
+  String get browserSetOneHourLimit => '1時間制限を設定';
+
+  @override
+  String get browserCustom => 'カスタム';
+
+  @override
+  String get browserPeriodTotal => '期間合計';
+
+  @override
+  String get browserActiveDays => 'アクティブ日数';
+
+  @override
+  String get browserDayInspector => 'デイリー詳細';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'グラフのバーをクリックして、その日に最も閲覧されたサイトを確認できます。';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '平均比 $percent%';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return '$date のトップサイト';
+  }
+
+  @override
+  String get browserLast7Days => '7日間';
+
+  @override
+  String get browserLast14Days => '14日間';
+
+  @override
+  String get browserLast30Days => '30日間';
+
+  @override
+  String get browserLimitsExtensionInfo => 'ブラウザの制限は Chrome 拡張機能によって適用されます';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      '1日の制限に達すると、拡張機能がブラウザ上でそのドメインへのアクセスを自動的にブロックします。';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return '7日間合計: $time · $visits 回の訪問';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      '追跡されているすべてのサイトに有効な制限が設定されています。';
+
+  @override
+  String get browserActiveLimitsHealthSafe => 'すべての制限は安全な基準内に収まっています。';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    return '$count 件のサイトが1日の制限を超過しました！';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return 'ウェブ利用の $percent%';
+  }
+
+  @override
+  String get browserLimitEnforced => '制限適用中';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'クリックして制限を設定';
 
   @override
   String get webExportDataDescription =>

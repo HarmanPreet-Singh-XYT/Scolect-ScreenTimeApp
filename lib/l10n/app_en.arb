@@ -2422,6 +2422,114 @@
   "browserDesktopClearDataDialogContent": "This will permanently delete all website usage history and site settings synced from the browser extension. Your native app tracking data will not be affected. You won't be able to recover this data. Do you want to proceed?",
   "browserEditSiteName": "Edit display name",
   "browserSiteNameHint": "Display name (e.g. YouTube)",
+  "browserNoDataYet": "No data yet",
+  "browserNoProductiveSites": "No productive sites logged",
+  "browserDays": "days",
+  "browserProductivePercent": "{percent}% Productive",
+  "@browserProductivePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "browserLimitsBadge": "{count, plural, =1{1 Limit} other{{count} Limits}}",
+  "@browserLimitsBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserTopFocus": "Top Focus",
+  "browserLimitsHealth": "Limits Health",
+  "browserAllRespected": "All Respected",
+  "browserLimitsExceeded": "{count, plural, =1{1 Exceeded} other{{count} Exceeded}}",
+  "@browserLimitsExceeded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserLimitsActiveCount": "{count, plural, =1{1 limit active} other{{count} limits active}}",
+  "@browserLimitsActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserCategoryShare": "Category Share",
+  "browserProductiveTime": "Productive Time",
+  "browserColumnDailyLimit": "Daily Limit",
+  "browserDistracting": "Distracting",
+  "browserClassification": "Classification",
+  "browserPageSessions": "Page sessions",
+  "browserTotalTimeToday": "Total time today",
+  "browserOpenInBrowser": "Open in Browser",
+  "browserEditDailyLimit": "Edit Limit",
+  "browserSetDailyLimit": "Set Daily Limit",
+  "browserRecommendedLimits": "Recommended Limits",
+  "browserRecommendedLimitsDesc": "High usage detected today on these unconstrained sites",
+  "browserSetOneHourLimit": "Set 1h Limit",
+  "browserCustom": "Custom",
+  "browserPeriodTotal": "Period Total",
+  "browserActiveDays": "Active Days",
+  "browserDayInspector": "Day Inspector",
+  "browserDayInspectorPrompt": "Click any bar in the chart to inspect top visited websites on that day.",
+  "browserVsAverage": "{percent}% vs avg",
+  "@browserVsAverage": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "browserTopSitesOnDate": "Top sites on {date}",
+  "@browserTopSitesOnDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "browserLast7Days": "7 Days",
+  "browserLast14Days": "14 Days",
+  "browserLast30Days": "30 Days",
+  "browserLimitsExtensionInfo": "Browser limits are enforced by the Chrome Extension",
+  "browserLimitsExtensionInfoDesc": "When a daily limit is reached, the extension automatically blocks access to that domain in the browser.",
+  "browserSevenDayTotalSummary": "7d Total: {time} · {visits} visits",
+  "@browserSevenDayTotalSummary": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "visits": {
+        "type": "int"
+      }
+    }
+  },
+  "browserAllSitesHaveLimitsSubtitle": "All tracked websites currently have active limits configured.",
+  "browserActiveLimitsHealthSafe": "All limits are currently within safe daily thresholds.",
+  "browserActiveLimitsHealthWarning": "{count, plural, =1{1 website has exceeded its daily limit!} other{{count} websites have exceeded their daily limits!}}",
+  "@browserActiveLimitsHealthWarning": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "browserShareOfWeb": "{percent}% of web",
+  "@browserShareOfWeb": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "browserLimitEnforced": "Limit enforced",
+  "browserClickToSetLimitPrompt": "Click to set limit",
   "webExportDataDescription": "Download all extension data as a JSON backup file",
   "webImportDataDescription": "Restore extension data from a previously exported JSON file",
   "webExportSuccessTitle": "Export Successful",

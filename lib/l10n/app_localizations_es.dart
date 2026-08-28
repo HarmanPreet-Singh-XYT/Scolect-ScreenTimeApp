@@ -3944,6 +3944,182 @@ class AppLocalizationsEs extends AppLocalizations {
   String get browserSiteNameHint => 'Nombre de visualización (ej. YouTube)';
 
   @override
+  String get browserNoDataYet => 'Sin datos aún';
+
+  @override
+  String get browserNoProductiveSites =>
+      'No hay sitios productivos registrados';
+
+  @override
+  String get browserDays => 'días';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% Productivo';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count límites',
+      one: '1 límite',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserTopFocus => 'Enfoque principal';
+
+  @override
+  String get browserLimitsHealth => 'Estado de límites';
+
+  @override
+  String get browserAllRespected => 'Todos respetados';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count excedidos',
+      one: '1 excedido',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count límites activos',
+      one: '1 límite activo',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserCategoryShare => 'Cuota por categoría';
+
+  @override
+  String get browserProductiveTime => 'Tiempo productivo';
+
+  @override
+  String get browserColumnDailyLimit => 'Límite diario';
+
+  @override
+  String get browserDistracting => 'Distractor';
+
+  @override
+  String get browserClassification => 'Clasificación';
+
+  @override
+  String get browserPageSessions => 'Sesiones de página';
+
+  @override
+  String get browserTotalTimeToday => 'Tiempo total hoy';
+
+  @override
+  String get browserOpenInBrowser => 'Abrir en el navegador';
+
+  @override
+  String get browserEditDailyLimit => 'Editar límite';
+
+  @override
+  String get browserSetDailyLimit => 'Establecer límite diario';
+
+  @override
+  String get browserRecommendedLimits => 'Límites recomendados';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'Uso elevado detectado hoy en estos sitios sin límite';
+
+  @override
+  String get browserSetOneHourLimit => 'Fijar límite de 1h';
+
+  @override
+  String get browserCustom => 'Personalizado';
+
+  @override
+  String get browserPeriodTotal => 'Total del período';
+
+  @override
+  String get browserActiveDays => 'Días activos';
+
+  @override
+  String get browserDayInspector => 'Inspector del día';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'Haz clic en una barra del gráfico para ver los sitios web más visitados ese día.';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '$percent% vs promedio';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return 'Sitios principales el $date';
+  }
+
+  @override
+  String get browserLast7Days => '7 días';
+
+  @override
+  String get browserLast14Days => '14 días';
+
+  @override
+  String get browserLast30Days => '30 días';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'Los límites del navegador se aplican mediante la extensión de Chrome';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'Al alcanzar un límite diario, la extensión bloquea automáticamente el acceso a ese dominio en el navegador.';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return 'Total 7d: $time · $visits visitas';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'Todos los sitios web rastreados tienen límites configurados.';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'Todos los límites están dentro de los umbrales seguros.';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '¡$count sitios web han superado sus límites diarios!',
+      one: '¡1 sitio web ha superado su límite diario!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return '$percent% de la web';
+  }
+
+  @override
+  String get browserLimitEnforced => 'Límite aplicado';
+
+  @override
+  String get browserClickToSetLimitPrompt =>
+      'Haz clic para establecer un límite';
+
+  @override
   String get webExportDataDescription =>
       'Descargar todos los datos de la extensión como archivo de copia de seguridad JSON';
 

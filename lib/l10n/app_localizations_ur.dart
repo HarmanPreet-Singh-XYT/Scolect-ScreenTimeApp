@@ -3841,6 +3841,180 @@ class AppLocalizationsUr extends AppLocalizations {
   String get browserSiteNameHint => 'ڈسپلے نام (مثلاً YouTube)';
 
   @override
+  String get browserNoDataYet => 'ابھی کوئی ڈیٹا نہیں ہے';
+
+  @override
+  String get browserNoProductiveSites => 'کوئی مفید سائٹس ریکارڈ نہیں ہوئیں';
+
+  @override
+  String get browserDays => 'دن';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% مفید';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حدود',
+      one: '1 حد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserTopFocus => 'اہم فوکس';
+
+  @override
+  String get browserLimitsHealth => 'حدود کی حالت';
+
+  @override
+  String get browserAllRespected => 'سب حدود میں ہیں';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حدود سے زیادہ',
+      one: '1 حد سے زیادہ',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حدود فعال',
+      one: '1 حد فعال',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserCategoryShare => 'کیٹیگری کا حصہ';
+
+  @override
+  String get browserProductiveTime => 'مفید وقت';
+
+  @override
+  String get browserColumnDailyLimit => 'روزانہ کی حد';
+
+  @override
+  String get browserDistracting => 'توجہ ہٹانے والا';
+
+  @override
+  String get browserClassification => 'درجہ بندی';
+
+  @override
+  String get browserPageSessions => 'صفحہ سیشنز';
+
+  @override
+  String get browserTotalTimeToday => 'آج کا کل وقت';
+
+  @override
+  String get browserOpenInBrowser => 'براؤزر میں کھولیں';
+
+  @override
+  String get browserEditDailyLimit => 'حد تبدیل کریں';
+
+  @override
+  String get browserSetDailyLimit => 'روزانہ کی حد مقرر کریں';
+
+  @override
+  String get browserRecommendedLimits => 'تجویز کردہ حدود';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'بغیر حد والی ان سائٹس پر آج زیادہ استعمال دیکھا گیا';
+
+  @override
+  String get browserSetOneHourLimit => '1 گھنٹے کی حد لگائیں';
+
+  @override
+  String get browserCustom => 'اپنی مرضی';
+
+  @override
+  String get browserPeriodTotal => 'مدت کا کل وقت';
+
+  @override
+  String get browserActiveDays => 'فعال دن';
+
+  @override
+  String get browserDayInspector => 'دن کی تفصیل';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'اس دن کی سب سے زیادہ دیکھی جانے والی سائٹس دیکھنے کے لیے چارٹ پر کلک کریں۔';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '$percent% بمقابلہ اوسط';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return '$date پر سرفہرست سائٹس';
+  }
+
+  @override
+  String get browserLast7Days => '7 دن';
+
+  @override
+  String get browserLast14Days => '14 دن';
+
+  @override
+  String get browserLast30Days => '30 دن';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'براؤزر کی حدود کروم ایکسٹینشن کے ذریعے نافذ کی جاتی ہیں';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'روزانہ کی حد مکمل ہونے پر، ایکسٹینشن براؤزر میں خودکار طور پر اس ڈومین تک رسائی روک دیتی ہے۔';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return '7 دن کا کل: $time · $visits وزٹس';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'تمام ٹریک شدہ ویب سائٹس پر فی الحال فعال حدود مقرر ہیں۔';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'تمام حدود فی الحال محفوظ دائرے میں ہیں۔';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count ویب سائٹس نے روزانہ کی حد پار کر لی ہے!',
+      one: '1 ویب سائٹ نے روزانہ کی حد پار کر لی ہے!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return 'ویب کا $percent%';
+  }
+
+  @override
+  String get browserLimitEnforced => 'حد نافذ ہے';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'حد مقرر کرنے کے لیے کلک کریں';
+
+  @override
   String get webExportDataDescription =>
       'تمام ایکسٹینشن ڈیٹا کو JSON بیک اپ فائل کے طور پر ڈاؤن لوڈ کریں';
 

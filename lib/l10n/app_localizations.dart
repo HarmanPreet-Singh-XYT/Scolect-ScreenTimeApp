@@ -6900,6 +6900,258 @@ abstract class AppLocalizations {
   /// **'Display name (e.g. YouTube)'**
   String get browserSiteNameHint;
 
+  /// No description provided for @browserNoDataYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No data yet'**
+  String get browserNoDataYet;
+
+  /// No description provided for @browserNoProductiveSites.
+  ///
+  /// In en, this message translates to:
+  /// **'No productive sites logged'**
+  String get browserNoProductiveSites;
+
+  /// No description provided for @browserDays.
+  ///
+  /// In en, this message translates to:
+  /// **'days'**
+  String get browserDays;
+
+  /// No description provided for @browserProductivePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% Productive'**
+  String browserProductivePercent(int percent);
+
+  /// No description provided for @browserLimitsBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Limit} other{{count} Limits}}'**
+  String browserLimitsBadge(int count);
+
+  /// No description provided for @browserTopFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Focus'**
+  String get browserTopFocus;
+
+  /// No description provided for @browserLimitsHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits Health'**
+  String get browserLimitsHealth;
+
+  /// No description provided for @browserAllRespected.
+  ///
+  /// In en, this message translates to:
+  /// **'All Respected'**
+  String get browserAllRespected;
+
+  /// No description provided for @browserLimitsExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 Exceeded} other{{count} Exceeded}}'**
+  String browserLimitsExceeded(int count);
+
+  /// No description provided for @browserLimitsActiveCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 limit active} other{{count} limits active}}'**
+  String browserLimitsActiveCount(int count);
+
+  /// No description provided for @browserCategoryShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Share'**
+  String get browserCategoryShare;
+
+  /// No description provided for @browserProductiveTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Productive Time'**
+  String get browserProductiveTime;
+
+  /// No description provided for @browserColumnDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Limit'**
+  String get browserColumnDailyLimit;
+
+  /// No description provided for @browserDistracting.
+  ///
+  /// In en, this message translates to:
+  /// **'Distracting'**
+  String get browserDistracting;
+
+  /// No description provided for @browserClassification.
+  ///
+  /// In en, this message translates to:
+  /// **'Classification'**
+  String get browserClassification;
+
+  /// No description provided for @browserPageSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Page sessions'**
+  String get browserPageSessions;
+
+  /// No description provided for @browserTotalTimeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Total time today'**
+  String get browserTotalTimeToday;
+
+  /// No description provided for @browserOpenInBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in Browser'**
+  String get browserOpenInBrowser;
+
+  /// No description provided for @browserEditDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Limit'**
+  String get browserEditDailyLimit;
+
+  /// No description provided for @browserSetDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Daily Limit'**
+  String get browserSetDailyLimit;
+
+  /// No description provided for @browserRecommendedLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Recommended Limits'**
+  String get browserRecommendedLimits;
+
+  /// No description provided for @browserRecommendedLimitsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'High usage detected today on these unconstrained sites'**
+  String get browserRecommendedLimitsDesc;
+
+  /// No description provided for @browserSetOneHourLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Set 1h Limit'**
+  String get browserSetOneHourLimit;
+
+  /// No description provided for @browserCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get browserCustom;
+
+  /// No description provided for @browserPeriodTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Period Total'**
+  String get browserPeriodTotal;
+
+  /// No description provided for @browserActiveDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Days'**
+  String get browserActiveDays;
+
+  /// No description provided for @browserDayInspector.
+  ///
+  /// In en, this message translates to:
+  /// **'Day Inspector'**
+  String get browserDayInspector;
+
+  /// No description provided for @browserDayInspectorPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Click any bar in the chart to inspect top visited websites on that day.'**
+  String get browserDayInspectorPrompt;
+
+  /// No description provided for @browserVsAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% vs avg'**
+  String browserVsAverage(String percent);
+
+  /// No description provided for @browserTopSitesOnDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Top sites on {date}'**
+  String browserTopSitesOnDate(String date);
+
+  /// No description provided for @browserLast7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'7 Days'**
+  String get browserLast7Days;
+
+  /// No description provided for @browserLast14Days.
+  ///
+  /// In en, this message translates to:
+  /// **'14 Days'**
+  String get browserLast14Days;
+
+  /// No description provided for @browserLast30Days.
+  ///
+  /// In en, this message translates to:
+  /// **'30 Days'**
+  String get browserLast30Days;
+
+  /// No description provided for @browserLimitsExtensionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser limits are enforced by the Chrome Extension'**
+  String get browserLimitsExtensionInfo;
+
+  /// No description provided for @browserLimitsExtensionInfoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'When a daily limit is reached, the extension automatically blocks access to that domain in the browser.'**
+  String get browserLimitsExtensionInfoDesc;
+
+  /// No description provided for @browserSevenDayTotalSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'7d Total: {time} · {visits} visits'**
+  String browserSevenDayTotalSummary(String time, int visits);
+
+  /// No description provided for @browserAllSitesHaveLimitsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All tracked websites currently have active limits configured.'**
+  String get browserAllSitesHaveLimitsSubtitle;
+
+  /// No description provided for @browserActiveLimitsHealthSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'All limits are currently within safe daily thresholds.'**
+  String get browserActiveLimitsHealthSafe;
+
+  /// No description provided for @browserActiveLimitsHealthWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 website has exceeded its daily limit!} other{{count} websites have exceeded their daily limits!}}'**
+  String browserActiveLimitsHealthWarning(int count);
+
+  /// No description provided for @browserShareOfWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of web'**
+  String browserShareOfWeb(int percent);
+
+  /// No description provided for @browserLimitEnforced.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit enforced'**
+  String get browserLimitEnforced;
+
+  /// No description provided for @browserClickToSetLimitPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Click to set limit'**
+  String get browserClickToSetLimitPrompt;
+
   /// No description provided for @webExportDataDescription.
   ///
   /// In en, this message translates to:

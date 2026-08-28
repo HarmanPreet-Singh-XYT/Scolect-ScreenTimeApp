@@ -3829,6 +3829,192 @@ class AppLocalizationsAr extends AppLocalizations {
   String get browserSiteNameHint => 'اسم العرض (مثال: YouTube)';
 
   @override
+  String get browserNoDataYet => 'لا توجد بيانات بعد';
+
+  @override
+  String get browserNoProductiveSites => 'لا توجد مواقع إنتاجية مسجلة';
+
+  @override
+  String get browserDays => 'أيام';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% إنتاجي';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حد',
+      many: '$count حداً',
+      few: '$count حدود',
+      two: 'حدان',
+      one: 'حد واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserTopFocus => 'التركيز الرئيسي';
+
+  @override
+  String get browserLimitsHealth => 'حالة الحدود';
+
+  @override
+  String get browserAllRespected => 'الكل ملتزم';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'تم تجاوز $count حد',
+      many: 'تم تجاوز $count حداً',
+      few: 'تم تجاوز $count حدود',
+      two: 'تم تجاوز حدين',
+      one: 'تم تجاوز حد واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count حد نشط',
+      many: '$count حداً نشطاً',
+      few: '$count حدود نشطة',
+      two: 'حدان نشطان',
+      one: 'حد نشط واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserCategoryShare => 'حصة الفئات';
+
+  @override
+  String get browserProductiveTime => 'الوقت الإنتاجي';
+
+  @override
+  String get browserColumnDailyLimit => 'الحد اليومي';
+
+  @override
+  String get browserDistracting => 'مشتت للانتباه';
+
+  @override
+  String get browserClassification => 'التصنيف';
+
+  @override
+  String get browserPageSessions => 'جلسات الصفحات';
+
+  @override
+  String get browserTotalTimeToday => 'إجمالي الوقت اليوم';
+
+  @override
+  String get browserOpenInBrowser => 'فتح في المتصفح';
+
+  @override
+  String get browserEditDailyLimit => 'تعديل الحد';
+
+  @override
+  String get browserSetDailyLimit => 'تعيين حد يومي';
+
+  @override
+  String get browserRecommendedLimits => 'حدود موصى بها';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'تم اكتشاف استخدام مرتفع اليوم على هذه المواقع غير المقيدة';
+
+  @override
+  String get browserSetOneHourLimit => 'تعيين حد ساعة واحدة';
+
+  @override
+  String get browserCustom => 'مخصص';
+
+  @override
+  String get browserPeriodTotal => 'إجمالي الفترة';
+
+  @override
+  String get browserActiveDays => 'الأيام النشطة';
+
+  @override
+  String get browserDayInspector => 'فاحص اليوم';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'انقر على أي شريط في المخطط لفحص المواقع الأكثر زيارة في ذلك اليوم.';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '$percent% مقارنة بالمتوسط';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return 'أهم المواقع في $date';
+  }
+
+  @override
+  String get browserLast7Days => '7 أيام';
+
+  @override
+  String get browserLast14Days => '14 يوماً';
+
+  @override
+  String get browserLast30Days => '30 يوماً';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'يتم فرض حدود المتصفح بواسطة إضافة Chrome';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'عند الوصول إلى الحد اليومي، تقوم الإضافة تلقائياً بحظر الوصول إلى ذلك النطاق في المتصفح.';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return 'إجمالي 7 أيام: $time · $visits زيارة';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'جميع المواقع التي يتم تتبعها تحتوي حالياً على حدود نشطة تم ضبطها.';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'جميع الحدود حالياً ضمن النطاقات الآمنة.';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count موقع تجاوز حده اليومي!',
+      many: '$count موقعاً تجاوز حده اليومي!',
+      few: '$count مواقع تجاوزت حدها اليومي!',
+      two: 'موقعان تجاوزا حدهما اليومي!',
+      one: 'موقع واحد تجاوز حده اليومي!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return '$percent% من الويب';
+  }
+
+  @override
+  String get browserLimitEnforced => 'الحد مطبق';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'انقر لتعيين حد';
+
+  @override
   String get webExportDataDescription =>
       'تنزيل جميع بيانات الإضافة كملف نسخ احتياطي بصيغة JSON';
 

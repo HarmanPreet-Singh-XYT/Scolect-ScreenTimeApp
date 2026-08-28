@@ -3854,6 +3854,156 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserSiteNameHint => 'Nama tampilan (mis. YouTube)';
 
   @override
+  String get browserNoDataYet => 'Belum ada data';
+
+  @override
+  String get browserNoProductiveSites => 'Belum ada situs produktif tercatat';
+
+  @override
+  String get browserDays => 'hari';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% Produktif';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    return '$count Batasan';
+  }
+
+  @override
+  String get browserTopFocus => 'Fokus Utama';
+
+  @override
+  String get browserLimitsHealth => 'Kesehatan Batasan';
+
+  @override
+  String get browserAllRespected => 'Semua Terpenuhi';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    return '$count Melebihi Batas';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    return '$count batasan aktif';
+  }
+
+  @override
+  String get browserCategoryShare => 'Pangsa Kategori';
+
+  @override
+  String get browserProductiveTime => 'Waktu Produktif';
+
+  @override
+  String get browserColumnDailyLimit => 'Batas Harian';
+
+  @override
+  String get browserDistracting => 'Mengalihkan Perhatian';
+
+  @override
+  String get browserClassification => 'Klasifikasi';
+
+  @override
+  String get browserPageSessions => 'Sesi halaman';
+
+  @override
+  String get browserTotalTimeToday => 'Total waktu hari ini';
+
+  @override
+  String get browserOpenInBrowser => 'Buka di Browser';
+
+  @override
+  String get browserEditDailyLimit => 'Edit Batasan';
+
+  @override
+  String get browserSetDailyLimit => 'Atur Batas Harian';
+
+  @override
+  String get browserRecommendedLimits => 'Batasan yang Disarankan';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'Penggunaan tinggi terdeteksi hari ini di situs-situs tanpa batas ini';
+
+  @override
+  String get browserSetOneHourLimit => 'Batas 1 Jam';
+
+  @override
+  String get browserCustom => 'Kustom';
+
+  @override
+  String get browserPeriodTotal => 'Total Periode';
+
+  @override
+  String get browserActiveDays => 'Hari Aktif';
+
+  @override
+  String get browserDayInspector => 'Inspektur Hari';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'Klik bilah pada grafik untuk memeriksa situs yang paling banyak dikunjungi pada hari itu.';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '$percent% vs rata-rata';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return 'Situs teratas pada $date';
+  }
+
+  @override
+  String get browserLast7Days => '7 Hari';
+
+  @override
+  String get browserLast14Days => '14 Hari';
+
+  @override
+  String get browserLast30Days => '30 Hari';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'Batasan browser ditegakkan oleh Ekstensi Chrome';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'Saat batas harian tercapai, ekstensi secara otomatis memblokir akses ke domain tersebut di browser.';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return 'Total 7h: $time · $visits kunjungan';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'Semua situs web yang dilacak saat ini memiliki batasan aktif.';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'Semua batasan saat ini berada dalam batas harian yang aman.';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    return '$count situs web telah melebihi batas hariannya!';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return '$percent% dari penjelajahan';
+  }
+
+  @override
+  String get browserLimitEnforced => 'Batasan diterapkan';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'Klik untuk mengatur batasan';
+
+  @override
   String get webExportDataDescription =>
       'Unduh semua data ekstensi sebagai berkas cadangan JSON';
 

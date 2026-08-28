@@ -205,6 +205,47 @@ class BrowserDataProvider extends ChangeNotifier {
     return sites;
   }
 
+  // ─── Fetch websites for a specific historical date ───────────────────────
+
+  Future<List<WebsiteBasicDetail>> fetchWebsitesForDate(DateTime date) async {
+    await _ensureInitialized();
+
+    final DateTime logical = SettingsManager().getLogicalDate(date);
+    final DateTime startOfDay = DateTime(logical.year, logical.month, logical.day);
+    final sites = <WebsiteBasicDetail>[];
+    final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
+
+    for (final domain in _uniqueWebDomains) {
+      final appName = '$_kWebPrefix$domain';
+      final metadata =
+          _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
+      if (metadata == null) continue;
+
+      final record = _readUsage(appName, startOfDay);
+      final time = record?.timeSpent ?? Duration.zero;
+      if (time == Duration.zero) continue;
+
+      sites.add(WebsiteBasicDetail(
+        domain: domain,
+        siteName: metadata.siteName,
+        category: metadata.category,
+        timeSpent: time,
+        isTracking: metadata.isTracking,
+        isHidden: !metadata.isVisible,
+        isProductive: metadata.isProductive,
+        dailyLimit: metadata.dailyLimit,
+        limitStatus: metadata.limitStatus,
+        visits: record?.openCount ?? 0,
+        isPrivate: metadata.isPrivate,
+      ));
+    }
+
+    final showPrivate = shouldShowPrivateOnly();
+    sites.removeWhere((s) => s.isPrivate != showPrivate);
+    sites.sort((a, b) => b.timeSpent.compareTo(a.timeSpent));
+    return sites;
+  }
+
   // ─── Today summary stats ─────────────────────────────────────────────────
 
   Future<({Duration totalTime, int siteCount, int visitCount})>
@@ -426,6 +467,10 @@ class _WebDelegatingProvider extends BrowserDataProvider {
     bool includeHistorical = false,
   }) =>
       _web.fetchAllWebsites(includeHistorical: includeHistorical);
+
+  @override
+  Future<List<WebsiteBasicDetail>> fetchWebsitesForDate(DateTime date) =>
+      _web.fetchAllWebsites();
 
   @override
   Future<({Duration totalTime, int siteCount, int visitCount})>

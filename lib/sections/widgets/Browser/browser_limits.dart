@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
+import 'browser_websites.dart' show showBrowserLimitPicker, formatBrowserLimit;
 
 class BrowserLimits extends StatefulWidget {
   final ValueChanged<BrowserTab> onTabChange;
@@ -18,6 +19,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
 
   List<WebsiteBasicDetail> _sites = [];
   bool _isLoading = true;
+  String _search = '';
 
   @override
   void initState() {
@@ -46,10 +48,20 @@ class _BrowserLimitsState extends State<BrowserLimits> {
     }
   }
 
+  Future<void> _setLimit(String domain, Duration limit) async {
+    await BrowserDataProvider().updateWebsiteMetadata(
+      domain,
+      dailyLimit: limit,
+    );
+    await _loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context)!;
+    final captionColor = theme.typography.caption?.color;
 
     if (_isLoading) {
       return const Center(child: ProgressRing());
@@ -57,26 +69,255 @@ class _BrowserLimitsState extends State<BrowserLimits> {
 
     final withLimits =
         _sites.where((s) => s.dailyLimit > Duration.zero).toList();
-    final withoutLimits =
-        _sites.where((s) => s.dailyLimit == Duration.zero).toList();
+    final withoutLimits = _sites
+        .where((s) =>
+            s.dailyLimit == Duration.zero &&
+            (_search.isEmpty || s.matchesSearch(_search)))
+        .toList();
+
+    // High usage sites without limits (suggested for limits)
+    final suggestions = _sites
+        .where((s) =>
+            s.dailyLimit == Duration.zero &&
+            s.timeSpent >= const Duration(minutes: 20))
+        .take(3)
+        .toList();
+
+    final exceededCount = withLimits
+        .where((s) => s.timeSpent >= s.dailyLimit && s.dailyLimit > Duration.zero)
+        .length;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Hero Summary Metrics Strip ────────────────────────────────
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 440;
+              final card1 = BrowserCard(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    BrowserGradientIconBox(
+                      icon: FluentIcons.time_picker,
+                      color: kBrowserAmber,
+                      size: 18,
+                      boxSize: 38,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Active Limits',
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              color: captionColor?.withValues(alpha: 0.65),
+                            ),
+                          ),
+                          Text(
+                            '${withLimits.length} Websites',
+                            style: theme.typography.bodyStrong?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              final card2 = BrowserCard(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  children: [
+                    BrowserGradientIconBox(
+                      icon: exceededCount > 0
+                          ? FluentIcons.warning
+                          : FluentIcons.check_mark,
+                      color: exceededCount > 0 ? kBrowserRed : kBrowserGreen,
+                      size: 18,
+                      boxSize: 38,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Limits Status',
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w500,
+                              color: captionColor?.withValues(alpha: 0.65),
+                            ),
+                          ),
+                          Text(
+                            exceededCount > 0
+                                ? '$exceededCount Exceeded'
+                                : 'All Respected',
+                            style: theme.typography.bodyStrong?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15,
+                              color: exceededCount > 0 ? kBrowserRed : kBrowserGreen,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (isNarrow) {
+                return Column(
+                  children: [
+                    card1,
+                    const SizedBox(height: 10),
+                    card2,
+                  ],
+                );
+              }
+
+              return Row(
+                children: [
+                  Expanded(child: card1),
+                  const SizedBox(width: 12),
+                  Expanded(child: card2),
+                ],
+              );
+            },
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Smart Recommendations (if any) ───────────────────────────
+          if (suggestions.isNotEmpty) ...[
+            BrowserCard(
+              backgroundColor: isDark
+                  ? kBrowserAmber.withValues(alpha: 0.08)
+                  : kBrowserAmber.withValues(alpha: 0.05),
+              borderColor: kBrowserAmber.withValues(alpha: 0.25),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(FluentIcons.lightbulb, size: 15, color: kBrowserAmber),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.browserRecommendedLimits,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white : Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          l10n.browserRecommendedLimitsDesc,
+                          style: TextStyle(
+                            fontSize: 11.5,
+                            color: captionColor?.withValues(alpha: 0.7),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 10,
+                    children: suggestions.map((site) {
+                      final recLimit = const Duration(minutes: 45);
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.08)
+                                : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            BrowserDomainAvatar(
+                              domain: site.domain,
+                              siteName: site.siteName,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 8),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  site.displayName,
+                                  style: const TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  'Used ${site.formattedTimeSpent}',
+                                  style: TextStyle(
+                                    fontSize: 10.5,
+                                    color: captionColor?.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 12),
+                            Button(
+                              onPressed: () => _setLimit(site.domain, recLimit),
+                              style: ButtonStyle(
+                                padding: WidgetStateProperty.all(
+                                  const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 4),
+                                ),
+                              ),
+                              child: const Text('Set 45m',
+                                  style: TextStyle(fontSize: 11)),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+
           // ── Active limits ──────────────────────────────────────────────
-          _SectionHeader(
+          BrowserSectionHeader(
             icon: FluentIcons.time_picker,
             title: l10n.browserActiveLimits,
             subtitle: l10n.browserActiveLimitsSubtitle(withLimits.length),
             color: kBrowserAmber,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
           if (withLimits.isEmpty)
             BrowserCard(
-              height: 120,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: BrowserEmptyState(
                 icon: FluentIcons.time_picker,
                 title: l10n.browserNoLimitsTitle,
@@ -84,45 +325,254 @@ class _BrowserLimitsState extends State<BrowserLimits> {
               ),
             )
           else
-            BrowserCard(
-              padding: EdgeInsets.zero,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-                child: Column(
-                  children: withLimits.asMap().entries.map((e) {
-                    return _LimitRow(
-                      site: e.value,
-                      showDivider: e.key < withLimits.length - 1,
-                      onChanged: _loadData,
-                    );
-                  }).toList(),
-                ),
-              ),
+            Column(
+              children: withLimits.map((site) {
+                final double progress = site.dailyLimit > Duration.zero
+                    ? (site.timeSpent.inSeconds / site.dailyLimit.inSeconds).clamp(0.0, 1.0)
+                    : 0.0;
+                final isExceeded = site.timeSpent >= site.dailyLimit;
+                final isWarning = progress >= 0.8 && !isExceeded;
+                final statusColor = isExceeded
+                    ? kBrowserRed
+                    : (isWarning ? kBrowserAmber : kBrowserGreen);
+
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: BrowserCard(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                    child: LayoutBuilder(
+                      builder: (context, cardConstraints) {
+                        final isCardNarrow = cardConstraints.maxWidth < 480;
+
+                        if (isCardNarrow) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  BrowserDomainAvatar(
+                                    domain: site.domain,
+                                    siteName: site.siteName,
+                                    size: 32,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          site.displayName,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          site.category,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: captionColor?.withValues(alpha: 0.6),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        formatBrowserLimit(site.dailyLimit),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          color: statusColor,
+                                        ),
+                                      ),
+                                      Text(
+                                        l10n.browserTimeUsed(site.formattedTimeSpent),
+                                        style: TextStyle(
+                                          fontSize: 10.5,
+                                          color: captionColor?.withValues(alpha: 0.6),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: BrowserProgressBar(
+                                      fraction: progress,
+                                      color: statusColor,
+                                      height: 6,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    '${(progress * 100).round()}%',
+                                    style: TextStyle(
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: statusColor,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Button(
+                                    onPressed: () => showBrowserLimitPicker(
+                                      context,
+                                      site,
+                                      _loadData,
+                                    ),
+                                    child: const Text('Edit', style: TextStyle(fontSize: 11)),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  IconButton(
+                                    icon: const Icon(FluentIcons.delete, size: 12, color: kBrowserRed),
+                                    onPressed: () => _setLimit(site.domain, Duration.zero),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        }
+
+                        return Row(
+                          children: [
+                            BrowserDomainAvatar(
+                              domain: site.domain,
+                              siteName: site.siteName,
+                              size: 36,
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          site.displayName,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      BrowserStatChip(
+                                        label: site.category,
+                                        color: CategoryMeta.fromName(site.category).color,
+                                        icon: CategoryMeta.fromName(site.category).icon,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: BrowserProgressBar(
+                                          fraction: progress,
+                                          color: statusColor,
+                                          height: 6,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Text(
+                                        '${(progress * 100).round()}%',
+                                        style: TextStyle(
+                                          fontSize: 11.5,
+                                          fontWeight: FontWeight.w700,
+                                          color: statusColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formatBrowserLimit(site.dailyLimit),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: statusColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  l10n.browserTimeUsed(site.formattedTimeSpent),
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: captionColor?.withValues(alpha: 0.6),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 16),
+                            // Action buttons
+                            Button(
+                              onPressed: () => showBrowserLimitPicker(
+                                context,
+                                site,
+                                _loadData,
+                              ),
+                              child: const Text('Edit', style: TextStyle(fontSize: 12)),
+                            ),
+                            const SizedBox(width: 8),
+                            Tooltip(
+                              message: 'Remove Limit',
+                              child: IconButton(
+                                icon: const Icon(FluentIcons.delete, size: 13, color: kBrowserRed),
+                                onPressed: () => _setLimit(site.domain, Duration.zero),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
 
           const SizedBox(height: 24),
 
-          // ── Add limits ────────────────────────────────────────────────
-          _SectionHeader(
+          // ── All Websites (Add Limits) ─────────────────────────────────
+          BrowserSectionHeader(
             icon: FluentIcons.globe,
             title: l10n.browserAllWebsites,
-            subtitle: l10n.browserAllWebsitesSubtitle,
+            subtitle: 'Quickly configure daily usage limits for any site',
             color: theme.accentColor,
+            trailing: BrowserSearchBox(
+              placeholder: 'Search websites…',
+              onChanged: (v) => setState(() => _search = v),
+              width: 220,
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
 
-          if (withoutLimits.isEmpty && withLimits.isNotEmpty)
+          if (withoutLimits.isEmpty && withLimits.isNotEmpty && _search.isEmpty)
             BrowserCard(
-              height: 80,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: BrowserEmptyState(
                 icon: FluentIcons.check_mark,
                 title: l10n.browserAllSitesHaveLimits,
-                subtitle: '',
+                subtitle: 'All tracked websites currently have active limits configured.',
               ),
             )
           else if (_sites.isEmpty)
             BrowserCard(
-              height: 120,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: BrowserEmptyState(
                 icon: FluentIcons.globe,
                 title: l10n.browserNoWebsitesTrackedTitle,
@@ -135,13 +585,116 @@ class _BrowserLimitsState extends State<BrowserLimits> {
             BrowserCard(
               padding: EdgeInsets.zero,
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
+                borderRadius: BorderRadius.circular(12),
                 child: Column(
                   children: withoutLimits.asMap().entries.map((e) {
-                    return _LimitRow(
-                      site: e.value,
-                      showDivider: e.key < withoutLimits.length - 1,
-                      onChanged: _loadData,
+                    final i = e.key;
+                    final site = e.value;
+                    final showDiv = i < withoutLimits.length - 1;
+
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                          child: LayoutBuilder(
+                            builder: (context, uncappedConstraints) {
+                              final isUncappedNarrow = uncappedConstraints.maxWidth < 480;
+
+                              final avatarAndText = Row(
+                                children: [
+                                  BrowserDomainAvatar(
+                                    domain: site.domain,
+                                    siteName: site.siteName,
+                                    size: 28,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          site.displayName,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          '${site.formattedTimeSpent} ${l10n.browserToday.toLowerCase()} · ${site.category}',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: captionColor?.withValues(alpha: 0.6),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              );
+
+                              final quickLimitRow = Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _QuickLimitChip(
+                                    label: '30m',
+                                    onTap: () => _setLimit(site.domain, const Duration(minutes: 30)),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  _QuickLimitChip(
+                                    label: '1h',
+                                    onTap: () => _setLimit(site.domain, const Duration(hours: 1)),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  _QuickLimitChip(
+                                    label: '2h',
+                                    onTap: () => _setLimit(site.domain, const Duration(hours: 2)),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  FilledButton(
+                                    onPressed: () => showBrowserLimitPicker(
+                                      context,
+                                      site,
+                                      _loadData,
+                                    ),
+                                    child: Text(l10n.browserCustom, style: const TextStyle(fontSize: 11)),
+                                  ),
+                                ],
+                              );
+
+                              if (isUncappedNarrow) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    avatarAndText,
+                                    const SizedBox(height: 8),
+                                    quickLimitRow,
+                                  ],
+                                );
+                              }
+
+                              return Row(
+                                children: [
+                                  Expanded(child: avatarAndText),
+                                  const SizedBox(width: 12),
+                                  quickLimitRow,
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                        if (showDiv)
+                          Divider(
+                            style: DividerThemeData(
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.white.withValues(alpha: 0.05)
+                                    : theme.inactiveBackgroundColor.withValues(alpha: 0.35),
+                              ),
+                            ),
+                          ),
+                      ],
                     );
                   }).toList(),
                 ),
@@ -153,312 +706,44 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   }
 }
 
-// ─── Section header ───────────────────────────────────────────────────────────
+class _QuickLimitChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
 
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Color color;
-
-  const _SectionHeader({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.color,
-  });
+  const _QuickLimitChip({required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
+    final isDark = theme.brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(8),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.06)
+                : theme.inactiveBackgroundColor.withValues(alpha: 0.5),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : theme.inactiveBackgroundColor,
+            ),
           ),
-          child: Icon(icon, size: 16, color: color),
-        ),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title,
-                style: theme.typography.bodyStrong
-                    ?.copyWith(fontWeight: FontWeight.w600)),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 12,
-                color: theme.typography.caption?.color?.withValues(alpha: 0.6),
-              ),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: theme.typography.body?.color?.withValues(alpha: 0.8),
             ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Limit row ────────────────────────────────────────────────────────────────
-
-class _LimitRow extends StatefulWidget {
-  final WebsiteBasicDetail site;
-  final bool showDivider;
-  final VoidCallback onChanged;
-
-  const _LimitRow({
-    required this.site,
-    required this.showDivider,
-    required this.onChanged,
-  });
-
-  @override
-  State<_LimitRow> createState() => _LimitRowState();
-}
-
-class _LimitRowState extends State<_LimitRow> {
-  bool _hovered = false;
-
-  void _showLimitPicker() {
-    final l10n = AppLocalizations.of(context)!;
-    final site = widget.site;
-    int hours = site.dailyLimit.inHours;
-    int minutes = site.dailyLimit.inMinutes % 60;
-
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setInner) => ContentDialog(
-          title: Text(l10n.browserDailyLimitDialog(site.domain)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.browserDailyLimitDialogDesc),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    children: [
-                      Text(l10n.browserHours,
-                          style: const TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      SizedBox(
-                        width: 120,
-                        child: NumberBox<int>(
-                          value: hours,
-                          min: 0,
-                          max: 23,
-                          onChanged: (v) => setInner(() => hours = v ?? 0),
-                          mode: SpinButtonPlacementMode.inline,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(':',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
-                  ),
-                  Column(
-                    children: [
-                      Text(l10n.minutesLabel,
-                          style: const TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      SizedBox(
-                        width: 120,
-                        child: NumberBox<int>(
-                          value: minutes,
-                          min: 0,
-                          max: 59,
-                          onChanged: (v) => setInner(() => minutes = v ?? 0),
-                          mode: SpinButtonPlacementMode.inline,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
           ),
-          actions: [
-            Button(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.cancelButton),
-            ),
-            if (site.dailyLimit > Duration.zero)
-              Button(
-                onPressed: () async {
-                  Navigator.of(ctx).pop();
-                  await BrowserDataProvider().updateWebsiteMetadata(
-                    site.domain,
-                    dailyLimit: Duration.zero,
-                  );
-                  widget.onChanged();
-                },
-                child: Text(l10n.browserRemoveLimit),
-              ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                final limit = Duration(hours: hours, minutes: minutes);
-                await BrowserDataProvider().updateWebsiteMetadata(
-                  site.domain,
-                  dailyLimit: limit,
-                );
-                widget.onChanged();
-              },
-              child: Text(l10n.saveButton),
-            ),
-          ],
         ),
       ),
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-    final site = widget.site;
-    final hasLimit = site.dailyLimit > Duration.zero;
-
-    // Progress: how much of the limit has been consumed today
-    double progress = 0;
-    if (hasLimit && site.timeSpent > Duration.zero) {
-      progress = (site.timeSpent.inSeconds / site.dailyLimit.inSeconds)
-          .clamp(0.0, 1.0);
-    }
-    final overLimit = progress >= 1.0;
-    final limitColor = overLimit
-        ? kBrowserRed
-        : progress > 0.75
-            ? kBrowserAmber
-            : kBrowserGreen;
-
-    return Column(
-      children: [
-        MouseRegion(
-          onEnter: (_) => setState(() => _hovered = true),
-          onExit: (_) => setState(() => _hovered = false),
-          child: GestureDetector(
-            onTap: _showLimitPicker,
-            child: AnimatedContainer(
-              duration: kBrowserHoverDuration,
-              color: _hovered
-                  ? theme.inactiveBackgroundColor.withValues(alpha: 0.25)
-                  : Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: theme.accentColor.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Icon(FluentIcons.globe,
-                        size: 14,
-                        color: theme.accentColor.withValues(alpha: 0.6)),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(site.displayName,
-                            style: const TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.w500)),
-                        if (hasLimit) ...[
-                          const SizedBox(height: 4),
-                          Stack(
-                            children: [
-                              Container(
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  color: theme.inactiveBackgroundColor,
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                              FractionallySizedBox(
-                                widthFactor: progress,
-                                child: Container(
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: limitColor,
-                                    borderRadius: BorderRadius.circular(2),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  if (hasLimit)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          _formatLimit(site.dailyLimit),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: limitColor,
-                          ),
-                        ),
-                        Text(
-                          l10n.browserTimeUsed(site.formattedTimeSpent),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: theme.typography.caption?.color
-                                ?.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    Text(
-                      l10n.browserSetLimit,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.accentColor.withValues(alpha: 0.7),
-                      ),
-                    ),
-                  const SizedBox(width: 8),
-                  Icon(FluentIcons.chevron_right,
-                      size: 12,
-                      color: theme.typography.caption?.color
-                          ?.withValues(alpha: 0.4)),
-                ],
-              ),
-            ),
-          ),
-        ),
-        if (widget.showDivider)
-          Divider(
-            style: DividerThemeData(
-              decoration: BoxDecoration(
-                color: theme.inactiveBackgroundColor.withValues(alpha: 0.4),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
-  String _formatLimit(Duration d) {
-    final h = d.inHours;
-    final m = d.inMinutes % 60;
-    if (h > 0 && m > 0) return '${h}h ${m}m';
-    if (h > 0) return '${h}h';
-    return '${m}m';
   }
 }

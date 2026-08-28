@@ -3928,6 +3928,188 @@ class AppLocalizationsRu extends AppLocalizations {
   String get browserSiteNameHint => 'Отображаемое имя (например, YouTube)';
 
   @override
+  String get browserNoDataYet => 'Данных пока нет';
+
+  @override
+  String get browserNoProductiveSites => 'Нет продуктивных сайтов';
+
+  @override
+  String get browserDays => 'дней';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% Продуктивно';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count лимитов',
+      many: '$count лимитов',
+      few: '$count лимита',
+      one: '1 лимит',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserTopFocus => 'Главный фокус';
+
+  @override
+  String get browserLimitsHealth => 'Состояние лимитов';
+
+  @override
+  String get browserAllRespected => 'Все в норме';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count превышено',
+      many: '$count превышено',
+      few: '$count превышено',
+      one: '1 превышен',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count активных лимитов',
+      many: '$count активных лимитов',
+      few: '$count активных лимита',
+      one: '1 активный лимит',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get browserCategoryShare => 'Доля категорий';
+
+  @override
+  String get browserProductiveTime => 'Продуктивное время';
+
+  @override
+  String get browserColumnDailyLimit => 'Дневной лимит';
+
+  @override
+  String get browserDistracting => 'Отвлекающий';
+
+  @override
+  String get browserClassification => 'Классификация';
+
+  @override
+  String get browserPageSessions => 'Сессии страниц';
+
+  @override
+  String get browserTotalTimeToday => 'Всего времени сегодня';
+
+  @override
+  String get browserOpenInBrowser => 'Открыть в браузере';
+
+  @override
+  String get browserEditDailyLimit => 'Изменить лимит';
+
+  @override
+  String get browserSetDailyLimit => 'Установить дневной лимит';
+
+  @override
+  String get browserRecommendedLimits => 'Рекомендуемые лимиты';
+
+  @override
+  String get browserRecommendedLimitsDesc =>
+      'Высокая активность сегодня на сайтах без ограничений';
+
+  @override
+  String get browserSetOneHourLimit => 'Установить 1ч лимит';
+
+  @override
+  String get browserCustom => 'Свой';
+
+  @override
+  String get browserPeriodTotal => 'Всего за период';
+
+  @override
+  String get browserActiveDays => 'Активные дни';
+
+  @override
+  String get browserDayInspector => 'Инспектор дня';
+
+  @override
+  String get browserDayInspectorPrompt =>
+      'Нажмите на столбец графика, чтобы просмотреть сайты за этот день.';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '$percent% от среднего';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return 'Популярные сайты за $date';
+  }
+
+  @override
+  String get browserLast7Days => '7 дней';
+
+  @override
+  String get browserLast14Days => '14 дней';
+
+  @override
+  String get browserLast30Days => '30 дней';
+
+  @override
+  String get browserLimitsExtensionInfo =>
+      'Лимиты браузера контролируются расширением Chrome';
+
+  @override
+  String get browserLimitsExtensionInfoDesc =>
+      'При достижении дневного лимита расширение автоматически блокирует доступ к этому домену в браузере.';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return 'Всего за 7 дн: $time · $visits посещений';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle =>
+      'Для всех отслеживаемых сайтов настроены активные лимиты.';
+
+  @override
+  String get browserActiveLimitsHealthSafe =>
+      'Все лимиты находятся в безопасных пределах.';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count сайтов превысили дневной лимит!',
+      many: '$count сайтов превысили дневной лимит!',
+      few: '$count сайта превысили дневной лимит!',
+      one: '1 сайт превысил дневной лимит!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return '$percent% от сети';
+  }
+
+  @override
+  String get browserLimitEnforced => 'Лимит действует';
+
+  @override
+  String get browserClickToSetLimitPrompt => 'Нажмите, чтобы установить лимит';
+
+  @override
   String get webExportDataDescription =>
       'Скачать все данные расширения в виде резервного файла JSON';
 

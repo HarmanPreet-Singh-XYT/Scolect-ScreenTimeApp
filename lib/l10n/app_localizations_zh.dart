@@ -3728,7 +3728,151 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserEditSiteName => '编辑显示名称';
 
   @override
-  String get browserSiteNameHint => '显示名称（例如：YouTube）';
+  String get browserSiteNameHint => '显示名称（例如 YouTube）';
+
+  @override
+  String get browserNoDataYet => '暂无数据';
+
+  @override
+  String get browserNoProductiveSites => '暂无记录的高效网站';
+
+  @override
+  String get browserDays => '天';
+
+  @override
+  String browserProductivePercent(int percent) {
+    return '$percent% 高效';
+  }
+
+  @override
+  String browserLimitsBadge(int count) {
+    return '$count 个限制';
+  }
+
+  @override
+  String get browserTopFocus => '主要专注';
+
+  @override
+  String get browserLimitsHealth => '限额健康度';
+
+  @override
+  String get browserAllRespected => '全部达标';
+
+  @override
+  String browserLimitsExceeded(int count) {
+    return '$count 个超额';
+  }
+
+  @override
+  String browserLimitsActiveCount(int count) {
+    return '$count 个活跃限制';
+  }
+
+  @override
+  String get browserCategoryShare => '分类占比';
+
+  @override
+  String get browserProductiveTime => '高效时间';
+
+  @override
+  String get browserColumnDailyLimit => '每日限额';
+
+  @override
+  String get browserDistracting => '易分心';
+
+  @override
+  String get browserClassification => '分类属性';
+
+  @override
+  String get browserPageSessions => '访问次数';
+
+  @override
+  String get browserTotalTimeToday => '今日总时长';
+
+  @override
+  String get browserOpenInBrowser => '在浏览器中打开';
+
+  @override
+  String get browserEditDailyLimit => '编辑限制';
+
+  @override
+  String get browserSetDailyLimit => '设置每日限额';
+
+  @override
+  String get browserRecommendedLimits => '推荐限制';
+
+  @override
+  String get browserRecommendedLimitsDesc => '检测到今日在以下未限制网站上停留时间较长';
+
+  @override
+  String get browserSetOneHourLimit => '设为 1 小时';
+
+  @override
+  String get browserCustom => '自定义';
+
+  @override
+  String get browserPeriodTotal => '统计周期总计';
+
+  @override
+  String get browserActiveDays => '活跃天数';
+
+  @override
+  String get browserDayInspector => '日期详情';
+
+  @override
+  String get browserDayInspectorPrompt => '点击图表中的柱状图可查看该日访问量最多的网站。';
+
+  @override
+  String browserVsAverage(String percent) {
+    return '相比平均 $percent%';
+  }
+
+  @override
+  String browserTopSitesOnDate(String date) {
+    return '$date 热门网站';
+  }
+
+  @override
+  String get browserLast7Days => '7 天';
+
+  @override
+  String get browserLast14Days => '14 天';
+
+  @override
+  String get browserLast30Days => '30 天';
+
+  @override
+  String get browserLimitsExtensionInfo => '浏览器限额由 Chrome 扩展程序强制执行';
+
+  @override
+  String get browserLimitsExtensionInfoDesc => '达到每日限额时，扩展程序会自动在浏览器中阻止访问该域名。';
+
+  @override
+  String browserSevenDayTotalSummary(String time, int visits) {
+    return '7日总计：$time · $visits 次访问';
+  }
+
+  @override
+  String get browserAllSitesHaveLimitsSubtitle => '所有跟踪的网站目前都已配置活跃限额。';
+
+  @override
+  String get browserActiveLimitsHealthSafe => '当前所有限制均处于安全范围内。';
+
+  @override
+  String browserActiveLimitsHealthWarning(int count) {
+    return '$count 个网站已超出每日限额！';
+  }
+
+  @override
+  String browserShareOfWeb(int percent) {
+    return '占网页浏览 $percent%';
+  }
+
+  @override
+  String get browserLimitEnforced => '限额已生效';
+
+  @override
+  String get browserClickToSetLimitPrompt => '点击设置限额';
 
   @override
   String get webExportDataDescription => '将所有扩展程序数据下载为 JSON 备份文件';
