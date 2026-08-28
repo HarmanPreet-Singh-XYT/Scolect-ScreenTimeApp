@@ -7,6 +7,7 @@ import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/web/extension_settings.dart'
     if (dart.library.io) 'package:screentime/web/extension_settings_stub.dart';
 import 'package:screentime/sections/controller/services/app_blocking_service.dart';
+import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'widgets/AlertsLimits/applicationlimit.dart';
 import 'widgets/AlertsLimits/blockingBehaviorCard.dart';
 import 'widgets/AlertsLimits/notificationCard.dart';
@@ -86,6 +87,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
       WebPrivateModeService().addListener(_onPrivateModeChanged);
     } else {
       PrivateModeController().addListener(_onPrivateModeChanged);
+      AppDataStore().addListener(_loadData);
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -101,6 +103,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
       WebPrivateModeService().removeListener(_onPrivateModeChanged);
     } else {
       PrivateModeController().removeListener(_onPrivateModeChanged);
+      AppDataStore().removeListener(_loadData);
     }
     super.dispose();
   }

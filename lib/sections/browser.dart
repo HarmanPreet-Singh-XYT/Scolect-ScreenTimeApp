@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, TargetPlatform;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -17,7 +18,8 @@ import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_categories.dart';
 import 'widgets/Browser/browser_limits.dart';
 import 'widgets/Browser/browser_history.dart';
-import 'widgets/Browser/browser_source_filter_dropdown.dart' show iconForBrowser;
+import 'widgets/Browser/browser_source_filter_dropdown.dart'
+    show iconForBrowser;
 
 // ─── Main section widget ──────────────────────────────────────────────────────
 
@@ -67,6 +69,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     // Swapping the header's browser-source filter should immediately re-fetch
     // every website number on this page under the new selection.
     BrowserSourceFilterProvider().addListener(_refreshData);
+    _provider.addListener(_loadSummary);
   }
 
   Future<void> _loadSummary() async {
@@ -96,6 +99,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   void dispose() {
     _syncStatusTimer?.cancel();
     BrowserSourceFilterProvider().removeListener(_refreshData);
+    _provider.removeListener(_loadSummary);
     _animationController.dispose();
     super.dispose();
   }
@@ -129,7 +133,8 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
       return ScaffoldPage(
         padding: EdgeInsets.zero,
         content: _DesktopSetupScreen(
-          onEnabled: () => settings.updateSetting('browserExtensionEnabled', true),
+          onEnabled: () =>
+              settings.updateSetting('browserExtensionEnabled', true),
         ),
       );
     }
@@ -180,7 +185,6 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                         _ServerBadge(
                           lastSyncAt: BrowserExtensionServer.lastUsageSyncAt,
                         ),
-
                       if (_summary != null) ...[
                         const SizedBox(width: 16),
                         _QuickStat(
@@ -243,7 +247,8 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
   }
 
   Widget _buildTabBar(FluentThemeData theme, AppLocalizations l10n) {
-    final tabs = BrowserTab.values.where((t) => t != BrowserTab.settings).toList();
+    final tabs =
+        BrowserTab.values.where((t) => t != BrowserTab.settings).toList();
 
     return BrowserCard(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
@@ -310,7 +315,8 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
   void initState() {
     super.initState();
     final settings = context.read<SettingsProvider>();
-    _portController = TextEditingController(text: '${settings.browserServerPort}');
+    _portController =
+        TextEditingController(text: '${settings.browserServerPort}');
   }
 
   @override
@@ -327,10 +333,11 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
     }
     setState(() => _portError = null);
     settings.updateSetting('browserServerPort', value);
-    displayInfoBar(context, builder: (ctx, close) => InfoBar(
-      title: Text(l10n.browserServerPortSaved),
-      action: Button(onPressed: close, child: Text(l10n.ok)),
-    ));
+    displayInfoBar(context,
+        builder: (ctx, close) => InfoBar(
+              title: Text(l10n.browserServerPortSaved),
+              action: Button(onPressed: close, child: Text(l10n.ok)),
+            ));
   }
 
   @override
@@ -348,308 +355,323 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-            // Icon
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    theme.accentColor.withValues(alpha: 0.15),
-                    theme.accentColor.withValues(alpha: 0.05),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      theme.accentColor.withValues(alpha: 0.15),
+                      theme.accentColor.withValues(alpha: 0.05),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                borderRadius: BorderRadius.circular(20),
+                child:
+                    Icon(FluentIcons.globe, size: 40, color: theme.accentColor),
               ),
-              child: Icon(FluentIcons.globe, size: 40, color: theme.accentColor),
-            ),
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            // Title + subtitle
-            Text(
-              l10n.browserSetupTitle,
-              style: theme.typography.subtitle?.copyWith(fontWeight: FontWeight.w700),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              l10n.browserSetupSubtitle,
-              style: TextStyle(
-                fontSize: 13,
-                color: captionColor?.withValues(alpha: 0.6),
-                height: 1.5,
+              // Title + subtitle
+              Text(
+                l10n.browserSetupTitle,
+                style: theme.typography.subtitle
+                    ?.copyWith(fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 28),
+              const SizedBox(height: 10),
+              Text(
+                l10n.browserSetupSubtitle,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: captionColor?.withValues(alpha: 0.6),
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 28),
 
-            // Enable toggle card
-            BrowserCard(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: (settings.browserExtensionEnabled
-                              ? kBrowserGreen
-                              : captionColor ?? theme.accentColor)
-                          .withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      FluentIcons.plug_connected,
-                      size: 16,
-                      color: settings.browserExtensionEnabled
-                          ? kBrowserGreen
-                          : captionColor?.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.browserSetupEnableServer,
-                          style: const TextStyle(
-                              fontSize: 13, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          settings.browserExtensionEnabled
-                              ? l10n.browserSetupServerRunning(settings.browserServerPort)
-                              : l10n.browserSetupServerOff,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: settings.browserExtensionEnabled
+              // Enable toggle card
+              BrowserCard(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: (settings.browserExtensionEnabled
                                 ? kBrowserGreen
-                                : captionColor?.withValues(alpha: 0.45),
-                          ),
-                        ),
-                      ],
+                                : captionColor ?? theme.accentColor)
+                            .withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        FluentIcons.plug_connected,
+                        size: 16,
+                        color: settings.browserExtensionEnabled
+                            ? kBrowserGreen
+                            : captionColor?.withValues(alpha: 0.5),
+                      ),
                     ),
-                  ),
-                  ToggleSwitch(
-                    checked: settings.browserExtensionEnabled,
-                    onChanged: (v) =>
-                        settings.updateSetting('browserExtensionEnabled', v),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Port configuration card
-            BrowserCard(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.browserServerPort,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          l10n.browserServerPortDesc,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: captionColor?.withValues(alpha: 0.5),
-                          ),
-                        ),
-                        if (_portError != null) ...[
-                          const SizedBox(height: 4),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            _portError!,
-                            style: const TextStyle(fontSize: 11, color: Color(0xFFE53935)),
+                            l10n.browserSetupEnableServer,
+                            style: const TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            settings.browserExtensionEnabled
+                                ? l10n.browserSetupServerRunning(
+                                    settings.browserServerPort)
+                                : l10n.browserSetupServerOff,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: settings.browserExtensionEnabled
+                                  ? kBrowserGreen
+                                  : captionColor?.withValues(alpha: 0.45),
+                            ),
                           ),
                         ],
-                      ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  SizedBox(
-                    width: 90,
-                    child: TextBox(
-                      controller: _portController,
-                      keyboardType: TextInputType.number,
-                      placeholder: '46000',
-                      style: const TextStyle(fontSize: 13),
-                      onChanged: (_) {
-                        if (_portError != null) setState(() => _portError = null);
+                    ToggleSwitch(
+                      checked: settings.browserExtensionEnabled,
+                      onChanged: (v) =>
+                          settings.updateSetting('browserExtensionEnabled', v),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Port configuration card
+              BrowserCard(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            l10n.browserServerPort,
+                            style: const TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            l10n.browserServerPortDesc,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: captionColor?.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          if (_portError != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              _portError!,
+                              style: const TextStyle(
+                                  fontSize: 11, color: Color(0xFFE53935)),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    SizedBox(
+                      width: 90,
+                      child: TextBox(
+                        controller: _portController,
+                        keyboardType: TextInputType.number,
+                        placeholder: '46000',
+                        style: const TextStyle(fontSize: 13),
+                        onChanged: (_) {
+                          if (_portError != null)
+                            setState(() => _portError = null);
+                        },
+                        onSubmitted: (_) => _savePort(settings, l10n),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Button(
+                      onPressed: () => _savePort(settings, l10n),
+                      child: Text(l10n.saveButton),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ── Browser limits info card ───────────────────────────────────
+              BrowserCard(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: kBrowserAmber.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(FluentIcons.info,
+                          size: 16, color: kBrowserAmber),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Browser limits are enforced by the Chrome Extension',
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Daily limits and website blocking only work inside Chrome. Install the extension and enable this server — the extension handles all enforcement and syncs data here.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: captionColor?.withValues(alpha: 0.65),
+                              height: 1.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Chrome Extension Promo Card
+              BrowserCard(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: theme.accentColor.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        FluentIcons.globe,
+                        size: 22,
+                        color: theme.accentColor,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Get the Scolect Chrome Extension',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Set daily limits, block sites when limits are reached, and sync website usage to this app — all enforced directly in Chrome.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: captionColor?.withValues(alpha: 0.65),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Button(
+                      onPressed: () {
+                        final platformStr = defaultTargetPlatform ==
+                                TargetPlatform.macOS
+                            ? 'mac'
+                            : defaultTargetPlatform == TargetPlatform.windows
+                                ? 'windows'
+                                : 'linux';
+                        launchUrl(
+                          Uri.parse(
+                              'https://www.scolect.com/download?source=desktop&platform=$platformStr'),
+                          mode: LaunchMode.externalApplication,
+                        );
                       },
-                      onSubmitted: (_) => _savePort(settings, l10n),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Button(
-                    onPressed: () => _savePort(settings, l10n),
-                    child: Text(l10n.saveButton),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // ── Browser limits info card ───────────────────────────────────
-            BrowserCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: kBrowserAmber.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(FluentIcons.info, size: 16, color: kBrowserAmber),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Browser limits are enforced by the Chrome Extension',
-                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Daily limits and website blocking only work inside Chrome. Install the extension and enable this server — the extension handles all enforcement and syncs data here.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: captionColor?.withValues(alpha: 0.65),
-                            height: 1.5,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all(
+                            theme.accentColor.withValues(alpha: 0.15)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FluentIcons.open_in_new_window,
+                              size: 12, color: theme.accentColor),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Extension Info',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: theme.accentColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 12),
+              const SizedBox(height: 20),
 
-            // Chrome Extension Promo Card
-            BrowserCard(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: theme.accentColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(10),
+              // Steps card
+              BrowserCard(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.browserSetupHowTo,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: captionColor?.withValues(alpha: 0.5),
+                        letterSpacing: 0.4,
+                      ),
                     ),
-                    child: Icon(
-                      FluentIcons.globe,
-                      size: 22,
-                      color: theme.accentColor,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Get the Scolect Chrome Extension',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          'Set daily limits, block sites when limits are reached, and sync website usage to this app — all enforced directly in Chrome.',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: captionColor?.withValues(alpha: 0.65),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Button(
-                    onPressed: () {
-                      final platformStr = defaultTargetPlatform == TargetPlatform.macOS
-                          ? 'mac'
-                          : defaultTargetPlatform == TargetPlatform.windows
-                              ? 'windows'
-                              : 'linux';
-                      launchUrl(
-                        Uri.parse('https://www.scolect.com/download?source=desktop&platform=$platformStr'),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all(theme.accentColor.withValues(alpha: 0.15)),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(FluentIcons.open_in_new_window, size: 12, color: theme.accentColor),
-                        const SizedBox(width: 6),
-                        Text(
-                          'Extension Info',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: theme.accentColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    _SetupStep(number: 1, text: l10n.browserSetupStep1),
+                    _SetupStep(number: 2, text: l10n.browserSetupStep2),
+                    _SetupStep(number: 3, text: l10n.browserSetupStep3),
+                    _SetupStep(
+                        number: 4, text: l10n.browserSetupStep4, last: true),
+                  ],
+                ),
               ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Steps card
-            BrowserCard(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10n.browserSetupHowTo,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: captionColor?.withValues(alpha: 0.5),
-                      letterSpacing: 0.4,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _SetupStep(number: 1, text: l10n.browserSetupStep1),
-                  _SetupStep(number: 2, text: l10n.browserSetupStep2),
-                  _SetupStep(number: 3, text: l10n.browserSetupStep3),
-                  _SetupStep(number: 4, text: l10n.browserSetupStep4, last: true),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
-
-
 
 class _SetupStep extends StatelessWidget {
   final int number;
@@ -723,7 +745,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
   void initState() {
     super.initState();
     final settings = context.read<SettingsProvider>();
-    _portController = TextEditingController(text: '${settings.browserServerPort}');
+    _portController =
+        TextEditingController(text: '${settings.browserServerPort}');
   }
 
   @override
@@ -740,10 +763,11 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
     }
     setState(() => _portError = null);
     settings.updateSetting('browserServerPort', value);
-    displayInfoBar(context, builder: (ctx, close) => InfoBar(
-      title: Text(l10n.browserServerPortSaved),
-      action: Button(onPressed: close, child: Text(l10n.ok)),
-    ));
+    displayInfoBar(context,
+        builder: (ctx, close) => InfoBar(
+              title: Text(l10n.browserServerPortSaved),
+              action: Button(onPressed: close, child: Text(l10n.ok)),
+            ));
   }
 
   @override
@@ -766,7 +790,9 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: (settings.browserExtensionEnabled ? kBrowserGreen : (captionColor ?? theme.accentColor))
+                    color: (settings.browserExtensionEnabled
+                            ? kBrowserGreen
+                            : (captionColor ?? theme.accentColor))
                         .withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -785,12 +811,14 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                     children: [
                       Text(
                         l10n.browserSetupEnableServer,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                        style: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         settings.browserExtensionEnabled
-                            ? l10n.browserSetupServerRunning(settings.browserServerPort)
+                            ? l10n.browserSetupServerRunning(
+                                settings.browserServerPort)
                             : l10n.browserSetupServerOff,
                         style: TextStyle(
                           fontSize: 12,
@@ -804,7 +832,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                 ),
                 ToggleSwitch(
                   checked: settings.browserExtensionEnabled,
-                  onChanged: (v) => settings.updateSetting('browserExtensionEnabled', v),
+                  onChanged: (v) =>
+                      settings.updateSetting('browserExtensionEnabled', v),
                 ),
               ],
             ),
@@ -815,7 +844,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
           // ── Port configuration ─────────────────────────────────────────
           Text(
             l10n.browserServerPort,
-            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+            style: theme.typography.bodyStrong
+                ?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           BrowserCard(
@@ -841,7 +871,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                         placeholder: '46000',
                         style: const TextStyle(fontSize: 13),
                         onChanged: (_) {
-                          if (_portError != null) setState(() => _portError = null);
+                          if (_portError != null)
+                            setState(() => _portError = null);
                         },
                       ),
                     ),
@@ -858,25 +889,27 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                   const SizedBox(height: 6),
                   Text(
                     _portError!,
-                    style: const TextStyle(fontSize: 11, color: Color(0xFFE53935)),
+                    style:
+                        const TextStyle(fontSize: 11, color: Color(0xFFE53935)),
                   ),
                 ],
               ],
             ),
           ),
 
-
           const SizedBox(height: 20),
 
           // ── Connected browsers ──────────────────────────────────────────
           Text(
             l10n.browserConnectedBrowsers,
-            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+            style: theme.typography.bodyStrong
+                ?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 4),
           Text(
             l10n.browserConnectedBrowsersDesc,
-            style: TextStyle(fontSize: 12, color: captionColor?.withValues(alpha: 0.6)),
+            style: TextStyle(
+                fontSize: 12, color: captionColor?.withValues(alpha: 0.6)),
           ),
           const SizedBox(height: 8),
           const _ConnectedBrowsersList(),
@@ -886,7 +919,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
           // ── Delete browser data ────────────────────────────────────────
           Text(
             l10n.browserDesktopClearDataTitle,
-            style: theme.typography.bodyStrong?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
+            style: theme.typography.bodyStrong
+                ?.copyWith(fontSize: 13, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           BrowserCard(
@@ -908,7 +942,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                     backgroundColor: WidgetStatePropertyAll(
                       const Color(0xFFE53935).withValues(alpha: 0.1),
                     ),
-                    foregroundColor: const WidgetStatePropertyAll(Color(0xFFE53935)),
+                    foregroundColor:
+                        const WidgetStatePropertyAll(Color(0xFFE53935)),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
@@ -920,7 +955,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(FluentIcons.delete, size: 12, color: Color(0xFFE53935)),
+                      const Icon(FluentIcons.delete,
+                          size: 12, color: Color(0xFFE53935)),
                       const SizedBox(width: 6),
                       Text(l10n.browserDesktopClearDataButtonLabel),
                     ],
@@ -934,7 +970,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
     );
   }
 
-  Future<void> _confirmClearWebData(BuildContext context, AppLocalizations l10n) {
+  Future<void> _confirmClearWebData(
+      BuildContext context, AppLocalizations l10n) {
     return showDialog<void>(
       context: context,
       builder: (ctx) => ContentDialog(
@@ -1038,7 +1075,8 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
       context: context,
       builder: (ctx) => ContentDialog(
         title: Text(l10n.browserSourceRemoveTitle),
-        content: Text(l10n.browserSourceRemoveConfirm(source.localizedLabel(l10n))),
+        content:
+            Text(l10n.browserSourceRemoveConfirm(source.localizedLabel(l10n))),
         actions: [
           Button(
             child: Text(l10n.cancelButton),
@@ -1113,7 +1151,8 @@ class _BrowserSourceRow extends StatelessWidget {
   String _lastSeenLabel(AppLocalizations l10n) {
     final elapsed = DateTime.now().difference(source.lastSeen);
     if (elapsed.inMinutes < 1) return l10n.browserSyncedJustNow;
-    if (elapsed.inHours < 1) return l10n.browserSyncedMinutesAgo(elapsed.inMinutes);
+    if (elapsed.inHours < 1)
+      return l10n.browserSyncedMinutesAgo(elapsed.inMinutes);
     if (elapsed.inDays < 1) return l10n.browserSyncedHoursAgo(elapsed.inHours);
     return l10n.browserSourceLastSeenDaysAgo(elapsed.inDays);
   }
@@ -1133,7 +1172,8 @@ class _BrowserSourceRow extends StatelessWidget {
               color: kBrowserBlue.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(iconForBrowser(source.detectedBrowser), size: 16, color: kBrowserBlue),
+            child: Icon(iconForBrowser(source.detectedBrowser),
+                size: 16, color: kBrowserBlue),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -1142,14 +1182,16 @@ class _BrowserSourceRow extends StatelessWidget {
               children: [
                 Text(
                   source.localizedLabel(l10n),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   '${l10n.browserSourceLastSeen}: ${_lastSeenLabel(l10n)}',
                   style: TextStyle(
                     fontSize: 11,
-                    color: theme.typography.caption?.color?.withValues(alpha: 0.55),
+                    color: theme.typography.caption?.color
+                        ?.withValues(alpha: 0.55),
                   ),
                 ),
               ],
@@ -1158,7 +1200,8 @@ class _BrowserSourceRow extends StatelessWidget {
           Tooltip(
             message: l10n.browserSourcePingTooltip,
             child: IconButton(
-              icon: Icon(FluentIcons.ringer, size: 14, color: theme.accentColor),
+              icon:
+                  Icon(FluentIcons.ringer, size: 14, color: theme.accentColor),
               onPressed: onPing,
             ),
           ),

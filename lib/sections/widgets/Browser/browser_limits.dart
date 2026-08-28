@@ -22,7 +22,14 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   @override
   void initState() {
     super.initState();
+    _provider.addListener(_loadData);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _provider.removeListener(_loadData);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -48,8 +55,10 @@ class _BrowserLimitsState extends State<BrowserLimits> {
       return const Center(child: ProgressRing());
     }
 
-    final withLimits = _sites.where((s) => s.dailyLimit > Duration.zero).toList();
-    final withoutLimits = _sites.where((s) => s.dailyLimit == Duration.zero).toList();
+    final withLimits =
+        _sites.where((s) => s.dailyLimit > Duration.zero).toList();
+    final withoutLimits =
+        _sites.where((s) => s.dailyLimit == Duration.zero).toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -234,7 +243,8 @@ class _LimitRowState extends State<_LimitRow> {
                 children: [
                   Column(
                     children: [
-                      Text(l10n.browserHours, style: const TextStyle(fontSize: 12)),
+                      Text(l10n.browserHours,
+                          style: const TextStyle(fontSize: 12)),
                       const SizedBox(height: 4),
                       SizedBox(
                         width: 120,
@@ -256,7 +266,8 @@ class _LimitRowState extends State<_LimitRow> {
                   ),
                   Column(
                     children: [
-                      Text(l10n.minutesLabel, style: const TextStyle(fontSize: 12)),
+                      Text(l10n.minutesLabel,
+                          style: const TextStyle(fontSize: 12)),
                       const SizedBox(height: 4),
                       SizedBox(
                         width: 120,
@@ -294,8 +305,7 @@ class _LimitRowState extends State<_LimitRow> {
             FilledButton(
               onPressed: () async {
                 Navigator.of(ctx).pop();
-                final limit =
-                    Duration(hours: hours, minutes: minutes);
+                final limit = Duration(hours: hours, minutes: minutes);
                 await BrowserDataProvider().updateWebsiteMetadata(
                   site.domain,
                   dailyLimit: limit,
@@ -320,8 +330,8 @@ class _LimitRowState extends State<_LimitRow> {
     // Progress: how much of the limit has been consumed today
     double progress = 0;
     if (hasLimit && site.timeSpent > Duration.zero) {
-      progress =
-          (site.timeSpent.inSeconds / site.dailyLimit.inSeconds).clamp(0.0, 1.0);
+      progress = (site.timeSpent.inSeconds / site.dailyLimit.inSeconds)
+          .clamp(0.0, 1.0);
     }
     final overLimit = progress >= 1.0;
     final limitColor = overLimit
@@ -342,8 +352,7 @@ class _LimitRowState extends State<_LimitRow> {
               color: _hovered
                   ? theme.inactiveBackgroundColor.withValues(alpha: 0.25)
                   : Colors.transparent,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               child: Row(
                 children: [
                   Container(
@@ -364,8 +373,7 @@ class _LimitRowState extends State<_LimitRow> {
                       children: [
                         Text(site.displayName,
                             style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500)),
+                                fontSize: 13, fontWeight: FontWeight.w500)),
                         if (hasLimit) ...[
                           const SizedBox(height: 4),
                           Stack(

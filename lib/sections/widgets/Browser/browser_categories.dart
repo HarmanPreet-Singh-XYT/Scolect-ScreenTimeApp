@@ -23,7 +23,14 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
   @override
   void initState() {
     super.initState();
+    _provider.addListener(_loadData);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _provider.removeListener(_loadData);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -60,8 +67,8 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
       );
     }
 
-    final totalSecs = _categories.fold<int>(
-      0, (sum, c) => sum + c.totalTime.inSeconds);
+    final totalSecs =
+        _categories.fold<int>(0, (sum, c) => sum + c.totalTime.inSeconds);
 
     // Color palette cycling
     const palette = [
@@ -157,8 +164,8 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                   children: [
                     // Header row
                     GestureDetector(
-                      onTap: () => setState(() =>
-                          _expanded = isExpanded ? null : cat.category),
+                      onTap: () => setState(
+                          () => _expanded = isExpanded ? null : cat.category),
                       child: MouseRegion(
                         cursor: SystemMouseCursors.click,
                         child: Padding(
@@ -193,8 +200,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                               ),
                               const SizedBox(width: 12),
                               BrowserStatChip(
-                                label:
-                                    '${cat.percentage.toStringAsFixed(0)}%',
+                                label: '${cat.percentage.toStringAsFixed(0)}%',
                                 color: color.withValues(alpha: 0.15),
                                 textColor: color,
                               ),
@@ -237,13 +243,15 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                             width: 24,
                                             height: 24,
                                             decoration: BoxDecoration(
-                                              color: color.withValues(alpha: 0.08),
+                                              color:
+                                                  color.withValues(alpha: 0.08),
                                               borderRadius:
                                                   BorderRadius.circular(5),
                                             ),
                                             child: Icon(FluentIcons.globe,
                                                 size: 12,
-                                                color: color.withValues(alpha: 0.6)),
+                                                color: color.withValues(
+                                                    alpha: 0.6)),
                                           ),
                                           const SizedBox(width: 10),
                                           Expanded(

@@ -2,7 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Colors;
 import 'package:flutter/material.dart' show Colors;
 import 'package:screentime/l10n/app_localizations.dart';
-import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart' show DurationFormatter;
+import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart'
+    show DurationFormatter;
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
 
@@ -24,7 +25,14 @@ class _BrowserHistoryState extends State<BrowserHistory> {
   @override
   void initState() {
     super.initState();
+    _provider.addListener(_load);
     _load();
+  }
+
+  @override
+  void dispose() {
+    _provider.removeListener(_load);
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -41,7 +49,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
 
   // ── Stats ──────────────────────────────────────────────────────────────────
 
-  Duration get _totalTime => _history.fold(Duration.zero, (s, d) => s + d.totalTime);
+  Duration get _totalTime =>
+      _history.fold(Duration.zero, (s, d) => s + d.totalTime);
 
   Duration get _avgPerDay {
     final active = _history.where((d) => d.totalTime > Duration.zero).length;
@@ -50,7 +59,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
   }
 
   ({String date, Duration totalTime, int siteCount}) get _peakDay {
-    if (_history.isEmpty) return (date: '–', totalTime: Duration.zero, siteCount: 0);
+    if (_history.isEmpty)
+      return (date: '–', totalTime: Duration.zero, siteCount: 0);
     return _history.reduce((a, b) => a.totalTime >= b.totalTime ? a : b);
   }
 
@@ -62,8 +72,21 @@ class _BrowserHistoryState extends State<BrowserHistory> {
     if (parts.length < 3) return dateKey;
     final month = int.tryParse(parts[1]) ?? 0;
     final day = int.tryParse(parts[2]) ?? 0;
-    final months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = [
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
     return '${months[month]} $day';
   }
 
@@ -179,7 +202,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                   : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: _BarChart(
+                        Expanded(
+                            child: _BarChart(
                           history: _history,
                           touchedIndex: _touchedIndex,
                           onTouch: (i) => setState(() => _touchedIndex = i),
@@ -270,14 +294,17 @@ class _BarChart extends StatelessWidget {
         ),
         titlesData: FlTitlesData(
           show: true,
-          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 final i = value.toInt();
-                if (i < 0 || i >= history.length) return const SizedBox.shrink();
+                if (i < 0 || i >= history.length)
+                  return const SizedBox.shrink();
                 final day = history[i];
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -335,7 +362,8 @@ class _BarChart extends StatelessWidget {
           drawVerticalLine: false,
           horizontalInterval: yMax / 4,
           getDrawingHorizontalLine: (_) => FlLine(
-            color: captionColor?.withValues(alpha: 0.08) ?? Colors.grey.withValues(alpha: 0.08),
+            color: captionColor?.withValues(alpha: 0.08) ??
+                Colors.grey.withValues(alpha: 0.08),
             strokeWidth: 1,
           ),
         ),
@@ -350,12 +378,16 @@ class _BarChart extends StatelessWidget {
               BarChartRodData(
                 toY: day.totalTime.inSeconds.toDouble(),
                 width: history.length <= 7 ? 32 : 18,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(6)),
                 gradient: LinearGradient(
                   colors: isTouched
                       ? [accent, accent.withValues(alpha: 0.7)]
                       : isToday
-                          ? [accent.withValues(alpha: 0.9), accent.withValues(alpha: 0.5)]
+                          ? [
+                              accent.withValues(alpha: 0.9),
+                              accent.withValues(alpha: 0.5)
+                            ]
                           : [
                               accent.withValues(alpha: 0.5),
                               accent.withValues(alpha: 0.25),
@@ -405,7 +437,8 @@ class _RangePicker extends StatelessWidget {
               duration: kBrowserHoverDuration,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
-                color: sel ? accent.withValues(alpha: 0.15) : Colors.transparent,
+                color:
+                    sel ? accent.withValues(alpha: 0.15) : Colors.transparent,
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Text(
@@ -413,7 +446,9 @@ class _RangePicker extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: sel ? FontWeight.w600 : FontWeight.w400,
-                  color: sel ? accent : theme.typography.caption?.color?.withValues(alpha: 0.6),
+                  color: sel
+                      ? accent
+                      : theme.typography.caption?.color?.withValues(alpha: 0.6),
                 ),
               ),
             ),

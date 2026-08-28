@@ -1,16 +1,19 @@
+import 'package:flutter/foundation.dart';
 import '../sections/controller/data_controllers/browser_data_controller.dart';
 
-class WebBrowserDataProvider {
+class WebBrowserDataProvider extends ChangeNotifier {
   static final WebBrowserDataProvider _instance = WebBrowserDataProvider._();
   factory WebBrowserDataProvider() => _instance;
   WebBrowserDataProvider._();
 
   Future<List<WebsiteBasicDetail>> fetchAllWebsites({
     bool includeHistorical = false,
-  }) async => [];
-  
-  Future<({Duration totalTime, int siteCount, int visitCount})> fetchTodaySummary() async => 
-      (totalTime: Duration.zero, siteCount: 0, visitCount: 0);
+  }) async =>
+      [];
+
+  Future<({Duration totalTime, int siteCount, int visitCount})>
+      fetchTodaySummary() async =>
+          (totalTime: Duration.zero, siteCount: 0, visitCount: 0);
 
   Future<List<WebsiteCategorySummary>> fetchCategoryBreakdown() async => [];
 
@@ -25,9 +28,13 @@ class WebBrowserDataProvider {
     Duration? dailyLimit,
     String? siteName,
     bool? isPrivate,
-  }) async => false;
+  }) async =>
+      false;
 
-  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(String domain, {int days = 7}) async => [];
+  Future<List<({String date, Duration timeSpent, int visits})>>
+      fetchSiteHistory(String domain, {int days = 7}) async => [];
 
-  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async => [];
+  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
+          {int days = 7}) async =>
+      [];
 }

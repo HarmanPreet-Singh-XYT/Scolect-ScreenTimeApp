@@ -24,7 +24,14 @@ class _BrowserOverviewState extends State<BrowserOverview> {
   @override
   void initState() {
     super.initState();
+    _provider.addListener(_loadData);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _provider.removeListener(_loadData);
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -51,7 +58,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
 
     final summary = _summary!;
     final totalSecs = summary.totalTime.inSeconds;
-    final maxSecs = _topSites.isNotEmpty ? _topSites.first.timeSpent.inSeconds : 1;
+    final maxSecs =
+        _topSites.isNotEmpty ? _topSites.first.timeSpent.inSeconds : 1;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
@@ -131,9 +139,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                   children: _topSites.asMap().entries.map((entry) {
                     final i = entry.key;
                     final site = entry.value;
-                    final pct = maxSecs > 0
-                        ? site.timeSpent.inSeconds / maxSecs
-                        : 0.0;
+                    final pct =
+                        maxSecs > 0 ? site.timeSpent.inSeconds / maxSecs : 0.0;
                     return _SiteRow(
                       site: site,
                       barFraction: pct,
@@ -262,7 +269,10 @@ class _SiteRow extends StatelessWidget {
                             height: 4,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [accentColor, accentColor.withValues(alpha: 0.6)],
+                                colors: [
+                                  accentColor,
+                                  accentColor.withValues(alpha: 0.6)
+                                ],
                               ),
                               borderRadius: BorderRadius.circular(2),
                             ),

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
 import '../browser_source_filter.dart';
 import '../categories_controller.dart';
@@ -91,18 +91,22 @@ class WebsiteCategorySummary {
 
 // ─── Data Provider ────────────────────────────────────────────────────────────
 
-class BrowserDataProvider {
+class BrowserDataProvider extends ChangeNotifier {
   // On web, delegate everything to WebBrowserDataProvider which reads
   // from chrome.storage.local instead of the desktop Hive/SQLite store.
   static final BrowserDataProvider _instance = BrowserDataProvider._internal();
   static final _webInstance = WebBrowserDataProvider();
 
   factory BrowserDataProvider() {
-    if (kIsWeb) return _WebDelegatingProvider(_webInstance) as BrowserDataProvider;
+    if (kIsWeb)
+      return _WebDelegatingProvider(_webInstance) as BrowserDataProvider;
     return _instance;
   }
 
-  BrowserDataProvider._internal();
+  BrowserDataProvider._internal() {
+    _dataStore.addListener(notifyListeners);
+    BrowserSourceFilterProvider().addListener(notifyListeners);
+  }
 
   final AppDataStore _dataStore = AppDataStore();
   bool _initialized = false;
@@ -162,7 +166,8 @@ class BrowserDataProvider {
 
     for (final domain in _uniqueWebDomains) {
       final appName = '$_kWebPrefix$domain';
-      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
+      final metadata =
+          _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata == null) continue;
 
       final record = _readUsage(appName, startOfDay);
@@ -241,7 +246,8 @@ class BrowserDataProvider {
 
     for (final domain in _uniqueWebDomains) {
       final appName = '$_kWebPrefix$domain';
-      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
+      final metadata =
+          _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata == null) continue;
 
       final record = _readUsage(appName, startOfDay);
@@ -270,8 +276,8 @@ class BrowserDataProvider {
 
   // ─── Per-site history (last N days) ──────────────────────────────────────
 
-  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
-      String domain, {int days = 7}) async {
+  Future<List<({String date, Duration timeSpent, int visits})>>
+      fetchSiteHistory(String domain, {int days = 7}) async {
     await _ensureInitialized();
 
     final result = <({String date, Duration timeSpent, int visits})>[];
@@ -294,7 +300,8 @@ class BrowserDataProvider {
 
   // ─── History (last N days) ────────────────────────────────────────────────
 
-  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) async {
+  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
+      {int days = 7}) async {
     await _ensureInitialized();
 
     final result = <({String date, Duration totalTime, int siteCount})>[];
@@ -333,7 +340,8 @@ class BrowserDataProvider {
     final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
     for (final domain in _uniqueWebDomains) {
       final appName = '$_kWebPrefix$domain';
-      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
+      final metadata =
+          _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata != null) cats.add(metadata.category);
     }
     return ['All', ...cats.toList()..sort()];
@@ -353,9 +361,10 @@ class BrowserDataProvider {
   }) async {
     await _ensureInitialized();
     final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
-    final targetAppName = (selectedSourceId != null && selectedSourceId.isNotEmpty)
-        ? '$_kWebPrefix$domain::$selectedSourceId'
-        : '$_kWebPrefix$domain';
+    final targetAppName =
+        (selectedSourceId != null && selectedSourceId.isNotEmpty)
+            ? '$_kWebPrefix$domain::$selectedSourceId'
+            : '$_kWebPrefix$domain';
     final now = DateTime.now().millisecondsSinceEpoch;
 
     final ok = await _dataStore.updateAppMetadata(
@@ -392,6 +401,7 @@ class BrowserDataProvider {
     }
 
     BrowserExtensionServer.broadcastFocusState();
+    notifyListeners();
     return ok;
   }
 }
@@ -406,14 +416,20 @@ class _WebDelegatingProvider extends BrowserDataProvider {
   _WebDelegatingProvider(this._web) : super._internal();
 
   @override
+  void addListener(VoidCallback listener) => _web.addListener(listener);
+
+  @override
+  void removeListener(VoidCallback listener) => _web.removeListener(listener);
+
+  @override
   Future<List<WebsiteBasicDetail>> fetchAllWebsites({
     bool includeHistorical = false,
   }) =>
       _web.fetchAllWebsites(includeHistorical: includeHistorical);
 
   @override
-  Future<({Duration totalTime, int siteCount, int visitCount})> fetchTodaySummary() =>
-      _web.fetchTodaySummary();
+  Future<({Duration totalTime, int siteCount, int visitCount})>
+      fetchTodaySummary() => _web.fetchTodaySummary();
 
   @override
   Future<List<WebsiteCategorySummary>> fetchCategoryBreakdown() =>
@@ -423,12 +439,13 @@ class _WebDelegatingProvider extends BrowserDataProvider {
   Future<List<String>> fetchAllCategories() => _web.fetchAllCategories();
 
   @override
-  Future<List<({String date, Duration timeSpent, int visits})>> fetchSiteHistory(
-          String domain, {int days = 7}) =>
-      _web.fetchSiteHistory(domain, days: days);
+  Future<List<({String date, Duration timeSpent, int visits})>>
+      fetchSiteHistory(String domain, {int days = 7}) =>
+          _web.fetchSiteHistory(domain, days: days);
 
   @override
-  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory({int days = 7}) =>
+  Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
+          {int days = 7}) =>
       _web.fetchHistory(days: days);
 
   @override
