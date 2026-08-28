@@ -5,7 +5,7 @@ import 'package:screentime/sections/controller/services/private_mode_service.dar
 import 'package:screentime/web/web_private_mode_service.dart'
     if (dart.library.io) 'package:screentime/web/web_private_mode_service_stub.dart';
 import 'package:screentime/sections/widgets/Settings/privacy.dart'
-    show showPrivateModeRecoveryFlow;
+    show showPrivateModeRecoveryFlow, showPrivateModeSetPasswordFlow;
 import 'private_mode_unlock_dialog.dart';
 
 /// Titlebar control that switches every page (Overview, Applications,
@@ -68,6 +68,19 @@ class _PrivateModeToggleButtonState extends State<PrivateModeToggleButton> {
   }
 
   Future<void> _handleTap() async {
+    if (!_isSetUp) {
+      final created = await showPrivateModeSetPasswordFlow(context);
+      if (created) {
+        await _refreshIsSetUp();
+        if (kIsWeb) {
+          WebPrivateModeService().setShowPrivateOnly(true);
+        } else {
+          PrivateModeController().setShowPrivateOnly(true);
+        }
+      }
+      return;
+    }
+
     if (_showPrivateOnly) {
       if (kIsWeb) {
         WebPrivateModeService().setShowPrivateOnly(false);
@@ -114,6 +127,7 @@ class _PrivateModeToggleButtonState extends State<PrivateModeToggleButton> {
   /// away (password required again next time), rather than just switching
   /// back to the public view like a normal tap does.
   void _handleLock() {
+    if (!_isSetUp) return;
     if (kIsWeb) {
       if (!WebPrivateModeService().isUnlocked) return;
       WebPrivateModeService().lock();
@@ -125,18 +139,21 @@ class _PrivateModeToggleButtonState extends State<PrivateModeToggleButton> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isSetUp) return const SizedBox.shrink();
-
     final l10n = AppLocalizations.of(context)!;
-    final baseTooltip = _showPrivateOnly
-        ? l10n.privateModeHideAction
-        : l10n.privateModeShowAction;
-    final alreadyUnlocked = kIsWeb
-        ? WebPrivateModeService().isUnlocked
-        : PrivateModeController().isUnlocked;
-    final tooltip = alreadyUnlocked
-        ? '$baseTooltip\n${l10n.privateModeLockHint}'
-        : baseTooltip;
+    final String tooltip;
+    if (!_isSetUp) {
+      tooltip = l10n.privateModeSetPasswordTitle;
+    } else {
+      final baseTooltip = _showPrivateOnly
+          ? l10n.privateModeHideAction
+          : l10n.privateModeShowAction;
+      final alreadyUnlocked = kIsWeb
+          ? WebPrivateModeService().isUnlocked
+          : PrivateModeController().isUnlocked;
+      tooltip = alreadyUnlocked
+          ? '$baseTooltip\n${l10n.privateModeLockHint}'
+          : baseTooltip;
+    }
     final icon = _showPrivateOnly ? FluentIcons.unlock : FluentIcons.lock;
     final accent = FluentTheme.of(context).accentColor;
 
@@ -178,3 +195,4 @@ class _PrivateModeToggleButtonState extends State<PrivateModeToggleButton> {
     );
   }
 }
+

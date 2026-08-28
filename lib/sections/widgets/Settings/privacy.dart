@@ -389,3 +389,22 @@ Future<void> showPrivateModeRecoveryFlow(BuildContext context) async {
     builder: (_) => const PrivateModeRecoverySetupDialog(),
   );
 }
+
+/// Entry point for first-time password setup from the titlebar or settings.
+/// Returns true if password and recovery options were set successfully.
+Future<bool> showPrivateModeSetPasswordFlow(BuildContext context) async {
+  final passwordSet = await showDialog<bool>(
+    context: context,
+    barrierDismissible: true,
+    builder: (_) => const _SetPasswordDialog(isChange: false),
+  );
+  if (passwordSet != true || !context.mounted) return false;
+
+  await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const PrivateModeRecoverySetupDialog(),
+  );
+  return true;
+}
+

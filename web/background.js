@@ -1122,6 +1122,7 @@ async function runSync() {
         dailyLimitSeconds: dMeta.dailyLimitSeconds ?? 0,
         isTracking:        dMeta.isTracking        ?? true,
         isProductive:      dMeta.isProductive      ?? false,
+        isPrivate:         dMeta.isPrivate          ?? false,
         category:          dMeta.category          ?? '',
         updatedAt:         dMeta.updatedAt         || 0,
       };

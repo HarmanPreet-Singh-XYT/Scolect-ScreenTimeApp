@@ -51,12 +51,15 @@ void showBrowserLimitPicker(
                     Text(l10n.browserHours,
                         style: const TextStyle(fontSize: 12)),
                     const SizedBox(height: 4),
-                    NumberBox<int>(
-                      value: hours,
-                      min: 0,
-                      max: 23,
-                      onChanged: (v) => setInner(() => hours = v ?? 0),
-                      mode: SpinButtonPlacementMode.inline,
+                    SizedBox(
+                      width: 100,
+                      child: NumberBox<int>(
+                        value: hours,
+                        min: 0,
+                        max: 23,
+                        onChanged: (v) => setInner(() => hours = v ?? 0),
+                        mode: SpinButtonPlacementMode.inline,
+                      ),
                     ),
                   ],
                 ),
@@ -71,12 +74,15 @@ void showBrowserLimitPicker(
                     Text(l10n.minutesLabel,
                         style: const TextStyle(fontSize: 12)),
                     const SizedBox(height: 4),
-                    NumberBox<int>(
-                      value: minutes,
-                      min: 0,
-                      max: 59,
-                      onChanged: (v) => setInner(() => minutes = v ?? 0),
-                      mode: SpinButtonPlacementMode.inline,
+                    SizedBox(
+                      width: 100,
+                      child: NumberBox<int>(
+                        value: minutes,
+                        min: 0,
+                        max: 59,
+                        onChanged: (v) => setInner(() => minutes = v ?? 0),
+                        mode: SpinButtonPlacementMode.inline,
+                      ),
                     ),
                   ],
                 ),

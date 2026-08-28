@@ -419,16 +419,18 @@ class _WebTitleBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final isDark = FluentTheme.of(context).brightness == Brightness.dark;
     final themeProvider = context.watch<ThemeCustomizationProvider>();
     final customTheme = themeProvider.currentTheme;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: isDark ? customTheme.darkSurface : customTheme.lightSurface,
+        color: isDark
+            ? customTheme.darkSurfaceSecondary
+            : customTheme.lightSurface,
         border: Border(
           bottom: BorderSide(
             color: isDark ? customTheme.darkBorder : customTheme.lightBorder,
@@ -441,9 +443,7 @@ class _WebTitleBar extends StatelessWidget {
           // Sidebar Toggle Button (matches desktop title bar toggle)
           IconButton(
             icon: Icon(
-              isSidebarExpanded
-                  ? FluentIcons.global_nav_button
-                  : FluentIcons.global_nav_button,
+              FluentIcons.global_nav_button,
               size: 16,
             ),
             onPressed: onToggleSidebar,
@@ -456,13 +456,17 @@ class _WebTitleBar extends StatelessWidget {
           // Title (shortened on mobile so the mode chip / theme toggle fit)
           Expanded(
             child: Text(
-              isMobile ? 'Scolect' : 'Scolect Web Dashboard',
+              isMobile
+                  ? (l10n?.appWindowTitle ?? 'Scolect')
+                  : '${l10n?.appWindowTitle ?? 'Scolect'} Web Dashboard',
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
-                color: theme.typography.body?.color,
+                color: isDark
+                    ? customTheme.darkTextPrimary
+                    : customTheme.lightTextPrimary,
               ),
             ),
           ),
@@ -471,10 +475,11 @@ class _WebTitleBar extends StatelessWidget {
 
           // Mode Chip
           _ModeChip(mode: mode),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
 
           // Theme Toggle
           _ThemeToggleButton(),
+          const SizedBox(width: 4),
 
           // Private Mode Toggle
           PrivateModeToggleButton(isDark: isDark),
@@ -483,6 +488,7 @@ class _WebTitleBar extends StatelessWidget {
     );
   }
 }
+
 
 class _ModeChip extends StatelessWidget {
   final ExtensionMode mode;

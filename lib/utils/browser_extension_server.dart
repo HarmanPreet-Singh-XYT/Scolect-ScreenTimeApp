@@ -388,6 +388,7 @@ class BrowserExtensionServer {
       final extLimitSecs = (entry['dailyLimitSeconds'] as num?)?.toInt();
       final extIsTracking = entry['isTracking'] as bool?;
       final extIsProductive = entry['isProductive'] as bool?;
+      final extIsPrivate = entry['isPrivate'] as bool?;
       final extCategory = entry['category'] as String?;
       final extUpdatedAt = (entry['updatedAt'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch;
 
@@ -438,6 +439,7 @@ class BrowserExtensionServer {
               ? Duration(seconds: extLimitSecs)
               : null,
           limitStatus: extLimitSecs != null && extLimitSecs > 0,
+          isPrivate: extIsPrivate ?? false,
           updatedAt: extUpdatedAt,
         );
         // Also ensure global appName has basic categorization if not yet set
@@ -473,6 +475,7 @@ class BrowserExtensionServer {
           limitStatus: newLimitStatus,
           isTracking: extIsTracking ?? existingMeta.isTracking,
           isProductive: extIsProductive ?? existingMeta.isProductive,
+          isPrivate: extIsPrivate ?? existingMeta.isPrivate,
           updatedAt: extUpdatedAt,
         );
 
@@ -488,6 +491,7 @@ class BrowserExtensionServer {
               limitStatus: newLimitStatus,
               isTracking: extIsTracking ?? (globalMeta?.isTracking ?? true),
               isProductive: extIsProductive ?? (globalMeta?.isProductive ?? false),
+              isPrivate: extIsPrivate ?? (globalMeta?.isPrivate ?? false),
               updatedAt: extUpdatedAt,
             );
           }
