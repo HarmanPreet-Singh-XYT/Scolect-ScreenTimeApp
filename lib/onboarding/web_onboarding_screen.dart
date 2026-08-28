@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/widgets.dart' as flutter_widgets;
 import 'package:screentime/app_design.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/onboarding/onboarding_mockups.dart';
 import 'package:screentime/web/chrome_storage_interop.dart'
     if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
@@ -29,59 +30,62 @@ class _SlideData {
 
 enum _VisualType { welcome, puzzle, sync, shield, dashboard, rocket }
 
-const List<_SlideData> _slides = [
+const List<Color> _slideColors = [
+  Color(0xFF6366F1),
+  Color(0xFF8B5CF6),
+  Color(0xFF6366F1),
+  Color(0xFF10B981),
+  Color(0xFFF59E0B),
+  Color(0xFF8B5CF6),
+];
+
+List<_SlideData> _getSlides(AppLocalizations l10n) => [
   _SlideData(
     emoji: '👋',
-    accentColor: Color(0xFF6366F1),
-    title: 'Welcome to Scolect',
-    description:
-        'The Scolect browser extension tracks time spent on every website — giving you a full picture of where your day goes online.',
-    chips: ['Automatic tracking', 'Zero setup', 'Privacy-first'],
+    accentColor: _slideColors[0],
+    title: l10n.onboardingWelcomeTitle,
+    description: l10n.onboardingWelcomeDesc,
+    chips: const ['Automatic tracking', 'Zero setup', 'Privacy-first'],
     visualType: _VisualType.welcome,
   ),
   _SlideData(
     emoji: '🔌',
-    accentColor: Color(0xFF8B5CF6),
-    title: 'Works Right in Your Browser',
-    description:
-        'No accounts, no sign-ups. The extension runs silently in the background and tracks every domain you visit, automatically.',
-    chips: ['Always-on', 'All websites', 'No login needed'],
+    accentColor: _slideColors[1],
+    title: l10n.onboardingWorksInBrowserTitle,
+    description: l10n.onboardingWorksInBrowserDesc,
+    chips: const ['Always-on', 'All websites', 'No login needed'],
     visualType: _VisualType.puzzle,
   ),
   _SlideData(
     emoji: '📊',
-    accentColor: Color(0xFF6366F1),
-    title: 'Your Usage, Right Here',
-    description:
-        'This dashboard shows a breakdown of every site you visit — time spent, visit counts, and daily trends. All stored locally.',
-    chips: ['Daily breakdown', 'Visit counts', 'Local storage only'],
+    accentColor: _slideColors[2],
+    title: l10n.onboardingUsageRightHereTitle,
+    description: l10n.onboardingUsageRightHereDesc,
+    chips: const ['Daily breakdown', 'Visit counts', 'Local storage only'],
     visualType: _VisualType.dashboard,
   ),
   _SlideData(
     emoji: '🔗',
-    accentColor: Color(0xFF10B981),
-    title: 'Sync with the Desktop App',
-    description:
-        'Install the Scolect desktop app to merge browser and desktop usage into one unified timeline. Limits set on desktop apply here too.',
-    chips: ['Unified view', 'Shared limits', 'Auto-sync'],
+    accentColor: _slideColors[3],
+    title: l10n.onboardingSyncWithDesktopTitle,
+    description: l10n.onboardingSyncWithDesktopDesc,
+    chips: const ['Unified view', 'Shared limits', 'Auto-sync'],
     visualType: _VisualType.sync,
   ),
   _SlideData(
     emoji: '🔒',
-    accentColor: Color(0xFFF59E0B),
-    title: '100% Private',
-    description:
-        'All data stays in your browser\'s local storage — nothing is sent to any server. You own your data, always.',
-    chips: ['On-device only', 'No cloud', 'Open source'],
+    accentColor: _slideColors[4],
+    title: l10n.onboarding100PrivateTitle,
+    description: l10n.onboarding100PrivateDesc,
+    chips: const ['On-device only', 'No cloud', 'Open source'],
     visualType: _VisualType.shield,
   ),
   _SlideData(
     emoji: '🚀',
-    accentColor: Color(0xFF8B5CF6),
-    title: "You're All Set",
-    description:
-        'Scolect is now tracking your browser usage. Head to the dashboard to see your first data as you browse.',
-    chips: ['Tracking active', 'Ready to explore'],
+    accentColor: _slideColors[5],
+    title: l10n.onboardingAllSetTitle,
+    description: l10n.onboardingAllSetDesc,
+    chips: const ['Tracking active', 'Ready to explore'],
     visualType: _VisualType.rocket,
   ),
 ];
@@ -115,7 +119,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
       vsync: this,
       duration: AppDesignLegacy.animSlow,
     );
-    _updateBgAnimation(_slides[0].accentColor, _slides[0].accentColor);
+    _updateBgAnimation(_slideColors[0], _slideColors[0]);
   }
 
   void _updateBgAnimation(Color from, Color to) {
@@ -126,8 +130,8 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
 
   void _goToPage(int page) {
     if (page == _currentPage) return;
-    final prev = _slides[_currentPage].accentColor;
-    final next = _slides[page].accentColor;
+    final prev = _slideColors[_currentPage];
+    final next = _slideColors[page];
     _bgAnimController.reset();
     _updateBgAnimation(prev, next);
     _bgAnimController.forward();
@@ -140,7 +144,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
   }
 
   void _next() {
-    if (_currentPage < _slides.length - 1) {
+    if (_currentPage < _slideColors.length - 1) {
       _goToPage(_currentPage + 1);
     } else {
       _complete();
@@ -167,9 +171,11 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final slides = _getSlides(l10n);
     final isDark = FluentTheme.of(context).brightness == Brightness.dark;
-    final slide = _slides[_currentPage];
-    final isLast = _currentPage == _slides.length - 1;
+    final slide = slides[_currentPage];
+    final isLast = _currentPage == slides.length - 1;
 
     return flutter_widgets.AnimatedBuilder(
       animation: _bgAnimController,
@@ -187,10 +193,10 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
             PageView.builder(
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: _slides.length,
+              itemCount: slides.length,
               itemBuilder: (context, index) {
                 return _WebOnboardingSlide(
-                  slide: _slides[index],
+                  slide: slides[index],
                   isDark: isDark,
                 );
               },
@@ -204,7 +210,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                 child: HyperlinkButton(
                   onPressed: _complete,
                   child: Text(
-                    'Skip',
+                    l10n.onboardingSkip,
                     style: TextStyle(
                       color: isDark
                           ? AppDesignLegacy.darkTextSecondary
@@ -225,7 +231,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                   // Dot indicators
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(_slides.length, (i) {
+                    children: List.generate(slides.length, (i) {
                       final isActive = i == _currentPage;
                       return GestureDetector(
                         onTap: () => _goToPage(i),
@@ -274,7 +280,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                               ),
                               child: Center(
                                 child: Text(
-                                  'Back',
+                                  l10n.onboardingBack,
                                   style: TextStyle(
                                     color: isDark
                                         ? AppDesignLegacy.darkTextPrimary
@@ -293,7 +299,7 @@ class _WebOnboardingScreenState extends State<WebOnboardingScreen>
                         width: 160,
                         height: 44,
                         child: _GradientButton(
-                          label: isLast ? 'Go to Dashboard' : 'Next',
+                          label: isLast ? l10n.onboardingGoToDashboard : l10n.onboardingNext,
                           accentColor: slide.accentColor,
                           isLoading: _isCompleting,
                           onPressed: _next,

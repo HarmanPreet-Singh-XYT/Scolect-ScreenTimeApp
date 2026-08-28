@@ -14,6 +14,9 @@ const WS_URL            = `ws://localhost:${FLUTTER_PORT}/ws`;
 // Never regenerated once set — this is the whole point of the identifier.
 
 const BROWSER_ID_KEY = `${STORAGE_PREFIX}browser_id`;
+const BROWSER_NAME_KEY = `${STORAGE_PREFIX}browser_name`;
+const BROWSER_NAME_UPDATED_AT_KEY = `${STORAGE_PREFIX}browser_name_updated_at`;
+const ASSIGNED_LABEL_KEY = `${STORAGE_PREFIX}assigned_label`;
 let _browserId = null;
 
 async function getBrowserId() {
@@ -26,6 +29,35 @@ async function getBrowserId() {
   _browserId = crypto.randomUUID();
   await chrome.storage.local.set({ [BROWSER_ID_KEY]: _browserId });
   return _browserId;
+}
+
+async function getBrowserNameMetadata() {
+  const result = await chrome.storage.local.get([BROWSER_NAME_KEY, BROWSER_NAME_UPDATED_AT_KEY]);
+  return {
+    displayName: result[BROWSER_NAME_KEY] || '',
+    nameUpdatedAt: result[BROWSER_NAME_UPDATED_AT_KEY] || 0,
+  };
+}
+
+async function setBrowserDisplayName(name) {
+  const cleanName = (name || '').trim();
+  const now = Date.now();
+  await chrome.storage.local.set({
+    [BROWSER_NAME_KEY]: cleanName,
+    [BROWSER_NAME_UPDATED_AT_KEY]: now,
+  });
+  try {
+    const ws = getWs();
+    const browserId = await getBrowserId();
+    await _sendWhenOpen(ws, {
+      type: 'rename_browser',
+      browserId,
+      displayName: cleanName,
+      nameUpdatedAt: now,
+    });
+  } catch (e) {
+    console.warn('Failed to send rename to desktop:', e);
+  }
 }
 
 // Best-effort browser family detection from the extension's own user agent.
@@ -76,7 +108,14 @@ function getWs() {
   _ws.addEventListener('open', async () => {
     try {
       const browserId = await getBrowserId();
-      await _sendWhenOpen(_ws, { type: 'register', browserId, browserName: detectBrowserName() });
+      const meta = await getBrowserNameMetadata();
+      await _sendWhenOpen(_ws, {
+        type: 'register',
+        browserId,
+        browserName: detectBrowserName(),
+        displayName: meta.displayName || undefined,
+        nameUpdatedAt: meta.nameUpdatedAt || undefined,
+      });
     } catch (e) { console.warn('Browser registration send failed:', e); }
     tick().catch(console.error);
   }, { once: true });
@@ -117,6 +156,67 @@ function handleDesktopMessage(event) {
     _pendingFocusState = msg;
     _applyFocusState(msg).catch(console.error);
   }
+  if (msg.type === 'registered') {
+    (async () => {
+      const myId = await getBrowserId();
+      if (msg.browserId === myId) {
+        const localMeta = await getBrowserNameMetadata();
+        const incomingUpdatedAt = msg.nameUpdatedAt || 0;
+        // If desktop's recorded timestamp is newer than our local state, adopt desktop's name
+        if (incomingUpdatedAt > localMeta.nameUpdatedAt && typeof msg.displayName === 'string') {
+          await chrome.storage.local.set({
+            [BROWSER_NAME_KEY]: msg.displayName,
+            [BROWSER_NAME_UPDATED_AT_KEY]: incomingUpdatedAt,
+          });
+        }
+        if (msg.label) {
+          await chrome.storage.local.set({ [ASSIGNED_LABEL_KEY]: msg.label });
+        }
+      }
+    })();
+  }
+  if (msg.type === 'browser_renamed') {
+    (async () => {
+      const myId = await getBrowserId();
+      if (msg.browserId === myId) {
+        const localMeta = await getBrowserNameMetadata();
+        const incomingUpdatedAt = msg.nameUpdatedAt || 0;
+        // Last-Write-Wins: only adopt if incoming change is newer or equal
+        if (incomingUpdatedAt >= localMeta.nameUpdatedAt && typeof msg.displayName === 'string') {
+          await chrome.storage.local.set({
+            [BROWSER_NAME_KEY]: msg.displayName,
+            [BROWSER_NAME_UPDATED_AT_KEY]: incomingUpdatedAt,
+          });
+        }
+      }
+    })();
+  }
+  if (msg.type === 'ping_browser') {
+    (async () => {
+      const myId = await getBrowserId();
+      if (msg.browserId === myId) {
+        const name = msg.displayName || 'this browser';
+        try {
+          chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/Icon-128.png',
+            title: 'Scolect Desktop',
+            message: `👋 Located: ${name}`,
+            priority: 2,
+          });
+        } catch (e) {
+          console.warn('Notification error:', e);
+        }
+        try {
+          chrome.action.setBadgeText({ text: '👋' });
+          chrome.action.setBadgeBackgroundColor({ color: '#6366F1' });
+          setTimeout(() => {
+            chrome.action.setBadgeText({ text: '' });
+          }, 5000);
+        } catch (e) {}
+      }
+    })();
+  }
 }
 
 async function _applyFocusState(focusJson) {
@@ -124,35 +224,43 @@ async function _applyFocusState(focusJson) {
   let blocked = focusJson.blockedDomains || [];
 
   // Merge domainLimits from desktop into scolect_settings.metadata.
-  // Extension values always win; desktop only fills gaps.
   if (focusJson.domainLimits) {
     const currentSettings = await getSettings();
+    const isTrackerOnly = currentSettings.mode === 'trackerOnly';
     const currentMeta = currentSettings.metadata ?? {};
     let changed = false;
 
     for (const [domain, desktopMeta] of Object.entries(focusJson.domainLimits)) {
-      // A domain the extension has never recorded metadata for yet (first
-      // time seeing it, e.g. desktop synced it before the extension did)
-      // has no opinion — take the desktop's values to fill the gap. Once the
-      // extension has its own entry, it is authoritative for every field,
-      // including "no limit" (0) — a 0 is a real, explicit user choice, not
-      // an absence of one, so it must not be overridden by a stale desktop
-      // value on the next merge.
-      const hasExtEntry = currentMeta[domain] !== undefined;
-      const ext = currentMeta[domain] ?? {};
-      const merged = {
-        category:          hasExtEntry ? (ext.category ?? 'Uncategorized') : (desktopMeta.category || 'Uncategorized'),
-        isTracking:        hasExtEntry ? (ext.isTracking ?? true) : (desktopMeta.isTracking ?? true),
-        isProductive:      hasExtEntry ? (ext.isProductive ?? false) : (desktopMeta.isProductive ?? false),
-        dailyLimitSeconds: hasExtEntry ? (ext.dailyLimitSeconds ?? 0) : (desktopMeta.dailyLimitSeconds ?? 0),
-        // siteName is always sourced from the browser (scolect_app_metadata via
-        // updateSiteName). Never import it from the desktop — desktop may have
-        // stale or wrong titles accumulated from earlier sessions.
-        siteName: ext.siteName || '',
-      };
-      if (JSON.stringify(ext) !== JSON.stringify(merged)) {
-        currentMeta[domain] = { ...ext, ...merged };
-        changed = true;
+      const cleanDomain = domain.replace(/^web:/, '').replace(/^www\./, '');
+      const targetKey = currentMeta[cleanDomain] !== undefined ? cleanDomain : (currentMeta[domain] !== undefined ? domain : cleanDomain);
+      const ext = currentMeta[targetKey] ?? {};
+      const desktopUpdatedAt = desktopMeta.updatedAt || 0;
+      const localUpdatedAt = ext.updatedAt || 0;
+
+      // In hybrid/standalone mode, apply desktopMeta if desktop update is newer or equal
+      if (isTrackerOnly || desktopUpdatedAt >= localUpdatedAt) {
+        const merged = {
+          category:          desktopMeta.category || ext.category || 'Uncategorized',
+          isTracking:        desktopMeta.isTracking !== undefined ? desktopMeta.isTracking : (ext.isTracking ?? true),
+          isProductive:      desktopMeta.isProductive !== undefined ? desktopMeta.isProductive : (ext.isProductive ?? false),
+          dailyLimitSeconds: desktopMeta.dailyLimitSeconds !== undefined ? desktopMeta.dailyLimitSeconds : (ext.dailyLimitSeconds ?? 0),
+          siteName:          ext.siteName || desktopMeta.siteName || '',
+          updatedAt:         desktopUpdatedAt > 0 ? desktopUpdatedAt : (ext.updatedAt || 0),
+        };
+        if (JSON.stringify(ext) !== JSON.stringify(merged)) {
+          currentMeta[targetKey] = { ...ext, ...merged };
+          changed = true;
+        }
+        if (desktopMeta.dailyLimitSeconds === 0) {
+          if (currentMeta[`web:${targetKey}`] && currentMeta[`web:${targetKey}`].dailyLimitSeconds !== 0) {
+            currentMeta[`web:${targetKey}`].dailyLimitSeconds = 0;
+            changed = true;
+          }
+          if (currentMeta[`www.${targetKey}`] && currentMeta[`www.${targetKey}`].dailyLimitSeconds !== 0) {
+            currentMeta[`www.${targetKey}`].dailyLimitSeconds = 0;
+            changed = true;
+          }
+        }
       }
     }
 
@@ -190,11 +298,21 @@ async function _applyFocusState(focusJson) {
     [`${STORAGE_PREFIX}ever_connected`]: true,
   });
 
-  // Apply blocked set (excluding manually unblocked domains)
-  _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
+  // Apply blocked set and update overlay states on open tabs
+  const newBlocked = new Set(blocked.filter(d => !unblockedToday.has(d)));
   for (const domain of _blockedDomains) {
-    await _showBlockOverlayOnTabs(domain);
+    if (!newBlocked.has(domain)) {
+      await _hideBlockOverlayOnTabs(domain);
+    }
   }
+  for (const domain of newBlocked) {
+    if (!_blockedDomains.has(domain)) {
+      await _showBlockOverlayOnTabs(domain);
+    }
+  }
+  _blockedDomains = newBlocked;
+  const bKey = `${STORAGE_PREFIX}blocked_domains`;
+  await chrome.storage.local.set({ [bKey]: [..._blockedDomains] });
 }
 
 // ─── Blocked domains & limit notifications ────────────────────────────────────
@@ -291,6 +409,27 @@ async function _showBlockOverlayOnTabs(domain) {
     }
   } catch (e) {
     console.error('Error showing block overlay for domain:', domain, e);
+  }
+}
+
+async function _hideBlockOverlayOnTabs(domain) {
+  try {
+    const tabs = await chrome.tabs.query({});
+    for (const tab of tabs) {
+      if (
+        tab.url &&
+        !tab.url.startsWith(chrome.runtime.getURL('')) &&
+        !tab.url.startsWith('chrome-extension://') &&
+        !tab.url.startsWith('moz-extension://')
+      ) {
+        const d = extractDomain(tab.url);
+        if (d === domain) {
+          chrome.tabs.sendMessage(tab.id, { type: 'HIDE_BLOCK_OVERLAY' }).catch(() => {});
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Error hiding block overlay for domain:', domain, e);
   }
 }
 
@@ -803,10 +942,20 @@ async function refreshBlockedDomains() {
     }
   }
 
-  _blockedDomains = new Set(blocked.filter(d => !unblockedToday.has(d)));
+  const newBlocked = new Set(blocked.filter(d => !unblockedToday.has(d)));
   for (const domain of _blockedDomains) {
-    await _showBlockOverlayOnTabs(domain);
+    if (!newBlocked.has(domain)) {
+      await _hideBlockOverlayOnTabs(domain);
+    }
   }
+  for (const domain of newBlocked) {
+    if (!_blockedDomains.has(domain)) {
+      await _showBlockOverlayOnTabs(domain);
+    }
+  }
+  _blockedDomains = newBlocked;
+  const bKey = `${STORAGE_PREFIX}blocked_domains`;
+  await chrome.storage.local.set({ [bKey]: [..._blockedDomains] });
 }
 
 // ─── Local focus timer (standalone mode) ─────────────────────────────────────
@@ -936,26 +1085,47 @@ async function runSync() {
 
   const today = getTodayKey();
   const day = await getDayData(today);
-  if (day.domains.length === 0) return;
 
   const metaKey = `${STORAGE_PREFIX}app_metadata`;
   const metaResult = await chrome.storage.local.get(metaKey);
   const siteMeta = metaResult[metaKey] ?? {};
   const meta = settings.metadata ?? {};
 
+  // Build a map of all domains: day usage domains + any domains configured in metadata
+  const domainMap = new Map();
+  for (const d of day.domains) {
+    domainMap.set(d.domain, { ...d });
+  }
+  for (const [domain, m] of Object.entries(meta)) {
+    const cleanD = domain.replace(/^web:/, '').replace(/^www\./, '');
+    if (!domainMap.has(domain) && !domainMap.has(cleanD)) {
+      domainMap.set(cleanD, { domain: cleanD, seconds: 0, visits: 0, lastSeen: null });
+    }
+  }
+
+  if (domainMap.size === 0) return;
+
+  const nameMeta = await getBrowserNameMetadata();
   const payload = {
     type: 'usage',
     date: today,
     browserId: await getBrowserId(),
     browserName: detectBrowserName(),
-    domains: day.domains.map(d => ({
-      ...d,
-      siteName:          siteMeta[d.domain]?.siteName    ?? meta[d.domain]?.siteName    ?? null,
-      dailyLimitSeconds: meta[d.domain]?.dailyLimitSeconds ?? 0,
-      isTracking:        meta[d.domain]?.isTracking        ?? true,
-      isProductive:      meta[d.domain]?.isProductive      ?? false,
-      category:          meta[d.domain]?.category          ?? '',
-    })),
+    displayName: nameMeta.displayName || undefined,
+    nameUpdatedAt: nameMeta.nameUpdatedAt || undefined,
+    metadata: meta,
+    domains: Array.from(domainMap.values()).map(d => {
+      const dMeta = meta[d.domain] || meta[`web:${d.domain}`] || meta[`www.${d.domain}`] || {};
+      return {
+        ...d,
+        siteName:          siteMeta[d.domain]?.siteName    ?? dMeta.siteName    ?? null,
+        dailyLimitSeconds: dMeta.dailyLimitSeconds ?? 0,
+        isTracking:        dMeta.isTracking        ?? true,
+        isProductive:      dMeta.isProductive      ?? false,
+        category:          dMeta.category          ?? '',
+        updatedAt:         dMeta.updatedAt         || 0,
+      };
+    }),
   };
 
   let connected = false;
@@ -974,6 +1144,18 @@ async function runSync() {
         body: JSON.stringify(payload),
       });
       connected = resp.ok;
+      if (resp.ok) {
+        const respJson = await resp.json().catch(() => null);
+        if (respJson && typeof respJson.displayName === 'string' && (respJson.nameUpdatedAt || 0) > nameMeta.nameUpdatedAt) {
+          await chrome.storage.local.set({
+            [BROWSER_NAME_KEY]: respJson.displayName,
+            [BROWSER_NAME_UPDATED_AT_KEY]: respJson.nameUpdatedAt,
+          });
+        }
+        if (respJson?.label) {
+          await chrome.storage.local.set({ [ASSIGNED_LABEL_KEY]: respJson.label });
+        }
+      }
     } catch {
       connected = false;
     }
@@ -1261,6 +1443,31 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg.type === 'OPEN_DASHBOARD') {
     chrome.tabs.create({ url: chrome.runtime.getURL('index.html') });
     return false;
+  }
+  if (msg.type === 'GET_BROWSER_IDENTITY') {
+    (async () => {
+      const id = await getBrowserId();
+      const meta = await getBrowserNameMetadata();
+      const detected = detectBrowserName();
+      const r = await chrome.storage.local.get(ASSIGNED_LABEL_KEY);
+      const assignedLabel = r[ASSIGNED_LABEL_KEY] || `${detected}`;
+      sendResponse({
+        browserId: id,
+        customName: meta.displayName,
+        nameUpdatedAt: meta.nameUpdatedAt,
+        detectedBrowser: detected,
+        assignedLabel,
+        effectiveName: meta.displayName || assignedLabel,
+      });
+    })();
+    return true;
+  }
+  if (msg.type === 'SET_BROWSER_NAME') {
+    (async () => {
+      await setBrowserDisplayName(msg.name || '');
+      sendResponse({ ok: true });
+    })();
+    return true;
   }
   return false;
 });

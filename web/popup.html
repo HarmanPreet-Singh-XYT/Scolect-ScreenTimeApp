@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=380">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scolect</title>
   <link rel="stylesheet" href="popup.css">
 </head>
@@ -108,11 +108,33 @@
         </div>
       </div>
 
-      <!-- ── Sync status (hybrid / tracker-only) ────────────────── -->
-      <div class="sync-row" id="syncRow" style="display:none">
-        <div class="sync-dot" id="syncDot"></div>
-        <span class="sync-label" id="syncLabel">Connecting to desktop…</span>
-        <span class="sync-time" id="syncTime"></span>
+      <!-- ── Browser Identity & Sync status (hybrid / tracker-only) ── -->
+      <div class="browser-card" id="browserIdentityCard" style="display:none">
+        <div class="browser-card-header">
+          <div class="browser-card-profile">
+            <span class="browser-icon" id="browserProfileIcon">🌐</span>
+            <div class="browser-profile-details">
+              <div class="browser-name-display" id="browserNameDisplay">
+                <span class="browser-profile-name" id="browserProfileName">Browser</span>
+                <button class="browser-rename-btn" id="browserRenameBtn" title="Rename this profile">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="browser-name-edit" id="browserNameEdit" style="display:none">
+                <input type="text" class="browser-name-input" id="browserNameInput" placeholder="e.g. Work Profile" maxlength="25">
+                <button class="browser-btn-save" id="browserNameSave" title="Save name">✓</button>
+                <button class="browser-btn-cancel" id="browserNameCancel" title="Cancel">✕</button>
+              </div>
+            </div>
+          </div>
+          <div class="sync-dot" id="syncDot"></div>
+        </div>
+        <div class="browser-card-footer">
+          <span class="sync-label" id="syncLabel">Connecting to desktop…</span>
+          <span class="sync-time" id="syncTime"></span>
+        </div>
       </div>
 
     </div><!-- /panelOverview -->

@@ -35,6 +35,7 @@ class BrowserExtensionServer {
 
   // ─── WebSocket state ─────────────────────────────────────────────────────
   static final Set<WebSocket> _clients = {};
+  static final Map<WebSocket, String> _clientBrowserIds = {};
   static StreamSubscription<TimerUpdate>? _timerSubscription;
   static TimerState? _lastBroadcastState;
   static bool? _lastBroadcastRunning;
@@ -59,7 +60,7 @@ class BrowserExtensionServer {
         if (stateChanged || runningChanged) {
           _lastBroadcastState = update.state;
           _lastBroadcastRunning = update.isRunning;
-          _broadcastFocusState();
+          broadcastFocusState();
         }
       });
     } catch (e) {
@@ -93,7 +94,7 @@ class BrowserExtensionServer {
 
   static Future<void> _handleRequest(HttpRequest req) async {
     final origin = req.headers.value('origin') ?? '';
-    final isExtension = origin.startsWith('chrome-extension://');
+    final isExtension = _isExtensionOrigin(origin);
 
     if (!isExtension && req.method != 'OPTIONS') {
       if (origin.isNotEmpty) {
@@ -167,16 +168,18 @@ class BrowserExtensionServer {
     debugPrint('🔌 WS client connected (${_clients.length} total)');
 
     // Immediately push current focus state so the extension is in sync.
-    _broadcastFocusState(target: ws);
+    broadcastFocusState(target: ws);
 
     ws.listen(
       (data) => _handleWsMessage(ws, data),
       onDone: () {
         _clients.remove(ws);
+        _clientBrowserIds.remove(ws);
         debugPrint('🔌 WS client disconnected (${_clients.length} remaining)');
       },
       onError: (e) {
         _clients.remove(ws);
+        _clientBrowserIds.remove(ws);
         debugPrint('⚠️ WS client error: $e');
       },
       cancelOnError: true,
@@ -197,15 +200,63 @@ class BrowserExtensionServer {
         if (date == null) return;
         final browserId = msg['browserId'] as String?;
         final browserName = msg['browserName'] as String?;
-        await _ingestDomains(date, domains, browserId: browserId, browserName: browserName);
+        final displayName = msg['displayName'] as String?;
+        final nameUpdatedAt = (msg['nameUpdatedAt'] as num?)?.toInt() ?? 0;
+        if (browserId != null && browserId.isNotEmpty) {
+          _clientBrowserIds[ws] = browserId;
+        }
+        await _ingestDomains(
+          date,
+          domains,
+          browserId: browserId,
+          browserName: browserName,
+          displayName: displayName,
+          nameUpdatedAt: nameUpdatedAt,
+        );
+        broadcastFocusState(target: ws);
+        return;
+      }
+
+      if (msg['type'] == 'rename_browser') {
+        final browserId = msg['browserId'] as String?;
+        final displayName = msg['displayName'] as String? ?? '';
+        final nameUpdatedAt = (msg['nameUpdatedAt'] as num?)?.toInt();
+        if (browserId != null && browserId.isNotEmpty) {
+          _clientBrowserIds[ws] = browserId;
+          await _dataStore.renameBrowserSource(
+            browserId,
+            displayName,
+            updatedAt: nameUpdatedAt,
+          );
+        }
         return;
       }
 
       if (msg['type'] == 'register') {
         final browserId = msg['browserId'] as String?;
         final browserName = msg['browserName'] as String? ?? 'Unknown';
+        final displayName = msg['displayName'] as String?;
+        final nameUpdatedAt = (msg['nameUpdatedAt'] as num?)?.toInt() ?? 0;
         if (browserId == null || browserId.isEmpty) return;
-        await _dataStore.upsertBrowserSource(browserId, browserName);
+        _clientBrowserIds[ws] = browserId;
+        await _dataStore.upsertBrowserSource(
+          browserId,
+          browserName,
+          displayName: displayName,
+          nameUpdatedAt: nameUpdatedAt,
+        );
+        final source = _dataStore.getBrowserSource(browserId);
+        try {
+          ws.add(jsonEncode({
+            'type': 'registered',
+            'browserId': browserId,
+            'sourceIndex': source?.sourceIndex ?? 1,
+            'displayName': source?.displayName ?? '',
+            'nameUpdatedAt': source?.nameUpdatedAt ?? 0,
+            'label': source?.label ?? '',
+          }));
+        } catch (_) {}
+        broadcastFocusState(target: ws);
         return;
       }
 
@@ -237,7 +288,7 @@ class BrowserExtensionServer {
         }
         // Push updated state back to all clients immediately so the popup
         // reflects the new timer state without waiting for the next tick.
-        _broadcastFocusState();
+        broadcastFocusState();
       }
     } catch (e) {
       debugPrint('⚠️ WS message error: $e');
@@ -272,8 +323,27 @@ class BrowserExtensionServer {
 
     final browserId = json['browserId'] as String?;
     final browserName = json['browserName'] as String?;
-    await _ingestDomains(date, domains, browserId: browserId, browserName: browserName);
-    await _sendJson(req.response, HttpStatus.ok, {'ok': true});
+    final displayName = json['displayName'] as String?;
+    final nameUpdatedAt = (json['nameUpdatedAt'] as num?)?.toInt() ?? 0;
+    await _ingestDomains(
+      date,
+      domains,
+      browserId: browserId,
+      browserName: browserName,
+      displayName: displayName,
+      nameUpdatedAt: nameUpdatedAt,
+    );
+    final source = (browserId != null && browserId.isNotEmpty)
+        ? _dataStore.getBrowserSource(browserId)
+        : null;
+    await _sendJson(req.response, HttpStatus.ok, {
+      'ok': true,
+      if (source != null) ...{
+        'displayName': source.displayName,
+        'nameUpdatedAt': source.nameUpdatedAt,
+        'label': source.label,
+      },
+    });
   }
 
   // ─── Shared domain ingestion (used by both HTTP and WebSocket paths) ──────
@@ -295,12 +365,17 @@ class BrowserExtensionServer {
   // back to the legacy plain-domain usage key.
   static Future<void> _ingestDomains(
       DateTime reportedDate, List<dynamic> domains,
-      {String? browserId, String? browserName}) async {
+      {String? browserId, String? browserName, String? displayName, int nameUpdatedAt = 0}) async {
     _lastUsageSyncAt = DateTime.now();
     final date = SettingsManager().getLogicalDate(DateTime.now());
 
     if (browserId != null && browserId.isNotEmpty) {
-      await _dataStore.upsertBrowserSource(browserId, browserName ?? 'Unknown');
+      await _dataStore.upsertBrowserSource(
+        browserId,
+        browserName ?? 'Unknown',
+        displayName: displayName,
+        nameUpdatedAt: nameUpdatedAt,
+      );
     }
 
     for (final raw in domains) {
@@ -314,6 +389,7 @@ class BrowserExtensionServer {
       final extIsTracking = entry['isTracking'] as bool?;
       final extIsProductive = entry['isProductive'] as bool?;
       final extCategory = entry['category'] as String?;
+      final extUpdatedAt = (entry['updatedAt'] as num?)?.toInt() ?? DateTime.now().millisecondsSinceEpoch;
 
       if (domain == null || domain.isEmpty || seconds < 0) continue;
 
@@ -337,13 +413,18 @@ class BrowserExtensionServer {
         await _dataStore.setAppUsage(usageAppName, date, timeSpent, visits, usagePeriods);
       }
 
-      final existingMeta = _dataStore.getAppMetadata(appName);
+      final targetMetaKey = (browserId != null && browserId.isNotEmpty)
+          ? '$appName::$browserId'
+          : appName;
+      final existingMeta = _dataStore.getAppMetadata(appName, sourceId: browserId);
+      final isNewer = existingMeta == null || extUpdatedAt >= existingMeta.updatedAt;
+
       if (existingMeta == null) {
         final category = (extCategory != null && extCategory.isNotEmpty)
             ? extCategory
             : WebsiteCategories.categorizeWebsite(domain);
         await _dataStore.updateAppMetadata(
-          appName,
+          targetMetaKey,
           category: category,
           isProductive: extIsProductive ??
               (!WebsiteCategories.isDefaultCategory(category) &&
@@ -356,30 +437,60 @@ class BrowserExtensionServer {
           dailyLimit: extLimitSecs != null
               ? Duration(seconds: extLimitSecs)
               : null,
+          limitStatus: extLimitSecs != null && extLimitSecs > 0,
+          updatedAt: extUpdatedAt,
         );
-      } else {
-        if (WebsiteCategories.isDefaultCategory(existingMeta.category)) {
-          final category = (extCategory != null && extCategory.isNotEmpty)
-              ? extCategory
-              : WebsiteCategories.categorizeWebsite(domain);
-          if (!WebsiteCategories.isDefaultCategory(category)) {
-            await _dataStore.updateAppMetadata(appName, category: category);
+        // Also ensure global appName has basic categorization if not yet set
+        if (targetMetaKey != appName && _dataStore.getAppMetadata(appName) == null) {
+          await _dataStore.updateAppMetadata(
+            appName,
+            category: category,
+            siteName: siteName,
+            isVisible: true,
+            updatedAt: extUpdatedAt,
+          );
+        }
+      } else if (isNewer) {
+        final category = (extCategory != null && extCategory.isNotEmpty)
+            ? extCategory
+            : existingMeta.category;
+        final newCategory = WebsiteCategories.isDefaultCategory(category)
+            ? WebsiteCategories.categorizeWebsite(domain)
+            : category;
+
+        final newLimit = extLimitSecs != null
+            ? Duration(seconds: extLimitSecs)
+            : existingMeta.dailyLimit;
+        final newLimitStatus = extLimitSecs != null
+            ? (extLimitSecs > 0)
+            : existingMeta.limitStatus;
+
+        await _dataStore.updateAppMetadata(
+          targetMetaKey,
+          category: newCategory,
+          siteName: siteName.isNotEmpty ? siteName : existingMeta.siteName,
+          dailyLimit: newLimit,
+          limitStatus: newLimitStatus,
+          isTracking: extIsTracking ?? existingMeta.isTracking,
+          isProductive: extIsProductive ?? existingMeta.isProductive,
+          updatedAt: extUpdatedAt,
+        );
+
+        // Also update global entry if targetMetaKey is scoped
+        if (targetMetaKey != appName) {
+          final globalMeta = _dataStore.getAppMetadata(appName);
+          if (globalMeta == null || extUpdatedAt >= globalMeta.updatedAt) {
+            await _dataStore.updateAppMetadata(
+              appName,
+              category: newCategory,
+              siteName: siteName.isNotEmpty ? siteName : (globalMeta?.siteName ?? ''),
+              dailyLimit: newLimit,
+              limitStatus: newLimitStatus,
+              isTracking: extIsTracking ?? (globalMeta?.isTracking ?? true),
+              isProductive: extIsProductive ?? (globalMeta?.isProductive ?? false),
+              updatedAt: extUpdatedAt,
+            );
           }
-        }
-        if (siteName.isNotEmpty && existingMeta.siteName.isEmpty) {
-          await _dataStore.updateAppMetadata(appName, siteName: siteName);
-        }
-        if (extLimitSecs != null) {
-          final extDuration = Duration(seconds: extLimitSecs);
-          if (existingMeta.dailyLimit != extDuration) {
-            await _dataStore.updateAppMetadata(appName, dailyLimit: extDuration);
-          }
-        }
-        if (extIsTracking != null && extIsTracking != existingMeta.isTracking) {
-          await _dataStore.updateAppMetadata(appName, isTracking: extIsTracking);
-        }
-        if (extIsProductive != null && extIsProductive != existingMeta.isProductive) {
-          await _dataStore.updateAppMetadata(appName, isProductive: extIsProductive);
         }
       }
     }
@@ -395,7 +506,7 @@ class BrowserExtensionServer {
 
   // ─── Focus state builder (shared by HTTP and WS push) ────────────────────
 
-  static Map<String, dynamic> _buildFocusStatePayload() {
+  static Map<String, dynamic> _buildFocusStatePayload({String? browserId}) {
     final timer = PomodoroTimerService.instance;
     final isActive = timer.isRunning && timer.currentState != TimerState.idle;
 
@@ -416,11 +527,15 @@ class BrowserExtensionServer {
     final startOfDay = SettingsManager().getLogicalDate(DateTime.now());
     final blockedDomains = <String>[];
     final domainLimits = <String, Map<String, dynamic>>{};
+    final processedDomains = <String>{};
 
     for (final appName in _dataStore.allAppNames) {
       if (!appName.startsWith('web:')) continue;
-      final domain = appName.replaceFirst('web:', '');
-      final meta = _dataStore.getAppMetadata(appName);
+      final raw = appName.replaceFirst('web:', '');
+      final domain = raw.contains('::') ? raw.substring(0, raw.indexOf('::')) : raw;
+      if (!processedDomains.add(domain)) continue;
+
+      final meta = _dataStore.getAppMetadata('web:$domain', sourceId: browserId);
       if (meta == null) continue;
 
       domainLimits[domain] = {
@@ -429,13 +544,12 @@ class BrowserExtensionServer {
         'isProductive':      meta.isProductive,
         'category':          meta.category,
         'siteName':          meta.siteName,
+        'updatedAt':         meta.updatedAt,
       };
 
       if (meta.dailyLimit == Duration.zero) continue;
-      // Daily limits apply to the domain as a whole, across every browser
-      // that visited it — not per-source — so this always uses the combined
-      // total regardless of what the UI's browser filter is currently set to.
-      final record = _dataStore.getWebsiteUsage(appName, startOfDay);
+      // Scoped or global limit evaluation
+      final record = _dataStore.getWebsiteUsage('web:$domain', startOfDay, sourceId: browserId);
       if (record != null && record.timeSpent >= meta.dailyLimit) {
         blockedDomains.add(domain);
       }
@@ -454,12 +568,22 @@ class BrowserExtensionServer {
 
   // ─── Broadcast focus state to WS clients ─────────────────────────────────
 
-  static void _broadcastFocusState({WebSocket? target}) {
+  static void broadcastFocusState({WebSocket? target}) {
     if (target == null && _clients.isEmpty) return;
-    final payload = jsonEncode(_buildFocusStatePayload());
-    final targets = target != null ? [target] : List.of(_clients);
-    for (final ws in targets) {
+    if (target != null) {
+      final browserId = _clientBrowserIds[target];
+      final payload = jsonEncode(_buildFocusStatePayload(browserId: browserId));
       try {
+        target.add(payload);
+      } catch (e) {
+        debugPrint('⚠️ WS send error: $e');
+      }
+      return;
+    }
+    for (final ws in List.of(_clients)) {
+      try {
+        final browserId = _clientBrowserIds[ws];
+        final payload = jsonEncode(_buildFocusStatePayload(browserId: browserId));
         ws.add(payload);
       } catch (e) {
         debugPrint('⚠️ WS send error: $e');
@@ -467,12 +591,61 @@ class BrowserExtensionServer {
     }
   }
 
-  // ─── Helpers ─────────────────────────────────────────────────────────────
+  // ─── Broadcast browser ping to locate/identify a profile ─────────────────
+
+  static void pingBrowser(String browserId) {
+    final source = _dataStore.getBrowserSource(browserId);
+    final label = (source != null && source.displayName.isNotEmpty)
+        ? source.displayName
+        : (source?.label ?? 'Browser');
+    final payload = jsonEncode({
+      'type': 'ping_browser',
+      'browserId': browserId,
+      'displayName': label,
+    });
+    for (final ws in List.of(_clients)) {
+      try {
+        ws.add(payload);
+      } catch (e) {
+        debugPrint('⚠️ WS ping error: $e');
+      }
+    }
+  }
+
+  // ─── Broadcast rename to connected extensions ────────────────────────────
+
+  static void broadcastBrowserRenamed(
+    String browserId,
+    String displayName, {
+    int? nameUpdatedAt,
+  }) {
+    final source = _dataStore.getBrowserSource(browserId);
+    final timestamp = nameUpdatedAt ??
+        source?.nameUpdatedAt ??
+        DateTime.now().millisecondsSinceEpoch;
+    final payload = jsonEncode({
+      'type': 'browser_renamed',
+      'browserId': browserId,
+      'displayName': displayName,
+      'nameUpdatedAt': timestamp,
+    });
+    for (final ws in List.of(_clients)) {
+      try {
+        ws.add(payload);
+      } catch (e) {
+        debugPrint('⚠️ WS rename broadcast error: $e');
+      }
+    }
+  }
+
+  static bool _isExtensionOrigin(String origin) {
+    return origin.startsWith('chrome-extension://') ||
+        origin.startsWith('moz-extension://') ||
+        origin.startsWith('safari-web-extension://');
+  }
 
   static void _setCors(HttpResponse response, [String origin = '']) {
-    final allowedOrigin = origin.startsWith('chrome-extension://')
-        ? origin
-        : 'null';
+    final allowedOrigin = _isExtensionOrigin(origin) ? origin : 'null';
     response.headers
       ..add('Access-Control-Allow-Origin', allowedOrigin)
       ..add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')

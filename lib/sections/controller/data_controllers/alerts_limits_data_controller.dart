@@ -3,6 +3,8 @@ import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../../../web/web_browser_data_provider.dart' if (dart.library.io) '../../../web/web_browser_data_provider_stub.dart';
 import '../../../utils/private_mode_access.dart';
+import '../../../utils/browser_extension_server.dart'
+    if (dart.library.js_interop) '../../../utils/browser_extension_server_stub.dart';
 
 class AppUsageSummary {
   /// Storage key — use for lookups/limit/category updates, never for display.
@@ -214,23 +216,61 @@ class ScreenTimeDataController extends ChangeNotifier {
 
   Future<bool> updateAppLimit(
       String appId, Duration limit, bool enableLimit) async {
+    final effectiveLimit = enableLimit ? limit : Duration.zero;
+    if (kIsWeb) {
+      final ok = await WebBrowserDataProvider().updateWebsiteMetadata(
+        appId,
+        dailyLimit: effectiveLimit,
+      );
+      if (ok) _invalidateSummaryCache();
+      return ok;
+    }
+    final now = DateTime.now().millisecondsSinceEpoch;
     final result = await _dataStore.updateAppMetadata(
       appId,
-      dailyLimit: limit,
+      dailyLimit: effectiveLimit,
       limitStatus: enableLimit,
+      updatedAt: now,
     );
-    if (result) _invalidateSummaryCache();
+    if (appId.startsWith('web:') && !appId.contains('::')) {
+      for (final name in _dataStore.allAppNames) {
+        if (name.startsWith('$appId::')) {
+          await _dataStore.updateAppMetadata(
+            name,
+            dailyLimit: effectiveLimit,
+            limitStatus: enableLimit,
+            updatedAt: now,
+          );
+        }
+      }
+    }
+    if (result) {
+      _invalidateSummaryCache();
+      BrowserExtensionServer.broadcastFocusState();
+    }
     return result;
   }
 
   Future<bool> updateAppCategory(
       String appId, String category, bool isProductive) async {
+    if (kIsWeb) {
+      final ok = await WebBrowserDataProvider().updateWebsiteMetadata(
+        appId,
+        category: category,
+        isProductive: isProductive,
+      );
+      if (ok) _invalidateSummaryCache();
+      return ok;
+    }
     final result = await _dataStore.updateAppMetadata(
       appId,
       category: category,
       isProductive: isProductive,
     );
-    if (result) _invalidateSummaryCache();
+    if (result) {
+      _invalidateSummaryCache();
+      BrowserExtensionServer.broadcastFocusState();
+    }
     return result;
   }
 

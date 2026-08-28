@@ -6576,6 +6576,18 @@ abstract class AppLocalizations {
   /// **'Rename Browser'**
   String get browserRenameDialogTitle;
 
+  /// No description provided for @browserSourcePingTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Locate / Ping Browser'**
+  String get browserSourcePingTooltip;
+
+  /// No description provided for @browserSourcePingSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Ping sent to {name}'**
+  String browserSourcePingSent(String name);
+
   /// No description provided for @browserSourceRemoveTitle.
   ///
   /// In en, this message translates to:
@@ -6587,6 +6599,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove \"{name}\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.'**
   String browserSourceRemoveConfirm(String name);
+
+  /// No description provided for @browserLimitsScopeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Website Limits Scope'**
+  String get browserLimitsScopeTitle;
+
+  /// No description provided for @browserLimitsScopeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose whether website limits and tracking apply per browser profile or globally across all browsers.'**
+  String get browserLimitsScopeSubtitle;
+
+  /// No description provided for @browserLimitsScopeScoped.
+  ///
+  /// In en, this message translates to:
+  /// **'Per Browser Profile (Scoped)'**
+  String get browserLimitsScopeScoped;
+
+  /// No description provided for @browserLimitsScopeScopedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits apply only to the specific browser profile where configured.'**
+  String get browserLimitsScopeScopedDesc;
+
+  /// No description provided for @browserLimitsScopeGlobal.
+  ///
+  /// In en, this message translates to:
+  /// **'Global (Cross-Browser)'**
+  String get browserLimitsScopeGlobal;
+
+  /// No description provided for @browserLimitsScopeGlobalDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits apply across all connected browsers combined.'**
+  String get browserLimitsScopeGlobalDesc;
 
   /// No description provided for @browserSourceRemoveAction.
   ///
@@ -7337,6 +7385,348 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Private Items'**
   String get privateModeItemsCount;
+
+  /// No description provided for @permissionBannerNotificationsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications disabled'**
+  String get permissionBannerNotificationsDisabled;
+
+  /// No description provided for @permissionBannerSystemDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications in System Settings to receive focus session alerts.'**
+  String get permissionBannerSystemDesc;
+
+  /// No description provided for @permissionBannerOpenSystemSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open System Settings'**
+  String get permissionBannerOpenSystemSettings;
+
+  /// No description provided for @permissionBannerAppDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable notifications in app settings to receive focus session alerts.'**
+  String get permissionBannerAppDesc;
+
+  /// No description provided for @permissionBannerFocusDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus notifications disabled'**
+  String get permissionBannerFocusDisabled;
+
+  /// No description provided for @permissionBannerFocusDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable focus mode notifications in settings to receive session alerts.'**
+  String get permissionBannerFocusDesc;
+
+  /// No description provided for @topWebsites.
+  ///
+  /// In en, this message translates to:
+  /// **'Top Websites'**
+  String get topWebsites;
+
+  /// No description provided for @noWebsitesTrackedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No websites tracked yet'**
+  String get noWebsitesTrackedYet;
+
+  /// No description provided for @browserDetailBlockedTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily limit reached – site is blocked'**
+  String get browserDetailBlockedTooltip;
+
+  /// No description provided for @browserDetailTimeToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Time today'**
+  String get browserDetailTimeToday;
+
+  /// No description provided for @browserDetailVisitsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits today'**
+  String get browserDetailVisitsToday;
+
+  /// No description provided for @browserDetailDailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily limit'**
+  String get browserDetailDailyLimit;
+
+  /// No description provided for @browserChartLegendTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get browserChartLegendTime;
+
+  /// No description provided for @browserChartLegendVisits.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits'**
+  String get browserChartLegendVisits;
+
+  /// No description provided for @blockingBehaviorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocking Behavior'**
+  String get blockingBehaviorTitle;
+
+  /// No description provided for @blockingBehaviorNotificationOnlyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification only'**
+  String get blockingBehaviorNotificationOnlyTitle;
+
+  /// No description provided for @blockingBehaviorNotificationOnlySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert you when a limit is reached, no other action.'**
+  String get blockingBehaviorNotificationOnlySubtitle;
+
+  /// No description provided for @blockingBehaviorSoftBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft block'**
+  String get blockingBehaviorSoftBlockTitle;
+
+  /// No description provided for @blockingBehaviorSoftBlockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bring Scolect to the front with options to minimize, quit, snooze, or unblock the app.'**
+  String get blockingBehaviorSoftBlockSubtitle;
+
+  /// No description provided for @blockingBehaviorHardBlockTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Hard block'**
+  String get blockingBehaviorHardBlockTitle;
+
+  /// No description provided for @blockingBehaviorHardBlockSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Same as soft block, and also immediately hides the app from your screen.'**
+  String get blockingBehaviorHardBlockSubtitle;
+
+  /// No description provided for @blockingBehaviorNudgeNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note: Blocking is a nudge, not a lock. You can still reopen the app from the Dock or taskbar.'**
+  String get blockingBehaviorNudgeNote;
+
+  /// No description provided for @aboutUpdateChecking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking...'**
+  String get aboutUpdateChecking;
+
+  /// No description provided for @aboutUpdateCheckButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Updates'**
+  String get aboutUpdateCheckButton;
+
+  /// No description provided for @aboutUpdateCheckingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking for updates...'**
+  String get aboutUpdateCheckingProgress;
+
+  /// No description provided for @aboutUpdateUpToDate.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re up to date'**
+  String get aboutUpdateUpToDate;
+
+  /// No description provided for @aboutUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not check for updates'**
+  String get aboutUpdateFailed;
+
+  /// No description provided for @aboutUpdateRetryPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \"Check Updates\" to retry'**
+  String get aboutUpdateRetryPrompt;
+
+  /// No description provided for @aboutUpdateScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Update check scheduled'**
+  String get aboutUpdateScheduled;
+
+  /// No description provided for @aboutOpenSettingsFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to open System Settings'**
+  String get aboutOpenSettingsFailed;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Scolect'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.'**
+  String get onboardingWelcomeDesc;
+
+  /// No description provided for @onboardingEveryAppTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every App, Automatically'**
+  String get onboardingEveryAppTitle;
+
+  /// No description provided for @onboardingEveryAppDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect watches the foreground app and quietly logs how long you spend in each one — no timers to start, nothing to remember.'**
+  String get onboardingEveryAppDesc;
+
+  /// No description provided for @onboardingSeeTimeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See Where Your Time Goes'**
+  String get onboardingSeeTimeTitle;
+
+  /// No description provided for @onboardingSeeTimeDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Beautiful daily and weekly reports show your most-used apps, total screen time, and usage trends at a glance.'**
+  String get onboardingSeeTimeDesc;
+
+  /// No description provided for @onboardingSmartLimitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart Limits & Alerts'**
+  String get onboardingSmartLimitsTitle;
+
+  /// No description provided for @onboardingSmartLimitsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Set daily time limits per app or for your total screen time. Get notified before you hit your limits — not after.'**
+  String get onboardingSmartLimitsDesc;
+
+  /// No description provided for @onboardingDeepFocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Focus Mode'**
+  String get onboardingDeepFocusTitle;
+
+  /// No description provided for @onboardingDeepFocusDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Block distracting apps during Pomodoro sessions. Custom work and break intervals with optional ambient sounds keep you in the zone.'**
+  String get onboardingDeepFocusDesc;
+
+  /// No description provided for @onboardingTrackBrowserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Browser Time Too'**
+  String get onboardingTrackBrowserTitle;
+
+  /// No description provided for @onboardingTrackBrowserDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Install the free browser extension to capture time spent on websites — not just native apps. Full picture, one dashboard.'**
+  String get onboardingTrackBrowserDesc;
+
+  /// No description provided for @onboardingAllSetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re All Set'**
+  String get onboardingAllSetTitle;
+
+  /// No description provided for @onboardingAllSetDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect is ready to track. Your data stays entirely on-device — completely private, never uploaded anywhere.'**
+  String get onboardingAllSetDesc;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingGoToDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Dashboard'**
+  String get onboardingGoToDashboard;
+
+  /// No description provided for @onboardingWorksInBrowserTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Works Right in Your Browser'**
+  String get onboardingWorksInBrowserTitle;
+
+  /// No description provided for @onboardingWorksInBrowserDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Track web activity automatically as you browse. No desktop app required to get started.'**
+  String get onboardingWorksInBrowserDesc;
+
+  /// No description provided for @onboardingUsageRightHereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Usage, Right Here'**
+  String get onboardingUsageRightHereTitle;
+
+  /// No description provided for @onboardingUsageRightHereDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'View detailed daily and weekly reports of your time spent on every website in clean, intuitive charts.'**
+  String get onboardingUsageRightHereDesc;
+
+  /// No description provided for @onboardingSyncWithDesktopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync with the Desktop App'**
+  String get onboardingSyncWithDesktopTitle;
+
+  /// No description provided for @onboardingSyncWithDesktopDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect seamlessly with the Scolect desktop app for combined native app and website analytics.'**
+  String get onboardingSyncWithDesktopDesc;
+
+  /// No description provided for @onboarding100PrivateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'100% Private'**
+  String get onboarding100PrivateTitle;
+
+  /// No description provided for @onboarding100PrivateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'All tracking data is stored locally in your browser and on your machine. Nothing is ever sent to the cloud.'**
+  String get onboarding100PrivateDesc;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get onboardingBack;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
 }
 
 class _AppLocalizationsDelegate

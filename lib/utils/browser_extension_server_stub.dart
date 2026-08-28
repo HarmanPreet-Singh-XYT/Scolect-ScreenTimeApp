@@ -5,4 +5,11 @@
 /// [lastUsageSyncAt] without platform-branching on every call site.
 class BrowserExtensionServer {
   static DateTime? get lastUsageSyncAt => null;
+  static void pingBrowser(String browserId) {}
+  static void broadcastBrowserRenamed(
+    String browserId,
+    String displayName, {
+    int? nameUpdatedAt,
+  }) {}
+  static void broadcastFocusState() {}
 }

@@ -159,7 +159,8 @@ class _NotificationSectionState extends State<NotificationSection>
     try {
       final opened = await localNotifier.openNotificationSettings();
       if (!opened && mounted) {
-        _showErrorInfoBar('Failed to open System Settings');
+        final l10n = AppLocalizations.of(context)!;
+        _showErrorInfoBar(l10n.aboutOpenSettingsFailed);
       }
     } catch (e) {
       debugPrint('Error opening system settings: $e');

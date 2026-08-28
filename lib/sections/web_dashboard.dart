@@ -13,7 +13,6 @@ import 'package:screentime/web/web_location_helper.dart'
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:screentime/app_design.dart';
-import 'package:screentime/adaptive_fluent/adaptive_theme_fluent_ui.dart';
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart' show ThemeOptions, SettingsManager;
@@ -27,7 +26,6 @@ import 'package:screentime/sections/focus_mode.dart';
 import 'package:screentime/sections/settings.dart' as native_settings;
 import 'package:screentime/sections/help.dart';
 import 'widgets/Browser/browser_extension_status.dart';
-import 'widgets/Browser/browser_websites.dart';
 import 'widgets/Browser/browser_shared.dart';
 import 'package:screentime/onboarding/web_onboarding_screen.dart';
 import 'UI sections/Privacy/private_mode_toggle_button.dart';
@@ -145,7 +143,7 @@ class _WebDashboardState extends State<WebDashboard>
 
   Future<void> _load() async {
     final mode = await ExtensionSettings().getMode();
-    final state = await _readAppState();
+    await _readAppState();
     int initialIndex = 0;
     if (kIsWeb) {
       if (isSettingsUrl()) {
@@ -423,7 +421,6 @@ class _WebTitleBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final captionColor = theme.typography.caption?.color;
     final themeProvider = context.watch<ThemeCustomizationProvider>();
     final customTheme = themeProvider.currentTheme;
 
@@ -576,24 +573,25 @@ class _WebSidebar extends StatelessWidget {
     required this.everConnected,
   });
 
-  List<_WebNavItem> _buildNavItems() {
+  List<_WebNavItem> _buildNavItems(AppLocalizations l10n) {
     return [
-      const _WebNavItem(icon: FluentIcons.home, label: 'Overview', index: 0),
-      const _WebNavItem(
-          icon: FluentIcons.globe, label: 'Websites', index: 1),
-      const _WebNavItem(
-          icon: FluentIcons.report_document, label: 'Reports', index: 2),
-      const _WebNavItem(icon: FluentIcons.timer, label: 'Limits', index: 3),
-      const _WebNavItem(icon: FluentIcons.focus, label: 'Focus Mode', index: 4),
+      _WebNavItem(icon: FluentIcons.home, label: l10n.navOverview, index: 0),
+      _WebNavItem(
+          icon: FluentIcons.globe, label: l10n.browserTabWebsites, index: 1),
+      _WebNavItem(
+          icon: FluentIcons.report_document, label: l10n.navReports, index: 2),
+      _WebNavItem(icon: FluentIcons.timer, label: l10n.browserTabLimits, index: 3),
+      _WebNavItem(icon: FluentIcons.focus, label: l10n.navFocusMode, index: 4),
       const _WebNavItem.separator(),
-      const _WebNavItem(icon: FluentIcons.settings, label: 'Settings', index: 5),
-      const _WebNavItem(icon: FluentIcons.chat_bot, label: 'Help', index: 6),
+      _WebNavItem(icon: FluentIcons.settings, label: l10n.navSettings, index: 5),
+      _WebNavItem(icon: FluentIcons.chat_bot, label: l10n.navHelp, index: 6),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    final navItems = _buildNavItems();
+    final l10n = AppLocalizations.of(context)!;
+    final navItems = _buildNavItems(l10n);
     final isCompact = expandProgress < 0.5;
 
     return Container(

@@ -84,7 +84,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get navHelp => 'Bantuan';
 
   @override
-  String get navPrivate => 'Private';
+  String get navPrivate => 'Pribadi';
 
   @override
   String get helpTitle => 'Bantuan';
@@ -3668,12 +3668,41 @@ class AppLocalizationsId extends AppLocalizations {
   String get browserRenameDialogTitle => 'Ganti Nama Browser';
 
   @override
+  String get browserSourcePingTooltip => 'Cari / Ping Browser';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return 'Ping terkirim ke $name';
+  }
+
+  @override
   String get browserSourceRemoveTitle => 'Hapus Browser?';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return 'Hapus \"$name\" dari browser yang terhubung? Riwayat penggunaannya akan tetap disimpan, tetapi browser tersebut perlu terhubung kembali untuk sinkronisasi ulang.';
   }
+
+  @override
+  String get browserLimitsScopeTitle => 'Cakupan Batas Situs Web';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      'Pilih apakah batas situs web dan pelacakan berlaku per profil browser atau secara global di semua browser.';
+
+  @override
+  String get browserLimitsScopeScoped => 'Per Profil Browser (Khusus)';
+
+  @override
+  String get browserLimitsScopeScopedDesc =>
+      'Batas hanya berlaku untuk profil browser tertentu tempat batas tersebut dikonfigurasi.';
+
+  @override
+  String get browserLimitsScopeGlobal => 'Global (Lintas Browser)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc =>
+      'Batas berlaku di semua browser yang terhubung secara gabungan.';
 
   @override
   String get browserSourceRemoveAction => 'Hapus';
@@ -3766,23 +3795,23 @@ class AppLocalizationsId extends AppLocalizations {
       'Ekstensi peramban Anda kini dapat terhubung dan menyinkronkan data.';
 
   @override
-  String get browserSyncedJustNow => 'Synced just now';
+  String get browserSyncedJustNow => 'Baru saja disinkronkan';
 
   @override
   String browserSyncedMinutesAgo(int minutes) {
-    return 'Synced ${minutes}m ago';
+    return 'Disinkronkan $minutes mnt lalu';
   }
 
   @override
   String browserSyncedHoursAgo(int hours) {
-    return 'Synced ${hours}h ago';
+    return 'Disinkronkan $hours jam lalu';
   }
 
   @override
-  String get browserNeverSynced => 'Not synced yet';
+  String get browserNeverSynced => 'Belum disinkronkan';
 
   @override
-  String get browserSyncStalled => 'Sync stalled — check the extension';
+  String get browserSyncStalled => 'Sinkronisasi terhenti — periksa ekstensi';
 
   @override
   String get browserServerPort => 'Port Server';
@@ -3920,11 +3949,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get privateModeHideAction => 'Sembunyikan item pribadi';
 
   @override
-  String get privateModeLockHint => 'Right-click to lock now';
+  String get privateModeLockHint => 'Klik kanan untuk mengunci sekarang';
 
   @override
   String get privateModeShowOnlyDescription =>
-      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+      'Hanya tampilkan aplikasi dan situs web yang ditandai pribadi, menggantikan tampilan harian Anda. Juga tersedia dari bilah judul.';
 
   @override
   String get privateModeSectionTitle => 'Mode Pribadi';
@@ -3977,119 +4006,312 @@ class AppLocalizationsId extends AppLocalizations {
   String get privateModeResetPasswordAction => 'Reset Kata Sandi';
 
   @override
-  String get privateModeForgotPassword => 'Forgot password?';
+  String get privateModeForgotPassword => 'Lupa kata sandi?';
 
   @override
-  String get privateModeRecoveryTitle => 'Recover Private Mode';
+  String get privateModeRecoveryTitle => 'Pulihkan Mode Pribadi';
 
   @override
-  String get privateModeRecoveryTabBackupCode => 'Backup code';
+  String get privateModeRecoveryTabBackupCode => 'Kode cadangan';
 
   @override
-  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+  String get privateModeRecoveryTabSecurityQuestion => 'Pertanyaan keamanan';
 
   @override
   String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
 
   @override
-  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+  String get privateModeSecurityAnswerPlaceholder => 'Jawaban Anda';
 
   @override
-  String get privateModeRecoveryIncorrect =>
-      'That didn\'t match. Please try again.';
+  String get privateModeRecoveryIncorrect => 'Tidak cocok. Silakan coba lagi.';
 
   @override
-  String get privateModeRecoverySuccessTitle => 'Identity verified';
+  String get privateModeRecoverySuccessTitle => 'Identitas terverifikasi';
 
   @override
   String get privateModeRecoverySuccessDescription =>
-      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+      'Kata sandi lama Anda telah dihapus. Buat kata sandi baru untuk melanjutkan — Anda juga akan mendapatkan kode cadangan dan pertanyaan keamanan baru.';
 
   @override
-  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+  String get privateModeSetupRecoveryTitle => 'Atur Pemulihan';
 
   @override
-  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+  String get privateModeBackupCodeGeneratedTitle => 'Kode cadangan Anda';
 
   @override
   String get privateModeBackupCodeWarning =>
-      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+      'Simpan kode ini di tempat yang aman. Kode ini hanya ditampilkan sekali, dan Anda akan membutuhkannya jika lupa kata sandi.';
 
   @override
-  String get privateModeCopyBackupCode => 'Copy';
+  String get privateModeCopyBackupCode => 'Salin';
 
   @override
-  String get privateModeBackupCodeCopied => 'Backup code copied';
+  String get privateModeBackupCodeCopied => 'Kode cadangan disalin';
 
   @override
-  String get privateModeDownloadBackupCode => 'Download';
+  String get privateModeDownloadBackupCode => 'Unduh';
 
   @override
-  String get privateModeSecurityQuestionLabel => 'Security question';
+  String get privateModeSecurityQuestionLabel => 'Pertanyaan keamanan';
 
   @override
-  String get privateModeSecurityAnswerLabel => 'Your answer';
+  String get privateModeSecurityAnswerLabel => 'Jawaban Anda';
 
   @override
   String get privateModeSecurityQuestionCustomOption =>
-      'Write my own question…';
+      'Tulis pertanyaan saya sendiri…';
 
   @override
-  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+  String get privateModeChooseSecurityQuestion => 'Pilih pertanyaan keamanan';
 
   @override
-  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+  String get privateModeSecurityAnswerEmpty => 'Jawaban tidak boleh kosong';
 
   @override
-  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+  String get privateModeIveSavedThis =>
+      'Saya sudah menyimpan kode cadangan ini';
 
   @override
-  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+  String get privateModeRecoveryOptionsTitle => 'Opsi Pemulihan';
 
   @override
   String get privateModeRecoveryOptionsDescription =>
-      'Regenerate your backup code and security question without changing your password.';
+      'Buat ulang kode cadangan dan pertanyaan keamanan Anda tanpa mengubah kata sandi.';
 
   @override
-  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+  String get privateModeRegenerateRecoveryAction => 'Buat Ulang';
 
   @override
   String get privateModeQuestionPetName =>
-      'What was the name of your first pet?';
+      'Siapa nama hewan peliharaan pertama Anda?';
 
   @override
-  String get privateModeQuestionBirthCity => 'In what city were you born?';
+  String get privateModeQuestionBirthCity => 'Di kota mana Anda dilahirkan?';
 
   @override
-  String get privateModeQuestionFirstSchool =>
-      'What was the name of your first school?';
+  String get privateModeQuestionFirstSchool => 'Apa nama sekolah pertama Anda?';
 
   @override
   String get privateModeQuestionMotherMaidenName =>
-      'What is your mother\'s maiden name?';
+      'Siapa nama gadis ibu Anda?';
 
   @override
-  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+  String get privateModeQuestionFavoriteBook => 'Apa buku favorit Anda?';
 
   @override
   String get privateModeNotSetUpDescription =>
-      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+      'Atur Mode Pribadi di Pengaturan untuk menjaga aplikasi dan situs web sensitif dari pandangan sehari-hari Anda.';
 
   @override
-  String get privateModeGoToSettingsAction => 'Go to Settings';
+  String get privateModeGoToSettingsAction => 'Buka Pengaturan';
 
   @override
   String get privateModeLockedDescription =>
-      'Unlock to view your private apps and websites.';
+      'Buka kunci untuk melihat aplikasi dan situs web pribadi Anda.';
 
   @override
   String get privateModeUnlockedDescription =>
-      'Apps and websites you\'ve marked private.';
+      'Aplikasi dan situs web yang Anda tandai pribadi.';
 
   @override
   String get privateModeNoItemsDescription =>
-      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+      'Belum ada aplikasi atau situs web pribadi yang dilacak. Tandai item sebagai pribadi dari detailnya untuk melihatnya di sini.';
 
   @override
-  String get privateModeItemsCount => 'Private Items';
+  String get privateModeItemsCount => 'Item Pribadi';
+
+  @override
+  String get permissionBannerNotificationsDisabled =>
+      'Notifikasi dinonaktifkan';
+
+  @override
+  String get permissionBannerSystemDesc =>
+      'Aktifkan notifikasi di Pengaturan Sistem untuk menerima peringatan sesi fokus.';
+
+  @override
+  String get permissionBannerOpenSystemSettings => 'Buka Pengaturan Sistem';
+
+  @override
+  String get permissionBannerAppDesc =>
+      'Aktifkan notifikasi di pengaturan aplikasi untuk menerima peringatan sesi fokus.';
+
+  @override
+  String get permissionBannerFocusDisabled => 'Notifikasi fokus dinonaktifkan';
+
+  @override
+  String get permissionBannerFocusDesc =>
+      'Aktifkan notifikasi mode fokus di pengaturan untuk menerima peringatan sesi.';
+
+  @override
+  String get topWebsites => 'Situs Web Teratas';
+
+  @override
+  String get noWebsitesTrackedYet => 'Belum ada situs web yang dilacak';
+
+  @override
+  String get browserDetailBlockedTooltip =>
+      'Batas harian tercapai – situs diblokir';
+
+  @override
+  String get browserDetailTimeToday => 'Waktu hari ini';
+
+  @override
+  String get browserDetailVisitsToday => 'Kunjungan hari ini';
+
+  @override
+  String get browserDetailDailyLimit => 'Batas harian';
+
+  @override
+  String get browserChartLegendTime => 'Waktu';
+
+  @override
+  String get browserChartLegendVisits => 'Kunjungan';
+
+  @override
+  String get blockingBehaviorTitle => 'Perilaku Pemblokiran';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => 'Hanya notifikasi';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle =>
+      'Beri tahu Anda saat batas tercapai, tanpa tindakan lain.';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => 'Blokir lunak';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      'Bawa Scolect ke depan dengan opsi untuk meminimalkan, keluar, tunda, atau buka blokir aplikasi.';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => 'Blokir keras';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle =>
+      'Sama seperti blokir lunak, dan juga langsung menyembunyikan aplikasi dari layar Anda.';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      'Catatan: Pemblokiran adalah dorongan, bukan penguncian permanen. Anda masih dapat membuka kembali aplikasi dari Dock atau taskbar.';
+
+  @override
+  String get aboutUpdateChecking => 'Memeriksa...';
+
+  @override
+  String get aboutUpdateCheckButton => 'Periksa Pembaruan';
+
+  @override
+  String get aboutUpdateCheckingProgress => 'Memeriksa pembaruan...';
+
+  @override
+  String get aboutUpdateUpToDate => 'Aplikasi Anda sudah versi terbaru';
+
+  @override
+  String get aboutUpdateFailed => 'Tidak dapat memeriksa pembaruan';
+
+  @override
+  String get aboutUpdateRetryPrompt =>
+      'Ketuk \"Periksa Pembaruan\" untuk mencoba lagi';
+
+  @override
+  String get aboutUpdateScheduled => 'Pemeriksaan pembaruan dijadwalkan';
+
+  @override
+  String get aboutOpenSettingsFailed => 'Gagal membuka Pengaturan Sistem';
+
+  @override
+  String get onboardingWelcomeTitle => 'Selamat datang di Scolect';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      'Kendalikan waktu Anda. Scolect berjalan tanpa suara di latar belakang — melacak setiap aplikasi, setiap sesi, setiap menit.';
+
+  @override
+  String get onboardingEveryAppTitle => 'Setiap Aplikasi, Secara Otomatis';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect memantau aplikasi latar depan dan mencatat berapa lama Anda menghabiskan waktu di setiap aplikasi — tanpa perlu menyalakan timer.';
+
+  @override
+  String get onboardingSeeTimeTitle => 'Lihat Ke Mana Waktu Anda Dihabiskan';
+
+  @override
+  String get onboardingSeeTimeDesc =>
+      'Laporan harian dan mingguan yang intuitif menunjukkan aplikasi yang paling sering digunakan, total waktu layar, dan tren penggunaan.';
+
+  @override
+  String get onboardingSmartLimitsTitle => 'Batas & Peringatan Cerdas';
+
+  @override
+  String get onboardingSmartLimitsDesc =>
+      'Atur batas waktu harian per aplikasi atau untuk total waktu layar. Dapatkan notifikasi sebelum Anda mencapai batas.';
+
+  @override
+  String get onboardingDeepFocusTitle => 'Mode Fokus Mendalam';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      'Blokir aplikasi yang mengganggu selama sesi Pomodoro. Interval kerja dan istirahat dengan suara latar membantu Anda tetap fokus.';
+
+  @override
+  String get onboardingTrackBrowserTitle => 'Lacak Waktu Browser Juga';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      'Pasang ekstensi browser gratis untuk merekam waktu di situs web — bukan hanya aplikasi bawaan. Pantau semuanya dalam satu dasbor.';
+
+  @override
+  String get onboardingAllSetTitle => 'Semua Sudah Siap';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect siap melacak. Data Anda tetap sepenuhnya di perangkat — benar-benar pribadi, tidak pernah diunggah ke mana pun.';
+
+  @override
+  String get onboardingGetStarted => 'Mulai';
+
+  @override
+  String get onboardingNext => 'Berikutnya';
+
+  @override
+  String get onboardingGoToDashboard => 'Buka Dasbor';
+
+  @override
+  String get onboardingWorksInBrowserTitle =>
+      'Bekerja Langsung di Browser Anda';
+
+  @override
+  String get onboardingWorksInBrowserDesc =>
+      'Lacak aktivitas web secara otomatis saat Anda menjelajah. Tidak perlu aplikasi desktop untuk memulai.';
+
+  @override
+  String get onboardingUsageRightHereTitle => 'Penggunaan Anda, Tepat di Sini';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      'Lihat laporan harian dan mingguan terperinci tentang waktu yang dihabiskan di setiap situs web dalam grafik yang rapi.';
+
+  @override
+  String get onboardingSyncWithDesktopTitle =>
+      'Sinkronkan dengan Aplikasi Desktop';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      'Terhubung secara mulus dengan aplikasi desktop Scolect untuk analitik gabungan aplikasi dan situs web.';
+
+  @override
+  String get onboarding100PrivateTitle => '100% Pribadi';
+
+  @override
+  String get onboarding100PrivateDesc =>
+      'Semua data pelacakan disimpan secara lokal di browser dan di perangkat Anda. Tidak ada yang dikirim ke cloud.';
+
+  @override
+  String get onboardingBack => 'Kembali';
+
+  @override
+  String get onboardingSkip => 'Lewati';
 }

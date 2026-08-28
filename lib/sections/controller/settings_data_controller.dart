@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:screentime/utils/platform_utils.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:math' show max;
 
 import 'package:adaptive_theme/adaptive_theme.dart';

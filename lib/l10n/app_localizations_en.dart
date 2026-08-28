@@ -3699,12 +3699,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browserRenameDialogTitle => 'Rename Browser';
 
   @override
+  String get browserSourcePingTooltip => 'Locate / Ping Browser';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return 'Ping sent to $name';
+  }
+
+  @override
   String get browserSourceRemoveTitle => 'Remove Browser?';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return 'Remove \"$name\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.';
   }
+
+  @override
+  String get browserLimitsScopeTitle => 'Website Limits Scope';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      'Choose whether website limits and tracking apply per browser profile or globally across all browsers.';
+
+  @override
+  String get browserLimitsScopeScoped => 'Per Browser Profile (Scoped)';
+
+  @override
+  String get browserLimitsScopeScopedDesc =>
+      'Limits apply only to the specific browser profile where configured.';
+
+  @override
+  String get browserLimitsScopeGlobal => 'Global (Cross-Browser)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc =>
+      'Limits apply across all connected browsers combined.';
 
   @override
   String get browserSourceRemoveAction => 'Remove';
@@ -4126,4 +4155,194 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privateModeItemsCount => 'Private Items';
+
+  @override
+  String get permissionBannerNotificationsDisabled => 'Notifications disabled';
+
+  @override
+  String get permissionBannerSystemDesc =>
+      'Enable notifications in System Settings to receive focus session alerts.';
+
+  @override
+  String get permissionBannerOpenSystemSettings => 'Open System Settings';
+
+  @override
+  String get permissionBannerAppDesc =>
+      'Enable notifications in app settings to receive focus session alerts.';
+
+  @override
+  String get permissionBannerFocusDisabled => 'Focus notifications disabled';
+
+  @override
+  String get permissionBannerFocusDesc =>
+      'Enable focus mode notifications in settings to receive session alerts.';
+
+  @override
+  String get topWebsites => 'Top Websites';
+
+  @override
+  String get noWebsitesTrackedYet => 'No websites tracked yet';
+
+  @override
+  String get browserDetailBlockedTooltip =>
+      'Daily limit reached – site is blocked';
+
+  @override
+  String get browserDetailTimeToday => 'Time today';
+
+  @override
+  String get browserDetailVisitsToday => 'Visits today';
+
+  @override
+  String get browserDetailDailyLimit => 'Daily limit';
+
+  @override
+  String get browserChartLegendTime => 'Time';
+
+  @override
+  String get browserChartLegendVisits => 'Visits';
+
+  @override
+  String get blockingBehaviorTitle => 'Blocking Behavior';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => 'Notification only';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle =>
+      'Alert you when a limit is reached, no other action.';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => 'Soft block';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      'Bring Scolect to the front with options to minimize, quit, snooze, or unblock the app.';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => 'Hard block';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle =>
+      'Same as soft block, and also immediately hides the app from your screen.';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      'Note: Blocking is a nudge, not a lock. You can still reopen the app from the Dock or taskbar.';
+
+  @override
+  String get aboutUpdateChecking => 'Checking...';
+
+  @override
+  String get aboutUpdateCheckButton => 'Check Updates';
+
+  @override
+  String get aboutUpdateCheckingProgress => 'Checking for updates...';
+
+  @override
+  String get aboutUpdateUpToDate => 'You\'re up to date';
+
+  @override
+  String get aboutUpdateFailed => 'Could not check for updates';
+
+  @override
+  String get aboutUpdateRetryPrompt => 'Tap \"Check Updates\" to retry';
+
+  @override
+  String get aboutUpdateScheduled => 'Update check scheduled';
+
+  @override
+  String get aboutOpenSettingsFailed => 'Failed to open System Settings';
+
+  @override
+  String get onboardingWelcomeTitle => 'Welcome to Scolect';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      'Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.';
+
+  @override
+  String get onboardingEveryAppTitle => 'Every App, Automatically';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect watches the foreground app and quietly logs how long you spend in each one — no timers to start, nothing to remember.';
+
+  @override
+  String get onboardingSeeTimeTitle => 'See Where Your Time Goes';
+
+  @override
+  String get onboardingSeeTimeDesc =>
+      'Beautiful daily and weekly reports show your most-used apps, total screen time, and usage trends at a glance.';
+
+  @override
+  String get onboardingSmartLimitsTitle => 'Smart Limits & Alerts';
+
+  @override
+  String get onboardingSmartLimitsDesc =>
+      'Set daily time limits per app or for your total screen time. Get notified before you hit your limits — not after.';
+
+  @override
+  String get onboardingDeepFocusTitle => 'Deep Focus Mode';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      'Block distracting apps during Pomodoro sessions. Custom work and break intervals with optional ambient sounds keep you in the zone.';
+
+  @override
+  String get onboardingTrackBrowserTitle => 'Track Browser Time Too';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      'Install the free browser extension to capture time spent on websites — not just native apps. Full picture, one dashboard.';
+
+  @override
+  String get onboardingAllSetTitle => 'You\'re All Set';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect is ready to track. Your data stays entirely on-device — completely private, never uploaded anywhere.';
+
+  @override
+  String get onboardingGetStarted => 'Get Started';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGoToDashboard => 'Go to Dashboard';
+
+  @override
+  String get onboardingWorksInBrowserTitle => 'Works Right in Your Browser';
+
+  @override
+  String get onboardingWorksInBrowserDesc =>
+      'Track web activity automatically as you browse. No desktop app required to get started.';
+
+  @override
+  String get onboardingUsageRightHereTitle => 'Your Usage, Right Here';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      'View detailed daily and weekly reports of your time spent on every website in clean, intuitive charts.';
+
+  @override
+  String get onboardingSyncWithDesktopTitle => 'Sync with the Desktop App';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      'Connect seamlessly with the Scolect desktop app for combined native app and website analytics.';
+
+  @override
+  String get onboarding100PrivateTitle => '100% Private';
+
+  @override
+  String get onboarding100PrivateDesc =>
+      'All tracking data is stored locally in your browser and on your machine. Nothing is ever sent to the cloud.';
+
+  @override
+  String get onboardingBack => 'Back';
+
+  @override
+  String get onboardingSkip => 'Skip';
 }

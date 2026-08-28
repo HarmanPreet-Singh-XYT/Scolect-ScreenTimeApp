@@ -83,7 +83,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get navHelp => '帮助';
 
   @override
-  String get navPrivate => 'Private';
+  String get navPrivate => '隐私';
 
   @override
   String get helpTitle => '帮助';
@@ -3555,12 +3555,39 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserRenameDialogTitle => '重命名浏览器';
 
   @override
+  String get browserSourcePingTooltip => '定位 / Ping 浏览器';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return '已向 $name 发送 Ping';
+  }
+
+  @override
   String get browserSourceRemoveTitle => '移除该浏览器？';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return '要将“$name”从已连接的浏览器中移除吗？其使用记录会保留，但需要重新连接才能再次同步。';
   }
+
+  @override
+  String get browserLimitsScopeTitle => '网站限制生效范围';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      '选择网站限制和跟踪是按浏览器配置文件生效，还是在所有浏览器中全局生效。';
+
+  @override
+  String get browserLimitsScopeScoped => '按浏览器配置文件 (独立)';
+
+  @override
+  String get browserLimitsScopeScopedDesc => '限制仅适用于配置该限制的特定浏览器配置文件。';
+
+  @override
+  String get browserLimitsScopeGlobal => '全局 (跨所有浏览器)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc => '限制适用于所有已连接浏览器的总计使用量。';
 
   @override
   String get browserSourceRemoveAction => '移除';
@@ -3647,23 +3674,23 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserSetupServerActiveDesc => '您的浏览器扩展现在可以连接并同步数据。';
 
   @override
-  String get browserSyncedJustNow => 'Synced just now';
+  String get browserSyncedJustNow => '刚刚同步';
 
   @override
   String browserSyncedMinutesAgo(int minutes) {
-    return 'Synced ${minutes}m ago';
+    return '$minutes 分钟前同步';
   }
 
   @override
   String browserSyncedHoursAgo(int hours) {
-    return 'Synced ${hours}h ago';
+    return '$hours 小时前同步';
   }
 
   @override
-  String get browserNeverSynced => 'Not synced yet';
+  String get browserNeverSynced => '尚未同步';
 
   @override
-  String get browserSyncStalled => 'Sync stalled — check the extension';
+  String get browserSyncStalled => '同步已中断 — 请检查扩展程序';
 
   @override
   String get browserServerPort => '服务器端口';
@@ -3796,11 +3823,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privateModeHideAction => '隐藏私密内容';
 
   @override
-  String get privateModeLockHint => 'Right-click to lock now';
+  String get privateModeLockHint => '右键单击可立即锁定';
 
   @override
   String get privateModeShowOnlyDescription =>
-      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+      '仅显示标记为隐私的应用和网站，以替代日常视图。也可从标题栏快捷访问。';
 
   @override
   String get privateModeSectionTitle => '私密模式';
@@ -3850,119 +3877,290 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privateModeResetPasswordAction => '重置密码';
 
   @override
-  String get privateModeForgotPassword => 'Forgot password?';
+  String get privateModeForgotPassword => '忘记密码？';
 
   @override
-  String get privateModeRecoveryTitle => 'Recover Private Mode';
+  String get privateModeRecoveryTitle => '恢复隐私模式';
 
   @override
-  String get privateModeRecoveryTabBackupCode => 'Backup code';
+  String get privateModeRecoveryTabBackupCode => '备用代码';
 
   @override
-  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+  String get privateModeRecoveryTabSecurityQuestion => '安全提示问题';
 
   @override
   String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
 
   @override
-  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+  String get privateModeSecurityAnswerPlaceholder => '您的回答';
 
   @override
-  String get privateModeRecoveryIncorrect =>
-      'That didn\'t match. Please try again.';
+  String get privateModeRecoveryIncorrect => '验证不匹配，请重试。';
 
   @override
-  String get privateModeRecoverySuccessTitle => 'Identity verified';
+  String get privateModeRecoverySuccessTitle => '身份已验证';
 
   @override
   String get privateModeRecoverySuccessDescription =>
-      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+      '旧密码已清除。请设置新密码以继续 — 您还将获得新的备用代码和安全提示问题。';
 
   @override
-  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+  String get privateModeSetupRecoveryTitle => '设置恢复方式';
 
   @override
-  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+  String get privateModeBackupCodeGeneratedTitle => '您的备用代码';
 
   @override
   String get privateModeBackupCodeWarning =>
-      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+      '请将此代码保存在安全的地方。它只会显示一次，如果您忘记密码，将需要使用它。';
 
   @override
-  String get privateModeCopyBackupCode => 'Copy';
+  String get privateModeCopyBackupCode => '复制';
 
   @override
-  String get privateModeBackupCodeCopied => 'Backup code copied';
+  String get privateModeBackupCodeCopied => '备用代码已复制';
 
   @override
-  String get privateModeDownloadBackupCode => 'Download';
+  String get privateModeDownloadBackupCode => '下载';
 
   @override
-  String get privateModeSecurityQuestionLabel => 'Security question';
+  String get privateModeSecurityQuestionLabel => '安全提示问题';
 
   @override
-  String get privateModeSecurityAnswerLabel => 'Your answer';
+  String get privateModeSecurityAnswerLabel => '您的回答';
 
   @override
-  String get privateModeSecurityQuestionCustomOption =>
-      'Write my own question…';
+  String get privateModeSecurityQuestionCustomOption => '自定义问题…';
 
   @override
-  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+  String get privateModeChooseSecurityQuestion => '选择安全提示问题';
 
   @override
-  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+  String get privateModeSecurityAnswerEmpty => '回答不能为空';
 
   @override
-  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+  String get privateModeIveSavedThis => '我已保存此备用代码';
 
   @override
-  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+  String get privateModeRecoveryOptionsTitle => '恢复选项';
 
   @override
-  String get privateModeRecoveryOptionsDescription =>
-      'Regenerate your backup code and security question without changing your password.';
+  String get privateModeRecoveryOptionsDescription => '重新生成备用代码和安全提示问题，无需更改密码。';
 
   @override
-  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+  String get privateModeRegenerateRecoveryAction => '重新生成';
 
   @override
-  String get privateModeQuestionPetName =>
-      'What was the name of your first pet?';
+  String get privateModeQuestionPetName => '您的第一只宠物的名字是什么？';
 
   @override
-  String get privateModeQuestionBirthCity => 'In what city were you born?';
+  String get privateModeQuestionBirthCity => '您出生的城市是哪里？';
 
   @override
-  String get privateModeQuestionFirstSchool =>
-      'What was the name of your first school?';
+  String get privateModeQuestionFirstSchool => '您的第一所学校的名称是什么？';
 
   @override
-  String get privateModeQuestionMotherMaidenName =>
-      'What is your mother\'s maiden name?';
+  String get privateModeQuestionMotherMaidenName => '您母亲婚前的姓氏是什么？';
 
   @override
-  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+  String get privateModeQuestionFavoriteBook => '您最喜欢的书是什么？';
 
   @override
-  String get privateModeNotSetUpDescription =>
-      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+  String get privateModeNotSetUpDescription => '在设置中设置隐私模式，将敏感应用和网站从日常视图中隐藏。';
 
   @override
-  String get privateModeGoToSettingsAction => 'Go to Settings';
+  String get privateModeGoToSettingsAction => '前往设置';
 
   @override
-  String get privateModeLockedDescription =>
-      'Unlock to view your private apps and websites.';
+  String get privateModeLockedDescription => '解锁以查看您的隐私应用和网站。';
 
   @override
-  String get privateModeUnlockedDescription =>
-      'Apps and websites you\'ve marked private.';
+  String get privateModeUnlockedDescription => '已标记为隐私的应用和网站。';
 
   @override
   String get privateModeNoItemsDescription =>
-      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+      '尚未跟踪到隐私应用或网站。在其详情中将项目标记为隐私即可在此处查看。';
 
   @override
-  String get privateModeItemsCount => 'Private Items';
+  String get privateModeItemsCount => '隐私项目';
+
+  @override
+  String get permissionBannerNotificationsDisabled => '通知已禁用';
+
+  @override
+  String get permissionBannerSystemDesc => '在系统设置中启用通知以接收专注时段提醒。';
+
+  @override
+  String get permissionBannerOpenSystemSettings => '打开系统设置';
+
+  @override
+  String get permissionBannerAppDesc => '在应用设置中启用通知以接收专注时段提醒。';
+
+  @override
+  String get permissionBannerFocusDisabled => '专注通知已禁用';
+
+  @override
+  String get permissionBannerFocusDesc => '在设置中启用专注模式通知以接收会话提醒。';
+
+  @override
+  String get topWebsites => '热门网站';
+
+  @override
+  String get noWebsitesTrackedYet => '尚未跟踪到网站';
+
+  @override
+  String get browserDetailBlockedTooltip => '已达到每日限额 – 网站已被拦截';
+
+  @override
+  String get browserDetailTimeToday => '今日用时';
+
+  @override
+  String get browserDetailVisitsToday => '今日访问次数';
+
+  @override
+  String get browserDetailDailyLimit => '每日限额';
+
+  @override
+  String get browserChartLegendTime => '用时';
+
+  @override
+  String get browserChartLegendVisits => '访问次数';
+
+  @override
+  String get blockingBehaviorTitle => '拦截行为';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => '仅发送通知';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle => '在达到限额时发出提醒，不执行其他操作。';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => '温和拦截';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      '将 Scolect 移至前台，并提供最小化、退出、稍后提醒或解除拦截该应用的选项。';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => '严格拦截';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle => '与温和拦截相同，并立即从屏幕上隐藏该应用。';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      '提示：拦截是一种督促提示，而非强制锁定。您仍可从程序坞或任务栏重新打开该应用。';
+
+  @override
+  String get aboutUpdateChecking => '正在检查...';
+
+  @override
+  String get aboutUpdateCheckButton => '检查更新';
+
+  @override
+  String get aboutUpdateCheckingProgress => '正在检查更新...';
+
+  @override
+  String get aboutUpdateUpToDate => '已是最新版本';
+
+  @override
+  String get aboutUpdateFailed => '无法检查更新';
+
+  @override
+  String get aboutUpdateRetryPrompt => '点击“检查更新”以重试';
+
+  @override
+  String get aboutUpdateScheduled => '已计划更新检查';
+
+  @override
+  String get aboutOpenSettingsFailed => '打开系统设置失败';
+
+  @override
+  String get onboardingWelcomeTitle => '欢迎使用 Scolect';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      '掌控您的宝贵时间。Scolect 在后台静默运行 — 自动跟踪每个应用、每次会话和每分每秒。';
+
+  @override
+  String get onboardingEveryAppTitle => '所有应用，全自动记录';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect 监测当前前台应用并自动记录在各应用中的时长 — 无需手动启动计时器，省心无忧。';
+
+  @override
+  String get onboardingSeeTimeTitle => '清晰洞察时间去向';
+
+  @override
+  String get onboardingSeeTimeDesc => '精美的日度与周度报表，让常用应用、总屏幕时长与使用趋势一览无余。';
+
+  @override
+  String get onboardingSmartLimitsTitle => '智能限制与提醒';
+
+  @override
+  String get onboardingSmartLimitsDesc => '为每个应用或总屏幕时间设定每日限制。在超额之前即时收到预警提醒。';
+
+  @override
+  String get onboardingDeepFocusTitle => '深度专注模式';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      '在番茄钟工作时段自动屏蔽干扰应用。自定义工作与休息间隔，搭配舒缓白噪音助您保持专注心流。';
+
+  @override
+  String get onboardingTrackBrowserTitle => '同步记录浏览器时长';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      '安装免费浏览器扩展程序，不仅记录本地应用，还能捕捉各网站的浏览用时。全局视图，一览无余。';
+
+  @override
+  String get onboardingAllSetTitle => '一切准备就绪';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect 已准备就绪。您的所有数据均保留在本地设备上 — 绝对隐私安全，绝不上传云端。';
+
+  @override
+  String get onboardingGetStarted => '立即开始';
+
+  @override
+  String get onboardingNext => '下一步';
+
+  @override
+  String get onboardingGoToDashboard => '进入仪表盘';
+
+  @override
+  String get onboardingWorksInBrowserTitle => '直接在浏览器中运行';
+
+  @override
+  String get onboardingWorksInBrowserDesc => '在浏览网页时自动跟踪网络活动，无需桌面端应用即可轻松起步。';
+
+  @override
+  String get onboardingUsageRightHereTitle => '使用统计，触手可及';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      '通过清晰直观的图表，查看在每个网站上花费时长的详细日度和周度报表。';
+
+  @override
+  String get onboardingSyncWithDesktopTitle => '与桌面端无缝同步';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      '与 Scolect 桌面端顺畅联动，实现本地应用与网页浏览的综合分析。';
+
+  @override
+  String get onboarding100PrivateTitle => '100% 本地隐私';
+
+  @override
+  String get onboarding100PrivateDesc => '所有记录数据均保存在本地浏览器和您的电脑中，绝不向任何云端上传数据。';
+
+  @override
+  String get onboardingBack => '返回';
+
+  @override
+  String get onboardingSkip => '跳过';
 }

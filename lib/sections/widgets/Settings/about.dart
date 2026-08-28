@@ -82,7 +82,7 @@ class _AboutSectionState extends State<AboutSection> {
                 Expanded(
                   child: _OutlineIconButton(
                     icon: FluentIcons.sync,
-                    label: isChecking ? 'Checking...' : 'Check Updates',
+                    label: isChecking ? l10n.aboutUpdateChecking : l10n.aboutUpdateCheckButton,
                     isLoading: isChecking,
                     onPressed: isChecking
                         ? null
@@ -207,6 +207,7 @@ class _UpdateBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return AnimatedSwitcher(
       duration: _kAnimDuration300,
       transitionBuilder: (child, animation) => FadeTransition(
@@ -221,32 +222,32 @@ class _UpdateBanner extends StatelessWidget {
             key: const ValueKey('available'),
             update: updater.availableUpdate!,
           ),
-        UpdateStatus.checking => const _StatusBanner(
-            key: ValueKey('checking'),
+        UpdateStatus.checking => _StatusBanner(
+            key: const ValueKey('checking'),
             icon: null,
             isLoading: true,
-            label: 'Checking for updates...',
+            label: l10n.aboutUpdateCheckingProgress,
             sublabel: null,
             color: Colors.grey,
           ),
         UpdateStatus.upToDate => _StatusBanner(
             key: const ValueKey('upToDate'),
             icon: FluentIcons.skype_circle_check,
-            label: "You're up to date",
+            label: l10n.aboutUpdateUpToDate,
             sublabel: _lastCheckSublabel(),
             color: Colors.successPrimaryColor,
           ),
-        UpdateStatus.error => const _StatusBanner(
-            key: ValueKey('error'),
+        UpdateStatus.error => _StatusBanner(
+            key: const ValueKey('error'),
             icon: FluentIcons.error_badge,
-            label: 'Could not check for updates',
-            sublabel: 'Tap "Check Updates" to retry',
+            label: l10n.aboutUpdateFailed,
+            sublabel: l10n.aboutUpdateRetryPrompt,
             color: Colors.warningPrimaryColor,
           ),
         UpdateStatus.idle => _StatusBanner(
             key: const ValueKey('idle'),
             icon: FluentIcons.clock,
-            label: 'Update check scheduled',
+            label: l10n.aboutUpdateScheduled,
             sublabel: _lastCheckSublabel(),
             color: Colors.grey,
           ),

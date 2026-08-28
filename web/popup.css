@@ -88,22 +88,42 @@ body[data-theme="monochrome"] {
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────── */
+html {
+  width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
 body {
   width: 380px;
+  min-width: 380px;
+  max-width: 380px;
+  margin: 0;
+  padding: 0;
   min-height: 100px;
   background: var(--bg);
   font-family: -apple-system, 'Segoe UI', Inter, system-ui, sans-serif;
   color: var(--text-primary);
-  overflow: hidden;
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   transition: background 0.25s ease;
+  box-sizing: border-box;
 }
 
 .popup {
+  width: 380px;
+  max-width: 380px;
+  box-sizing: border-box;
   padding: 14px 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-x: hidden;
 }
 
 /* ─── Header ────────────────────────────────────────────────────────────────── */
@@ -525,15 +545,125 @@ body {
   color: var(--text-muted);
 }
 
-/* ─── Sync row ───────────────────────────────────────────────────────────────── */
-.sync-row {
+/* ─── Browser Identity & Sync card ─────────────────────────────────────────── */
+.browser-card {
   display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 10px;
-  border-radius: 8px;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 9px;
   background: var(--surface);
   border: 1px solid var(--border);
+  margin-top: 6px;
+}
+
+.browser-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.browser-card-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.browser-icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.browser-profile-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.browser-name-display {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.browser-profile-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.browser-rename-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.browser-rename-btn:hover {
+  color: var(--accent);
+  background: var(--accent-subtle);
+}
+
+.browser-name-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
+.browser-name-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface2);
+  border: 1px solid var(--accent);
+  border-radius: 5px;
+  color: var(--text-primary);
+  font-size: 11.5px;
+  padding: 3px 6px;
+  outline: none;
+}
+
+.browser-btn-save, .browser-btn-cancel {
+  border: none;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.browser-btn-save {
+  background: var(--accent);
+  color: #ffffff;
+}
+.browser-btn-cancel {
+  background: var(--surface2);
+  color: var(--text-muted);
+}
+.browser-btn-cancel:hover {
+  color: var(--text-primary);
+}
+
+.browser-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid var(--surface-divider);
 }
 
 .sync-dot {
@@ -542,18 +672,18 @@ body {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.sync-dot.connected    { background: #10b981; }
+.sync-dot.connected    { background: #10b981; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
 .sync-dot.disconnected { background: #ef4444; }
 .sync-dot.unknown      { background: var(--text-muted); }
 
 .sync-label {
-  font-size: 11px;
-  color: var(--text-secondary);
+  font-size: 10.5px;
+  color: var(--text-muted);
   flex: 1;
 }
 
 .sync-time {
-  font-size: 10.5px;
+  font-size: 10px;
   color: var(--text-muted);
   white-space: nowrap;
 }

@@ -48,6 +48,7 @@ class WebsiteMetadata {
   final int dailyLimitSeconds; // 0 = no limit
   final String siteName;
   final bool isPrivate;
+  final int updatedAt; // epoch ms for last-write-wins sync
 
   const WebsiteMetadata({
     this.category = 'Uncategorized',
@@ -56,6 +57,7 @@ class WebsiteMetadata {
     this.dailyLimitSeconds = 0,
     this.siteName = '',
     this.isPrivate = false,
+    this.updatedAt = 0,
   });
 
   Duration get dailyLimit => Duration(seconds: dailyLimitSeconds);
@@ -67,6 +69,7 @@ class WebsiteMetadata {
     int? dailyLimitSeconds,
     String? siteName,
     bool? isPrivate,
+    int? updatedAt,
   }) =>
       WebsiteMetadata(
         category: category ?? this.category,
@@ -75,6 +78,7 @@ class WebsiteMetadata {
         dailyLimitSeconds: dailyLimitSeconds ?? this.dailyLimitSeconds,
         siteName: siteName ?? this.siteName,
         isPrivate: isPrivate ?? this.isPrivate,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
 
   factory WebsiteMetadata.fromMap(Map<String, dynamic> m) => WebsiteMetadata(
@@ -84,6 +88,7 @@ class WebsiteMetadata {
         dailyLimitSeconds: m['dailyLimitSeconds'] as int? ?? 0,
         siteName: m['siteName'] as String? ?? '',
         isPrivate: m['isPrivate'] as bool? ?? false,
+        updatedAt: (m['updatedAt'] as num?)?.toInt() ?? 0,
       );
 
   Map<String, dynamic> toMap() => {
@@ -91,6 +96,7 @@ class WebsiteMetadata {
         'isTracking': isTracking,
         'isProductive': isProductive,
         'dailyLimitSeconds': dailyLimitSeconds,
+        'updatedAt': updatedAt,
         if (siteName.isNotEmpty) 'siteName': siteName,
         if (isPrivate) 'isPrivate': isPrivate,
       };
@@ -309,18 +315,25 @@ class ExtensionSettings {
     bool? isPrivate,
   }) async {
     await _ensureLoaded();
-    final current = _metadata[domain] ?? const WebsiteMetadata();
+    var cleanDomain = domain.startsWith('web:') ? domain.substring(4) : domain;
+    if (cleanDomain.contains('::')) {
+      cleanDomain = cleanDomain.substring(0, cleanDomain.indexOf('::'));
+    }
+    final current = _metadata[cleanDomain] ?? const WebsiteMetadata();
     final newSiteName = siteName ?? current.siteName;
-    if (newSiteName.isNotEmpty && newSiteName != domain && _metadata.containsKey(newSiteName)) {
+    if (newSiteName.isNotEmpty && newSiteName != cleanDomain && _metadata.containsKey(newSiteName)) {
       _metadata.remove(newSiteName);
     }
-    _metadata[domain] = current.copyWith(
+    // Also remove any stale 'web:domain' key if it was accidentally saved earlier
+    _metadata.remove('web:$cleanDomain');
+    _metadata[cleanDomain] = current.copyWith(
       category: category,
       isTracking: isTracking,
       isProductive: isProductive,
       dailyLimitSeconds: dailyLimit?.inSeconds,
       siteName: siteName,
       isPrivate: isPrivate,
+      updatedAt: DateTime.now().millisecondsSinceEpoch,
     );
     await _persist();
   }
@@ -433,9 +446,7 @@ class ExtensionSettings {
 
   void _notifyBackground() {
     try {
-      // Fire-and-forget message to background worker
-      // Uses a JS eval since we can't import chrome.runtime here without interop
-      chromeStorageGet([]); // no-op to ensure available, actual notify via background alarm
+      triggerExtensionSync();
     } catch (_) {}
   }
 }

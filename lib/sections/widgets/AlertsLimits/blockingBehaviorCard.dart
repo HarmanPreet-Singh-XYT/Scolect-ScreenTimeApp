@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/services/app_blocking_service.dart';
 import './reusable.dart' as rub;
 
@@ -20,17 +21,18 @@ class BlockingBehaviorCard extends StatelessWidget {
     if (kIsWeb) return const SizedBox.shrink();
 
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return rub.Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          _Header(theme: theme),
+          _Header(theme: theme, l10n: l10n),
           const SizedBox(height: 16),
           _BehaviorTile(
-            title: 'Notification only',
-            subtitle: 'Alert you when a limit is reached, no other action.',
+            title: l10n.blockingBehaviorNotificationOnlyTitle,
+            subtitle: l10n.blockingBehaviorNotificationOnlySubtitle,
             icon: FluentIcons.ringer,
             selected: value == BlockingBehavior.none,
             onTap: () => onChanged(BlockingBehavior.none),
@@ -38,9 +40,8 @@ class BlockingBehaviorCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _BehaviorTile(
-            title: 'Soft block',
-            subtitle:
-                'Bring Scolect to the front with options to minimize, quit, snooze, or unblock the app.',
+            title: l10n.blockingBehaviorSoftBlockTitle,
+            subtitle: l10n.blockingBehaviorSoftBlockSubtitle,
             icon: FluentIcons.blocked2,
             selected: value == BlockingBehavior.soft,
             onTap: () => onChanged(BlockingBehavior.soft),
@@ -48,9 +49,8 @@ class BlockingBehaviorCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _BehaviorTile(
-            title: 'Hard block',
-            subtitle:
-                'Same as soft block, and also immediately hides the app from your screen.',
+            title: l10n.blockingBehaviorHardBlockTitle,
+            subtitle: l10n.blockingBehaviorHardBlockSubtitle,
             icon: FluentIcons.blocked,
             selected: value == BlockingBehavior.hard,
             onTap: () => onChanged(BlockingBehavior.hard),
@@ -60,7 +60,7 @@ class BlockingBehaviorCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
-              'Note: Blocking is a nudge, not a lock. You can still reopen the app from the Dock or taskbar.',
+              l10n.blockingBehaviorNudgeNote,
               style: theme.typography.caption?.copyWith(
                 fontSize: 11,
                 color: theme.typography.caption?.color?.withValues(alpha: 0.55),
@@ -75,7 +75,8 @@ class BlockingBehaviorCard extends StatelessWidget {
 
 class _Header extends StatelessWidget {
   final FluentThemeData theme;
-  const _Header({required this.theme});
+  final AppLocalizations l10n;
+  const _Header({required this.theme, required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -90,9 +91,9 @@ class _Header extends StatelessWidget {
           child: Icon(FluentIcons.blocked2, size: 18, color: theme.accentColor),
         ),
         const SizedBox(width: 12),
-        const Text(
-          'Blocking Behavior',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        Text(
+          l10n.blockingBehaviorTitle,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ],
     );

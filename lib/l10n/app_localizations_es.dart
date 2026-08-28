@@ -84,7 +84,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get navHelp => 'Ayuda';
 
   @override
-  String get navPrivate => 'Private';
+  String get navPrivate => 'Privado';
 
   @override
   String get helpTitle => 'Ayuda';
@@ -3755,12 +3755,41 @@ class AppLocalizationsEs extends AppLocalizations {
   String get browserRenameDialogTitle => 'Renombrar navegador';
 
   @override
+  String get browserSourcePingTooltip => 'Localizar / Hacer ping al navegador';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return 'Ping enviado a $name';
+  }
+
+  @override
   String get browserSourceRemoveTitle => '¿Eliminar navegador?';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return '¿Quitar \"$name\" de tus navegadores conectados? Su historial de uso se conservará, pero deberá volver a conectarse para sincronizar de nuevo.';
   }
+
+  @override
+  String get browserLimitsScopeTitle => 'Ámbito de límites de sitios web';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      'Elige si los límites de sitios web y el seguimiento se aplican por perfil de navegador o globalmente en todos los navegadores.';
+
+  @override
+  String get browserLimitsScopeScoped => 'Por perfil de navegador (específico)';
+
+  @override
+  String get browserLimitsScopeScopedDesc =>
+      'Los límites se aplican solo al perfil de navegador específico donde se configuraron.';
+
+  @override
+  String get browserLimitsScopeGlobal => 'Global (entre navegadores)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc =>
+      'Los límites se aplican en conjunto a todos los navegadores conectados.';
 
   @override
   String get browserSourceRemoveAction => 'Eliminar';
@@ -3853,23 +3882,24 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tu extensión de navegador ahora puede conectarse y sincronizar datos.';
 
   @override
-  String get browserSyncedJustNow => 'Synced just now';
+  String get browserSyncedJustNow => 'Sincronizado ahora mismo';
 
   @override
   String browserSyncedMinutesAgo(int minutes) {
-    return 'Synced ${minutes}m ago';
+    return 'Sincronizado hace $minutes min';
   }
 
   @override
   String browserSyncedHoursAgo(int hours) {
-    return 'Synced ${hours}h ago';
+    return 'Sincronizado hace $hours h';
   }
 
   @override
-  String get browserNeverSynced => 'Not synced yet';
+  String get browserNeverSynced => 'Aún no sincronizado';
 
   @override
-  String get browserSyncStalled => 'Sync stalled — check the extension';
+  String get browserSyncStalled =>
+      'Sincronización interrumpida — comprueba la extensión';
 
   @override
   String get browserServerPort => 'Puerto del Servidor';
@@ -4009,11 +4039,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privateModeHideAction => 'Ocultar elementos privados';
 
   @override
-  String get privateModeLockHint => 'Right-click to lock now';
+  String get privateModeLockHint => 'Haz clic derecho para bloquear ahora';
 
   @override
   String get privateModeShowOnlyDescription =>
-      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+      'Muestra solo las aplicaciones y sitios web marcados como privados, en lugar de tu vista habitual. También disponible desde la barra de título.';
 
   @override
   String get privateModeSectionTitle => 'Modo privado';
@@ -4066,119 +4096,319 @@ class AppLocalizationsEs extends AppLocalizations {
   String get privateModeResetPasswordAction => 'Restablecer contraseña';
 
   @override
-  String get privateModeForgotPassword => 'Forgot password?';
+  String get privateModeForgotPassword => '¿Olvidaste tu contraseña?';
 
   @override
-  String get privateModeRecoveryTitle => 'Recover Private Mode';
+  String get privateModeRecoveryTitle => 'Recuperar modo privado';
 
   @override
-  String get privateModeRecoveryTabBackupCode => 'Backup code';
+  String get privateModeRecoveryTabBackupCode => 'Código de respaldo';
 
   @override
-  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+  String get privateModeRecoveryTabSecurityQuestion => 'Pregunta de seguridad';
 
   @override
   String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
 
   @override
-  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+  String get privateModeSecurityAnswerPlaceholder => 'Tu respuesta';
 
   @override
   String get privateModeRecoveryIncorrect =>
-      'That didn\'t match. Please try again.';
+      'No coincide. Por favor, inténtalo de nuevo.';
 
   @override
-  String get privateModeRecoverySuccessTitle => 'Identity verified';
+  String get privateModeRecoverySuccessTitle => 'Identidad verificada';
 
   @override
   String get privateModeRecoverySuccessDescription =>
-      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+      'Se ha eliminado tu contraseña antigua. Establece una nueva contraseña para continuar; también recibirás un nuevo código de respaldo y una nueva pregunta de seguridad.';
 
   @override
-  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+  String get privateModeSetupRecoveryTitle => 'Configurar recuperación';
 
   @override
-  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+  String get privateModeBackupCodeGeneratedTitle => 'Tu código de respaldo';
 
   @override
   String get privateModeBackupCodeWarning =>
-      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+      'Guarda este código en un lugar seguro. Solo se mostrará una vez y lo necesitarás si olvidas tu contraseña.';
 
   @override
-  String get privateModeCopyBackupCode => 'Copy';
+  String get privateModeCopyBackupCode => 'Copiar';
 
   @override
-  String get privateModeBackupCodeCopied => 'Backup code copied';
+  String get privateModeBackupCodeCopied => 'Código de respaldo copiado';
 
   @override
-  String get privateModeDownloadBackupCode => 'Download';
+  String get privateModeDownloadBackupCode => 'Descargar';
 
   @override
-  String get privateModeSecurityQuestionLabel => 'Security question';
+  String get privateModeSecurityQuestionLabel => 'Pregunta de seguridad';
 
   @override
-  String get privateModeSecurityAnswerLabel => 'Your answer';
+  String get privateModeSecurityAnswerLabel => 'Tu respuesta';
 
   @override
   String get privateModeSecurityQuestionCustomOption =>
-      'Write my own question…';
+      'Escribir mi propia pregunta…';
 
   @override
-  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+  String get privateModeChooseSecurityQuestion =>
+      'Elige una pregunta de seguridad';
 
   @override
-  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+  String get privateModeSecurityAnswerEmpty =>
+      'La respuesta no puede estar vacía';
 
   @override
-  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+  String get privateModeIveSavedThis => 'He guardado este código de respaldo';
 
   @override
-  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+  String get privateModeRecoveryOptionsTitle => 'Opciones de recuperación';
 
   @override
   String get privateModeRecoveryOptionsDescription =>
-      'Regenerate your backup code and security question without changing your password.';
+      'Regenera tu código de respaldo y pregunta de seguridad sin cambiar tu contraseña.';
 
   @override
-  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+  String get privateModeRegenerateRecoveryAction => 'Regenerar';
 
   @override
   String get privateModeQuestionPetName =>
-      'What was the name of your first pet?';
+      '¿Cómo se llamaba tu primera mascota?';
 
   @override
-  String get privateModeQuestionBirthCity => 'In what city were you born?';
+  String get privateModeQuestionBirthCity => '¿En qué ciudad naciste?';
 
   @override
   String get privateModeQuestionFirstSchool =>
-      'What was the name of your first school?';
+      '¿Cómo se llamaba tu primera escuela?';
 
   @override
   String get privateModeQuestionMotherMaidenName =>
-      'What is your mother\'s maiden name?';
+      '¿Cuál es el apellido de soltera de tu madre?';
 
   @override
-  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+  String get privateModeQuestionFavoriteBook => '¿Cuál es tu libro favorito?';
 
   @override
   String get privateModeNotSetUpDescription =>
-      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+      'Configura el modo privado en Ajustes para mantener las aplicaciones y sitios web confidenciales fuera de tu vista habitual.';
 
   @override
-  String get privateModeGoToSettingsAction => 'Go to Settings';
+  String get privateModeGoToSettingsAction => 'Ir a Ajustes';
 
   @override
   String get privateModeLockedDescription =>
-      'Unlock to view your private apps and websites.';
+      'Desbloquea para ver tus aplicaciones y sitios web privados.';
 
   @override
   String get privateModeUnlockedDescription =>
-      'Apps and websites you\'ve marked private.';
+      'Aplicaciones y sitios web que has marcado como privados.';
 
   @override
   String get privateModeNoItemsDescription =>
-      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+      'Aún no se realiza el seguimiento de aplicaciones o sitios web privados. Marca un elemento como privado desde sus detalles para verlo aquí.';
 
   @override
-  String get privateModeItemsCount => 'Private Items';
+  String get privateModeItemsCount => 'Elementos privados';
+
+  @override
+  String get permissionBannerNotificationsDisabled =>
+      'Notificaciones desactivadas';
+
+  @override
+  String get permissionBannerSystemDesc =>
+      'Activa las notificaciones en los Ajustes del sistema para recibir alertas de sesiones de enfoque.';
+
+  @override
+  String get permissionBannerOpenSystemSettings => 'Abrir Ajustes del sistema';
+
+  @override
+  String get permissionBannerAppDesc =>
+      'Activa las notificaciones en los ajustes de la aplicación para recibir alertas de sesiones de enfoque.';
+
+  @override
+  String get permissionBannerFocusDisabled =>
+      'Notificaciones de enfoque desactivadas';
+
+  @override
+  String get permissionBannerFocusDesc =>
+      'Activa las notificaciones del modo de enfoque en los ajustes para recibir alertas de sesión.';
+
+  @override
+  String get topWebsites => 'Sitios web principales';
+
+  @override
+  String get noWebsitesTrackedYet =>
+      'Aún no se realiza el seguimiento de sitios web';
+
+  @override
+  String get browserDetailBlockedTooltip =>
+      'Límite diario alcanzado – el sitio está bloqueado';
+
+  @override
+  String get browserDetailTimeToday => 'Tiempo hoy';
+
+  @override
+  String get browserDetailVisitsToday => 'Visitas hoy';
+
+  @override
+  String get browserDetailDailyLimit => 'Límite diario';
+
+  @override
+  String get browserChartLegendTime => 'Tiempo';
+
+  @override
+  String get browserChartLegendVisits => 'Visitas';
+
+  @override
+  String get blockingBehaviorTitle => 'Comportamiento de bloqueo';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => 'Solo notificación';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle =>
+      'Te avisa cuando se alcanza un límite, sin ninguna otra acción.';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => 'Bloqueo suave';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      'Trae Scolect al frente con opciones para minimizar, salir, posponer o desbloquear la aplicación.';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => 'Bloqueo estricto';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle =>
+      'Igual que el bloqueo suave, y también oculta inmediatamente la aplicación de tu pantalla.';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      'Nota: El bloqueo es un aviso, no un candado. Aún puedes volver a abrir la aplicación desde el Dock o la barra de tareas.';
+
+  @override
+  String get aboutUpdateChecking => 'Comprobando...';
+
+  @override
+  String get aboutUpdateCheckButton => 'Buscar actualizaciones';
+
+  @override
+  String get aboutUpdateCheckingProgress => 'Buscando actualizaciones...';
+
+  @override
+  String get aboutUpdateUpToDate => 'Estás al día';
+
+  @override
+  String get aboutUpdateFailed => 'No se pudieron buscar actualizaciones';
+
+  @override
+  String get aboutUpdateRetryPrompt =>
+      'Toca \"Buscar actualizaciones\" para reintentar';
+
+  @override
+  String get aboutUpdateScheduled => 'Búsqueda de actualizaciones programada';
+
+  @override
+  String get aboutOpenSettingsFailed =>
+      'Error al abrir los Ajustes del sistema';
+
+  @override
+  String get onboardingWelcomeTitle => 'Bienvenido a Scolect';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      'Toma el control de tu tiempo. Scolect funciona silenciosamente en segundo plano, registrando cada aplicación, cada sesión y cada minuto.';
+
+  @override
+  String get onboardingEveryAppTitle => 'Cada aplicación, automáticamente';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect detecta la aplicación en primer plano y registra cuánto tiempo pasas en cada una, sin iniciar temporizadores ni recordar nada.';
+
+  @override
+  String get onboardingSeeTimeTitle => 'Descubre en qué se va tu tiempo';
+
+  @override
+  String get onboardingSeeTimeDesc =>
+      'Informes diarios y semanales intuitivos que te muestran tus aplicaciones más usadas, el tiempo total de pantalla y las tendencias de uso.';
+
+  @override
+  String get onboardingSmartLimitsTitle => 'Límites y alertas inteligentes';
+
+  @override
+  String get onboardingSmartLimitsDesc =>
+      'Establece límites de tiempo diarios por aplicación o para el total de pantalla. Recibe avisos antes de alcanzar tus límites.';
+
+  @override
+  String get onboardingDeepFocusTitle => 'Modo de concentración profunda';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      'Bloquea aplicaciones que distraen durante las sesiones Pomodoro. Intervalos de trabajo y descanso con sonidos ambientales para mantener el enfoque.';
+
+  @override
+  String get onboardingTrackBrowserTitle =>
+      'Registra también el tiempo en el navegador';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      'Instala la extensión gratuita del navegador para registrar el tiempo en sitios web, no solo en apps nativas. Todo en un solo panel.';
+
+  @override
+  String get onboardingAllSetTitle => 'Todo listo';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect está listo para empezar. Tus datos se guardan exclusivamente en tu dispositivo: totalmente privados, sin subirse a ningún servidor.';
+
+  @override
+  String get onboardingGetStarted => 'Empezar';
+
+  @override
+  String get onboardingNext => 'Siguiente';
+
+  @override
+  String get onboardingGoToDashboard => 'Ir al panel de control';
+
+  @override
+  String get onboardingWorksInBrowserTitle =>
+      'Funciona directamente en tu navegador';
+
+  @override
+  String get onboardingWorksInBrowserDesc =>
+      'Registra la actividad web automáticamente mientras navegas. No necesitas la aplicación de escritorio para empezar.';
+
+  @override
+  String get onboardingUsageRightHereTitle => 'Tu uso, justo aquí';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      'Consulta informes diarios y semanales detallados del tiempo en cada sitio web con gráficos claros e intuitivos.';
+
+  @override
+  String get onboardingSyncWithDesktopTitle =>
+      'Sincronizar con la app de escritorio';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      'Conéctate sin problemas con la aplicación de escritorio de Scolect para obtener análisis combinados de aplicaciones y sitios web.';
+
+  @override
+  String get onboarding100PrivateTitle => '100% privado';
+
+  @override
+  String get onboarding100PrivateDesc =>
+      'Todos los datos de seguimiento se almacenan localmente en tu navegador y en tu equipo. Nada se envía a la nube.';
+
+  @override
+  String get onboardingBack => 'Atrás';
+
+  @override
+  String get onboardingSkip => 'Omitir';
 }

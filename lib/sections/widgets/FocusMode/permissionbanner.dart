@@ -353,25 +353,26 @@ class _CompactNotificationBannerState extends State<CompactNotificationBanner>
 
     final issue = currentIssue!;
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     final (String shortMsg, String longMsg, String actionText, bool isSystem) =
         switch (issue) {
       _NotifIssue.system => (
-          'Notifications disabled',
-          'Enable notifications in System Settings to receive focus session alerts.',
-          'Open System Settings',
+          l10n.permissionBannerNotificationsDisabled,
+          l10n.permissionBannerSystemDesc,
+          l10n.permissionBannerOpenSystemSettings,
           true,
         ),
       _NotifIssue.appDisabled => (
-          'Notifications disabled',
-          'Enable notifications in app settings to receive focus session alerts.',
-          'Go to Settings',
+          l10n.permissionBannerNotificationsDisabled,
+          l10n.permissionBannerAppDesc,
+          l10n.goToSettings,
           false,
         ),
       _NotifIssue.focusModeDisabled => (
-          'Focus notifications disabled',
-          'Enable focus mode notifications in settings to receive session alerts.',
-          'Go to Settings',
+          l10n.permissionBannerFocusDisabled,
+          l10n.permissionBannerFocusDesc,
+          l10n.goToSettings,
           false,
         ),
     };
@@ -470,7 +471,7 @@ class _CompactNotificationBannerState extends State<CompactNotificationBanner>
                       const SizedBox(width: 8),
                       Button(
                         onPressed: () => dismissBanner(permanent: true),
-                        child: const Text("Don't show again"),
+                        child: Text(l10n.dontShowAgain),
                       ),
                     ],
                   ),

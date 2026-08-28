@@ -478,14 +478,16 @@ async function render() {
   await renderSiteTab(state, storageData);
   renderFocusTab(state, settings, storageData);
 
-  // ── Sync row
-  const syncRow   = document.getElementById('syncRow');
-  const syncDot   = document.getElementById('syncDot');
-  const syncLabel = document.getElementById('syncLabel');
-  const syncTime  = document.getElementById('syncTime');
+  // ── Browser Identity & Sync card
+  const identityCard   = document.getElementById('browserIdentityCard');
+  const profileNameEl  = document.getElementById('browserProfileName');
+  const profileIconEl  = document.getElementById('browserProfileIcon');
+  const syncDot        = document.getElementById('syncDot');
+  const syncLabel      = document.getElementById('syncLabel');
+  const syncTime       = document.getElementById('syncTime');
 
-  if (mode !== 'standalone') {
-    syncRow.style.display = 'flex';
+  if (identityCard && mode !== 'standalone') {
+    identityCard.style.display = 'flex';
     const connected = state?.appConnected;
     const lastSync  = state?.lastSyncAt;
 
@@ -502,8 +504,28 @@ async function render() {
       syncLabel.textContent = mode === 'trackerOnly' ? 'Tracker Only' : 'Hybrid mode';
       syncTime.textContent  = '';
     }
-  } else {
-    syncRow.style.display = 'none';
+
+    chrome.runtime.sendMessage({ type: 'GET_BROWSER_IDENTITY' }, (identity) => {
+      if (chrome.runtime.lastError || !identity) return;
+      if (profileIconEl) profileIconEl.textContent = getBrowserIconEmoji(identity.detectedBrowser);
+      if (profileNameEl && document.getElementById('browserNameEdit')?.style.display === 'none') {
+        profileNameEl.textContent = identity.effectiveName || `${identity.detectedBrowser}`;
+      }
+    });
+  } else if (identityCard) {
+    identityCard.style.display = 'none';
+  }
+}
+
+function getBrowserIconEmoji(browserName) {
+  switch (browserName) {
+    case 'Chrome': return '🌐';
+    case 'Firefox': return '🦊';
+    case 'Edge': return '🌊';
+    case 'Brave': return '🦁';
+    case 'Opera': return '🔴';
+    case 'Safari': return '🧭';
+    default: return '🌐';
   }
 }
 
@@ -779,6 +801,48 @@ document.getElementById('settingsBtn').addEventListener('click', () => {
   chrome.tabs.create({ url: chrome.runtime.getURL('index.html?tab=settings') });
   window.close();
 });
+
+// ─── Browser profile rename handlers ──────────────────────────────────────────
+const renameBtn = document.getElementById('browserRenameBtn');
+const nameDisplay = document.getElementById('browserNameDisplay');
+const nameEdit = document.getElementById('browserNameEdit');
+const nameInput = document.getElementById('browserNameInput');
+const nameSave = document.getElementById('browserNameSave');
+const nameCancel = document.getElementById('browserNameCancel');
+
+if (renameBtn && nameDisplay && nameEdit && nameInput && nameSave && nameCancel) {
+  renameBtn.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'GET_BROWSER_IDENTITY' }, (identity) => {
+      nameInput.value = identity?.customName || identity?.assignedLabel || '';
+      nameDisplay.style.display = 'none';
+      nameEdit.style.display = 'flex';
+      nameInput.focus();
+      nameInput.select();
+    });
+  });
+
+  const saveName = () => {
+    const val = nameInput.value.trim();
+    chrome.runtime.sendMessage({ type: 'SET_BROWSER_NAME', name: val }, () => {
+      nameDisplay.style.display = 'flex';
+      nameEdit.style.display = 'none';
+      render();
+    });
+  };
+
+  nameSave.addEventListener('click', saveName);
+  nameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveName();
+    if (e.key === 'Escape') {
+      nameDisplay.style.display = 'flex';
+      nameEdit.style.display = 'none';
+    }
+  });
+  nameCancel.addEventListener('click', () => {
+    nameDisplay.style.display = 'flex';
+    nameEdit.style.display = 'none';
+  });
+}
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
 

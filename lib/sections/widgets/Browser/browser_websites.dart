@@ -550,6 +550,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final captionColor = theme.typography.caption?.color;
     final site = widget.site;
     final hasDifferentName = site.siteName.isNotEmpty && site.siteName != site.domain;
@@ -653,7 +654,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 4),
                                 child: Tooltip(
-                                  message: 'Daily limit reached – site is blocked',
+                                  message: l10n.browserDetailBlockedTooltip,
                                   child: Icon(
                                     FluentIcons.lock,
                                     size: 13,
@@ -1010,7 +1011,7 @@ class _WebsiteCardState extends State<_WebsiteCard> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 4),
                                 child: Tooltip(
-                                  message: 'Daily limit reached – site is blocked',
+                                  message: l10n.browserDetailBlockedTooltip,
                                   child: Icon(
                                     FluentIcons.lock,
                                     size: 13,
@@ -1279,6 +1280,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final site = widget.site;
     final captionColor = theme.typography.caption?.color;
     final history = _history;
@@ -1349,24 +1351,24 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
               children: [
                 _DetailStatCard(
                   icon: FluentIcons.timer,
-                  label: 'Time today',
+                  label: l10n.browserDetailTimeToday,
                   value: site.formattedTimeSpent,
                   color: kBrowserBlue,
                 ),
                 const SizedBox(width: 10),
                 _DetailStatCard(
                   icon: FluentIcons.view,
-                  label: 'Visits today',
+                  label: l10n.browserDetailVisitsToday,
                   value: '${site.visits}',
                   color: kBrowserPurple,
                 ),
                 const SizedBox(width: 10),
                 _DetailStatCard(
                   icon: FluentIcons.time_picker,
-                  label: 'Daily limit',
+                  label: l10n.browserDetailDailyLimit,
                   value: hasLimit
                       ? _formatLimit(site.dailyLimit)
-                      : 'No limit',
+                      : l10n.noLimit,
                   color: hasLimit ? limitColor : (captionColor ?? kBrowserBlue).withValues(alpha: 0.4),
                 ),
               ],
@@ -1561,6 +1563,7 @@ class _SiteHistoryChartState extends State<_SiteHistoryChart> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final captionColor = theme.typography.caption?.color;
 
     final maxSecs = widget.history
@@ -1703,9 +1706,9 @@ class _SiteHistoryChartState extends State<_SiteHistoryChart> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _ChartLegend(color: kBrowserBlue, label: 'Time'),
+            _ChartLegend(color: kBrowserBlue, label: l10n.browserChartLegendTime),
             const SizedBox(width: 16),
-            _ChartLegend(color: kBrowserPurple, label: 'Visits'),
+            _ChartLegend(color: kBrowserPurple, label: l10n.browserChartLegendVisits),
           ],
         ),
         // Raw data row for the touched day

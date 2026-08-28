@@ -84,7 +84,7 @@ class AppLocalizationsUr extends AppLocalizations {
   String get navHelp => 'مدد';
 
   @override
-  String get navPrivate => 'Private';
+  String get navPrivate => 'نجی';
 
   @override
   String get helpTitle => 'مدد';
@@ -3656,12 +3656,41 @@ class AppLocalizationsUr extends AppLocalizations {
   String get browserRenameDialogTitle => 'براؤزر کا نام تبدیل کریں';
 
   @override
+  String get browserSourcePingTooltip => 'براؤزر تلاش کریں / پنگ کریں';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return '$name کو پنگ بھیج دیا گیا';
+  }
+
+  @override
   String get browserSourceRemoveTitle => 'براؤزر ہٹا دیں؟';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return 'کیا \"$name\" کو منسلک براؤزرز سے ہٹا دیں؟ اس کی استعمال کی تاریخ محفوظ رہے گی، لیکن دوبارہ سنک کرنے کے لیے اسے دوبارہ منسلک ہونا ہوگا۔';
   }
+
+  @override
+  String get browserLimitsScopeTitle => 'ویب سائٹ کی حد کا دائرہ کار';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      'منتخب کریں کہ آیا ویب سائٹ کی حدود اور ٹریکنگ ہر براؤزر پروفائل کے مطابق لاگو ہوں یا تمام براؤزرز پر یکساں طور پر۔';
+
+  @override
+  String get browserLimitsScopeScoped => 'ہر براؤزر پروفائل کے لیے (مخصوص)';
+
+  @override
+  String get browserLimitsScopeScopedDesc =>
+      'حدود صرف اسی مخصوص براؤزر پروفائل پر لاگو ہوتی ہیں جہاں وہ ترتیب دی گئی ہوں۔';
+
+  @override
+  String get browserLimitsScopeGlobal => 'عالمی (تمام براؤزرز میں)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc =>
+      'تمام منسلک براؤزرز پر مجموعی طور پر حدود لاگو ہوتی ہیں۔';
 
   @override
   String get browserSourceRemoveAction => 'ہٹائیں';
@@ -3752,23 +3781,23 @@ class AppLocalizationsUr extends AppLocalizations {
       'آپ کی براؤزر ایکسٹینشن اب جڑ سکتی ہے اور ڈیٹا مطابقت پذیر کر سکتی ہے۔';
 
   @override
-  String get browserSyncedJustNow => 'Synced just now';
+  String get browserSyncedJustNow => 'ابھی ابھی سنک ہوا';
 
   @override
   String browserSyncedMinutesAgo(int minutes) {
-    return 'Synced ${minutes}m ago';
+    return '$minutes منٹ پہلے سنک ہوا';
   }
 
   @override
   String browserSyncedHoursAgo(int hours) {
-    return 'Synced ${hours}h ago';
+    return '$hours گھنٹے پہلے سنک ہوا';
   }
 
   @override
-  String get browserNeverSynced => 'Not synced yet';
+  String get browserNeverSynced => 'ابھی تک سنک نہیں ہوا';
 
   @override
-  String get browserSyncStalled => 'Sync stalled — check the extension';
+  String get browserSyncStalled => 'سنک رک گئی ہے — ایکسٹینشن چیک کریں';
 
   @override
   String get browserServerPort => 'سرور پورٹ';
@@ -3907,11 +3936,11 @@ class AppLocalizationsUr extends AppLocalizations {
   String get privateModeHideAction => 'نجی آئٹمز چھپائیں';
 
   @override
-  String get privateModeLockHint => 'Right-click to lock now';
+  String get privateModeLockHint => 'ابھی لاک کرنے کے لیے دایاں کلک کریں';
 
   @override
   String get privateModeShowOnlyDescription =>
-      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+      'اپنے روزمرہ کے منظر کے بجائے صرف نجی نشان زد ایپس اور ویب سائٹس دکھائیں۔ ٹائٹل بار سے بھی دستیاب ہے۔';
 
   @override
   String get privateModeSectionTitle => 'پرائیویٹ موڈ';
@@ -3964,119 +3993,310 @@ class AppLocalizationsUr extends AppLocalizations {
   String get privateModeResetPasswordAction => 'پاس ورڈ ری سیٹ کریں';
 
   @override
-  String get privateModeForgotPassword => 'Forgot password?';
+  String get privateModeForgotPassword => 'پاس ورڈ بھول گئے؟';
 
   @override
-  String get privateModeRecoveryTitle => 'Recover Private Mode';
+  String get privateModeRecoveryTitle => 'نجی موڈ بحال کریں';
 
   @override
-  String get privateModeRecoveryTabBackupCode => 'Backup code';
+  String get privateModeRecoveryTabBackupCode => 'بیک اپ کوڈ';
 
   @override
-  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+  String get privateModeRecoveryTabSecurityQuestion => 'سیکیورٹی سوال';
 
   @override
   String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
 
   @override
-  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+  String get privateModeSecurityAnswerPlaceholder => 'آپ کا جواب';
 
   @override
   String get privateModeRecoveryIncorrect =>
-      'That didn\'t match. Please try again.';
+      'یہ مماثل نہیں ہے۔ براہ کرم دوبارہ کوشش کریں۔';
 
   @override
-  String get privateModeRecoverySuccessTitle => 'Identity verified';
+  String get privateModeRecoverySuccessTitle => 'شناخت کی توثیق ہو گئی';
 
   @override
   String get privateModeRecoverySuccessDescription =>
-      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+      'آپ کا پرانا پاس ورڈ صاف کر دیا گیا ہے۔ جاری رکھنے کے لیے نیا پاس ورڈ سیٹ کریں — آپ کو نیا بیک اپ کوڈ اور سیکیورٹی سوال بھی ملے گا۔';
 
   @override
-  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+  String get privateModeSetupRecoveryTitle => 'بحالی سیٹ اپ کریں';
 
   @override
-  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+  String get privateModeBackupCodeGeneratedTitle => 'آپ کا بیک اپ کوڈ';
 
   @override
   String get privateModeBackupCodeWarning =>
-      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+      'اس کوڈ کو کسی محفوظ جگہ پر محفوظ کریں۔ یہ صرف ایک بار دکھایا جائے گا، اور اگر آپ اپنا پاس ورڈ بھول جائیں تو آپ کو اس کی ضرورت ہوگی۔';
 
   @override
-  String get privateModeCopyBackupCode => 'Copy';
+  String get privateModeCopyBackupCode => 'کاپی کریں';
 
   @override
-  String get privateModeBackupCodeCopied => 'Backup code copied';
+  String get privateModeBackupCodeCopied => 'بیک اپ کوڈ کاپی ہو گیا';
 
   @override
-  String get privateModeDownloadBackupCode => 'Download';
+  String get privateModeDownloadBackupCode => 'ڈاؤن لوڈ کریں';
 
   @override
-  String get privateModeSecurityQuestionLabel => 'Security question';
+  String get privateModeSecurityQuestionLabel => 'سیکیورٹی سوال';
 
   @override
-  String get privateModeSecurityAnswerLabel => 'Your answer';
+  String get privateModeSecurityAnswerLabel => 'آپ کا جواب';
 
   @override
-  String get privateModeSecurityQuestionCustomOption =>
-      'Write my own question…';
+  String get privateModeSecurityQuestionCustomOption => 'اپنا سوال خود لکھیں…';
 
   @override
-  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+  String get privateModeChooseSecurityQuestion => 'سیکیورٹی سوال منتخب کریں';
 
   @override
-  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+  String get privateModeSecurityAnswerEmpty => 'جواب خالی نہیں ہو سکتا';
 
   @override
-  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+  String get privateModeIveSavedThis => 'میں نے یہ بیک اپ کوڈ محفوظ کر لیا ہے';
 
   @override
-  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+  String get privateModeRecoveryOptionsTitle => 'بحالی کے اختیارات';
 
   @override
   String get privateModeRecoveryOptionsDescription =>
-      'Regenerate your backup code and security question without changing your password.';
+      'اپنا پاس ورڈ تبدیل کیے بغیر اپنا بیک اپ کوڈ اور سیکیورٹی سوال دوبارہ تیار کریں۔';
 
   @override
-  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+  String get privateModeRegenerateRecoveryAction => 'دوبارہ تیار کریں';
 
   @override
   String get privateModeQuestionPetName =>
-      'What was the name of your first pet?';
+      'آپ کے پہلے پالتو جانور کا نام کیا تھا؟';
 
   @override
-  String get privateModeQuestionBirthCity => 'In what city were you born?';
+  String get privateModeQuestionBirthCity => 'آپ کس شہر میں پیدا ہوئے تھے؟';
 
   @override
   String get privateModeQuestionFirstSchool =>
-      'What was the name of your first school?';
+      'آپ کے پہلے اسکول کا نام کیا تھا؟';
 
   @override
   String get privateModeQuestionMotherMaidenName =>
-      'What is your mother\'s maiden name?';
+      'آپ کی والدہ کا شادی سے پہلے کا نام کیا ہے؟';
 
   @override
-  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+  String get privateModeQuestionFavoriteBook => 'آپ کی پسندیدہ کتاب کون سی ہے؟';
 
   @override
   String get privateModeNotSetUpDescription =>
-      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+      'حساس ایپس اور ویب سائٹس کو اپنے روزمرہ کے منظر سے دور رکھنے کے لیے ترتیبات میں نجی موڈ سیٹ اپ کریں۔';
 
   @override
-  String get privateModeGoToSettingsAction => 'Go to Settings';
+  String get privateModeGoToSettingsAction => 'ترتیبات پر جائیں';
 
   @override
   String get privateModeLockedDescription =>
-      'Unlock to view your private apps and websites.';
+      'اپنی نجی ایپس اور ویب سائٹس دیکھنے کے لیے انلاک کریں۔';
 
   @override
   String get privateModeUnlockedDescription =>
-      'Apps and websites you\'ve marked private.';
+      'وہ ایپس اور ویب سائٹس جنہیں آپ نے نجی نشان زد کیا ہے۔';
 
   @override
   String get privateModeNoItemsDescription =>
-      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+      'ابھی تک کسی نجی ایپ یا ویب سائٹ کا پتہ نہیں چلا ہے۔ اسے یہاں دیکھنے کے لیے اس کی تفصیلات سے آئٹم کو نجی کے طور پر نشان زد کریں۔';
 
   @override
-  String get privateModeItemsCount => 'Private Items';
+  String get privateModeItemsCount => 'نجی آئٹمز';
+
+  @override
+  String get permissionBannerNotificationsDisabled => 'اطلاعات غیر فعال ہیں';
+
+  @override
+  String get permissionBannerSystemDesc =>
+      'فوکس سیشن الرٹس حاصل کرنے کے لیے سسٹم کی ترتیبات میں اطلاعات کو فعال کریں۔';
+
+  @override
+  String get permissionBannerOpenSystemSettings => 'سسٹم کی ترتیبات کھولیں';
+
+  @override
+  String get permissionBannerAppDesc =>
+      'فوکس سیشن الرٹس حاصل کرنے کے لیے ایپ کی ترتیبات میں اطلاعات کو فعال کریں۔';
+
+  @override
+  String get permissionBannerFocusDisabled => 'فوکس اطلاعات غیر فعال ہیں';
+
+  @override
+  String get permissionBannerFocusDesc =>
+      'سیشن الرٹس حاصل کرنے کے لیے ترتیبات میں فوکس موڈ کی اطلاعات کو فعال کریں۔';
+
+  @override
+  String get topWebsites => 'اہم ویب سائٹس';
+
+  @override
+  String get noWebsitesTrackedYet => 'ابھی تک کسی ویب سائٹ کا پتہ نہیں چلا ہے';
+
+  @override
+  String get browserDetailBlockedTooltip =>
+      'روزانہ کی حد ختم ہو گئی – سائٹ بلاک ہے';
+
+  @override
+  String get browserDetailTimeToday => 'آج کا وقت';
+
+  @override
+  String get browserDetailVisitsToday => 'آج کے دورے';
+
+  @override
+  String get browserDetailDailyLimit => 'روزانہ کی حد';
+
+  @override
+  String get browserChartLegendTime => 'وقت';
+
+  @override
+  String get browserChartLegendVisits => 'دورے';
+
+  @override
+  String get blockingBehaviorTitle => 'بلاک کرنے کا رویہ';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => 'صرف اطلاع';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle =>
+      'حد ختم ہونے پر آپ کو الرٹ کریں، کوئی اور کارروائی نہیں۔';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => 'نرم بلاک';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      'ایپ کو کم سے کم کرنے، چھوڑنے، اسنوز کرنے، یا ان بلاک کرنے کے اختیارات کے ساتھ Scolect کو سامنے لائیں۔';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => 'سخت بلاک';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle =>
+      'نرم بلاک کی طرح، اور ایپ کو فوری طور پر آپ کی اسکرین سے بھی چھپا دیتا ہے۔';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      'نوٹ: بلاک کرنا ایک یاد دہانی ہے، تالا نہیں۔ آپ پھر بھی ڈوک یا ٹاسک بار سے ایپ کو دوبارہ کھول سکتے ہیں۔';
+
+  @override
+  String get aboutUpdateChecking => 'چیک کیا جا رہا ہے...';
+
+  @override
+  String get aboutUpdateCheckButton => 'اپ ڈیٹس چیک کریں';
+
+  @override
+  String get aboutUpdateCheckingProgress => 'اپ ڈیٹس تلاش کی جا رہی ہیں...';
+
+  @override
+  String get aboutUpdateUpToDate => 'آپ کا ورژن اپ ٹو ڈیٹ ہے';
+
+  @override
+  String get aboutUpdateFailed => 'اپ ڈیٹس چیک نہیں کی جا سکیں';
+
+  @override
+  String get aboutUpdateRetryPrompt =>
+      'دوبارہ کوشش کرنے کے لیے \"اپ ڈیٹس چیک کریں\" دبائیں';
+
+  @override
+  String get aboutUpdateScheduled => 'اپ ڈیٹ چیک شیڈول ہو گئی';
+
+  @override
+  String get aboutOpenSettingsFailed => 'سسٹم کی ترتیبات کھولنے میں ناکام';
+
+  @override
+  String get onboardingWelcomeTitle => 'Scolect میں خوش آمدید';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      'اپنے وقت پر قابو پائیں۔ Scolect پس منظر میں خاموشی سے کام کرتا ہے — ہر ایپ، ہر سیشن اور ہر منٹ کو ٹریک کرتا ہے۔';
+
+  @override
+  String get onboardingEveryAppTitle => 'ہر ایپ، خودکار طور پر';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect فعال ایپ کی نگرانی کرتا ہے اور خاموشی سے ریکارڈ کرتا ہے کہ آپ ہر ایک پر کتنا وقت گزارتے ہیں — ٹائمر شروع کرنے کی کوئی ضرورت نہیں۔';
+
+  @override
+  String get onboardingSeeTimeTitle => 'دیکھیں آپ کا وقت کہاں جاتا ہے';
+
+  @override
+  String get onboardingSeeTimeDesc =>
+      'خوبصورت روزانہ اور ہفتہ وار رپورٹس آپ کے سب سے زیادہ استعمال ہونے والے ایپس، کل اسکرین ٹائم اور رجحانات ایک نظر میں دکھاتی ہیں۔';
+
+  @override
+  String get onboardingSmartLimitsTitle => 'اسمارٹ حدود اور الرٹس';
+
+  @override
+  String get onboardingSmartLimitsDesc =>
+      'ہر ایپ کے لیے یا کل اسکرین ٹائم کے لیے روزانہ کی وقت کی حد مقرر کریں۔ اپنی حدود تک پہنچنے سے پہلے اطلاع حاصل کریں۔';
+
+  @override
+  String get onboardingDeepFocusTitle => 'گہرے فوکس کا موڈ';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      'پومودورو سیشنز کے دوران توجہ بھٹکانے والی ایپس کو بلاک کریں۔ اختیاری ماحول کی آوازوں کے ساتھ کسٹم کام اور وقفے کے وقفے آپ کو پرعزم رکھتے ہیں۔';
+
+  @override
+  String get onboardingTrackBrowserTitle => 'براؤزر کا وقت بھی ٹریک کریں';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      'ویب سائٹس پر گزارے گئے وقت کو ریکارڈ کرنے کے لیے مفت براؤزر ایکسٹینشن انسٹال کریں۔ ایک ہی ڈیش بورڈ میں مکمل تصویر۔';
+
+  @override
+  String get onboardingAllSetTitle => 'آپ بالکل تیار ہیں';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect ٹریک کرنے کے لیے تیار ہے۔ آپ کا ڈیٹا مکمل طور پر ڈیوائس پر رہتا ہے — مکمل طور پر نجی، کبھی کہیں اپ لوڈ نہیں ہوتا۔';
+
+  @override
+  String get onboardingGetStarted => 'شروع کریں';
+
+  @override
+  String get onboardingNext => 'اگلا';
+
+  @override
+  String get onboardingGoToDashboard => 'ڈیش بورڈ پر جائیں';
+
+  @override
+  String get onboardingWorksInBrowserTitle =>
+      'براہ راست آپ کے براؤزر میں کام کرتا ہے';
+
+  @override
+  String get onboardingWorksInBrowserDesc =>
+      'براؤز کرتے وقت خودکار طور پر ویب سرگرمی کو ٹریک کریں۔ شروع کرنے کے لیے کسی ڈیسک ٹاپ ایپ کی ضرورت نہیں۔';
+
+  @override
+  String get onboardingUsageRightHereTitle => 'آپ کا استعمال، بالکل یہاں';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      'صاف اور آسان چارٹس میں ہر ویب سائٹ پر گزارے گئے وقت کی تفصیلی روزانہ اور ہفتہ وار رپورٹس دیکھیں۔';
+
+  @override
+  String get onboardingSyncWithDesktopTitle => 'ڈیسک ٹاپ ایپ کے ساتھ سنک کریں';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      'مقامی ایپ اور ویب سائٹ کے مشترکہ تجزیات کے لیے Scolect ڈیسک ٹاپ ایپ کے ساتھ آسانی سے جڑیں۔';
+
+  @override
+  String get onboarding100PrivateTitle => '100% نجی';
+
+  @override
+  String get onboarding100PrivateDesc =>
+      'تمام ٹریکنگ ڈیٹا مقامی طور پر آپ کے براؤزر اور مشین پر محفوظ ہوتا ہے۔ کلاؤڈ پر کچھ بھی نہیں بھیجا جاتا ہے۔';
+
+  @override
+  String get onboardingBack => 'پیچھے';
+
+  @override
+  String get onboardingSkip => 'چھوڑیں';
 }

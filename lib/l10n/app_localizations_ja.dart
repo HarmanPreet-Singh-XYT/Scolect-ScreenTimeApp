@@ -83,7 +83,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get navHelp => 'ヘルプ';
 
   @override
-  String get navPrivate => 'Private';
+  String get navPrivate => 'プライベート';
 
   @override
   String get helpTitle => 'ヘルプ';
@@ -3589,12 +3589,39 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserRenameDialogTitle => 'ブラウザ名を変更';
 
   @override
+  String get browserSourcePingTooltip => 'ブラウザを検出 / ping';
+
+  @override
+  String browserSourcePingSent(String name) {
+    return '$name に ping を送信しました';
+  }
+
+  @override
   String get browserSourceRemoveTitle => 'ブラウザを削除しますか？';
 
   @override
   String browserSourceRemoveConfirm(String name) {
     return '「$name」を接続済みブラウザから削除しますか？ 使用履歴は保持されますが、再度同期するには再接続が必要です。';
   }
+
+  @override
+  String get browserLimitsScopeTitle => 'ウェブサイト制限の範囲';
+
+  @override
+  String get browserLimitsScopeSubtitle =>
+      'ウェブサイトの制限と追跡をブラウザプロファイルごとに適用するか、すべてのブラウザでグローバルに適用するかを選択します。';
+
+  @override
+  String get browserLimitsScopeScoped => 'ブラウザプロファイルごと (個別)';
+
+  @override
+  String get browserLimitsScopeScopedDesc => '制限は、設定された特定のブラウザプロファイルにのみ適用されます。';
+
+  @override
+  String get browserLimitsScopeGlobal => 'グローバル (全ブラウザ共通)';
+
+  @override
+  String get browserLimitsScopeGlobalDesc => '制限は接続されているすべてのブラウザの合計に適用されます。';
 
   @override
   String get browserSourceRemoveAction => '削除';
@@ -3682,23 +3709,23 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserSetupServerActiveDesc => 'ブラウザ拡張機能が接続してデータを同期できるようになりました。';
 
   @override
-  String get browserSyncedJustNow => 'Synced just now';
+  String get browserSyncedJustNow => 'たった今同期完了';
 
   @override
   String browserSyncedMinutesAgo(int minutes) {
-    return 'Synced ${minutes}m ago';
+    return '$minutes分前に同期';
   }
 
   @override
   String browserSyncedHoursAgo(int hours) {
-    return 'Synced ${hours}h ago';
+    return '$hours時間前に同期';
   }
 
   @override
-  String get browserNeverSynced => 'Not synced yet';
+  String get browserNeverSynced => 'まだ同期されていません';
 
   @override
-  String get browserSyncStalled => 'Sync stalled — check the extension';
+  String get browserSyncStalled => '同期が停止しました — 拡張機能を確認してください';
 
   @override
   String get browserServerPort => 'サーバーポート';
@@ -3833,11 +3860,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get privateModeHideAction => '非公開項目を隠す';
 
   @override
-  String get privateModeLockHint => 'Right-click to lock now';
+  String get privateModeLockHint => '右クリックで今すぐロック';
 
   @override
   String get privateModeShowOnlyDescription =>
-      'Show only apps and websites marked private, in place of your everyday view. Also available from the titlebar.';
+      '通常の表示の代わりに、プライベートとしてマークされたアプリやウェブサイトのみを表示します。タイトルバーからも利用できます。';
 
   @override
   String get privateModeSectionTitle => 'プライベートモード';
@@ -3889,119 +3916,302 @@ class AppLocalizationsJa extends AppLocalizations {
   String get privateModeResetPasswordAction => 'パスワードをリセット';
 
   @override
-  String get privateModeForgotPassword => 'Forgot password?';
+  String get privateModeForgotPassword => 'パスワードをお忘れですか？';
 
   @override
-  String get privateModeRecoveryTitle => 'Recover Private Mode';
+  String get privateModeRecoveryTitle => 'プライベートモードの復元';
 
   @override
-  String get privateModeRecoveryTabBackupCode => 'Backup code';
+  String get privateModeRecoveryTabBackupCode => 'バックアップコード';
 
   @override
-  String get privateModeRecoveryTabSecurityQuestion => 'Security question';
+  String get privateModeRecoveryTabSecurityQuestion => '秘密の質問';
 
   @override
   String get privateModeBackupCodePlaceholder => 'XXXX-XXXX-XXXX-XXXX';
 
   @override
-  String get privateModeSecurityAnswerPlaceholder => 'Your answer';
+  String get privateModeSecurityAnswerPlaceholder => '回答を入力';
 
   @override
-  String get privateModeRecoveryIncorrect =>
-      'That didn\'t match. Please try again.';
+  String get privateModeRecoveryIncorrect => '一致しませんでした。もう一度お試しください。';
 
   @override
-  String get privateModeRecoverySuccessTitle => 'Identity verified';
+  String get privateModeRecoverySuccessTitle => '本人確認が完了しました';
 
   @override
   String get privateModeRecoverySuccessDescription =>
-      'Your old password has been cleared. Set a new password to continue — you\'ll also get a new backup code and security question.';
+      '古いパスワードが消去されました。続行するには新しいパスワードを設定してください — 新しいバックアップコードと秘密の質問も取得できます。';
 
   @override
-  String get privateModeSetupRecoveryTitle => 'Set Up Recovery';
+  String get privateModeSetupRecoveryTitle => 'リカバリの設定';
 
   @override
-  String get privateModeBackupCodeGeneratedTitle => 'Your backup code';
+  String get privateModeBackupCodeGeneratedTitle => 'バックアップコード';
 
   @override
   String get privateModeBackupCodeWarning =>
-      'Save this code somewhere safe. It will only be shown once, and you\'ll need it if you forget your password.';
+      'このコードを安全な場所に保存してください。表示されるのは一度だけで、パスワードを忘れた場合に必要になります。';
 
   @override
-  String get privateModeCopyBackupCode => 'Copy';
+  String get privateModeCopyBackupCode => 'コピー';
 
   @override
-  String get privateModeBackupCodeCopied => 'Backup code copied';
+  String get privateModeBackupCodeCopied => 'バックアップコードをコピーしました';
 
   @override
-  String get privateModeDownloadBackupCode => 'Download';
+  String get privateModeDownloadBackupCode => 'ダウンロード';
 
   @override
-  String get privateModeSecurityQuestionLabel => 'Security question';
+  String get privateModeSecurityQuestionLabel => '秘密の質問';
 
   @override
-  String get privateModeSecurityAnswerLabel => 'Your answer';
+  String get privateModeSecurityAnswerLabel => '回答';
 
   @override
-  String get privateModeSecurityQuestionCustomOption =>
-      'Write my own question…';
+  String get privateModeSecurityQuestionCustomOption => '独自の質問を作成…';
 
   @override
-  String get privateModeChooseSecurityQuestion => 'Choose a security question';
+  String get privateModeChooseSecurityQuestion => '秘密の質問を選択';
 
   @override
-  String get privateModeSecurityAnswerEmpty => 'Answer cannot be empty';
+  String get privateModeSecurityAnswerEmpty => '回答を入力してください';
 
   @override
-  String get privateModeIveSavedThis => 'I\'ve saved this backup code';
+  String get privateModeIveSavedThis => 'このバックアップコードを保存しました';
 
   @override
-  String get privateModeRecoveryOptionsTitle => 'Recovery Options';
+  String get privateModeRecoveryOptionsTitle => 'リカバリオプション';
 
   @override
   String get privateModeRecoveryOptionsDescription =>
-      'Regenerate your backup code and security question without changing your password.';
+      'パスワードを変更せずにバックアップコードと秘密の質問を再生成します。';
 
   @override
-  String get privateModeRegenerateRecoveryAction => 'Regenerate';
+  String get privateModeRegenerateRecoveryAction => '再生成';
 
   @override
-  String get privateModeQuestionPetName =>
-      'What was the name of your first pet?';
+  String get privateModeQuestionPetName => '最初に飼ったペットの名前は？';
 
   @override
-  String get privateModeQuestionBirthCity => 'In what city were you born?';
+  String get privateModeQuestionBirthCity => '生まれ故郷の都市は？';
 
   @override
-  String get privateModeQuestionFirstSchool =>
-      'What was the name of your first school?';
+  String get privateModeQuestionFirstSchool => '最初に通った学校の名前は？';
 
   @override
-  String get privateModeQuestionMotherMaidenName =>
-      'What is your mother\'s maiden name?';
+  String get privateModeQuestionMotherMaidenName => '母親の旧姓は？';
 
   @override
-  String get privateModeQuestionFavoriteBook => 'What is your favorite book?';
+  String get privateModeQuestionFavoriteBook => 'お気に入りの本は？';
 
   @override
   String get privateModeNotSetUpDescription =>
-      'Set up Private Mode in Settings to keep sensitive apps and websites out of your everyday view.';
+      '機密性の高いアプリやウェブサイトを普段の表示から隠すには、設定でプライベートモードを設定してください。';
 
   @override
-  String get privateModeGoToSettingsAction => 'Go to Settings';
+  String get privateModeGoToSettingsAction => '設定へ移動';
 
   @override
   String get privateModeLockedDescription =>
-      'Unlock to view your private apps and websites.';
+      'プライベートなアプリやウェブサイトを表示するにはロックを解除してください。';
 
   @override
-  String get privateModeUnlockedDescription =>
-      'Apps and websites you\'ve marked private.';
+  String get privateModeUnlockedDescription => 'プライベートとしてマークしたアプリやウェブサイト。';
 
   @override
   String get privateModeNoItemsDescription =>
-      'No private apps or websites tracked yet. Mark an item as private from its details to see it here.';
+      'プライベートなアプリやウェブサイトはまだ記録されていません。詳細からアイテムをプライベートに設定するとここに表示されます。';
 
   @override
-  String get privateModeItemsCount => 'Private Items';
+  String get privateModeItemsCount => 'プライベートアイテム';
+
+  @override
+  String get permissionBannerNotificationsDisabled => '通知が無効です';
+
+  @override
+  String get permissionBannerSystemDesc =>
+      'フォーカスセッションのアラートを受け取るには、システム設定で通知を有効にしてください。';
+
+  @override
+  String get permissionBannerOpenSystemSettings => 'システム設定を開く';
+
+  @override
+  String get permissionBannerAppDesc =>
+      'フォーカスセッションのアラートを受け取るには、アプリ設定で通知を有効にしてください。';
+
+  @override
+  String get permissionBannerFocusDisabled => 'フォーカス通知が無効です';
+
+  @override
+  String get permissionBannerFocusDesc =>
+      'セッションのアラートを受け取るには、設定でフォーカスモードの通知を有効にしてください。';
+
+  @override
+  String get topWebsites => '上位のウェブサイト';
+
+  @override
+  String get noWebsitesTrackedYet => 'ウェブサイトはまだ記録されていません';
+
+  @override
+  String get browserDetailBlockedTooltip => '1日の制限に達しました – サイトがブロックされています';
+
+  @override
+  String get browserDetailTimeToday => '今日の時間';
+
+  @override
+  String get browserDetailVisitsToday => '今日のアクセス数';
+
+  @override
+  String get browserDetailDailyLimit => '1日の制限';
+
+  @override
+  String get browserChartLegendTime => '時間';
+
+  @override
+  String get browserChartLegendVisits => 'アクセス数';
+
+  @override
+  String get blockingBehaviorTitle => 'ブロック時の動作';
+
+  @override
+  String get blockingBehaviorNotificationOnlyTitle => '通知のみ';
+
+  @override
+  String get blockingBehaviorNotificationOnlySubtitle =>
+      '制限に達したときにアラートを表示し、その他のアクションは行いません。';
+
+  @override
+  String get blockingBehaviorSoftBlockTitle => 'ソフトブロック';
+
+  @override
+  String get blockingBehaviorSoftBlockSubtitle =>
+      'Scolect を最前面に表示し、アプリの最小化、終了、スヌーズ、またはブロック解除のオプションを提供します。';
+
+  @override
+  String get blockingBehaviorHardBlockTitle => 'ハードブロック';
+
+  @override
+  String get blockingBehaviorHardBlockSubtitle =>
+      'ソフトブロックと同様で、さらにアプリを画面から即座に非表示にします。';
+
+  @override
+  String get blockingBehaviorNudgeNote =>
+      '注: ブロックは注意喚起であり、完全なロックではありません。Dock やタスクバーからアプリを再度開くことができます。';
+
+  @override
+  String get aboutUpdateChecking => '確認中...';
+
+  @override
+  String get aboutUpdateCheckButton => 'アップデートを確認';
+
+  @override
+  String get aboutUpdateCheckingProgress => 'アップデートを確認しています...';
+
+  @override
+  String get aboutUpdateUpToDate => '最新の状態です';
+
+  @override
+  String get aboutUpdateFailed => 'アップデートを確認できませんでした';
+
+  @override
+  String get aboutUpdateRetryPrompt => '再試行するには「アップデートを確認」をタップしてください';
+
+  @override
+  String get aboutUpdateScheduled => 'アップデートの確認がスケジュールされました';
+
+  @override
+  String get aboutOpenSettingsFailed => 'システム設定を開けませんでした';
+
+  @override
+  String get onboardingWelcomeTitle => 'Scolect へようこそ';
+
+  @override
+  String get onboardingWelcomeDesc =>
+      '時間をコントロールしましょう。Scolect はバックグラウンドで静かに動作し、すべてのアプリ、セッション、時間を正確に記録します。';
+
+  @override
+  String get onboardingEveryAppTitle => 'すべてのアプリを自動記録';
+
+  @override
+  String get onboardingEveryAppDesc =>
+      'Scolect は使用中のアプリを検出し、費やした時間を自動的に記録します — タイマーの手動操作は一切不要です。';
+
+  @override
+  String get onboardingSeeTimeTitle => '時間の使い方を可視化';
+
+  @override
+  String get onboardingSeeTimeDesc =>
+      '美しく分かりやすい日次・週次レポートで、最も使ったアプリ、合計スクリーンタイム、利用傾向を一目で把握できます。';
+
+  @override
+  String get onboardingSmartLimitsTitle => 'スマートな制限とアラート';
+
+  @override
+  String get onboardingSmartLimitsDesc =>
+      'アプリごと、または画面全体の毎日の時間制限を設定できます。制限に達する前に事前通知を受け取れます。';
+
+  @override
+  String get onboardingDeepFocusTitle => 'ディープフォーカスモード';
+
+  @override
+  String get onboardingDeepFocusDesc =>
+      'ポモドーロセッション中に気が散るアプリをブロック。作業と休憩のカスタム間隔や環境音で集中をサポートします。';
+
+  @override
+  String get onboardingTrackBrowserTitle => 'ブラウザの利用時間も記録';
+
+  @override
+  String get onboardingTrackBrowserDesc =>
+      '無料のブラウザ拡張機能をインストールすれば、アプリだけでなく閲覧したウェブサイトの時間もすべて1つの画面で確認できます。';
+
+  @override
+  String get onboardingAllSetTitle => '準備が完了しました';
+
+  @override
+  String get onboardingAllSetDesc =>
+      'Scolect の準備が整いました。すべてのデータは完全に端末内にのみ保存され、外部に送信されることは決してありません。';
+
+  @override
+  String get onboardingGetStarted => '始める';
+
+  @override
+  String get onboardingNext => '次へ';
+
+  @override
+  String get onboardingGoToDashboard => 'ダッシュボードへ';
+
+  @override
+  String get onboardingWorksInBrowserTitle => 'ブラウザ内でそのまま動作';
+
+  @override
+  String get onboardingWorksInBrowserDesc =>
+      'ブラウジング中のアクティビティを自動記録。デスクトップアプリがなくてもすぐに始められます。';
+
+  @override
+  String get onboardingUsageRightHereTitle => '利用状況をここで確認';
+
+  @override
+  String get onboardingUsageRightHereDesc =>
+      '各ウェブサイトの利用時間を、分かりやすい日次・週次グラフで詳しく確認できます。';
+
+  @override
+  String get onboardingSyncWithDesktopTitle => 'デスクトップアプリと同期';
+
+  @override
+  String get onboardingSyncWithDesktopDesc =>
+      'Scolect デスクトップアプリとシームレスに連携し、アプリとウェブサイトの統合分析を行えます。';
+
+  @override
+  String get onboarding100PrivateTitle => '100% 完全プライベート';
+
+  @override
+  String get onboarding100PrivateDesc =>
+      'すべての追跡データはブラウザおよび端末内にローカル保存されます。クラウドにデータが送信されることは一切ありません。';
+
+  @override
+  String get onboardingBack => '戻る';
+
+  @override
+  String get onboardingSkip => 'スキップ';
 }

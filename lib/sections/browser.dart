@@ -865,6 +865,7 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
             ),
           ),
 
+
           const SizedBox(height: 20),
 
           // ── Connected browsers ──────────────────────────────────────────
@@ -1005,6 +1006,22 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
     if (mounted) setState(() {});
   }
 
+  void _ping(BrowserSource source) {
+    BrowserExtensionServer.pingBrowser(source.id);
+    final l10n = AppLocalizations.of(context)!;
+    displayInfoBar(
+      context,
+      builder: (ctx, close) => InfoBar(
+        title: Text(l10n.browserSourcePingSent(source.localizedLabel(l10n))),
+        severity: InfoBarSeverity.info,
+        action: IconButton(
+          icon: const Icon(FluentIcons.clear, size: 12),
+          onPressed: close,
+        ),
+      ),
+    );
+  }
+
   Future<void> _rename(BrowserSource source) async {
     final result = await showDialog<String>(
       context: context,
@@ -1069,6 +1086,7 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
             if (i > 0) const Divider(size: double.infinity),
             _BrowserSourceRow(
               source: sources[i],
+              onPing: () => _ping(sources[i]),
               onRename: () => _rename(sources[i]),
               onRemove: () => _remove(sources[i]),
             ),
@@ -1081,11 +1099,13 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
 
 class _BrowserSourceRow extends StatelessWidget {
   final BrowserSource source;
+  final VoidCallback onPing;
   final VoidCallback onRename;
   final VoidCallback onRemove;
 
   const _BrowserSourceRow({
     required this.source,
+    required this.onPing,
     required this.onRename,
     required this.onRemove,
   });
@@ -1133,6 +1153,13 @@ class _BrowserSourceRow extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          Tooltip(
+            message: l10n.browserSourcePingTooltip,
+            child: IconButton(
+              icon: Icon(FluentIcons.ringer, size: 14, color: theme.accentColor),
+              onPressed: onPing,
             ),
           ),
           IconButton(

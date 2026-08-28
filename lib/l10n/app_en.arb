@@ -2317,19 +2317,46 @@
   "browserSourceAllBrowsers": "All Browsers",
   "browserSourceDefaultName": "Browser {index}",
   "@browserSourceDefaultName": {
-    "placeholders": { "index": { "type": "int" } }
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
   },
   "browserSourceLastSeen": "Last seen",
   "browserSourceLastSeenDaysAgo": "{days}d ago",
   "@browserSourceLastSeenDaysAgo": {
-    "placeholders": { "days": { "type": "int" } }
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
   },
   "browserRenameDialogTitle": "Rename Browser",
+  "browserSourcePingTooltip": "Locate / Ping Browser",
+  "browserSourcePingSent": "Ping sent to {name}",
+  "@browserSourcePingSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "browserSourceRemoveTitle": "Remove Browser?",
   "browserSourceRemoveConfirm": "Remove \"{name}\" from your connected browsers? Its usage history is kept, but it will need to reconnect to sync again.",
   "@browserSourceRemoveConfirm": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
+  "browserLimitsScopeTitle": "Website Limits Scope",
+  "browserLimitsScopeSubtitle": "Choose whether website limits and tracking apply per browser profile or globally across all browsers.",
+  "browserLimitsScopeScoped": "Per Browser Profile (Scoped)",
+  "browserLimitsScopeScopedDesc": "Limits apply only to the specific browser profile where configured.",
+  "browserLimitsScopeGlobal": "Global (Cross-Browser)",
+  "browserLimitsScopeGlobalDesc": "Limits apply across all connected browsers combined.",
   "browserSourceRemoveAction": "Remove",
   "browserDangerZone": "Danger Zone",
   "browserClearDataTitle": "Clear All Website Data",
@@ -2351,7 +2378,9 @@
   "browserSetupServerRunning": "Server running · port {port}",
   "@browserSetupServerRunning": {
     "placeholders": {
-      "port": { "type": "int" }
+      "port": {
+        "type": "int"
+      }
     }
   },
   "browserSetupServerOff": "Server disabled",
@@ -2365,11 +2394,19 @@
   "browserSyncedJustNow": "Synced just now",
   "browserSyncedMinutesAgo": "Synced {minutes}m ago",
   "@browserSyncedMinutesAgo": {
-    "placeholders": { "minutes": { "type": "int" } }
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
   },
   "browserSyncedHoursAgo": "Synced {hours}h ago",
   "@browserSyncedHoursAgo": {
-    "placeholders": { "hours": { "type": "int" } }
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      }
+    }
   },
   "browserNeverSynced": "Not synced yet",
   "browserSyncStalled": "Sync stalled — check the extension",
@@ -2659,5 +2696,62 @@
   "privateModeItemsCount": "Private Items",
   "@privateModeItemsCount": {
     "description": "TRANSLATE: Stat tile label for the count of private apps/websites"
-  }
+  },
+  "permissionBannerNotificationsDisabled": "Notifications disabled",
+  "permissionBannerSystemDesc": "Enable notifications in System Settings to receive focus session alerts.",
+  "permissionBannerOpenSystemSettings": "Open System Settings",
+  "permissionBannerAppDesc": "Enable notifications in app settings to receive focus session alerts.",
+  "permissionBannerFocusDisabled": "Focus notifications disabled",
+  "permissionBannerFocusDesc": "Enable focus mode notifications in settings to receive session alerts.",
+  "topWebsites": "Top Websites",
+  "noWebsitesTrackedYet": "No websites tracked yet",
+  "browserDetailBlockedTooltip": "Daily limit reached – site is blocked",
+  "browserDetailTimeToday": "Time today",
+  "browserDetailVisitsToday": "Visits today",
+  "browserDetailDailyLimit": "Daily limit",
+  "browserChartLegendTime": "Time",
+  "browserChartLegendVisits": "Visits",
+  "blockingBehaviorTitle": "Blocking Behavior",
+  "blockingBehaviorNotificationOnlyTitle": "Notification only",
+  "blockingBehaviorNotificationOnlySubtitle": "Alert you when a limit is reached, no other action.",
+  "blockingBehaviorSoftBlockTitle": "Soft block",
+  "blockingBehaviorSoftBlockSubtitle": "Bring Scolect to the front with options to minimize, quit, snooze, or unblock the app.",
+  "blockingBehaviorHardBlockTitle": "Hard block",
+  "blockingBehaviorHardBlockSubtitle": "Same as soft block, and also immediately hides the app from your screen.",
+  "blockingBehaviorNudgeNote": "Note: Blocking is a nudge, not a lock. You can still reopen the app from the Dock or taskbar.",
+  "aboutUpdateChecking": "Checking...",
+  "aboutUpdateCheckButton": "Check Updates",
+  "aboutUpdateCheckingProgress": "Checking for updates...",
+  "aboutUpdateUpToDate": "You're up to date",
+  "aboutUpdateFailed": "Could not check for updates",
+  "aboutUpdateRetryPrompt": "Tap \"Check Updates\" to retry",
+  "aboutUpdateScheduled": "Update check scheduled",
+  "aboutOpenSettingsFailed": "Failed to open System Settings",
+  "onboardingWelcomeTitle": "Welcome to Scolect",
+  "onboardingWelcomeDesc": "Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.",
+  "onboardingEveryAppTitle": "Every App, Automatically",
+  "onboardingEveryAppDesc": "Scolect watches the foreground app and quietly logs how long you spend in each one — no timers to start, nothing to remember.",
+  "onboardingSeeTimeTitle": "See Where Your Time Goes",
+  "onboardingSeeTimeDesc": "Beautiful daily and weekly reports show your most-used apps, total screen time, and usage trends at a glance.",
+  "onboardingSmartLimitsTitle": "Smart Limits & Alerts",
+  "onboardingSmartLimitsDesc": "Set daily time limits per app or for your total screen time. Get notified before you hit your limits — not after.",
+  "onboardingDeepFocusTitle": "Deep Focus Mode",
+  "onboardingDeepFocusDesc": "Block distracting apps during Pomodoro sessions. Custom work and break intervals with optional ambient sounds keep you in the zone.",
+  "onboardingTrackBrowserTitle": "Track Browser Time Too",
+  "onboardingTrackBrowserDesc": "Install the free browser extension to capture time spent on websites — not just native apps. Full picture, one dashboard.",
+  "onboardingAllSetTitle": "You're All Set",
+  "onboardingAllSetDesc": "Scolect is ready to track. Your data stays entirely on-device — completely private, never uploaded anywhere.",
+  "onboardingGetStarted": "Get Started",
+  "onboardingNext": "Next",
+  "onboardingGoToDashboard": "Go to Dashboard",
+  "onboardingWorksInBrowserTitle": "Works Right in Your Browser",
+  "onboardingWorksInBrowserDesc": "Track web activity automatically as you browse. No desktop app required to get started.",
+  "onboardingUsageRightHereTitle": "Your Usage, Right Here",
+  "onboardingUsageRightHereDesc": "View detailed daily and weekly reports of your time spent on every website in clean, intuitive charts.",
+  "onboardingSyncWithDesktopTitle": "Sync with the Desktop App",
+  "onboardingSyncWithDesktopDesc": "Connect seamlessly with the Scolect desktop app for combined native app and website analytics.",
+  "onboarding100PrivateTitle": "100% Private",
+  "onboarding100PrivateDesc": "All tracking data is stored locally in your browser and on your machine. Nothing is ever sent to the cloud.",
+  "onboardingBack": "Back",
+  "onboardingSkip": "Skip"
 }

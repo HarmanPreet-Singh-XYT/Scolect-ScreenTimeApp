@@ -64,8 +64,6 @@ const _simpleSettingPaths = <String, String>{
   'ignoreIdleOnMedia': 'tracking.ignoreIdleOnMedia',
   'ignoreWindowBlurOnMedia': 'tracking.ignoreWindowBlurOnMedia',
 };
-
-/// Field setters keyed by setting name, used to assign in-memory values.
 typedef _FieldSetter = void Function(SettingsProvider provider, dynamic value);
 
 final Map<String, _FieldSetter> _fieldSetters = {

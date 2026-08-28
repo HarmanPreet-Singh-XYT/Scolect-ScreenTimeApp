@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/widgets.dart' as flutter_widgets;
 import 'package:screentime/app_design.dart';
+import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/onboarding/onboarding_mockups.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
@@ -29,68 +30,71 @@ class _SlideData {
 
 enum _VisualType { welcome, appTracking, reports, limits, focusMode, browser, ready }
 
-const List<_SlideData> _slides = [
+const List<Color> _slideColors = [
+  Color(0xFF6366F1),
+  Color(0xFF60A5FA),
+  Color(0xFF8B5CF6),
+  Color(0xFFF59E0B),
+  Color(0xFF10B981),
+  Color(0xFF6366F1),
+  Color(0xFF8B5CF6),
+];
+
+List<_SlideData> _getSlides(AppLocalizations l10n) => [
   _SlideData(
     emoji: '⏱️',
-    accentColor: Color(0xFF6366F1),
-    title: 'Welcome to Scolect',
-    description:
-        'Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.',
-    chips: ['Privacy-first', 'Open Source', 'On-device'],
+    accentColor: _slideColors[0],
+    title: l10n.onboardingWelcomeTitle,
+    description: l10n.onboardingWelcomeDesc,
+    chips: const ['Privacy-first', 'Open Source', 'On-device'],
     visualType: _VisualType.welcome,
   ),
   _SlideData(
     emoji: '📱',
-    accentColor: Color(0xFF60A5FA),
-    title: 'Every App, Automatically',
-    description:
-        'Scolect watches the foreground app and quietly logs how long you spend in each one — no timers to start, nothing to remember.',
-    chips: ['Zero setup', 'Runs in the background', 'Per-app tracking'],
+    accentColor: _slideColors[1],
+    title: l10n.onboardingEveryAppTitle,
+    description: l10n.onboardingEveryAppDesc,
+    chips: const ['Zero setup', 'Runs in the background', 'Per-app tracking'],
     visualType: _VisualType.appTracking,
   ),
   _SlideData(
     emoji: '📊',
-    accentColor: Color(0xFF8B5CF6),
-    title: 'See Where Your Time Goes',
-    description:
-        'Beautiful daily and weekly reports show your most-used apps, total screen time, and usage trends at a glance.',
-    chips: ['Daily reports', 'Weekly trends', 'App breakdown'],
+    accentColor: _slideColors[2],
+    title: l10n.onboardingSeeTimeTitle,
+    description: l10n.onboardingSeeTimeDesc,
+    chips: const ['Daily reports', 'Weekly trends', 'App breakdown'],
     visualType: _VisualType.reports,
   ),
   _SlideData(
     emoji: '🔔',
-    accentColor: Color(0xFFF59E0B),
-    title: 'Smart Limits & Alerts',
-    description:
-        'Set daily time limits per app or for your total screen time. Get notified before you hit your limits — not after.',
-    chips: ['Per-app limits', 'Total limit', 'Custom alerts'],
+    accentColor: _slideColors[3],
+    title: l10n.onboardingSmartLimitsTitle,
+    description: l10n.onboardingSmartLimitsDesc,
+    chips: const ['Per-app limits', 'Total limit', 'Custom alerts'],
     visualType: _VisualType.limits,
   ),
   _SlideData(
     emoji: '🎯',
-    accentColor: Color(0xFF10B981),
-    title: 'Deep Focus Mode',
-    description:
-        'Block distracting apps during Pomodoro sessions. Custom work and break intervals with optional ambient sounds keep you in the zone.',
-    chips: ['Pomodoro timer', 'App blocking', 'Ambient sounds'],
+    accentColor: _slideColors[4],
+    title: l10n.onboardingDeepFocusTitle,
+    description: l10n.onboardingDeepFocusDesc,
+    chips: const ['Pomodoro timer', 'App blocking', 'Ambient sounds'],
     visualType: _VisualType.focusMode,
   ),
   _SlideData(
     emoji: '🌐',
-    accentColor: Color(0xFF6366F1),
-    title: 'Track Browser Time Too',
-    description:
-        'Install the free browser extension to capture time spent on websites — not just native apps. Full picture, one dashboard.',
-    chips: ['Chrome extension', 'Website tracking', 'Syncs automatically'],
+    accentColor: _slideColors[5],
+    title: l10n.onboardingTrackBrowserTitle,
+    description: l10n.onboardingTrackBrowserDesc,
+    chips: const ['Chrome extension', 'Website tracking', 'Syncs automatically'],
     visualType: _VisualType.browser,
   ),
   _SlideData(
     emoji: '🚀',
-    accentColor: Color(0xFF8B5CF6),
-    title: "You're All Set",
-    description:
-        'Scolect is ready to track. Your data stays entirely on-device — completely private, never uploaded anywhere.',
-    chips: ['100% private', 'No account needed', 'Always free'],
+    accentColor: _slideColors[6],
+    title: l10n.onboardingAllSetTitle,
+    description: l10n.onboardingAllSetDesc,
+    chips: const ['100% private', 'No account needed', 'Always free'],
     visualType: _VisualType.ready,
   ),
 ];
@@ -124,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
       vsync: this,
       duration: AppDesignLegacy.animSlow,
     );
-    _updateBgAnimation(_slides[0].accentColor, _slides[0].accentColor);
+    _updateBgAnimation(_slideColors[0], _slideColors[0]);
   }
 
   void _updateBgAnimation(Color from, Color to) {
@@ -135,8 +139,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   void _goToPage(int page) {
     if (page == _currentPage) return;
-    final prev = _slides[_currentPage].accentColor;
-    final next = _slides[page].accentColor;
+    final prev = _slideColors[_currentPage];
+    final next = _slideColors[page];
     _bgAnimController.reset();
     _updateBgAnimation(prev, next);
     _bgAnimController.forward();
@@ -149,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   }
 
   void _next() {
-    if (_currentPage < _slides.length - 1) {
+    if (_currentPage < _slideColors.length - 1) {
       _goToPage(_currentPage + 1);
     } else {
       _complete();
@@ -181,9 +185,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final slides = _getSlides(l10n);
     final isDark = FluentTheme.of(context).brightness == Brightness.dark;
-    final slide = _slides[_currentPage];
-    final isLast = _currentPage == _slides.length - 1;
+    final slide = slides[_currentPage];
+    final isLast = _currentPage == slides.length - 1;
 
     return flutter_widgets.AnimatedBuilder(
       animation: _bgAnimController,
@@ -207,9 +213,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   opacity: isLast ? 0.0 : 1.0,
                   duration: AppDesignLegacy.animMedium,
                   child: HyperlinkButton(
-                    onPressed: isLast ? null : () => _goToPage(_slides.length - 1),
+                    onPressed: isLast ? null : () => _goToPage(slides.length - 1),
                     child: Text(
-                      'Skip',
+                      l10n.onboardingSkip,
                       style: TextStyle(
                         color: isDark
                             ? AppDesignLegacy.darkTextSecondary
@@ -225,10 +231,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               PageView.builder(
                 controller: _pageController,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _slides.length,
+                itemCount: slides.length,
                 itemBuilder: (context, index) {
                   return _OnboardingSlide(
-                    slide: _slides[index],
+                    slide: slides[index],
                     isDark: isDark,
                   );
                 },
@@ -244,7 +250,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     // Dot indicators
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_slides.length, (i) {
+                      children: List.generate(slides.length, (i) {
                         final isActive = i == _currentPage;
                         return GestureDetector(
                           onTap: () => _goToPage(i),
@@ -293,7 +299,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                 ),
                                 child: Center(
                                   child: Text(
-                                    'Back',
+                                    l10n.onboardingBack,
                                     style: TextStyle(
                                       color: isDark
                                           ? AppDesignLegacy.darkTextPrimary
@@ -312,7 +318,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           width: 160,
                           height: 44,
                           child: _GradientButton(
-                            label: isLast ? 'Get Started' : 'Next',
+                            label: isLast ? l10n.onboardingGetStarted : l10n.onboardingNext,
                             accentColor: slide.accentColor,
                             isLoading: _isCompleting,
                             onPressed: _next,

@@ -183,8 +183,8 @@ class TopApplicationsList extends StatelessWidget {
         _SectionHeader(
           color: _kBlue,
           icon: FluentIcons.app_icon_default_list,
-          title: kIsWeb ? "Top Websites" : l10n.topApplications,
-          countLabel: kIsWeb ? "${filteredData.length} Websites" : l10n.appsCount(filteredData.length),
+          title: kIsWeb ? l10n.topWebsites : l10n.topApplications,
+          countLabel: kIsWeb ? l10n.browserWebsiteCount(filteredData.length) : l10n.appsCount(filteredData.length),
           theme: theme,
         ),
         Divider(
@@ -197,7 +197,7 @@ class TopApplicationsList extends StatelessWidget {
           child: filteredData.isEmpty
               ? EmptyState(
                   icon: kIsWeb ? FluentIcons.globe : FluentIcons.app_icon_default,
-                  message: kIsWeb ? "No websites tracked yet" : l10n.noApplicationDataAvailable,
+                  message: kIsWeb ? l10n.noWebsitesTrackedYet : l10n.noApplicationDataAvailable,
                 )
               : ListView.builder(
                   padding: _kListPadding,

@@ -7,6 +7,8 @@ import 'applications_data_controller.dart';
 import '../../../web/web_browser_data_provider.dart'
     if (dart.library.io) '../../../web/web_browser_data_provider_stub.dart';
 import '../../../utils/private_mode_access.dart';
+import '../../../utils/browser_extension_server_stub.dart'
+    if (dart.library.io) '../../../utils/browser_extension_server.dart';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -111,12 +113,23 @@ class BrowserDataProvider {
     }
   }
 
-  /// Returns all app names that are website entries (prefixed with "web:")
-  List<String> get _webAppNames =>
-      _dataStore.allAppNames.where((n) => n.startsWith(_kWebPrefix)).toList();
+  /// Returns all unique domain names across all website entries
+  List<String> get _uniqueWebDomains {
+    final domains = <String>{};
+    for (final name in _dataStore.allAppNames) {
+      if (name.startsWith(_kWebPrefix)) {
+        domains.add(_toDomain(name));
+      }
+    }
+    return domains.toList();
+  }
 
-  /// Strip the "web:" prefix to get the display domain
-  String _toDomain(String appName) => appName.replaceFirst(_kWebPrefix, '');
+  /// Strip the "web:" prefix and any source ID suffix to get the display domain
+  String _toDomain(String appName) {
+    final raw = appName.replaceFirst(_kWebPrefix, '');
+    final idx = raw.indexOf('::');
+    return idx != -1 ? raw.substring(0, idx) : raw;
+  }
 
   /// Reads usage for a website [appName], honoring the app-wide browser
   /// source filter (see [BrowserSourceFilterProvider]): "All Browsers" sums
@@ -145,13 +158,14 @@ class BrowserDataProvider {
     final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
     final DateTime startOfDay = DateTime(today.year, today.month, today.day);
     final sites = <WebsiteBasicDetail>[];
+    final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
 
-    for (final appName in _webAppNames) {
-      final metadata = _dataStore.getAppMetadata(appName);
+    for (final domain in _uniqueWebDomains) {
+      final appName = '$_kWebPrefix$domain';
+      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata == null) continue;
 
       final record = _readUsage(appName, startOfDay);
-      final domain = _toDomain(appName);
 
       // Auto-categorize on read if the stored category is still a placeholder
       String category = metadata.category;
@@ -199,7 +213,8 @@ class BrowserDataProvider {
     int visits = 0;
     int sites = 0;
 
-    for (final appName in _webAppNames) {
+    for (final domain in _uniqueWebDomains) {
+      final appName = '$_kWebPrefix$domain';
       final record = _readUsage(appName, startOfDay);
       if (record != null && record.timeSpent > Duration.zero) {
         total += record.timeSpent;
@@ -222,9 +237,11 @@ class BrowserDataProvider {
     final Map<String, Duration> categoryTime = {};
     final Map<String, int> categorySiteCount = {};
     Duration grandTotal = Duration.zero;
+    final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
 
-    for (final appName in _webAppNames) {
-      final metadata = _dataStore.getAppMetadata(appName);
+    for (final domain in _uniqueWebDomains) {
+      final appName = '$_kWebPrefix$domain';
+      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata == null) continue;
 
       final record = _readUsage(appName, startOfDay);
@@ -292,7 +309,8 @@ class BrowserDataProvider {
       Duration total = Duration.zero;
       int sites = 0;
 
-      for (final appName in _webAppNames) {
+      for (final domain in _uniqueWebDomains) {
+        final appName = '$_kWebPrefix$domain';
         final record = _readUsage(appName, startOfDay);
         if (record != null && record.timeSpent > Duration.zero) {
           total += record.timeSpent;
@@ -312,8 +330,10 @@ class BrowserDataProvider {
     await _ensureInitialized();
 
     final Set<String> cats = {};
-    for (final appName in _webAppNames) {
-      final metadata = _dataStore.getAppMetadata(appName);
+    final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
+    for (final domain in _uniqueWebDomains) {
+      final appName = '$_kWebPrefix$domain';
+      final metadata = _dataStore.getAppMetadata(appName, sourceId: selectedSourceId);
       if (metadata != null) cats.add(metadata.category);
     }
     return ['All', ...cats.toList()..sort()];
@@ -332,16 +352,47 @@ class BrowserDataProvider {
     bool? isPrivate,
   }) async {
     await _ensureInitialized();
-    return _dataStore.updateAppMetadata(
-      '$_kWebPrefix$domain',
+    final selectedSourceId = BrowserSourceFilterProvider().selectedBrowserId;
+    final targetAppName = (selectedSourceId != null && selectedSourceId.isNotEmpty)
+        ? '$_kWebPrefix$domain::$selectedSourceId'
+        : '$_kWebPrefix$domain';
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final ok = await _dataStore.updateAppMetadata(
+      targetAppName,
       category: category,
       isProductive: isProductive,
       isTracking: isTracking,
       isVisible: isVisible,
       dailyLimit: dailyLimit,
+      limitStatus: (dailyLimit != null && dailyLimit > Duration.zero),
       siteName: siteName,
       isPrivate: isPrivate,
+      updatedAt: now,
     );
+
+    // If editing globally ("All Browsers"), cascade limit & category to any scoped entries
+    if (selectedSourceId == null || selectedSourceId.isEmpty) {
+      for (final name in _dataStore.allAppNames) {
+        if (name.startsWith('$_kWebPrefix$domain::')) {
+          await _dataStore.updateAppMetadata(
+            name,
+            category: category,
+            isProductive: isProductive,
+            isTracking: isTracking,
+            isVisible: isVisible,
+            dailyLimit: dailyLimit,
+            limitStatus: (dailyLimit != null && dailyLimit > Duration.zero),
+            siteName: siteName,
+            isPrivate: isPrivate,
+            updatedAt: now,
+          );
+        }
+      }
+    }
+
+    BrowserExtensionServer.broadcastFocusState();
+    return ok;
   }
 }
 

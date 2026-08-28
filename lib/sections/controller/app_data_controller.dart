@@ -10,6 +10,8 @@ import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io)
 import '../../web/web_browser_data_provider.dart' if (dart.library.io) '../../web/web_browser_data_provider_stub.dart';
 import 'settings_data_controller.dart';
 import '../../l10n/app_localizations.dart';
+import '../../utils/browser_extension_server_stub.dart'
+    if (dart.library.io) '../../utils/browser_extension_server.dart';
 
 // TypeAdapters for complex types
 @HiveType(typeId: 1)
@@ -138,6 +140,9 @@ class AppMetadata {
   @HiveField(8)
   final String displayName; // empty string means "use the storage key as display name"
 
+  @HiveField(9)
+  final int updatedAt; // epoch ms for last-write-wins sync
+
   AppMetadata({
     required this.category,
     required this.isProductive,
@@ -148,6 +153,7 @@ class AppMetadata {
     this.siteName = '',
     this.isPrivate = false,
     this.displayName = '',
+    this.updatedAt = 0,
   });
 
   AppMetadata copyWith({
@@ -160,6 +166,7 @@ class AppMetadata {
     String? siteName,
     bool? isPrivate,
     String? displayName,
+    int? updatedAt,
   }) {
     return AppMetadata(
       category: category ?? this.category,
@@ -171,6 +178,7 @@ class AppMetadata {
       siteName: siteName ?? this.siteName,
       isPrivate: isPrivate ?? this.isPrivate,
       displayName: displayName ?? this.displayName,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }
@@ -201,6 +209,11 @@ class BrowserSource {
   @HiveField(5)
   final int sourceIndex;
 
+  /// Timestamp (epoch ms) when displayName was last modified. Used for
+  /// deterministic Last-Write-Wins synchronization between desktop and extension.
+  @HiveField(6)
+  final int nameUpdatedAt;
+
   BrowserSource({
     required this.id,
     required this.detectedBrowser,
@@ -208,25 +221,29 @@ class BrowserSource {
     required this.lastSeen,
     this.displayName = '',
     this.sourceIndex = 0,
+    this.nameUpdatedAt = 0,
   });
 
   /// Plain-English fallback label, for call sites without a BuildContext.
   /// Prefer [localizedLabel] wherever an AppLocalizations instance is
   /// available (anywhere in the widget tree).
-  String get label =>
-      displayName.isNotEmpty
-          ? displayName
-          : (sourceIndex > 0 ? 'Browser $sourceIndex' : detectedBrowser);
+  String get label {
+    if (displayName.isNotEmpty) return displayName;
+    final index = sourceIndex > 0 ? sourceIndex : 1;
+    final hasBrowser =
+        detectedBrowser.isNotEmpty && detectedBrowser != 'Unknown';
+    return hasBrowser ? 'Browser $index ($detectedBrowser)' : 'Browser $index';
+  }
 
-  /// User-assigned name if set, otherwise a localized "Browser N" default,
-  /// falling back to the detected browser name for legacy entries that
-  /// predate [sourceIndex].
-  String localizedLabel(AppLocalizations l10n) =>
-      displayName.isNotEmpty
-          ? displayName
-          : (sourceIndex > 0
-              ? l10n.browserSourceDefaultName(sourceIndex)
-              : detectedBrowser);
+  /// User-assigned name if set, otherwise a localized "Browser N (BrowserName)" default.
+  String localizedLabel(AppLocalizations l10n) {
+    if (displayName.isNotEmpty) return displayName;
+    final index = sourceIndex > 0 ? sourceIndex : 1;
+    final base = l10n.browserSourceDefaultName(index);
+    final hasBrowser =
+        detectedBrowser.isNotEmpty && detectedBrowser != 'Unknown';
+    return hasBrowser ? '$base ($detectedBrowser)' : base;
+  }
 
   BrowserSource copyWith({
     String? detectedBrowser,
@@ -234,6 +251,7 @@ class BrowserSource {
     DateTime? lastSeen,
     String? displayName,
     int? sourceIndex,
+    int? nameUpdatedAt,
   }) {
     return BrowserSource(
       id: id,
@@ -242,6 +260,7 @@ class BrowserSource {
       lastSeen: lastSeen ?? this.lastSeen,
       displayName: displayName ?? this.displayName,
       sourceIndex: sourceIndex ?? this.sourceIndex,
+      nameUpdatedAt: nameUpdatedAt ?? this.nameUpdatedAt,
     );
   }
 }
@@ -500,6 +519,7 @@ class AppDataStore extends ChangeNotifier {
         // Native (desktop) only — never runs on web.
         if (!kIsWeb) {
           await _migrateToAppIdKeys();
+          await _migrateBrowserSourceIndices();
         }
 
         _isInitialized = true;
@@ -705,6 +725,22 @@ class AppDataStore extends ChangeNotifier {
     }
   }
 
+  Future<void> _migrateBrowserSourceIndices() async {
+    if (_browserSourcesBox == null) return;
+    var nextIdx = 1;
+    for (final key in _browserSourcesBox!.keys.toList()) {
+      final src = _browserSourcesBox!.get(key);
+      if (src != null) {
+        if (src.sourceIndex <= 0) {
+          await _browserSourcesBox!.put(key, src.copyWith(sourceIndex: nextIdx));
+        }
+        if (src.sourceIndex >= nextIdx) {
+          nextIdx = src.sourceIndex + 1;
+        }
+      }
+    }
+  }
+
   /// Copies (never moves) the current native Hive box files into a
   /// timestamped backup folder before the appId migration writes anything.
   /// Returns false if the backup could not be completed, in which case the
@@ -762,39 +798,93 @@ class AppDataStore extends ChangeNotifier {
   // clearWebData() (which only deletes usage history) so a renamed browser
   // doesn't need to be renamed again after clearing data.
 
+  BrowserSource? getBrowserSource(String id) {
+    if (!_ensureInitialized() || _browserSourcesBox == null) return null;
+    return _browserSourcesBox!.get(id);
+  }
+
   /// Registers a sync from [id], updating lastSeen (and detectedBrowser, in
   /// case the same browser reports a more specific UA than before). Creates
   /// a new entry with firstSeen = now if this id has never been seen, given
-  /// the next sourceIndex so it defaults to a localized "Browser N" label
-  /// rather than the detected browser name — multiple profiles/machines
-  /// running the same browser (e.g. two Chrome installs) would otherwise all
-  /// default to the indistinguishable label "Chrome". The detected type is
-  /// still shown as an icon alongside the name. User-assigned displayName is
+  /// the next sourceIndex so it defaults to a localized "Browser N (BrowserName)" label
+  /// rather than the plain detected browser name. User-assigned displayName is
   /// always preserved across calls once set.
-  Future<void> upsertBrowserSource(String id, String detectedBrowser) async {
+  Future<void> upsertBrowserSource(
+    String id,
+    String detectedBrowser, {
+    String? displayName,
+    int nameUpdatedAt = 0,
+  }) async {
     if (!_ensureInitialized() || _browserSourcesBox == null) return;
     final now = DateTime.now();
     final existing = _browserSourcesBox!.get(id);
+
+    final String targetDisplayName;
+    final int targetUpdatedAt;
+
+    if (existing == null) {
+      targetDisplayName = (displayName != null && displayName.isNotEmpty) ? displayName : '';
+      targetUpdatedAt = targetDisplayName.isNotEmpty
+          ? (nameUpdatedAt > 0 ? nameUpdatedAt : now.millisecondsSinceEpoch)
+          : 0;
+    } else {
+      // Last-Write-Wins: only adopt incoming name if its timestamp is newer than what we have
+      if (displayName != null && displayName.isNotEmpty && nameUpdatedAt > existing.nameUpdatedAt) {
+        targetDisplayName = displayName;
+        targetUpdatedAt = nameUpdatedAt;
+      } else {
+        targetDisplayName = existing.displayName;
+        targetUpdatedAt = existing.nameUpdatedAt;
+      }
+    }
+
     final updated = existing == null
         ? BrowserSource(
             id: id,
             detectedBrowser: detectedBrowser,
             firstSeen: now,
             lastSeen: now,
+            displayName: targetDisplayName,
+            nameUpdatedAt: targetUpdatedAt,
             sourceIndex: _browserSourcesBox!.length + 1,
           )
-        : existing.copyWith(detectedBrowser: detectedBrowser, lastSeen: now);
+        : existing.copyWith(
+            detectedBrowser: detectedBrowser,
+            lastSeen: now,
+            displayName: targetDisplayName,
+            nameUpdatedAt: targetUpdatedAt,
+            sourceIndex: existing.sourceIndex > 0
+                ? existing.sourceIndex
+                : _browserSourcesBox!.length,
+          );
     await _browserSourcesBox!.put(id, updated).catchError((e) {
       debugPrint('⚠️ Error saving browser source to Hive: $e');
     });
     notifyListeners();
   }
 
-  Future<void> renameBrowserSource(String id, String displayName) async {
+  Future<void> renameBrowserSource(
+    String id,
+    String displayName, {
+    int? updatedAt,
+  }) async {
     if (!_ensureInitialized() || _browserSourcesBox == null) return;
     final existing = _browserSourcesBox!.get(id);
     if (existing == null) return;
-    await _browserSourcesBox!.put(id, existing.copyWith(displayName: displayName));
+
+    final timestamp = updatedAt ?? DateTime.now().millisecondsSinceEpoch;
+    // Don't overwrite if existing is already newer
+    if (updatedAt != null && timestamp < existing.nameUpdatedAt) return;
+
+    await _browserSourcesBox!.put(
+      id,
+      existing.copyWith(displayName: displayName, nameUpdatedAt: timestamp),
+    );
+    BrowserExtensionServer.broadcastBrowserRenamed(
+      id,
+      displayName,
+      nameUpdatedAt: timestamp,
+    );
     notifyListeners();
   }
 
@@ -1153,6 +1243,7 @@ class AppDataStore extends ChangeNotifier {
     String? siteName,
     bool? isPrivate,
     String? displayName,
+    int? updatedAt,
   }) async {
     if (kIsWeb) {
       final effectiveLimit = (limitStatus == false) ? Duration.zero : dailyLimit;
@@ -1185,6 +1276,7 @@ class AppDataStore extends ChangeNotifier {
         siteName: siteName ?? existing?.siteName ?? '',
         isPrivate: isPrivate ?? existing?.isPrivate ?? false,
         displayName: displayName ?? existing?.displayName ?? '',
+        updatedAt: updatedAt ?? DateTime.now().millisecondsSinceEpoch,
       );
 
       _metadataCache[appName] = updated;
@@ -1205,9 +1297,14 @@ class AppDataStore extends ChangeNotifier {
     }
   }
 
-  AppMetadata? getAppMetadata(String appName) {
+  AppMetadata? getAppMetadata(String appName, {String? sourceId}) {
     if (!_ensureInitialized()) return null;
     try {
+      if (sourceId != null && sourceId.isNotEmpty && appName.startsWith('web:')) {
+        final scopedKey = '$appName::$sourceId';
+        final scoped = _metadataCache[scopedKey];
+        if (scoped != null) return scoped;
+      }
       return _metadataCache[appName];
     } catch (e) {
       _lastError = "Error getting metadata for $appName: $e";
@@ -2736,12 +2833,13 @@ class BrowserSourceAdapter extends TypeAdapter<BrowserSource> {
       lastSeen: fields[3] as DateTime,
       displayName: fields.containsKey(4) ? (fields[4] as String? ?? '') : '',
       sourceIndex: fields.containsKey(5) ? (fields[5] as int? ?? 0) : 0,
+      nameUpdatedAt: fields.containsKey(6) ? (fields[6] as int? ?? 0) : 0,
     );
   }
 
   @override
   void write(BinaryWriter writer, BrowserSource obj) {
-    writer.writeByte(6);
+    writer.writeByte(7);
     writer.writeByte(0);
     writer.write(obj.id);
     writer.writeByte(1);
@@ -2754,5 +2852,7 @@ class BrowserSourceAdapter extends TypeAdapter<BrowserSource> {
     writer.write(obj.displayName);
     writer.writeByte(5);
     writer.write(obj.sourceIndex);
+    writer.writeByte(6);
+    writer.write(obj.nameUpdatedAt);
   }
 }
