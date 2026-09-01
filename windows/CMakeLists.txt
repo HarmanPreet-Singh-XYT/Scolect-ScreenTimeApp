@@ -40,6 +40,11 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Newer MSVC toolchains (VS 17.11+) turn the <experimental/coroutine>
+  # deprecation into a hard error (C2338). Some plugins (e.g. just_audio_windows)
+  # still pull in cppwinrt headers that use it. Silence it so CI images with the
+  # latest MSVC can still build these plugins.
+  target_compile_definitions(${TARGET} PRIVATE "_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS")
 endfunction()
 
 # Flutter library and tool build rules.

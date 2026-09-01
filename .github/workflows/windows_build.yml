@@ -24,6 +24,20 @@ jobs:
       - name: Install Dependencies
         run: flutter pub get
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache Rust build (block_overlay)
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: windows/block_overlay
+
+      - name: Build block_overlay.dll
+        working-directory: windows/block_overlay
+        run: cargo build --release
+
       - name: Build Windows (Release x64)
         run: flutter build windows --release
 
