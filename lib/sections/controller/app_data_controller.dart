@@ -519,6 +519,7 @@ class AppDataStore extends ChangeNotifier {
         // Native (desktop) only — never runs on web.
         if (!kIsWeb) {
           await _migrateToAppIdKeys();
+          await _dedupeDuplicateAppEntries();
           await _migrateBrowserSourceIndices();
         }
 
@@ -723,6 +724,165 @@ class AppDataStore extends ChangeNotifier {
       // Leave the flag unset so this is retried on next launch rather than
       // silently skipped — nothing destructive has happened either way.
     }
+  }
+
+  // ============================================================
+  // ONE-TIME MIGRATION: retroactive duplicate-appId cleanup
+  // ============================================================
+  //
+  // The lazy per-launch reconciliation in absorbLegacyEntryIfPresent only
+  // runs the first time a given appId is newly created, so any duplicate
+  // that already exists in a user's data (e.g. the same app resolved to a
+  // bundle id on one launch and to its executable path on another, before
+  // this fix shipped) is never revisited. This migration runs once, scans
+  // every existing native metadata entry, groups entries that share the
+  // same effective display name, and merges each group's usage history
+  // and metadata into a single surviving entry — the one with the most
+  // total tracked time, so the richest history "wins" the key.
+  static const String _duplicateAppCleanupSettingKey =
+      'migrations.duplicateAppCleanupDone';
+
+  Future<void> _dedupeDuplicateAppEntries() async {
+    try {
+      final alreadyDone =
+          SettingsManager().getSetting(_duplicateAppCleanupSettingKey) == true;
+      if (alreadyDone) return;
+      if (_metadataBox == null || _usageBox == null) return;
+
+      // Group native (non-"web:") keys by normalized display name.
+      final Map<String, List<String>> byDisplayName = {};
+      for (final key in _metadataCache.keys.toList()) {
+        if (key.startsWith('web:')) continue;
+        final metadata = _metadataCache[key];
+        if (metadata == null) continue;
+        final label =
+            (metadata.displayName.isNotEmpty ? metadata.displayName : key)
+                .trim()
+                .toLowerCase();
+        if (label.isEmpty) continue;
+        byDisplayName.putIfAbsent(label, () => []).add(key);
+      }
+
+      final duplicateGroups =
+          byDisplayName.values.where((keys) => keys.length > 1).toList();
+      if (duplicateGroups.isEmpty) {
+        SettingsManager().updateSetting(_duplicateAppCleanupSettingKey, true);
+        return;
+      }
+
+      debugPrint(
+          '📦 duplicate-app cleanup: backing up native Hive boxes before merge...');
+      final backedUp = await _backupBoxesForMigration();
+      if (!backedUp) {
+        debugPrint(
+            '⚠️ duplicate-app cleanup: backup failed, aborting — will retry on next launch');
+        return;
+      }
+
+      int mergedGroups = 0;
+      int mergedEntries = 0;
+      for (final keys in duplicateGroups) {
+        // Keep whichever key has the most total tracked time as the
+        // survivor, so the entry with the richest history keeps its
+        // identity (limits, category overrides, etc.) rather than being
+        // silently absorbed into a near-empty duplicate.
+        String survivor = keys.first;
+        Duration survivorTotal = _totalUsageFor(survivor);
+        for (final key in keys.skip(1)) {
+          final total = _totalUsageFor(key);
+          if (total > survivorTotal) {
+            survivor = key;
+            survivorTotal = total;
+          }
+        }
+
+        for (final key in keys) {
+          if (key == survivor) continue;
+          final merged = await _mergeAppEntryInto(survivor, key);
+          if (merged) mergedEntries++;
+        }
+        mergedGroups++;
+      }
+
+      SettingsManager().updateSetting(_duplicateAppCleanupSettingKey, true);
+      debugPrint(
+          '✅ duplicate-app cleanup: merged $mergedEntries duplicate entr${mergedEntries == 1 ? 'y' : 'ies'} '
+          'across $mergedGroups app${mergedGroups == 1 ? '' : 's'}');
+      // No notifyListeners() here: this runs during initialize(), before
+      // _isInitialized is set. Firing here wakes already-mounted listeners
+      // (e.g. alerts_limits.dart's AppDataStore().addListener(_loadData))
+      // that immediately call back into this store and hit
+      // _ensureInitialized() == false, spamming "not initialized" logs.
+      // The notifyListeners() after _isInitialized = true covers this.
+    } catch (e) {
+      debugPrint('❌ duplicate-app cleanup failed: $e');
+      // Leave the flag unset so this is retried on next launch.
+    }
+  }
+
+  Duration _totalUsageFor(String appId) {
+    var total = Duration.zero;
+    for (final dayMap in _usageCacheByDate.values) {
+      final record = dayMap[appId];
+      if (record != null) total += record.timeSpent;
+    }
+    return total;
+  }
+
+  /// Merges every usage record and the metadata found under [sourceKey]
+  /// into [targetAppId], then deletes [sourceKey]. Shared by the lazy
+  /// per-launch reconciliation (absorbLegacyEntryIfPresent) and the
+  /// retroactive duplicate-appId cleanup migration. Returns false if
+  /// [sourceKey] had no metadata to merge.
+  Future<bool> _mergeAppEntryInto(String targetAppId, String sourceKey) async {
+    if (_metadataBox == null || _usageBox == null) return false;
+    final sourceMetadata = _metadataBox!.get(sourceKey);
+    if (sourceMetadata == null) return false;
+
+    final sourceKeys = _usageBox!.keys.whereType<String>().where((k) {
+      final lastColon = k.lastIndexOf(':');
+      if (lastColon == -1) return false;
+      return k.substring(0, lastColon) == sourceKey;
+    }).toList();
+
+    for (final usageKey in sourceKeys) {
+      final sourceRecord = _usageBox!.get(usageKey);
+      if (sourceRecord == null) continue;
+
+      final dateKey = _formatDateKey(sourceRecord.date);
+      final targetHiveKey = _makeUsageKey(targetAppId, sourceRecord.date);
+      final existingTargetRecord = _usageBox!.get(targetHiveKey);
+      final mergedRecord = existingTargetRecord != null
+          ? existingTargetRecord.merge(sourceRecord)
+          : sourceRecord;
+
+      await _usageBox!.put(targetHiveKey, mergedRecord);
+      await _usageBox!.delete(usageKey);
+
+      _usageCacheByDate.putIfAbsent(dateKey, () => {});
+      _usageCacheByDate[dateKey]![targetAppId] = mergedRecord;
+      _usageCacheByDate[dateKey]?.remove(sourceKey);
+    }
+
+    // Preserve the target's own display name/settings; only backfill a
+    // display name if the target doesn't already have one.
+    final targetMetadata = _metadataBox!.get(targetAppId);
+    if (targetMetadata != null && targetMetadata.displayName.isEmpty &&
+        sourceMetadata.displayName.isNotEmpty) {
+      final updated =
+          targetMetadata.copyWith(displayName: sourceMetadata.displayName);
+      await _metadataBox!.put(targetAppId, updated);
+      _metadataCache[targetAppId] = updated;
+    }
+
+    await _metadataBox!.delete(sourceKey);
+    _metadataCache.remove(sourceKey);
+    _cachedAppNames = null;
+
+    debugPrint('🔗 Merged duplicate entry "$sourceKey" into "$targetAppId" '
+        '(${sourceKeys.length} usage record(s))');
+
+    return true;
   }
 
   Future<void> _migrateBrowserSourceIndices() async {
@@ -1337,6 +1497,15 @@ class AppDataStore extends ChangeNotifier {
   /// was found under [programName] (caller should create fresh metadata).
   /// Native (non-"web:") entries only — web/browser tracking is unaffected
   /// by this migration.
+  ///
+  /// Also handles the more general case introduced once tracking moved to
+  /// appId keys: the *same* app can still resolve to a *different* appId
+  /// across launches (e.g. bundle-identifier lookup fails on one launch and
+  /// falls back to the raw executable path on another), which would
+  /// otherwise silently create a second, differently-keyed record with the
+  /// same display name. When no entry exists under the exact [programName]
+  /// key, this falls back to searching existing appId-keyed metadata for
+  /// one whose displayName matches [programName] and absorbs that instead.
   Future<AppMetadata?> absorbLegacyEntryIfPresent(
     String newAppId,
     String programName,
@@ -1349,21 +1518,41 @@ class AppDataStore extends ChangeNotifier {
     if (_metadataBox == null || _usageBox == null) return null;
 
     try {
-      final legacyMetadata = _metadataBox!.get(programName);
+      var legacyKey = programName;
+      var legacyMetadata = _metadataBox!.get(programName);
+
+      if (legacyMetadata == null) {
+        // No exact legacy display-name key — look for an existing
+        // appId-keyed entry that resolved to the same display name on a
+        // previous launch.
+        final normalizedTarget = programName.trim().toLowerCase();
+        for (final key in _metadataCache.keys) {
+          if (key == newAppId || key.startsWith('web:')) continue;
+          final candidate = _metadataCache[key];
+          if (candidate == null || candidate.displayName.isEmpty) continue;
+          if (candidate.displayName.trim().toLowerCase() ==
+              normalizedTarget) {
+            legacyKey = key;
+            legacyMetadata = candidate;
+            break;
+          }
+        }
+      }
+
       if (legacyMetadata == null) return null;
 
-      // Move every usage record keyed under the old display-name to the
-      // new appId key, merging with anything already recorded under the
-      // new key (e.g. a few seconds tracked before this merge check ran).
-      final legacyKeys =
+      // Move every usage record keyed under the old key to the new appId
+      // key, merging with anything already recorded under the new key
+      // (e.g. a few seconds tracked before this merge check ran).
+      final legacyUsageKeys =
           _usageBox!.keys.whereType<String>().where((k) {
         final lastColon = k.lastIndexOf(':');
         if (lastColon == -1) return false;
-        return k.substring(0, lastColon) == programName;
+        return k.substring(0, lastColon) == legacyKey;
       }).toList();
 
-      for (final legacyKey in legacyKeys) {
-        final legacyRecord = _usageBox!.get(legacyKey);
+      for (final usageKey in legacyUsageKeys) {
+        final legacyRecord = _usageBox!.get(usageKey);
         if (legacyRecord == null) continue;
 
         final dateKey = _formatDateKey(legacyRecord.date);
@@ -1374,25 +1563,25 @@ class AppDataStore extends ChangeNotifier {
             : legacyRecord;
 
         await _usageBox!.put(newHiveKey, mergedRecord);
-        await _usageBox!.delete(legacyKey);
+        await _usageBox!.delete(usageKey);
 
         // Keep the in-memory cache consistent with what's now on disk.
         _usageCacheByDate.putIfAbsent(dateKey, () => {});
         _usageCacheByDate[dateKey]![newAppId] = mergedRecord;
-        _usageCacheByDate[dateKey]?.remove(programName);
+        _usageCacheByDate[dateKey]?.remove(legacyKey);
       }
 
       final mergedMetadata = legacyMetadata.copyWith(displayName: programName);
       await _metadataBox!.put(newAppId, mergedMetadata);
-      await _metadataBox!.delete(programName);
+      await _metadataBox!.delete(legacyKey);
 
       _metadataCache[newAppId] = mergedMetadata;
-      _metadataCache.remove(programName);
+      _metadataCache.remove(legacyKey);
       _cachedAppNames = null;
 
       debugPrint(
-          '🔗 Merged legacy entry "$programName" into appId "$newAppId" '
-          '(${legacyKeys.length} usage record(s))');
+          '🔗 Merged legacy entry "$legacyKey" into appId "$newAppId" '
+          '(${legacyUsageKeys.length} usage record(s))');
 
       notifyListeners();
       return mergedMetadata;

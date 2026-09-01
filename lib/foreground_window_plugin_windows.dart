@@ -461,9 +461,20 @@ class ForegroundWindowPlugin {
       // AUMID is per-window and identifies the actual packaged app (e.g.
       // "36186RyanBevan.Screenbox_...") rather than the shared
       // ApplicationFrameHost.exe process — prefer it whenever available.
+      //
+      // Fall back to the executable's basename (e.g. "app.exe") rather than
+      // its full path: the full path is not a stable identity for a Win32
+      // app — it changes across reinstalls to a different drive/folder,
+      // portable-app locations, and (during development) different build
+      // output directories for the very same binary, each of which would
+      // otherwise fragment one app's tracked history into multiple entries.
+      // A basename collision between two unrelated apps sharing a generic
+      // exe name is possible but far rarer than that path churn.
       final String appId = aumid.isNotEmpty
           ? aumid
-          : (processPath.isEmpty ? 'unknown' : processPath);
+          : (executableName.isEmpty || executableName == 'Unknown'
+              ? (processPath.isEmpty ? 'unknown' : processPath)
+              : executableName);
 
       return WindowInfo(
         windowTitle: windowTitle,
