@@ -1,22 +1,21 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_ar.dart';
-import 'app_localizations_bn.dart';
-import 'app_localizations_en.dart';
-import 'app_localizations_es.dart';
-import 'app_localizations_fr.dart';
-import 'app_localizations_hi.dart';
-import 'app_localizations_id.dart';
-import 'app_localizations_ja.dart';
-import 'app_localizations_pt.dart';
-import 'app_localizations_ru.dart';
-import 'app_localizations_ur.dart';
-import 'app_localizations_zh.dart';
+import 'app_localizations_ar.dart' deferred as app_localizations_ar;
+import 'app_localizations_bn.dart' deferred as app_localizations_bn;
+import 'app_localizations_en.dart' deferred as app_localizations_en;
+import 'app_localizations_es.dart' deferred as app_localizations_es;
+import 'app_localizations_fr.dart' deferred as app_localizations_fr;
+import 'app_localizations_hi.dart' deferred as app_localizations_hi;
+import 'app_localizations_id.dart' deferred as app_localizations_id;
+import 'app_localizations_ja.dart' deferred as app_localizations_ja;
+import 'app_localizations_pt.dart' deferred as app_localizations_pt;
+import 'app_localizations_ru.dart' deferred as app_localizations_ru;
+import 'app_localizations_ur.dart' deferred as app_localizations_ur;
+import 'app_localizations_zh.dart' deferred as app_localizations_zh;
 
 // ignore_for_file: type=lint
 
@@ -7987,7 +7986,7 @@ class _AppLocalizationsDelegate
 
   @override
   Future<AppLocalizations> load(Locale locale) {
-    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+    return lookupAppLocalizations(locale);
   }
 
   @override
@@ -8010,33 +8009,57 @@ class _AppLocalizationsDelegate
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
-AppLocalizations lookupAppLocalizations(Locale locale) {
+Future<AppLocalizations> lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'ar':
-      return AppLocalizationsAr();
+      return app_localizations_ar
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_ar.AppLocalizationsAr());
     case 'bn':
-      return AppLocalizationsBn();
+      return app_localizations_bn
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_bn.AppLocalizationsBn());
     case 'en':
-      return AppLocalizationsEn();
+      return app_localizations_en
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_en.AppLocalizationsEn());
     case 'es':
-      return AppLocalizationsEs();
+      return app_localizations_es
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_es.AppLocalizationsEs());
     case 'fr':
-      return AppLocalizationsFr();
+      return app_localizations_fr
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_fr.AppLocalizationsFr());
     case 'hi':
-      return AppLocalizationsHi();
+      return app_localizations_hi
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_hi.AppLocalizationsHi());
     case 'id':
-      return AppLocalizationsId();
+      return app_localizations_id
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_id.AppLocalizationsId());
     case 'ja':
-      return AppLocalizationsJa();
+      return app_localizations_ja
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_ja.AppLocalizationsJa());
     case 'pt':
-      return AppLocalizationsPt();
+      return app_localizations_pt
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_pt.AppLocalizationsPt());
     case 'ru':
-      return AppLocalizationsRu();
+      return app_localizations_ru
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_ru.AppLocalizationsRu());
     case 'ur':
-      return AppLocalizationsUr();
+      return app_localizations_ur
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_ur.AppLocalizationsUr());
     case 'zh':
-      return AppLocalizationsZh();
+      return app_localizations_zh
+          .loadLibrary()
+          .then((dynamic _) => app_localizations_zh.AppLocalizationsZh());
   }
 
   throw FlutterError(

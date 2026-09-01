@@ -78,6 +78,7 @@
         "flutter.js",
         "flutter_bootstrap.js",
         "main.dart.js",
+        "main.dart.js_*.part.js",
         "assets/*",
         "assets/**",
         "canvaskit/*",

@@ -70,7 +70,24 @@ fi
 SIGNATURE_FILE="dist/$VERSION/signature.txt"
 echo "✍️ Signing update for Sparkle..."
 echo "--------------------------------------------------------------------------------"
-dart run auto_updater:sign_update "$ZIP_FILE" | tee "$SIGNATURE_FILE"
+SIGN_UPDATE_BIN="macos/Pods/Sparkle/bin/sign_update"
+
+if [ -f "$SIGN_UPDATE_BIN" ]; then
+    if [ -f "sparkle_priv.key" ]; then
+        "$SIGN_UPDATE_BIN" -f sparkle_priv.key "$ZIP_FILE" | tee "$SIGNATURE_FILE"
+    else
+        "$SIGN_UPDATE_BIN" "$ZIP_FILE" | tee "$SIGNATURE_FILE"
+    fi
+elif command -v sign_update &> /dev/null; then
+    if [ -f "sparkle_priv.key" ]; then
+        sign_update -f sparkle_priv.key "$ZIP_FILE" | tee "$SIGNATURE_FILE"
+    else
+        sign_update "$ZIP_FILE" | tee "$SIGNATURE_FILE"
+    fi
+else
+    echo "❌ Error: Sparkle sign_update binary not found at $SIGN_UPDATE_BIN"
+    exit 1
+fi
 echo "--------------------------------------------------------------------------------"
 echo "📄 Signature saved to: $SIGNATURE_FILE"
 
