@@ -292,6 +292,7 @@ class UsageAnalyticsController extends ChangeNotifier {
   /// OPTIMIZED: Single-pass computation for all analytics data
   AnalyticsSummary _computeAnalytics(_AnalyticsDateRange range) {
     final showPrivate = shouldShowPrivateOnly();
+    final includePrivate = shouldIncludePrivateInTotals();
 
     // ── Collect per-day data in a single date iteration ──
     final dailyScreenTimeData = <DailyScreenTime>[];
@@ -326,7 +327,14 @@ class UsageAnalyticsController extends ChangeNotifier {
               ifAbsent: () => record.timeSpent,
             );
           }
-          if (isPrivate != showPrivate) continue;
+          // Public view: keep matching (public) records, plus private ones
+          // when "Include Private Items in Totals" is on. Private-only view
+          // (showPrivate): keep only private records, unaffected by the
+          // totals setting.
+          final keep = showPrivate
+              ? isPrivate
+              : (!isPrivate || includePrivate);
+          if (!keep) continue;
 
           appTotalUsage.update(
             appName,
@@ -345,11 +353,17 @@ class UsageAnalyticsController extends ChangeNotifier {
       }
 
       // Daily screen time chart series: whole-day total when showing public
-      // data (matches "includePrivateInTotals" semantics elsewhere), or the
-      // private-only subset accumulated above when the toggle is on.
-      final dayScreenTime = showPrivate
-          ? (dailyPrivateUsage[currentDate] ?? Duration.zero)
-          : _dataStore.getTotalScreenTime(currentDate);
+      // data — minus private time when the totals setting excludes it — or
+      // the private-only subset accumulated above when the toggle is on.
+      Duration dayScreenTime;
+      if (showPrivate) {
+        dayScreenTime = dailyPrivateUsage[currentDate] ?? Duration.zero;
+      } else {
+        dayScreenTime = _dataStore.getTotalScreenTime(currentDate);
+        if (!includePrivate) {
+          dayScreenTime -= dailyPrivateUsage[currentDate] ?? Duration.zero;
+        }
+      }
       dailyScreenTimeData
           .add(DailyScreenTime(date: currentDate, screenTime: dayScreenTime));
 
@@ -476,6 +490,7 @@ class UsageAnalyticsController extends ChangeNotifier {
 
   Future<AnalyticsSummary> _computeWebAnalytics(_AnalyticsDateRange range) async {
     final showPrivate = shouldShowPrivateOnly();
+    final includePrivate = shouldIncludePrivateInTotals();
     final metaRes = await chromeStorageGet(['scolect_app_metadata', 'scolect_settings']);
     final siteMeta = (metaRes['scolect_app_metadata'] as Map<dynamic, dynamic>?) ?? {};
     final settingsMap = (metaRes['scolect_settings'] as Map<dynamic, dynamic>?) ?? {};
@@ -500,16 +515,20 @@ class UsageAnalyticsController extends ChangeNotifier {
       final dayData = dayRes[storageKey] as Map<dynamic, dynamic>? ?? {};
       final domains = (dayData['domains'] as List<dynamic>?) ?? [];
 
-      int daySeconds = 0;
       int dayScopedSeconds = 0;
       for (var d in domains) {
         final domain = d['domain'] as String? ?? 'unknown';
         final secs = (d['seconds'] as num? ?? 0).toInt();
-        daySeconds += secs;
 
         final isPrivate = isPrivateDomain(domain);
         if (isPrivate) privateAppsTime += Duration(seconds: secs);
-        if (isPrivate != showPrivate) continue;
+
+        // Public view: count matching (public) domains, plus private ones
+        // when "Include Private Items in Totals" is on. Private-only view
+        // (showPrivate): count only private domains, unaffected by the
+        // totals setting.
+        final keep = showPrivate ? isPrivate : (!isPrivate || includePrivate);
+        if (!keep) continue;
 
         dayScopedSeconds += secs;
         domainTotals[domain] = (domainTotals[domain] ?? 0) + secs;
@@ -530,10 +549,9 @@ class UsageAnalyticsController extends ChangeNotifier {
         categoryTotals[category] = (categoryTotals[category] ?? 0) + secs;
       }
 
-      totalScreenTime += Duration(seconds: showPrivate ? dayScopedSeconds : daySeconds);
+      totalScreenTime += Duration(seconds: dayScopedSeconds);
       dailyScreenTimeData.add(DailyScreenTime(
-          date: currentDate,
-          screenTime: Duration(seconds: showPrivate ? dayScopedSeconds : daySeconds)));
+          date: currentDate, screenTime: Duration(seconds: dayScopedSeconds)));
       currentDate = currentDate.add(const Duration(days: 1));
     }
 

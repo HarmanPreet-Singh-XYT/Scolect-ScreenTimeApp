@@ -16,3 +16,11 @@ bool isPrivateModeUnlocked() =>
 bool shouldShowPrivateOnly() => kIsWeb
     ? WebPrivateModeService().showPrivateOnly
     : PrivateModeController().showPrivateOnly;
+
+/// Sync snapshot of the "Include Private Items in Totals" setting — whether
+/// private apps/sites should be summed into aggregate totals (Overview,
+/// Reports, popup) or excluded from them. Same platform branching as
+/// [isPrivateModeUnlocked].
+bool shouldIncludePrivateInTotals() => kIsWeb
+    ? WebPrivateModeService().includePrivateInTotals
+    : PrivateModeController().includePrivateInTotals;

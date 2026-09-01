@@ -34,7 +34,7 @@ class DailyOverviewData {
     final DateTime weekAgo = today.subtract(const Duration(days: 7));
 
     // Pre-fetch shared values once
-    final Duration todayScreenTime = _dataStore.getTotalScreenTime(today);
+    final Duration rawTodayScreenTime = _dataStore.getTotalScreenTime(today);
     final Duration averageWeekScreenTime =
         _dataStore.getAverageScreenTime(weekAgo, today);
     final Duration todayProductiveTime = _dataStore.getProductiveTime(today);
@@ -48,16 +48,57 @@ class DailyOverviewData {
     final Duration totalFocusTime = _dataStore.getTotalFocusTime(today);
 
     // ── OPTIMIZED: Single pass builds all three lists simultaneously ──
-    final result = _buildAllAppData(today, todayScreenTime);
+    final result = _buildAllAppData(today, rawTodayScreenTime);
 
-    // Filter the visible top-applications list only — aggregate stats
-    // (totalScreenTime, category breakdown, limits) are left untouched by
-    // this filter, matching the "includePrivateInTotals" setting semantics
-    // established elsewhere (e.g. AnalyticsSummary.visibleScreenTime).
+    // Filter the visible top-applications and limits lists to the current
+    // view — private items are never shown by name/identity outside the
+    // private-only view, independent of the totals setting.
     final showPrivate = shouldShowPrivateOnly();
     final topApplications = result.topApplications
         .where((a) => a.isPrivate == showPrivate)
         .toList();
+    final applicationLimits = result.applicationLimits
+        .where((l) => l.isPrivate == showPrivate)
+        .toList();
+
+    // Aggregate totals respect the "Include Private Items in Totals" setting:
+    // subtract private apps' time out of the raw (always-inclusive) store
+    // total when the setting is off, and rebuild the category breakdown
+    // (which _buildAllAppData computed unconditionally over every app) from
+    // the same public-only app list so private categories/percentages don't
+    // leak through when excluded.
+    final includePrivate = shouldIncludePrivateInTotals();
+    final Duration privateTime = result.topApplications
+        .where((a) => a.isPrivate)
+        .fold(Duration.zero, (sum, a) => sum + a.screenTime);
+    final Duration todayScreenTime =
+        includePrivate ? rawTodayScreenTime : rawTodayScreenTime - privateTime;
+
+    final categoryBreakdown = includePrivate
+        ? result.categoryBreakdown
+        : () {
+            final categoryTotals = <String, Duration>{};
+            for (final a in topApplications) {
+              categoryTotals.update(
+                a.category,
+                (existing) => existing + a.screenTime,
+                ifAbsent: () => a.screenTime,
+              );
+            }
+            final totalSeconds = todayScreenTime.inSeconds;
+            final breakdown = totalSeconds > 0
+                ? categoryTotals.entries
+                    .map((entry) => CategoryDetail(
+                          name: entry.key,
+                          totalScreenTime: entry.value,
+                          percentageOfTotalTime:
+                              (entry.value.inSeconds / totalSeconds) * 100,
+                        ))
+                    .toList()
+                : <CategoryDetail>[];
+            breakdown.sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
+            return breakdown;
+          }();
 
     return OverviewData(
       totalScreenTime: todayScreenTime,
@@ -70,8 +111,8 @@ class DailyOverviewData {
       focusSessions: focusSessionsCount,
       totalFocusTime: totalFocusTime,
       topApplications: topApplications,
-      categoryBreakdown: result.categoryBreakdown,
-      applicationLimits: result.applicationLimits,
+      categoryBreakdown: categoryBreakdown,
+      applicationLimits: applicationLimits,
     );
   }
 
@@ -297,6 +338,7 @@ class DailyOverviewData {
           percentageOfLimit: percentageOfLimit,
           percentageOfTotalTime:
               hasTotalTime ? (timeSpent.inSeconds / totalSeconds) * 100 : 0.0,
+          isPrivate: metadata.isPrivate,
         ));
       }
     }
@@ -366,10 +408,13 @@ class DailyOverviewData {
     final customMeta =
         (settingsMap['metadata'] as Map<dynamic, dynamic>?) ?? {};
 
+    final includePrivate = shouldIncludePrivateInTotals();
+    final showPrivate = shouldShowPrivateOnly();
     Duration totalTime = Duration.zero;
     List<ApplicationDetail> applications = [];
-    // Tracks domains with a configured limit: displayName → (usage, limitSecs, category)
-    final Map<String, ({Duration usage, int limitSeconds, String category})>
+    // Tracks domains with a configured limit: displayName → (usage, limitSecs, category, isPrivate)
+    final Map<String,
+            ({Duration usage, int limitSeconds, String category, bool isPrivate})>
         limitMap = {};
     // Raw domain keys already processed in the first loop (prevents duplicates)
     final Set<String> seenDomains = {};
@@ -402,8 +447,31 @@ class DailyOverviewData {
       // Collect domains that have a daily limit configured
       final limitSecs = (meta['dailyLimitSeconds'] as num?)?.toInt() ?? 0;
       if (limitSecs > 0) {
-        limitMap[displayName] =
-            (usage: duration, limitSeconds: limitSecs, category: category);
+        limitMap[displayName] = (
+          usage: duration,
+          limitSeconds: limitSecs,
+          category: category,
+          isPrivate: isPrivate,
+        );
+      }
+
+      if (isPrivate) {
+        // Exclude private time from public-view aggregates when the totals
+        // setting is off. Doesn't apply in the private-only view — there,
+        // private items are the entire content, not something to exclude.
+        if (!includePrivate && !showPrivate) {
+          applications.add(ApplicationDetail(
+            name: displayName,
+            domain: domain,
+            category: category,
+            screenTime: duration,
+            percentageOfTotalTime: 0,
+            isVisible: true,
+            isProductive: true,
+            isPrivate: isPrivate,
+          ));
+          continue;
+        }
       }
 
       if (seconds > maxSeconds) {
@@ -444,6 +512,7 @@ class DailyOverviewData {
           usage: Duration.zero,
           limitSeconds: limitSecs,
           category: category,
+          isPrivate: meta['isPrivate'] as bool? ?? false,
         );
       }
     }
@@ -492,6 +561,7 @@ class DailyOverviewData {
         actualUsage: e.value.usage,
         percentageOfLimit: pctOfLimit,
         percentageOfTotalTime: pctOfTotal,
+        isPrivate: e.value.isPrivate,
       );
     }).toList()
       ..sort((a, b) => b.percentageOfLimit.compareTo(a.percentageOfLimit));
@@ -500,12 +570,13 @@ class DailyOverviewData {
     categoryBreakdown
         .sort((a, b) => b.totalScreenTime.compareTo(a.totalScreenTime));
 
-    // Filter the visible top-applications list only — aggregate stats
-    // (totalTime, categoryBreakdown, applicationLimits) are left untouched
-    // by this filter, same rule as the native branch above.
-    final showPrivate = shouldShowPrivateOnly();
+    // Filter the visible top-applications and limits lists to the current
+    // view; totalTime/categoryBreakdown already respect includePrivateInTotals
+    // from the accumulation loop above.
     final topApplications =
         applications.where((a) => a.isPrivate == showPrivate).toList();
+    final visibleApplicationLimits =
+        applicationLimits.where((l) => l.isPrivate == showPrivate).toList();
 
     return OverviewData(
       totalScreenTime: totalTime,
@@ -518,7 +589,7 @@ class DailyOverviewData {
       totalFocusTime: Duration.zero,
       topApplications: topApplications,
       categoryBreakdown: categoryBreakdown,
-      applicationLimits: applicationLimits,
+      applicationLimits: visibleApplicationLimits,
     );
   }
 }
@@ -624,6 +695,7 @@ class ApplicationLimitDetail {
   final Duration actualUsage;
   final double percentageOfLimit;
   final double percentageOfTotalTime;
+  final bool isPrivate;
   final String formattedDailyLimit;
   final String formattedActualUsage;
 
@@ -634,6 +706,7 @@ class ApplicationLimitDetail {
     required this.actualUsage,
     required this.percentageOfLimit,
     required this.percentageOfTotalTime,
+    this.isPrivate = false,
   })  : formattedDailyLimit = DailyOverviewData.formatDuration(dailyLimit),
         formattedActualUsage = DailyOverviewData.formatDuration(actualUsage);
 }

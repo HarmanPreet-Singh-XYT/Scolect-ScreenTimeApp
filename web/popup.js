@@ -183,7 +183,7 @@ async function renderSiteTab(state, storageData) {
   const siteName     = domainEntry.siteName ?? null;
   const lastSeenMs   = domainEntry.lastSeen ?? null;
 
-  // ── Resolve metadata (limit, isProductive)
+  // ── Resolve metadata (limit, isProductive, isPrivate)
   const siteMetadata = storageData?.scolect_settings?.metadata ?? {};
   const cleanDomain  = domain.replace(/^www\./, '').toLowerCase();
   const meta = siteMetadata[domain]
@@ -192,6 +192,19 @@ async function renderSiteTab(state, storageData) {
     || {};
   const limitSecs    = meta.dailyLimitSeconds ?? 0;
   const isProductive = meta.isProductive;   // true | false | undefined
+
+  // Private sites are never rendered by name/identity in the popup — there's
+  // no unlock UI here, so treat this the same as the locked/default state
+  // everywhere else in the app.
+  if (meta.isPrivate) {
+    setCleanHTML(panel, `
+      <div class="site-empty">
+        <div class="site-empty-favicon">?</div>
+        <div class="site-empty-title">No active site</div>
+        <div class="site-empty-sub">Start browsing to see<br>site details here.</div>
+      </div>`);
+    return;
+  }
 
   // ── Fetch 7 days of history from storage
   const todayStr = getTodayDateString();
@@ -347,6 +360,17 @@ async function render() {
   }
 
   const mode    = settings?.mode ?? state?.mode ?? 'standalone';
+  const siteMetadata = storageData?.scolect_settings?.metadata ?? {};
+  const includePrivateInTotals = storageData?.scolect_settings?.privacyIncludeInTotals ?? true;
+
+  function isDomainPrivate(domain) {
+    const cleanDomain = domain.replace(/^www\./, '').toLowerCase();
+    const meta = siteMetadata[domain]
+      || siteMetadata['www.' + cleanDomain]
+      || siteMetadata[cleanDomain];
+    return meta?.isPrivate ?? false;
+  }
+
   const domains = state?.todayDomains ?? [];
 
   // ── Mode chip
@@ -362,7 +386,7 @@ async function render() {
   const activeRow      = document.getElementById('activeRow');
   const activeLabel    = document.getElementById('activeLabel');
   const activeDuration = document.getElementById('activeDuration');
-  if (state?.activeDomain) {
+  if (state?.activeDomain && !isDomainPrivate(state.activeDomain)) {
     activeRow.style.display = 'flex';
     activeLabel.textContent = state.activeDomain;
     const activeSite = domains.find(d => d.domain === state.activeDomain);
@@ -371,10 +395,17 @@ async function render() {
     activeRow.style.display = 'none';
   }
 
-  // ── Hero stat
-  const totalSec   = state?.totalSeconds ?? 0;
-  const siteCount  = domains.length;
-  const visitCount = domains.reduce((s, d) => s + (d.visits ?? 0), 0);
+  // ── Hero stat — private sites are excluded from totals when the user has
+  // turned off "Include Private Items in Totals" (default: included).
+  const privateDomains = domains.filter(d => isDomainPrivate(d.domain));
+  const privateSecs = privateDomains.reduce((s, d) => s + (d.seconds ?? 0), 0);
+  const privateVisits = privateDomains.reduce((s, d) => s + (d.visits ?? 0), 0);
+
+  const rawTotalSec   = state?.totalSeconds ?? 0;
+  const rawVisitCount = domains.reduce((s, d) => s + (d.visits ?? 0), 0);
+  const totalSec   = includePrivateInTotals ? rawTotalSec : rawTotalSec - privateSecs;
+  const siteCount  = includePrivateInTotals ? domains.length : domains.length - privateDomains.length;
+  const visitCount = includePrivateInTotals ? rawVisitCount : rawVisitCount - privateVisits;
 
   document.getElementById('todayTime').textContent = formatSeconds(totalSec);
   document.getElementById('chipSites').textContent  = `${siteCount} site${siteCount !== 1 ? 's' : ''}`;
@@ -403,13 +434,15 @@ async function render() {
   const blockedDomains = storageData?.scolect_blocked_domains ?? [];
   document.getElementById('blockedCount').textContent = String(blockedDomains.length);
 
-  // ── Top sites (max 4)
+  // ── Top sites (max 4) — private domains are never shown by name in the
+  // list; whether they count toward totalSec/visitCount/siteCount above
+  // depends on the "Include Private Items in Totals" setting.
   const list = document.getElementById('sitesList');
   list.replaceChildren();
 
-  const siteMetadata = storageData?.scolect_settings?.metadata ?? {};
+  const visibleDomains = domains.filter(d => !isDomainPrivate(d.domain));
 
-  if (domains.length === 0) {
+  if (visibleDomains.length === 0) {
     setCleanHTML(list, `
       <div class="empty-state">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round">
@@ -421,7 +454,7 @@ async function render() {
         <p>Start browsing to see<br>your top sites here.</p>
       </div>`);
   } else {
-    const top    = domains.slice(0, 4);
+    const top    = visibleDomains.slice(0, 4);
     const maxSec = top[0]?.seconds || 1;
 
     top.forEach((d, i) => {
@@ -472,7 +505,7 @@ async function render() {
 
   // Section hint
   const hint = document.getElementById('sectionHint');
-  hint.textContent = domains.length > 4 ? `+${domains.length - 4} more` : '';
+  hint.textContent = visibleDomains.length > 4 ? `+${visibleDomains.length - 4} more` : '';
 
   // ── Site + Focus tabs (rendered every cycle regardless of active tab)
   await renderSiteTab(state, storageData);

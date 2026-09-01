@@ -119,8 +119,25 @@ class ScreenTimeDataController extends ChangeNotifier {
   Duration get overallLimit => _overallLimit;
   bool get overallLimitEnabled => _overallLimitEnabled;
 
-  Duration getOverallUsage() =>
-      _dataStore.getTotalScreenTime(SettingsManager().getLogicalDate(DateTime.now()));
+  /// Overall (all-apps) usage for the daily limit check. Always reflects
+  /// true total device usage, independent of the private-only view toggle —
+  /// a real usage limit shouldn't change just because the user is looking at
+  /// a different view. Only the "Include Private Items in Totals" setting
+  /// affects whether private apps' time counts toward it.
+  Duration getOverallUsage() {
+    final today = SettingsManager().getLogicalDate(DateTime.now());
+    final rawTotal = _dataStore.getTotalScreenTime(today);
+    if (shouldIncludePrivateInTotals()) return rawTotal;
+
+    Duration privateTime = Duration.zero;
+    for (final appName in _dataStore.allAppNames) {
+      if (appName.startsWith('web:')) continue;
+      final metadata = _dataStore.getAppMetadata(appName);
+      if (metadata?.isPrivate != true) continue;
+      privateTime += _dataStore.getAppUsage(appName, today)?.timeSpent ?? Duration.zero;
+    }
+    return rawTotal - privateTime;
+  }
 
   bool get isOverallLimitReached {
     if (!_overallLimitEnabled || _overallLimit == Duration.zero) return false;
@@ -300,6 +317,7 @@ class ScreenTimeDataController extends ChangeNotifier {
   Future<Map<String, dynamic>> getAllData() async {
     final appSummaries = await getAllAppsSummary();
     final overallUsage = getOverallUsage();
+    final viewScopedTotal = getViewScopedTotal();
 
     // Compute category usage and most-used in a single pass
     final usageByCategory = <String, Duration>{};
@@ -322,6 +340,7 @@ class ScreenTimeDataController extends ChangeNotifier {
           usageByCategory.map((key, value) => MapEntry(key, value.inSeconds)),
       'mostUsedApps': mostUsedApps.map((app) => app.toJson()).toList(),
       'overallUsageSeconds': overallUsage.inSeconds,
+      'viewScopedTotalSeconds': viewScopedTotal.inSeconds,
       'overallLimitSeconds': _overallLimit.inSeconds,
       'overallLimitEnabled': _overallLimitEnabled,
       'overallLimitPercentage': getOverallLimitPercentage(),
@@ -331,6 +350,29 @@ class ScreenTimeDataController extends ChangeNotifier {
   // ============================================================
   // PRIVATE HELPERS
   // ============================================================
+
+  /// The full, unfiltered per-app summary list backing [_buildAppSummaries]'s
+  /// most recent call — kept so [getViewScopedTotal] can derive a
+  /// setting-aware total without rebuilding per-app data a second time.
+  List<AppUsageSummary>? _lastUnfilteredSummaries;
+
+  /// Total usage for the current view: private-only total when the titlebar
+  /// toggle is on (unaffected by the totals setting — see [getOverallUsage]
+  /// for the always-true-total variant), otherwise the public total plus
+  /// private time when "Include Private Items in Totals" is on.
+  Duration getViewScopedTotal() {
+    final all = _lastUnfilteredSummaries ?? const <AppUsageSummary>[];
+    final showPrivate = shouldShowPrivateOnly();
+    if (showPrivate) {
+      return all
+          .where((s) => s.isPrivate)
+          .fold(Duration.zero, (sum, s) => sum + s.currentUsage);
+    }
+    final includePrivate = shouldIncludePrivateInTotals();
+    return all
+        .where((s) => !s.isPrivate || includePrivate)
+        .fold(Duration.zero, (sum, s) => sum + s.currentUsage);
+  }
 
   Future<List<AppUsageSummary>> _buildAppSummaries(DateTime today) async {
     List<AppUsageSummary> result;
@@ -381,8 +423,14 @@ class ScreenTimeDataController extends ChangeNotifier {
       }
     }
 
+    _lastUnfilteredSummaries = result;
+
+    // Apps are never shown by name/identity outside the view they belong to,
+    // independent of the "Include Private Items in Totals" setting (that
+    // setting only affects aggregate totals — see getOverallUsage() and
+    // getViewScopedTotal()).
     final showPrivate = shouldShowPrivateOnly();
-    result.removeWhere((s) => s.isPrivate != showPrivate);
+    result = result.where((s) => s.isPrivate == showPrivate).toList();
 
     return result;
   }

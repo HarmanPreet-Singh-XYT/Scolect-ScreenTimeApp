@@ -67,6 +67,10 @@ class _AlertsLimitsState extends State<AlertsLimits> {
   // Data state
   List<AppUsageSummary> _appSummaries = [];
   Duration _totalScreenTime = Duration.zero;
+  // True overall usage for the daily-limit check/progress bar — always
+  // reflects total device usage regardless of the private-only view toggle,
+  // unlike _totalScreenTime which follows the current view.
+  Duration _overallUsage = Duration.zero;
   bool _isLoading = true;
   String? _errorMessage;
 
@@ -148,10 +152,10 @@ class _AlertsLimitsState extends State<AlertsLimits> {
 
       setState(() {
         _appSummaries = summaries;
-        _totalScreenTime = Duration(
-          minutes:
-              summaries.fold(0, (sum, app) => sum + app.currentUsage.inMinutes),
-        );
+        _totalScreenTime =
+            Duration(seconds: allData['viewScopedTotalSeconds'] as int);
+        _overallUsage =
+            Duration(seconds: allData['overallUsageSeconds'] as int);
         _isLoading = false;
       });
     } catch (e) {
@@ -321,7 +325,7 @@ class _AlertsLimitsState extends State<AlertsLimits> {
             enabled: _overallLimitEnabled,
             hours: _overallLimitHours,
             minutes: _overallLimitMinutes,
-            totalScreenTime: _totalScreenTime,
+            totalScreenTime: _overallUsage,
             onEnabledChanged: _onOverallEnabledChanged,
             onHoursChanged: _onOverallHoursChanged,
             onMinutesChanged: _onOverallMinutesChanged,
