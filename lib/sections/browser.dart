@@ -186,10 +186,8 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
                         children: [
                           Text(
                             l10n.browserTitle,
-                            style: theme.typography.subtitle?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 18,
-                            ),
+                            style: theme.typography.subtitle
+                                ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 1),
                           Text(

@@ -180,7 +180,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                           Text(
                             '${c.category} · ${c.percentage.toStringAsFixed(0)}%',
                             style: TextStyle(
-                              fontSize: 11.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600,
                               color: meta.color,
                             ),
@@ -242,7 +242,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                         height: 36,
                                         decoration: BoxDecoration(
                                           color: meta.color.withValues(alpha: 0.14),
-                                          borderRadius: BorderRadius.circular(9),
+                                          borderRadius: BorderRadius.circular(8),
                                           border: Border.all(
                                             color: meta.color.withValues(alpha: 0.3),
                                           ),
@@ -270,7 +270,7 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                             Text(
                                               '${l10n.browserSiteCount(cat.siteCount)} visited today',
                                               style: TextStyle(
-                                                fontSize: 11.5,
+                                                fontSize: 12,
                                                 color: captionColor?.withValues(alpha: 0.6),
                                               ),
                                             ),

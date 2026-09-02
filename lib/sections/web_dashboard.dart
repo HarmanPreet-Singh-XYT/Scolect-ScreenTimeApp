@@ -512,7 +512,7 @@ class _ModeChip extends StatelessWidget {
       child: Text(
         mode.label,
         style: TextStyle(
-          fontSize: 10.5,
+          fontSize: 11,
           fontWeight: FontWeight.w600,
           color: _color,
         ),
@@ -707,7 +707,7 @@ class _WebSidebar extends StatelessWidget {
                     Text(
                       'Unlock full system-level tracking & automatic sync with your browser data.',
                       style: TextStyle(
-                        fontSize: 10.5,
+                        fontSize: 11,
                         color: isDark
                             ? customTheme.darkTextSecondary
                             : customTheme.lightTextSecondary,
@@ -748,7 +748,7 @@ class _WebSidebar extends StatelessWidget {
 
           // Sidebar Footer version indicator
           Padding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.all(12),
             child: Opacity(
               opacity: isCompact ? 0 : 0.4,
               child: Text(

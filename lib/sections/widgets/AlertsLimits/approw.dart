@@ -160,7 +160,7 @@ class _AppNameCell extends StatelessWidget {
               domain!,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 10.5,
+                fontSize: 11,
                 color: FluentTheme.of(context).typography.caption?.color?.withValues(alpha: 0.5),
               ),
             ),

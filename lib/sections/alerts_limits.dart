@@ -528,7 +528,8 @@ class _Header extends StatelessWidget {
       children: [
         Text(
           l10n.alertsLimitsTitle,
-          style: theme.typography.title?.copyWith(fontWeight: FontWeight.w600),
+          style:
+              theme.typography.subtitle?.copyWith(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 4),
         Text(

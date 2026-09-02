@@ -3,9 +3,9 @@ import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/sections/controller/categories_controller.dart';
 import 'package:screentime/web/chrome_storage_interop.dart' if (dart.library.io) 'package:screentime/web/chrome_storage_interop_stub.dart';
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'focus_mode_data_controller.dart';
 import 'package:screentime/utils/private_mode_access.dart';
+import 'package:screentime/utils/date_formats.dart';
 
 // ============================================================
 // DATA MODELS
@@ -695,9 +695,6 @@ class _ComparisonData {
 class FocusModeAnalytics {
   final FocusAnalyticsService _analyticsService = FocusAnalyticsService();
 
-  static final _dateFormat = DateFormat('yyyy-MM-dd');
-  static final _dayOfWeekFormat = DateFormat('EEEE');
-
   Map<String, dynamic> getLastSevenDaysData({DateTime? endDate}) {
     final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
@@ -764,8 +761,8 @@ class FocusModeAnalytics {
 
     if (mostProductiveDay != 'None') {
       try {
-        mostProductiveDay =
-            _dayOfWeekFormat.format(_dateFormat.parse(mostProductiveDay));
+        mostProductiveDay = AppDateFormat.weekdayFull(
+            AppDateFormat.parseIsoDate(mostProductiveDay));
       } catch (e) {
         debugPrint('Error formatting most productive day: $e');
       }
@@ -807,7 +804,7 @@ class FocusModeAnalytics {
     DateTime currentDate = endDate;
 
     while (true) {
-      final dateStr = _dateFormat.format(currentDate);
+      final dateStr = AppDateFormat.isoDate(currentDate);
       final count = sessionsByDay[dateStr];
 
       if (count != null && count > 0) {

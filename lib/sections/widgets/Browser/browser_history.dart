@@ -474,7 +474,7 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                               Text(
                                 l10n.browserDayInspectorPrompt,
                                 style: TextStyle(
-                                  fontSize: 11.5,
+                                  fontSize: 12,
                                   color: captionColor?.withValues(alpha: 0.6),
                                 ),
                               ),

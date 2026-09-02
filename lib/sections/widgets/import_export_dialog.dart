@@ -7,6 +7,7 @@ import 'package:screentime/l10n/app_localizations.dart';
 import '../controller/services/data_export_services.dart';
 import '../controller/models/export_models.dart';
 import '../controller/app_data_controller.dart';
+import 'app_icon_button.dart';
 import 'package:flutter/material.dart' as mt;
 
 // ============== SHARED HELPERS ==============
@@ -135,49 +136,6 @@ class _DialogTitleRow extends StatelessWidget {
 const _kAnimDuration = Duration(milliseconds: 150);
 const _kAnimDurationMedium = Duration(milliseconds: 200);
 const _kAnimDurationSlow = Duration(milliseconds: 300);
-
-// ============== QUICK ACTION BUTTON ==============
-
-class _QuickActionButton extends StatefulWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  const _QuickActionButton({
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  @override
-  State<_QuickActionButton> createState() => _QuickActionButtonState();
-}
-
-class _QuickActionButtonState extends State<_QuickActionButton>
-    with HoverStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: buildHoverRegion(
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          child: AnimatedContainer(
-            duration: _kAnimDuration,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isHovered
-                  ? FluentTheme.of(context).inactiveBackgroundColor
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Icon(widget.icon, size: 18),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 // ============== SETTINGS CARD ==============
 
@@ -704,7 +662,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
             Text(l10n.backupRestoreTitle),
             const Spacer(),
             if (!_isProcessing)
-              _QuickActionButton(
+              AppIconButton(
                 icon: FluentIcons.cancel,
                 tooltip: l10n.closeButton,
                 onPressed: () => Navigator.pop(context),

@@ -1090,7 +1090,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                         child: Text(
                           '${site.visits}',
                           style: TextStyle(
-                            fontSize: 11.5,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                             color: captionColor?.withValues(alpha: 0.8),
                           ),
@@ -1149,7 +1149,7 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                                     child: Text(
                                       l10n.browserSetLimit,
                                       style: TextStyle(
-                                        fontSize: 10.5,
+                                        fontSize: 11,
                                         fontWeight: FontWeight.w500,
                                         color: captionColor?.withValues(alpha: 0.6),
                                       ),
@@ -1767,7 +1767,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
                 Text(
                   site.domain,
                   style: TextStyle(
-                    fontSize: 11.5,
+                    fontSize: 12,
                     color: captionColor?.withValues(alpha: 0.6),
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -2024,7 +2024,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
                             Text(
                               '${l10n.browserClassification}:',
                               style: TextStyle(
-                                fontSize: 11.5,
+                                fontSize: 12,
                                 color: captionColor?.withValues(alpha: 0.7),
                               ),
                             ),
@@ -2112,7 +2112,7 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
                             Text(
                               '${l10n.browserClassification}:',
                               style: TextStyle(
-                                fontSize: 11.5,
+                                fontSize: 12,
                                 color: captionColor?.withValues(alpha: 0.7),
                               ),
                             ),
@@ -2371,7 +2371,7 @@ class _SiteHistoryChartState extends State<_SiteHistoryChart> {
                             child: Text(
                               label,
                               style: TextStyle(
-                                fontSize: 10.5,
+                                fontSize: 11,
                                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                                 color: isSelected
                                     ? theme.accentColor
@@ -2452,7 +2452,7 @@ class _SiteHistoryChartState extends State<_SiteHistoryChart> {
                   child: Text(
                     '${widget.history[_touchedIndex].date}: ${widget.history[_touchedIndex].timeSpent.toHourMinuteFormat()} (${widget.history[_touchedIndex].visits} visits)',
                     style: TextStyle(
-                      fontSize: 10.5,
+                      fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: theme.accentColor,
                     ),

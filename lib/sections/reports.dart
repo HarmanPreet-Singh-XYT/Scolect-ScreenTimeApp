@@ -415,12 +415,12 @@ class _ReportsState extends State<Reports> {
   }
 
   Widget _buildHeader() {
-    Widget buildTitle(bool isMobile) => Text(
+    Widget buildTitle(BuildContext context) => Text(
           _l10n.usageAnalytics,
-          style: TextStyle(
-            fontSize: isMobile ? 19 : 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: FluentTheme.of(context)
+              .typography
+              .subtitle
+              ?.copyWith(fontWeight: FontWeight.w600),
           overflow: TextOverflow.ellipsis,
         );
 
@@ -460,7 +460,7 @@ class _ReportsState extends State<Reports> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Flexible(child: buildTitle(true)),
+                  Flexible(child: buildTitle(context)),
                   const SizedBox(width: 12),
                   periodDropdown,
                 ],
@@ -476,7 +476,7 @@ class _ReportsState extends State<Reports> {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Flexible(child: buildTitle(false)),
+            Flexible(child: buildTitle(context)),
             Row(
               children: [
                 if (exportButton != null)

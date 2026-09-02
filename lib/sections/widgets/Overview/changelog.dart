@@ -563,7 +563,7 @@ class _StaggeredContent extends StatelessWidget {
               Text(
                 line.text,
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: theme.accentColor,
                   letterSpacing: -0.2,
@@ -586,7 +586,7 @@ class _StaggeredContent extends StatelessWidget {
           child: Text(
             line.text,
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
               color: theme.typography.body?.color?.withValues(alpha: 0.85),
             ),

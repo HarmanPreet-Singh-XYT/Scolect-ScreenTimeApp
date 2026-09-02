@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as mt;
+import 'package:screentime/app_design.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared Constants
@@ -12,11 +13,6 @@ final _kBorderRadius8 = BorderRadius.circular(8);
 
 const _kHeaderPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 14);
 const _kContentPadding = EdgeInsets.all(16);
-const _kCardShadow = BoxShadow(
-  color: Color(0x08000000), // black @ 0.03 alpha
-  blurRadius: 8,
-  offset: Offset(0, 2),
-);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Shared Hover Mixin
@@ -45,7 +41,7 @@ BoxDecoration _cardDecoration(FluentThemeData theme) {
     border: Border.all(
       color: theme.inactiveBackgroundColor.withValues(alpha: 0.6),
     ),
-    boxShadow: const [_kCardShadow],
+    boxShadow: AppDesign.ambientShadow,
   );
 }
 
@@ -86,50 +82,6 @@ class StickyHeaderDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant StickyHeaderDelegate oldDelegate) =>
       child != oldDelegate.child || height != oldDelegate.height;
-}
-
-// ============== QUICK ACTION BUTTON ==============
-
-class QuickActionButton extends StatefulWidget {
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onPressed;
-
-  const QuickActionButton({
-    super.key,
-    required this.icon,
-    required this.tooltip,
-    required this.onPressed,
-  });
-
-  @override
-  State<QuickActionButton> createState() => QuickActionButtonState();
-}
-
-class QuickActionButtonState extends State<QuickActionButton>
-    with _HoverStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: buildHoverRegion(
-        child: GestureDetector(
-          onTap: widget.onPressed,
-          child: AnimatedContainer(
-            duration: _kAnimDuration,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: isHovered
-                  ? FluentTheme.of(context).inactiveBackgroundColor
-                  : Colors.transparent,
-              borderRadius: _kBorderRadius6,
-            ),
-            child: Icon(widget.icon, size: 18),
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 // ============== SETTINGS CARD ==============

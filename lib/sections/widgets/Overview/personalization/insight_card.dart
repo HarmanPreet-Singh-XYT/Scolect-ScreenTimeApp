@@ -62,7 +62,7 @@ class InsightCard extends StatelessWidget {
                   insight.title,
                   style: theme.typography.body?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 12.5,
+                    fontSize: 13,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -72,7 +72,7 @@ class InsightCard extends StatelessWidget {
                   insight.body,
                   style: theme.typography.caption?.copyWith(
                     color: theme.inactiveColor,
-                    fontSize: 11.5,
+                    fontSize: 12,
                     height: 1.4,
                   ),
                   maxLines: 3,

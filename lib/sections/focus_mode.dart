@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:ui' show FontFeature;
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:intl/intl.dart';
+import '../utils/date_formats.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart' as mn;
@@ -34,9 +34,6 @@ const _kDefaultWeekdays = <String, int>{
   'Saturday': 0,
   'Sunday': 0,
 };
-
-final _dateParser = DateFormat('yyyy-MM-dd');
-final _weekdayFormatter = DateFormat('EEEE');
 
 // ─── Settings key constants ───────────────────────────────────────
 
@@ -169,8 +166,8 @@ class _FocusModeState extends State<FocusMode>
 
     for (final entry in raw.entries) {
       try {
-        final date = _dateParser.parse(entry.key);
-        final weekday = _weekdayFormatter.format(date);
+        final date = AppDateFormat.parseIsoDate(entry.key);
+        final weekday = AppDateFormat.weekdayFull(date);
         final prev = latestDates[weekday];
         if (prev == null || date.isAfter(prev)) {
           latestDates[weekday] = date;

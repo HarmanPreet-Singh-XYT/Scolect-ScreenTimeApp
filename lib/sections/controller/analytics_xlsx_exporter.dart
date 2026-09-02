@@ -1,8 +1,8 @@
 import 'package:excel/excel.dart';
 import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 import 'package:screentime/l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart';
+import '../../utils/date_formats.dart';
 import '_xlsx_save_web.dart' if (dart.library.io) '_xlsx_save_io.dart';
 
 class AnalyticsXLSXExporter {
@@ -76,7 +76,7 @@ class AnalyticsXLSXExporter {
     // Report Info
     _setCell(sheet, 0, row, l10n.generated, bold: true);
     _setCell(sheet, 1, row,
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()));
+        AppDateFormat.isoDateTimeSeconds(DateTime.now()));
     row++;
 
     _setCell(sheet, 0, row, l10n.period, bold: true);
@@ -90,8 +90,8 @@ class AnalyticsXLSXExporter {
           1,
           row,
           l10n.dateRangeValue(
-            DateFormat('yyyy-MM-dd').format(startDate),
-            DateFormat('yyyy-MM-dd').format(endDate),
+            AppDateFormat.isoDate(startDate),
+            AppDateFormat.isoDate(endDate),
           ));
       row++;
     }
@@ -246,13 +246,13 @@ class AnalyticsXLSXExporter {
       row++;
 
       _setCell(sheet, 0, row, l10n.highestDay);
-      _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(maxDay.date));
+      _setCell(sheet, 1, row, AppDateFormat.weekdayFullWithDate(maxDay.date));
       _setCell(sheet, 2, row, _formatDuration(maxDay.screenTime),
           bold: true, fontColor: _dangerRed);
       row++;
 
       _setCell(sheet, 0, row, l10n.lowestDay);
-      _setCell(sheet, 1, row, DateFormat('EEEE, MMM d').format(minDay.date));
+      _setCell(sheet, 1, row, AppDateFormat.weekdayFullWithDate(minDay.date));
       _setCell(sheet, 2, row, _formatDuration(minDay.screenTime),
           bold: true, fontColor: _successGreen);
     }
@@ -281,9 +281,9 @@ class AnalyticsXLSXExporter {
       var isWeekend = dailyData.date.weekday == DateTime.saturday ||
           dailyData.date.weekday == DateTime.sunday;
 
-      _setCell(sheet, 0, row, DateFormat('yyyy-MM-dd').format(dailyData.date),
+      _setCell(sheet, 0, row, AppDateFormat.isoDate(dailyData.date),
           bgColor: isWeekend ? '#FFF3E0' : null);
-      _setCell(sheet, 1, row, DateFormat('EEEE').format(dailyData.date),
+      _setCell(sheet, 1, row, AppDateFormat.weekdayFull(dailyData.date),
           bgColor: isWeekend ? '#FFF3E0' : null);
       _setCell(sheet, 2, row,
           (dailyData.screenTime.inMinutes / 60).toStringAsFixed(2),
@@ -574,10 +574,10 @@ class AnalyticsXLSXExporter {
         if (highestDay.screenTime.inMinutes >
             lowestDay.screenTime.inMinutes * 2) {
           insights.add(l10n.insightUsageVaries(
-              DateFormat('EEEE').format(highestDay.date),
+              AppDateFormat.weekdayFull(highestDay.date),
               (highestDay.screenTime.inMinutes / lowestDay.screenTime.inMinutes)
                   .toStringAsFixed(1),
-              DateFormat('EEEE').format(lowestDay.date)));
+              AppDateFormat.weekdayFull(lowestDay.date)));
         }
       }
     }
@@ -714,6 +714,6 @@ class AnalyticsXLSXExporter {
 
   /// Get timestamp for filename
   String _getFileTimestamp() {
-    return DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+    return AppDateFormat.exportTimestamp(DateTime.now());
   }
 }

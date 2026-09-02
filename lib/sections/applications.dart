@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/app_design.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/application_controller.dart';
@@ -1267,7 +1268,7 @@ class _ApplicationRowState extends State<_ApplicationRow> {
                     Text(
                       app.name,
                       style: TextStyle(
-                        fontSize: 10.5,
+                        fontSize: 11,
                         color: theme.typography.caption?.color
                             ?.withValues(alpha: 0.5),
                       ),
@@ -1920,13 +1921,7 @@ class _CardContainer extends StatelessWidget {
           color: theme.inactiveBackgroundColor.withValues(alpha: 0.5),
           width: 1,
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        boxShadow: AppDesign.ambientShadow,
       ),
       child: child,
     );

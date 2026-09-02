@@ -35,7 +35,7 @@ class WeeklyStoryCard extends StatelessWidget {
                 l10n.weeklyStoryTitle,
                 style: theme.typography.body?.copyWith(
                   fontWeight: FontWeight.w700,
-                  fontSize: 12.5,
+                  fontSize: 13,
                 ),
               ),
               const SizedBox(width: 8),
@@ -62,7 +62,7 @@ class WeeklyStoryCard extends StatelessWidget {
           Text(
             story.headline,
             style: theme.typography.body?.copyWith(
-              fontSize: 12.5,
+              fontSize: 13,
               height: 1.4,
             ),
           ),
@@ -120,7 +120,7 @@ class _NoteRow extends StatelessWidget {
             text,
             style: theme.typography.caption?.copyWith(
               color: theme.inactiveColor,
-              fontSize: 11.5,
+              fontSize: 12,
               height: 1.4,
               fontStyle: FontStyle.italic,
             ),

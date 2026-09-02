@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/sortable_header.dart';
+import 'package:screentime/utils/date_formats.dart';
 
 // ─── Constants ────────────────────────────────────────────────────
 
@@ -9,8 +9,6 @@ const _kCompleteColor = Color(0xFF4CAF50);
 const _kInProgressColor = Color(0xFFFF9800);
 const _kWorkColor = Color(0xFFFF5C50);
 const _kAnimDuration = Duration(milliseconds: 150);
-
-final _dateFormat = DateFormat('MMM d, HH:mm');
 
 // ─── Duration formatting (top-level, no instance needed) ──────────
 
@@ -258,7 +256,7 @@ class _GroupedSessionRowState extends State<_GroupedSessionRow> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          _dateFormat.format(startTime),
+                          AppDateFormat.sessionTimestamp(startTime),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: theme.typography.body

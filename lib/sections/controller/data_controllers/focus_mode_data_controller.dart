@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
+import '../../../utils/date_formats.dart';
 
 class FocusAnalyticsService {
   final AppDataStore _dataStore;
@@ -341,7 +341,7 @@ class FocusAnalyticsService {
           final String sessionTypeLabel = _getSessionTypeLabel(sessionType);
 
           final String startTimeStr =
-              DateFormat('yyyy-MM-dd HH:mm').format(session.startTime);
+              AppDateFormat.isoDateTime(session.startTime);
           final String durationStr = _formatDuration(session.duration);
 
           result.add({
@@ -556,8 +556,8 @@ class FocusAnalyticsService {
 
     if (mostProductiveDay != "None") {
       try {
-        final DateTime date = DateFormat('yyyy-MM-dd').parse(mostProductiveDay);
-        mostProductiveDay = DateFormat('EEEE').format(date);
+        final DateTime date = AppDateFormat.parseIsoDate(mostProductiveDay);
+        mostProductiveDay = AppDateFormat.weekdayFull(date);
       } catch (e) {
         debugPrint("Error formatting most productive day: $e");
       }
@@ -647,7 +647,7 @@ class FocusAnalyticsService {
             ? workTime.inMinutes / completeSessionCount
             : 0;
 
-        periods.add(DateFormat('MMM yyyy').format(currentStart));
+        periods.add(AppDateFormat.monthYear(currentStart));
         sessionCounts.add(completeSessionCount);
         workPhaseCounts.add(workPhaseCount);
         avgDuration.add(avg);
@@ -694,7 +694,7 @@ class FocusAnalyticsService {
   // ═══════════════════════════════════════════════════════════════════════════
 
   String _formatDate(DateTime date) {
-    return DateFormat('yyyy-MM-dd').format(date);
+    return AppDateFormat.isoDate(date);
   }
 
   String _formatDuration(Duration duration) {
@@ -795,7 +795,7 @@ class FocusAnalyticsService {
       final dateStr = parts[0];
       final timestampStr = parts[1];
 
-      final date = DateFormat('yyyy-MM-dd').parse(dateStr);
+      final date = AppDateFormat.parseIsoDate(dateStr);
       final milliseconds = int.parse(timestampStr);
 
       // To find the index, we need to get all sessions for that date

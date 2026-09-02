@@ -12,6 +12,7 @@ import 'package:screentime/sections/controller/application_controller.dart';
 import 'widgets/import_export_dialog.dart' as ied;
 import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
 import 'package:screentime/sections/widgets/Settings/reusables.dart';
+import 'package:screentime/sections/widgets/app_icon_button.dart';
 import 'package:screentime/sections/widgets/Settings/general.dart';
 import 'package:screentime/sections/widgets/Settings/tracking.dart';
 import 'package:screentime/sections/widgets/Settings/notification.dart';
@@ -503,7 +504,7 @@ class _SettingsContentState extends State<SettingsContent> {
                     ?.copyWith(fontWeight: FontWeight.w600),
               ),
               const Spacer(),
-              QuickActionButton(
+              AppIconButton(
                 icon: FluentIcons.refresh,
                 tooltip: l10n.resetSettingsTitle2,
                 onPressed: () => _showResetDialog(context),

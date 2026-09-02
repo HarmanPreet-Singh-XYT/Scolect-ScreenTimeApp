@@ -756,7 +756,7 @@ class _PreviewButton extends StatelessWidget {
             BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
         child: Text(label,
             style: const TextStyle(
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: Colors.white)),
       );
@@ -780,7 +780,7 @@ class _PreviewSwatch extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(label,
-                style: const TextStyle(fontSize: 8),
+                style: const TextStyle(fontSize: 11),
                 overflow: TextOverflow.ellipsis),
           ],
         ),

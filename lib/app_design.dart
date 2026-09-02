@@ -59,6 +59,15 @@ class AppDesign {
   static const double radiusMd = 8.0;
   static const double radiusLg = 12.0;
 
+  // Font sizes (static) — use these instead of ad hoc literals so text
+  // stays on one scale across sections.
+  static const double fontXs = 11.0;
+  static const double fontSm = 12.0;
+  static const double fontMd = 13.0;
+  static const double fontLg = 14.0;
+  static const double fontXl = 16.0;
+  static const double fontXxl = 18.0;
+
   // Animations (static)
   static const Duration animFast = Duration(milliseconds: 150);
   static const Duration animMedium = Duration(milliseconds: 250);
@@ -67,6 +76,34 @@ class AppDesign {
   // Sidebar (static)
   static const double sidebarExpandedWidth = 280.0;
   static const double sidebarCollapsedWidth = 68.0;
+
+  // Card elevation (static) — pair a blurRadius with an alpha so card
+  // shadows read consistently at rest vs. on hover.
+  static const double shadowBlurRest = 8.0;
+  static const double shadowBlurHover = 16.0;
+  static const double shadowAlphaRest = 0.15;
+  static const double shadowAlphaHover = 0.3;
+
+  List<BoxShadow> cardShadow(Color color, {bool hovered = false}) => [
+        BoxShadow(
+          color: color.withValues(
+            alpha: hovered ? shadowAlphaHover : shadowAlphaRest,
+          ),
+          blurRadius: hovered ? shadowBlurHover : shadowBlurRest,
+          offset: const Offset(0, 4),
+        ),
+      ];
+
+  /// Plain ambient elevation for surfaces resting on the page background
+  /// (not a colored hover glow) — a subtle dark shadow lifting a card off
+  /// its surroundings.
+  static const List<BoxShadow> ambientShadow = [
+    BoxShadow(
+      color: Color(0x0D000000), // black @ 0.05 alpha
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
+  ];
 
   // Gradients
   LinearGradient get primaryGradient => LinearGradient(
@@ -125,6 +162,14 @@ class AppDesignLegacy {
   static const double radiusMd = 8.0;
   static const double radiusLg = 12.0;
 
+  // Font sizes
+  static const double fontXs = 11.0;
+  static const double fontSm = 12.0;
+  static const double fontMd = 13.0;
+  static const double fontLg = 14.0;
+  static const double fontXl = 16.0;
+  static const double fontXxl = 18.0;
+
   // Animations
   static const Duration animFast = Duration(milliseconds: 150);
   static const Duration animMedium = Duration(milliseconds: 250);
@@ -133,6 +178,30 @@ class AppDesignLegacy {
   // Sidebar
   static const double sidebarExpandedWidth = 280.0;
   static const double sidebarCollapsedWidth = 68.0;
+
+  // Card elevation
+  static const double shadowBlurRest = 8.0;
+  static const double shadowBlurHover = 16.0;
+  static const double shadowAlphaRest = 0.15;
+  static const double shadowAlphaHover = 0.3;
+
+  static List<BoxShadow> cardShadow(Color color, {bool hovered = false}) => [
+        BoxShadow(
+          color: color.withValues(
+            alpha: hovered ? shadowAlphaHover : shadowAlphaRest,
+          ),
+          blurRadius: hovered ? shadowBlurHover : shadowBlurRest,
+          offset: const Offset(0, 4),
+        ),
+      ];
+
+  static const List<BoxShadow> ambientShadow = [
+    BoxShadow(
+      color: Color(0x0D000000),
+      blurRadius: 8,
+      offset: Offset(0, 2),
+    ),
+  ];
 
   // Gradients
   static const LinearGradient primaryGradient = LinearGradient(

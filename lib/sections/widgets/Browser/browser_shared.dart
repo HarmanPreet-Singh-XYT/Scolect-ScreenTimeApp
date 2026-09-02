@@ -482,7 +482,7 @@ class ProductivityChip extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 10.5,
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: color,
               ),
@@ -616,7 +616,7 @@ class BrowserSectionHeader extends StatelessWidget {
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
             color: accent.withValues(alpha: 0.12),
-            borderRadius: BorderRadius.circular(7),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(icon, size: 14, color: accent),
         ),
@@ -1080,7 +1080,7 @@ class BrowserEmptyState extends StatelessWidget {
               Text(
                 subtitle,
                 style: TextStyle(
-                  fontSize: 11.5,
+                  fontSize: 12,
                   color: captionColor?.withValues(alpha: 0.6),
                   height: 1.3,
                 ),

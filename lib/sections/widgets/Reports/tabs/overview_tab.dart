@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as mt;
-import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/utils/date_formats.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart';
 import 'package:screentime/utils/responsive.dart';
 import '../../../controller/data_controllers/reports_controller.dart';
@@ -647,9 +647,8 @@ class OverviewTab extends StatelessWidget {
   List<String> _sortedDateKeys(Map<String, Duration> data) => data.keys.toList()
     ..sort((a, b) {
       try {
-        return DateFormat('MM/dd')
-            .parse(a)
-            .compareTo(DateFormat('MM/dd').parse(b));
+        return AppDateFormat.parseShortDate(a)
+            .compareTo(AppDateFormat.parseShortDate(b));
       } catch (_) {
         return 0;
       }
@@ -657,7 +656,7 @@ class OverviewTab extends StatelessWidget {
 
   bool _isToday(String dateString) {
     try {
-      final d = DateFormat('MM/dd').parse(dateString);
+      final d = AppDateFormat.parseShortDate(dateString);
       final now = DateTime.now();
       return d.month == now.month && d.day == now.day;
     } catch (_) {
@@ -673,11 +672,11 @@ class OverviewTab extends StatelessWidget {
 
   String _formatDayLabel(String dateString, AppLocalizations l10n) {
     try {
-      final d = DateFormat('MM/dd').parse(dateString);
+      final d = AppDateFormat.parseShortDate(dateString);
       final now = DateTime.now();
       if (d.month == now.month && d.day == now.day) return l10n.today;
       if (d.month == now.month && d.day == now.day - 1) return l10n.yesterday;
-      return DateFormat('EEEE').format(d);
+      return AppDateFormat.weekdayFull(d);
     } catch (_) {
       return dateString;
     }
@@ -685,10 +684,10 @@ class OverviewTab extends StatelessWidget {
 
   String _formatDateForAxis(String dateString) {
     try {
-      final d = DateFormat('MM/dd').parse(dateString);
+      final d = AppDateFormat.parseShortDate(dateString);
       final now = DateTime.now();
       if (d.month == now.month && d.day == now.day) return l10n.todayChart;
-      return DateFormat('EEE').format(d);
+      return AppDateFormat.weekdayShort(d);
     } catch (_) {
       return dateString;
     }

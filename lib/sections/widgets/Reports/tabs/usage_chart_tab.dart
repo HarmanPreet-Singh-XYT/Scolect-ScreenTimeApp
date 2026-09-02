@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/utils/date_formats.dart';
 import '../../../controller/data_controllers/alerts_limits_data_controller.dart'
     as app_summary_data;
 import '../widgets/shared_widgets.dart';
@@ -380,10 +380,10 @@ class UsageChartTab extends StatelessWidget {
 
   String _formatDateForAxis(String dateString) {
     try {
-      final d = DateFormat('MM/dd').parse(dateString);
+      final d = AppDateFormat.parseShortDate(dateString);
       final now = DateTime.now();
       if (d.month == now.month && d.day == now.day) return l10n.todayChart;
-      return DateFormat('EEE').format(d);
+      return AppDateFormat.weekdayShort(d);
     } catch (_) {
       return dateString;
     }

@@ -115,7 +115,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                           Text(
                             'Active Limits',
                             style: TextStyle(
-                              fontSize: 11.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: captionColor?.withValues(alpha: 0.65),
                             ),
@@ -155,7 +155,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                           Text(
                             'Limits Status',
                             style: TextStyle(
-                              fontSize: 11.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.w500,
                               color: captionColor?.withValues(alpha: 0.65),
                             ),
@@ -227,7 +227,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                         child: Text(
                           l10n.browserRecommendedLimitsDesc,
                           style: TextStyle(
-                            fontSize: 11.5,
+                            fontSize: 12,
                             color: captionColor?.withValues(alpha: 0.7),
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -270,14 +270,14 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                 Text(
                                   site.displayName,
                                   style: const TextStyle(
-                                    fontSize: 12.5,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(
                                   'Used ${site.formattedTimeSpent}',
                                   style: TextStyle(
-                                    fontSize: 10.5,
+                                    fontSize: 11,
                                     color: captionColor?.withValues(alpha: 0.6),
                                   ),
                                 ),
@@ -392,7 +392,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                       Text(
                                         l10n.browserTimeUsed(site.formattedTimeSpent),
                                         style: TextStyle(
-                                          fontSize: 10.5,
+                                          fontSize: 11,
                                           color: captionColor?.withValues(alpha: 0.6),
                                         ),
                                       ),
@@ -414,7 +414,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                   Text(
                                     '${(progress * 100).round()}%',
                                     style: TextStyle(
-                                      fontSize: 11.5,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       color: statusColor,
                                     ),
@@ -486,7 +486,7 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                       Text(
                                         '${(progress * 100).round()}%',
                                         style: TextStyle(
-                                          fontSize: 11.5,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.w700,
                                           color: statusColor,
                                         ),

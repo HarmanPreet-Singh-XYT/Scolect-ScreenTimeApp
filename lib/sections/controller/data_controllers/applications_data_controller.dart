@@ -1,4 +1,3 @@
-import 'package:intl/intl.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/web/web_browser_data_provider.dart'
@@ -7,6 +6,7 @@ import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../categories_controller.dart';
 import '../../../utils/private_mode_access.dart';
+import '../../../utils/date_formats.dart';
 
 // Extension for formatting Duration objects
 extension DurationFormatter on Duration {
@@ -393,18 +393,15 @@ class ApplicationsDataProvider {
     final weeklyUsage = <String, Duration>{};
     final monthlyUsage = <String, Duration>{};
 
-    final dateFormat = DateFormat('MM/dd');
-    final monthFormat = DateFormat('MMM');
-
     // Single iteration builds daily + monthly simultaneously
     for (final entry in records.entries) {
       final date = entry.key;
       final usage = entry.value?.timeSpent ?? Duration.zero;
 
-      dailyUsage[dateFormat.format(date)] = usage;
+      dailyUsage[AppDateFormat.shortDate(date)] = usage;
 
       if (dateRange.dayCount >= 28) {
-        final monthKey = monthFormat.format(date);
+        final monthKey = AppDateFormat.month(date);
         monthlyUsage.update(monthKey, (v) => v + usage, ifAbsent: () => usage);
       }
     }

@@ -1,6 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart';
 import 'dart:math';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart';
@@ -8,6 +7,7 @@ import 'package:screentime/sections/controller/data_controllers/browser_data_con
 import '../../controller/data_controllers/reports_controller.dart';
 import '../../controller/data_controllers/alerts_limits_data_controller.dart'
     as app_summary_data;
+import '../../../utils/date_formats.dart';
 import 'package:screentime/utils/responsive.dart';
 import 'tabs/overview_tab.dart';
 import 'tabs/usage_chart_tab.dart';
@@ -97,9 +97,8 @@ Future<void> showAppDetailsDialog(
 List<String> _sortedDateKeys(Map<String, Duration> data) => data.keys.toList()
   ..sort((a, b) {
     try {
-      return DateFormat('MM/dd')
-          .parse(a)
-          .compareTo(DateFormat('MM/dd').parse(b));
+      return AppDateFormat.parseShortDate(a)
+          .compareTo(AppDateFormat.parseShortDate(b));
     } catch (_) {
       return 0;
     }

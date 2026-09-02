@@ -742,7 +742,7 @@ class _CategoryTile extends StatelessWidget {
                 height: 28,
                 decoration: BoxDecoration(
                   color: meta.color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(7),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(meta.icon, size: 14, color: meta.color),
               ),

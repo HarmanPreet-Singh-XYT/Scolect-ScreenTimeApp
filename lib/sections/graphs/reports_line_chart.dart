@@ -2,8 +2,8 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:screentime/sections/controller/data_controllers/reports_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/utils/date_formats.dart';
 
 enum ChartType { main, alternate }
 
@@ -230,7 +230,7 @@ class _LineChartWidgetState extends State<LineChartWidget>
         final item = data[index];
         final hours = item.screenTime.inHours;
         final minutes = item.screenTime.inMinutes.remainder(60);
-        final dateStr = DateFormat('EEE, MMM d').format(item.date);
+        final dateStr = AppDateFormat.weekdayWithDate(item.date);
 
         return LineTooltipItem(
           '',
@@ -369,11 +369,11 @@ class _LineChartWidgetState extends State<LineChartWidget>
   String _formatDate(DateTime date, DateDisplayMode mode) {
     switch (mode) {
       case DateDisplayMode.dayOfWeek:
-        return DateFormat('EEE').format(date);
+        return AppDateFormat.weekdayShort(date);
       case DateDisplayMode.dayMonth:
-        return DateFormat('d/M').format(date);
+        return AppDateFormat.dayMonth(date);
       case DateDisplayMode.monthYear:
-        return DateFormat('MMM').format(date);
+        return AppDateFormat.month(date);
     }
   }
 

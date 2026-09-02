@@ -48,7 +48,7 @@ class NarrativeCard extends StatelessWidget {
                         narrative.headline,
                         style: theme.typography.body?.copyWith(
                           fontWeight: FontWeight.w600,
-                          fontSize: 13.5,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -63,7 +63,7 @@ class NarrativeCard extends StatelessWidget {
                     narrative.detail!,
                     style: theme.typography.body?.copyWith(
                       color: theme.inactiveColor,
-                      fontSize: 12.5,
+                      fontSize: 13,
                     ),
                   ),
                 ],
@@ -74,7 +74,7 @@ class NarrativeCard extends StatelessWidget {
                     narrative.appNote!,
                     style: theme.typography.body?.copyWith(
                       color: theme.inactiveColor,
-                      fontSize: 12.5,
+                      fontSize: 13,
                     ),
                   ),
                 ],
