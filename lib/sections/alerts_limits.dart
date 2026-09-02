@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:screentime/app_design.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
@@ -613,13 +614,15 @@ class _Header extends StatelessWidget {
 
   void _showResetDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final warningColor = AppDesign.of(context).warningColor;
 
     showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (context) => ContentDialog(
         title: Row(
           children: [
-            Icon(FluentIcons.warning, color: Colors.orange, size: 24),
+            Icon(FluentIcons.warning, color: warningColor, size: 24),
             const SizedBox(width: 12),
             Text(l10n.resetSettingsTitle),
           ],
@@ -635,7 +638,7 @@ class _Header extends StatelessWidget {
           ),
           FilledButton(
             style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.red),
+              backgroundColor: WidgetStateProperty.all(warningColor),
             ),
             onPressed: () {
               Navigator.pop(context);

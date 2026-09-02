@@ -426,12 +426,15 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                       site,
                                       _loadData,
                                     ),
-                                    child: const Text('Edit', style: TextStyle(fontSize: 11)),
+                                    child: Text(l10n.edit, style: const TextStyle(fontSize: 11)),
                                   ),
                                   const SizedBox(width: 6),
-                                  IconButton(
-                                    icon: const Icon(FluentIcons.delete, size: 12, color: kBrowserRed),
-                                    onPressed: () => _setLimit(site.domain, Duration.zero),
+                                  Tooltip(
+                                    message: l10n.browserRemoveLimit,
+                                    child: IconButton(
+                                      icon: const Icon(FluentIcons.delete, size: 12, color: kBrowserRed),
+                                      onPressed: () => _setLimit(site.domain, Duration.zero),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -526,11 +529,11 @@ class _BrowserLimitsState extends State<BrowserLimits> {
                                 site,
                                 _loadData,
                               ),
-                              child: const Text('Edit', style: TextStyle(fontSize: 12)),
+                              child: Text(l10n.edit, style: const TextStyle(fontSize: 12)),
                             ),
                             const SizedBox(width: 8),
                             Tooltip(
-                              message: 'Remove Limit',
+                              message: l10n.browserRemoveLimit,
                               child: IconButton(
                                 icon: const Icon(FluentIcons.delete, size: 13, color: kBrowserRed),
                                 onPressed: () => _setLimit(site.domain, Duration.zero),

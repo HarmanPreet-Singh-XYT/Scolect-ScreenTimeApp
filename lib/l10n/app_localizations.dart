@@ -2961,6 +2961,12 @@ abstract class AppLocalizations {
   /// **'Export Complete'**
   String get exportComplete;
 
+  /// No description provided for @shareFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to share file'**
+  String get shareFailed;
+
   /// No description provided for @shareBackupQuestion.
   ///
   /// In en, this message translates to:
@@ -6850,6 +6856,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a port between 1024 and 65535'**
   String get browserServerPortInvalid;
+
+  /// No description provided for @browserServerBindFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t start the server — this port may already be in use'**
+  String get browserServerBindFailed;
 
   /// No description provided for @browserDisableServer.
   ///

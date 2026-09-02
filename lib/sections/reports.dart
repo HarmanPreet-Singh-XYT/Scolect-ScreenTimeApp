@@ -7,6 +7,7 @@ import 'package:screentime/sections/graphs/reports_pie_chart.dart';
 import './controller/data_controllers/reports_controller.dart';
 import 'package:screentime/sections/widgets/Reports/application_usage.dart';
 import 'package:screentime/sections/widgets/Reports/top_boxes.dart';
+import 'package:screentime/sections/widgets/Overview/reusable.dart';
 import 'package:screentime/sections/controller/analytics_xlsx_exporter.dart';
 import 'package:screentime/utils/responsive.dart';
 import 'controller/services/private_mode_service.dart';
@@ -239,7 +240,7 @@ class _ReportsState extends State<Reports> {
         content: Text(message),
         severity: severity,
         action: IconButton(
-          icon: const Icon(FluentIcons.clear),
+          icon: const Icon(FluentIcons.cancel),
           onPressed: close,
         ),
       );
@@ -884,7 +885,10 @@ class _ChartsSection extends StatelessWidget {
     if (dataMap.isEmpty) {
       return CardContainer(
         title: l10n.categoryBreakdown,
-        child: Center(child: Text(l10n.noDataAvailable)),
+        child: EmptyState(
+          icon: FluentIcons.pie_single,
+          message: l10n.noDataAvailable,
+        ),
       );
     }
 

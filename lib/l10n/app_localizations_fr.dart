@@ -1596,6 +1596,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get exportComplete => 'Exportation terminée';
 
   @override
+  String get shareFailed => 'Échec du partage du fichier';
+
+  @override
   String get shareBackupQuestion =>
       'Souhaitez-vous partager le fichier de sauvegarde ?';
 
@@ -3931,6 +3934,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => 'Entrez un port entre 1024 et 65535';
+
+  @override
+  String get browserServerBindFailed =>
+      'Impossible de démarrer le serveur — ce port est peut-être déjà utilisé';
 
   @override
   String get browserDisableServer => 'Désactiver le serveur d\'extension';

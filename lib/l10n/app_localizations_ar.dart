@@ -1557,6 +1557,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get exportComplete => 'اكتمل التصدير';
 
   @override
+  String get shareFailed => 'فشلت مشاركة الملف';
+
+  @override
   String get shareBackupQuestion => 'هل تريد مشاركة ملف النسخ الاحتياطي؟';
 
   @override
@@ -3801,6 +3804,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => 'أدخل منفذاً بين 1024 و 65535';
+
+  @override
+  String get browserServerBindFailed =>
+      'تعذر بدء الخادم — قد يكون هذا المنفذ قيد الاستخدام بالفعل';
 
   @override
   String get browserDisableServer => 'تعطيل خادم الامتداد';

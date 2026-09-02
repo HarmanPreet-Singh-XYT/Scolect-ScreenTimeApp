@@ -566,7 +566,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
       final directory =
           result.filePath!.substring(0, result.filePath!.lastIndexOf('/'));
       final location =
-          Platform.isMacOS ? '~/Desktop/TimeMark-Backups/' : directory;
+          Platform.isMacOS ? '~/Desktop/Scolect-Backups/' : directory;
 
       _setResult(
         success: true,
@@ -588,7 +588,20 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
         builder: (_) => _ShareDialog(l10n: l10n),
       );
       if (shouldShare == true) {
-        await _exportService.shareExport(result.filePath!);
+        final shared = await _exportService.shareExport(result.filePath!);
+        if (shared == null && mounted) {
+          displayInfoBar(
+            context,
+            builder: (ctx, close) => InfoBar(
+              title: Text(l10n.shareFailed),
+              severity: InfoBarSeverity.error,
+              action: IconButton(
+                icon: const Icon(FluentIcons.cancel, size: 12),
+                onPressed: close,
+              ),
+            ),
+          );
+        }
       }
     }
   }

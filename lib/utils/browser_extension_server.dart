@@ -42,7 +42,10 @@ class BrowserExtensionServer {
 
   static int get currentPort => _currentPort;
 
-  static Future<void> startServer({int port = defaultPort}) async {
+  /// Returns `true` if the server bound successfully, `false` if the port
+  /// could not be bound (e.g. already in use) — callers should surface this
+  /// to the user rather than letting the UI silently claim "enabled".
+  static Future<bool> startServer({int port = defaultPort}) async {
     _currentPort = port;
     try {
       _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _currentPort);
@@ -63,14 +66,16 @@ class BrowserExtensionServer {
           broadcastFocusState();
         }
       });
+      return true;
     } catch (e) {
       debugPrint('⚠️ Extension server bind failed (port $_currentPort in use?): $e');
+      return false;
     }
   }
 
-  static Future<void> restartWithPort(int port) async {
+  static Future<bool> restartWithPort(int port) async {
     await dispose();
-    await startServer(port: port);
+    return startServer(port: port);
   }
 
   static Future<void> dispose() async {

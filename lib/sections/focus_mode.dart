@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' show FontFeature;
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/app_design.dart';
 import '../utils/date_formats.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -714,7 +715,7 @@ class _AnimatedCardState extends State<_AnimatedCard> {
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: AppDesignLegacy.animMedium,
         curve: Curves.easeOutCubic,
         decoration: BoxDecoration(
           color: theme.micaBackgroundColor,
@@ -1010,7 +1011,7 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
         children: [
           if (_isRunning)
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDesignLegacy.animMedium,
               width: 260,
               height: 260,
               decoration: BoxDecoration(
@@ -1045,7 +1046,7 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
                     )),
                 const SizedBox(height: 4),
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
+                  duration: AppDesignLegacy.animMedium,
                   child: Text(
                     statusText,
                     key: ValueKey(statusText),
@@ -1132,7 +1133,7 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
+              duration: AppDesignLegacy.animMedium,
               curve: Curves.easeOutCubic,
               width: current ? 24 : 10,
               height: 10,

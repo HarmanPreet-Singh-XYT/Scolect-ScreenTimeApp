@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:screentime/app_design.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart' as mn;
 import './controller/data_controllers/overview_data_controller.dart';
@@ -22,8 +23,8 @@ import '../web/web_private_mode_service.dart'
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const _kFadeDuration = Duration(milliseconds: 600);
-const _kHoverDuration = Duration(milliseconds: 200);
-const _kRotateDuration = Duration(milliseconds: 300);
+const _kHoverDuration = AppDesignLegacy.animMedium;
+const _kRotateDuration = AppDesignLegacy.animMedium;
 const _kCompactBreakpoint = 700.0;
 const _kMediumBreakpoint = 1000.0;
 const _kNarrowBreakpoint = 400.0;
@@ -463,9 +464,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              kIsWeb
-                  ? "No websites tracked yet. Let's start browsing!"
-                  : l10n.startUsingApplications,
+              kIsWeb ? l10n.noWebsitesTrackedYet : l10n.startUsingApplications,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: theme.inactiveColor,

@@ -1573,6 +1573,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get exportComplete => 'রপ্তানি সম্পন্ন';
 
   @override
+  String get shareFailed => 'ফাইল শেয়ার করতে ব্যর্থ';
+
+  @override
   String get shareBackupQuestion => 'আপনি কি ব্যাকআপ ফাইল শেয়ার করতে চান?';
 
   @override
@@ -3833,6 +3836,10 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get browserServerPortInvalid =>
       '1024 থেকে 65535-এর মধ্যে একটি পোর্ট দিন';
+
+  @override
+  String get browserServerBindFailed =>
+      'সার্ভার চালু করা যায়নি — এই পোর্টটি হয়তো ইতিমধ্যে ব্যবহৃত হচ্ছে';
 
   @override
   String get browserDisableServer => 'এক্সটেনশন সার্ভার অক্ষম করুন';

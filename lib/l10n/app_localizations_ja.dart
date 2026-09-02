@@ -1546,6 +1546,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get exportComplete => 'エクスポート完了';
 
   @override
+  String get shareFailed => 'ファイルの共有に失敗しました';
+
+  @override
   String get shareBackupQuestion => 'バックアップファイルを共有しますか？';
 
   @override
@@ -3739,6 +3742,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => '1024〜65535の間のポートを入力してください';
+
+  @override
+  String get browserServerBindFailed =>
+      'サーバーを起動できませんでした — このポートはすでに使用されている可能性があります';
 
   @override
   String get browserDisableServer => '拡張機能サーバーを無効化';

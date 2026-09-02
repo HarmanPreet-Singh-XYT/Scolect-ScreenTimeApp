@@ -1573,6 +1573,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportComplete => 'Ekspor Selesai';
 
   @override
+  String get shareFailed => 'Gagal membagikan file';
+
+  @override
   String get shareBackupQuestion =>
       'Apakah Anda ingin membagikan file cadangan?';
 
@@ -3826,6 +3829,10 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => 'Masukkan port antara 1024 dan 65535';
+
+  @override
+  String get browserServerBindFailed =>
+      'Gagal memulai server — port ini mungkin sudah digunakan';
 
   @override
   String get browserDisableServer => 'Nonaktifkan Server Ekstensi';

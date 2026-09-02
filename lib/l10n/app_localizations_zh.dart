@@ -1533,6 +1533,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exportComplete => '导出完成';
 
   @override
+  String get shareFailed => '文件分享失败';
+
+  @override
   String get shareBackupQuestion => '您想分享备份文件吗？';
 
   @override
@@ -3703,6 +3706,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => '请输入 1024 到 65535 之间的端口';
+
+  @override
+  String get browserServerBindFailed => '无法启动服务器 — 该端口可能已被占用';
 
   @override
   String get browserDisableServer => '禁用扩展服务器';

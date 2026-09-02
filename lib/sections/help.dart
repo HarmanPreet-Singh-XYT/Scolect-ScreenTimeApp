@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/app_design.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 
 // --- Data Models ---
@@ -429,7 +430,7 @@ class _QuickNavChip extends StatelessWidget {
       onPressed: onPressed,
       builder: (context, states) {
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppDesignLegacy.animFast,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
             color: isSelected
@@ -523,7 +524,7 @@ class _CategorySection extends StatelessWidget {
             crossFadeState: isExpanded
                 ? CrossFadeState.showSecond
                 : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 200),
+            duration: AppDesignLegacy.animMedium,
           ),
         ],
       ),
@@ -550,7 +551,7 @@ class _CategoryHeader extends StatelessWidget {
       onPressed: onToggle,
       builder: (context, states) {
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppDesignLegacy.animFast,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             color: states.isHovered
@@ -574,7 +575,7 @@ class _CategoryHeader extends StatelessWidget {
               const SizedBox(width: 8),
               AnimatedRotation(
                 turns: isExpanded ? 0.5 : 0,
-                duration: const Duration(milliseconds: 200),
+                duration: AppDesignLegacy.animMedium,
                 child: Icon(FluentIcons.chevron_down,
                     size: 12, color: theme.resources.textFillColorSecondary),
               ),
@@ -638,7 +639,7 @@ class _FAQItemState extends State<FAQItem> {
       onPressed: () => setState(() => _isExpanded = !_isExpanded),
       builder: (context, states) {
         return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppDesignLegacy.animFast,
           decoration: BoxDecoration(
             color: _isExpanded
                 ? theme.resources.subtleFillColorSecondary
@@ -678,7 +679,7 @@ class _FAQItemState extends State<FAQItem> {
                     ),
                     AnimatedRotation(
                       turns: _isExpanded ? 0.5 : 0,
-                      duration: const Duration(milliseconds: 200),
+                      duration: AppDesignLegacy.animMedium,
                       child: Icon(FluentIcons.chevron_down,
                           size: 10,
                           color: theme.resources.textFillColorSecondary),
@@ -704,7 +705,7 @@ class _FAQItemState extends State<FAQItem> {
                 crossFadeState: _isExpanded
                     ? CrossFadeState.showSecond
                     : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 200),
+                duration: AppDesignLegacy.animMedium,
               ),
             ],
           ),

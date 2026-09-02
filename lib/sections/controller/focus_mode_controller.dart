@@ -272,7 +272,7 @@ class PomodoroTimerService {
     if (_enableNotifications) {
       switch (phase.state) {
         case TimerState.work:
-          _notificationController.sendFocusNotification('Pomodoro Work', false);
+          _notificationController.sendFocusNotification('Focus Session', false);
           break;
         case TimerState.shortBreak:
           _notificationController.sendFocusNotification('Short Break', false);
@@ -341,7 +341,7 @@ class PomodoroTimerService {
     _emitUpdate();
 
     if (_enableNotifications && _currentState != TimerState.idle) {
-      _notificationController.showPopupAlert('Pomodoro Paused',
+      _notificationController.showPopupAlert('Focus Session Paused',
           'Your ${_getSessionTypeName()} session has been paused.');
     }
   }
@@ -349,13 +349,13 @@ class PomodoroTimerService {
   String _getSessionTypeName() {
     switch (_currentState) {
       case TimerState.work:
-        return 'Pomodoro Work';
+        return 'Focus Session';
       case TimerState.shortBreak:
         return 'Short Break';
       case TimerState.longBreak:
         return 'Long Break';
       case TimerState.idle:
-        return 'Pomodoro';
+        return 'Focus Mode';
     }
   }
 
@@ -366,7 +366,7 @@ class PomodoroTimerService {
       _startTimer();
 
       if (_enableNotifications && _currentState != TimerState.idle) {
-        _notificationController.showPopupAlert('Pomodoro Resumed',
+        _notificationController.showPopupAlert('Focus Session Resumed',
             'Your ${_getSessionTypeName()} session has been resumed.');
       }
     }
@@ -389,7 +389,7 @@ class PomodoroTimerService {
 
     if (_enableNotifications) {
       _notificationController.showPopupAlert(
-          'Pomodoro Reset', 'Your timer has been reset.');
+          'Focus Mode Reset', 'Your timer has been reset.');
     }
   }
 
@@ -501,7 +501,7 @@ class PomodoroTimerService {
 
       if (_enableNotifications) {
         _notificationController.showPopupAlert(
-            'New Session Starting', 'Starting a fresh Pomodoro session!');
+            'New Session Starting', 'Starting a fresh Focus Mode session!');
       }
     } else {
       debugPrint('⏸️ Session complete. Going to idle (autoStart=false)');
@@ -662,7 +662,7 @@ class PomodoroTimerService {
 
     if (_enableNotifications) {
       _notificationController.showPopupAlert(
-          'Stats Reset', 'Your Pomodoro statistics have been reset.');
+          'Stats Reset', 'Your Focus Mode statistics have been reset.');
     }
   }
 

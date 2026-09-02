@@ -1572,6 +1572,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get exportComplete => 'निर्यात पूर्ण';
 
   @override
+  String get shareFailed => 'फ़ाइल साझा करने में विफल';
+
+  @override
   String get shareBackupQuestion => 'क्या आप बैकअप फाइल शेयर करना चाहेंगे?';
 
   @override
@@ -3820,6 +3823,10 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => '1024 और 65535 के बीच पोर्ट दर्ज करें';
+
+  @override
+  String get browserServerBindFailed =>
+      'सर्वर शुरू नहीं हो सका — यह पोर्ट पहले से उपयोग में हो सकता है';
 
   @override
   String get browserDisableServer => 'एक्सटेंशन सर्वर अक्षम करें';

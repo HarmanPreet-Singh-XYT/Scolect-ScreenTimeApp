@@ -223,8 +223,12 @@ class DataExportService {
     }
   }
 
-  /// Share exported file
-  Future<bool> shareExport(String filePath) async {
+  /// Share exported file.
+  /// Returns `true`/`false` for a completed share sheet interaction
+  /// (accepted or dismissed by the user), or `null` if sharing itself
+  /// failed (e.g. no share target available) so the caller can surface
+  /// an error distinct from the user simply closing the share sheet.
+  Future<bool?> shareExport(String filePath) async {
     try {
       final result = await Share.shareXFiles(
         [XFile(filePath)],
@@ -234,7 +238,7 @@ class DataExportService {
       return result.status == ShareResultStatus.success;
     } catch (e) {
       debugPrint('Share error: $e');
-      return false;
+      return null;
     }
   }
 
@@ -569,7 +573,7 @@ class DataExportService {
     }
     directory ??= await getApplicationDocumentsDirectory();
 
-    final exportDir = Directory('${directory.path}/TimeMark-Backups');
+    final exportDir = Directory('${directory.path}/Scolect-Backups');
 
     if (!await exportDir.exists()) {
       await exportDir.create(recursive: true);

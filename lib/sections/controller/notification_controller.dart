@@ -69,7 +69,7 @@ class NotificationController with ChangeNotifier {
 
   Future<void> initialize() async {
     await localNotifier.setup(
-      appName: 'TimeMark',
+      appName: 'Scolect',
       shortcutPolicy: ShortcutPolicy.requireCreate,
     );
 

@@ -1000,11 +1000,11 @@ class _WebsiteRowState extends State<_WebsiteRow> {
                                 ),
                               ),
                               if (site.limitStatus)
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 4),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4),
                                   child: Tooltip(
-                                    message: 'Limit enforced',
-                                    child: Icon(
+                                    message: l10n.browserLimitEnforced,
+                                    child: const Icon(
                                       FluentIcons.lock,
                                       size: 12,
                                       color: kBrowserAmber,
@@ -1397,11 +1397,11 @@ class _WebsiteCardState extends State<_WebsiteCard> {
                               ),
                             ),
                             if (site.limitStatus)
-                              const Padding(
-                                padding: EdgeInsets.only(left: 4),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 4),
                                 child: Tooltip(
-                                  message: 'Limit enforced',
-                                  child: Icon(
+                                  message: l10n.browserLimitEnforced,
+                                  child: const Icon(
                                     FluentIcons.lock,
                                     size: 13,
                                     color: kBrowserAmber,

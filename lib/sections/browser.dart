@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, TargetPlatform;
+import 'package:screentime/app_design.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -148,12 +149,9 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
     }
 
     if (!serverEnabled) {
-      return ScaffoldPage(
+      return const ScaffoldPage(
         padding: EdgeInsets.zero,
-        content: _DesktopSetupScreen(
-          onEnabled: () =>
-              settings.updateSetting('browserExtensionEnabled', true),
-        ),
+        content: _DesktopSetupScreen(),
       );
     }
 
@@ -341,7 +339,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
             // ── Content ──────────────────────────────────────────────────
             Expanded(
               child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 220),
+                duration: AppDesignLegacy.animMedium,
                 layoutBuilder: (currentChild, previousChildren) => Stack(
                   alignment: Alignment.topLeft,
                   children: [
@@ -406,8 +404,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
 // ─── Desktop setup screen ─────────────────────────────────────────────────────
 
 class _DesktopSetupScreen extends StatefulWidget {
-  final VoidCallback onEnabled;
-  const _DesktopSetupScreen({required this.onEnabled});
+  const _DesktopSetupScreen();
 
   @override
   State<_DesktopSetupScreen> createState() => _DesktopSetupScreenState();
@@ -431,19 +428,35 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
     super.dispose();
   }
 
-  void _savePort(SettingsProvider settings, AppLocalizations l10n) {
+  Future<void> _savePort(SettingsProvider settings, AppLocalizations l10n) async {
     final value = int.tryParse(_portController.text.trim());
     if (value == null || value < 1024 || value > 65535) {
       setState(() => _portError = l10n.browserServerPortInvalid);
       return;
     }
     setState(() => _portError = null);
-    settings.updateSetting('browserServerPort', value);
+    final ok = await settings.updateSetting('browserServerPort', value);
+    if (!mounted) return;
+    if (!ok) {
+      setState(() => _portError = l10n.browserServerBindFailed);
+      return;
+    }
     displayInfoBar(context,
         builder: (ctx, close) => InfoBar(
               title: Text(l10n.browserServerPortSaved),
               action: Button(onPressed: close, child: Text(l10n.ok)),
             ));
+  }
+
+  Future<void> _toggleServer(
+      SettingsProvider settings, AppLocalizations l10n, bool enabled) async {
+    final ok = await settings.updateSetting('browserExtensionEnabled', enabled);
+    if (!mounted) return;
+    if (enabled && !ok) {
+      setState(() => _portError = l10n.browserServerBindFailed);
+    } else if (_portError == l10n.browserServerBindFailed) {
+      setState(() => _portError = null);
+    }
   }
 
   @override
@@ -550,8 +563,7 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                     ),
                     ToggleSwitch(
                       checked: settings.browserExtensionEnabled,
-                      onChanged: (v) =>
-                          settings.updateSetting('browserExtensionEnabled', v),
+                      onChanged: (v) => _toggleServer(settings, l10n, v),
                     ),
                   ],
                 ),
@@ -886,19 +898,36 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
     super.dispose();
   }
 
-  void _validateAndSavePort(SettingsProvider settings, AppLocalizations l10n) {
+  Future<void> _validateAndSavePort(
+      SettingsProvider settings, AppLocalizations l10n) async {
     final value = int.tryParse(_portController.text.trim());
     if (value == null || value < 1024 || value > 65535) {
       setState(() => _portError = l10n.browserServerPortInvalid);
       return;
     }
     setState(() => _portError = null);
-    settings.updateSetting('browserServerPort', value);
+    final ok = await settings.updateSetting('browserServerPort', value);
+    if (!mounted) return;
+    if (!ok) {
+      setState(() => _portError = l10n.browserServerBindFailed);
+      return;
+    }
     displayInfoBar(context,
         builder: (ctx, close) => InfoBar(
               title: Text(l10n.browserServerPortSaved),
               action: Button(onPressed: close, child: Text(l10n.ok)),
             ));
+  }
+
+  Future<void> _toggleServer(
+      SettingsProvider settings, AppLocalizations l10n, bool enabled) async {
+    final ok = await settings.updateSetting('browserExtensionEnabled', enabled);
+    if (!mounted) return;
+    if (enabled && !ok) {
+      setState(() => _portError = l10n.browserServerBindFailed);
+    } else if (_portError == l10n.browserServerBindFailed) {
+      setState(() => _portError = null);
+    }
   }
 
   @override
@@ -963,8 +992,7 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                 ),
                 ToggleSwitch(
                   checked: settings.browserExtensionEnabled,
-                  onChanged: (v) =>
-                      settings.updateSetting('browserExtensionEnabled', v),
+                  onChanged: (v) => _toggleServer(settings, l10n, v),
                 ),
               ],
             ),
@@ -1103,12 +1131,14 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
 
   Future<void> _confirmClearWebData(
       BuildContext context, AppLocalizations l10n) {
+    final errorColor = AppDesign.of(context).errorColor;
     return showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => ContentDialog(
         title: Row(
           children: [
-            const Icon(FluentIcons.warning, color: Color(0xFFE53935), size: 20),
+            Icon(FluentIcons.warning, color: errorColor, size: 20),
             const SizedBox(width: 10),
             Text(l10n.browserDesktopClearDataDialogTitle),
           ],
@@ -1120,8 +1150,8 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
             onPressed: () => Navigator.pop(ctx),
           ),
           FilledButton(
-            style: const ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Color(0xFFE53935)),
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(errorColor),
             ),
             child: Text(l10n.browserDesktopClearDataButtonLabel),
             onPressed: () async {
@@ -1183,7 +1213,7 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
         title: Text(l10n.browserSourcePingSent(source.localizedLabel(l10n))),
         severity: InfoBarSeverity.info,
         action: IconButton(
-          icon: const Icon(FluentIcons.clear, size: 12),
+          icon: const Icon(FluentIcons.cancel, size: 12),
           onPressed: close,
         ),
       ),
@@ -1202,10 +1232,18 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
 
   Future<void> _remove(BrowserSource source) async {
     final l10n = AppLocalizations.of(context)!;
+    final warningColor = AppDesign.of(context).warningColor;
     final confirmed = await showDialog<bool>(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => ContentDialog(
-        title: Text(l10n.browserSourceRemoveTitle),
+        title: Row(
+          children: [
+            Icon(FluentIcons.warning, color: warningColor, size: 20),
+            const SizedBox(width: 10),
+            Text(l10n.browserSourceRemoveTitle),
+          ],
+        ),
         content:
             Text(l10n.browserSourceRemoveConfirm(source.localizedLabel(l10n))),
         actions: [
@@ -1214,6 +1252,9 @@ class _ConnectedBrowsersListState extends State<_ConnectedBrowsersList> {
             onPressed: () => Navigator.pop(ctx, false),
           ),
           FilledButton(
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(warningColor),
+            ),
             child: Text(l10n.browserSourceRemoveAction),
             onPressed: () => Navigator.pop(ctx, true),
           ),

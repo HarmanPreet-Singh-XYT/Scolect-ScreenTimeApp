@@ -3,6 +3,7 @@ import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
+import 'package:screentime/app_design.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/main.dart';
@@ -23,7 +24,8 @@ import 'package:screentime/sections/widgets/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_section.dart';
 import 'package:screentime/sections/widgets/Settings/web_backup.dart';
-import 'package:screentime/utils/browser_extension_server.dart';
+import 'package:screentime/utils/browser_extension_server_stub.dart'
+    if (dart.library.io) 'package:screentime/utils/browser_extension_server.dart';
 import '../web/extension_settings.dart'
     if (dart.library.io) '../web/extension_settings_stub.dart';
 
@@ -228,7 +230,10 @@ class SettingsProvider extends ChangeNotifier {
             VoiceGenderOptions.defaultGender;
   }
 
-  Future<void> updateSetting(String key, dynamic value,
+  /// Returns `false` if a side effect tied to this setting failed to apply
+  /// (e.g. the extension server couldn't bind its port) so the calling UI
+  /// can warn the user instead of showing the toggle as silently "on".
+  Future<bool> updateSetting(String key, dynamic value,
       [BuildContext? context]) async {
     // Set the in-memory field
     _fieldSetters[key]?.call(this, value);
@@ -244,12 +249,13 @@ class SettingsProvider extends ChangeNotifier {
     }
 
     // Handle side effects
-    await _handleSideEffects(key, value);
+    final ok = await _handleSideEffects(key, value);
 
     notifyListeners();
+    return ok;
   }
 
-  Future<void> _handleSideEffects(String key, dynamic value) async {
+  Future<bool> _handleSideEffects(String key, dynamic value) async {
     switch (key) {
       case 'launchAtStartup':
         if (PlatformUtils.isMacOS) {
@@ -258,12 +264,18 @@ class SettingsProvider extends ChangeNotifier {
               : await launchAtStartup.disable();
         }
       case 'browserExtensionEnabled':
-        value
-            ? await BrowserExtensionServer.startServer(port: _browserServerPort)
-            : await BrowserExtensionServer.dispose();
+        if (value) {
+          final started =
+              await BrowserExtensionServer.startServer(port: _browserServerPort);
+          if (!started) return false;
+        } else {
+          await BrowserExtensionServer.dispose();
+        }
       case 'browserServerPort':
         if (_browserExtensionEnabled) {
-          await BrowserExtensionServer.restartWithPort(value as int);
+          final restarted =
+              await BrowserExtensionServer.restartWithPort(value as int);
+          if (!restarted) return false;
         }
       case 'trackingMode':
         final mode = value == TrackingModeOptions.precise
@@ -311,6 +323,7 @@ class SettingsProvider extends ChangeNotifier {
       case 'audioThreshold':
         await _tracker.updateAudioThreshold(value);
     }
+    return true;
   }
 
   Future<void> setAllNotifications(bool enabled) async {
@@ -617,13 +630,15 @@ class _SettingsContentState extends State<SettingsContent> {
   Future<void> _showResetDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final settings = context.read<SettingsProvider>();
+    final warningColor = AppDesign.of(context).warningColor;
 
     await showDialog<String>(
       context: context,
+      barrierDismissible: false,
       builder: (_) => ContentDialog(
         title: Row(
           children: [
-            Icon(FluentIcons.warning, color: Colors.orange, size: 20),
+            Icon(FluentIcons.warning, color: warningColor, size: 20),
             const SizedBox(width: 10),
             Text(l10n.resetSettingsDialogTitle),
           ],
@@ -636,7 +651,7 @@ class _SettingsContentState extends State<SettingsContent> {
           ),
           FilledButton(
             style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(Colors.orange),
+              backgroundColor: WidgetStatePropertyAll(warningColor),
             ),
             child: Text(l10n.resetButtonLabel),
             onPressed: () {

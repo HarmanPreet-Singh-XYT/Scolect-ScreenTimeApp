@@ -1576,6 +1576,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get exportComplete => 'Экспорт завершён';
 
   @override
+  String get shareFailed => 'Не удалось поделиться файлом';
+
+  @override
   String get shareBackupQuestion => 'Хотите поделиться файлом резервной копии?';
 
   @override
@@ -3900,6 +3903,10 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => 'Введите порт от 1024 до 65535';
+
+  @override
+  String get browserServerBindFailed =>
+      'Не удалось запустить сервер — возможно, этот порт уже используется';
 
   @override
   String get browserDisableServer => 'Отключить сервер расширения';

@@ -197,7 +197,20 @@ class _ApplicationsState extends State<Applications>
       _animationController.forward();
     } catch (e) {
       debugPrint('Error loading applications data: $e');
-      if (mounted) setState(() => _isLoading = false);
+      if (!mounted) return;
+      setState(() => _isLoading = false);
+      final l10n = AppLocalizations.of(context)!;
+      displayInfoBar(
+        context,
+        builder: (ctx, close) => InfoBar(
+          title: Text(l10n.failedToLoadData(e.toString())),
+          severity: InfoBarSeverity.error,
+          action: IconButton(
+            icon: const Icon(FluentIcons.cancel, size: 12),
+            onPressed: close,
+          ),
+        ),
+      );
     }
   }
 
@@ -339,9 +352,15 @@ class _ApplicationsState extends State<Applications>
             children: [
               Icon(kIsWeb ? FluentIcons.globe : FluentIcons.apps_content,
                   size: 24, color: theme.accentColor),
-              const SizedBox(width: 12),
-              Text(kIsWeb ? "Websites" : l10n.applicationsTitle,
+              const SizedBox(height: 12),
+              Text(kIsWeb ? l10n.browserTabWebsites : l10n.applicationsTitle,
                   style: theme.typography.body),
+              const SizedBox(height: 16),
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: ProgressRing(strokeWidth: 2.5),
+              ),
             ],
           ),
         ),
@@ -382,7 +401,7 @@ class _ApplicationsState extends State<Applications>
                   children: [
                     Text(
                       kIsWeb
-                          ? '${filteredApps.length} websites'
+                          ? l10n.browserWebsiteCount(filteredApps.length)
                           : l10n.applicationCount(filteredApps.length),
                       style: TextStyle(
                         fontSize: 13,
@@ -447,7 +466,7 @@ class _Header extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                kIsWeb ? "Websites" : l10n.applicationsTitle,
+                kIsWeb ? l10n.browserTabWebsites : l10n.applicationsTitle,
                 style: theme.typography.subtitle?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -1228,6 +1247,7 @@ class _ApplicationRowState extends State<_ApplicationRow> {
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final app = widget.app;
 
     return MouseRegion(
@@ -1326,25 +1346,28 @@ class _ApplicationRowState extends State<_ApplicationRow> {
             Expanded(
               flex: 1,
               child: Center(
-                child: IconButton(
-                  icon: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: _isHovered
-                          ? theme.accentColor.withValues(alpha: 0.1)
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(6),
+                child: Tooltip(
+                  message: l10n.tableEdit,
+                  child: IconButton(
+                    icon: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: _isHovered
+                            ? theme.accentColor.withValues(alpha: 0.1)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Icon(
+                        FluentIcons.edit,
+                        size: 14,
+                        color: _isHovered
+                            ? theme.accentColor
+                            : theme.typography.body?.color
+                                ?.withValues(alpha: 0.5),
+                      ),
                     ),
-                    child: Icon(
-                      FluentIcons.edit,
-                      size: 14,
-                      color: _isHovered
-                          ? theme.accentColor
-                          : theme.typography.body?.color
-                              ?.withValues(alpha: 0.5),
-                    ),
+                    onPressed: () => _showEditDialog(context),
                   ),
-                  onPressed: () => _showEditDialog(context),
                 ),
               ),
             ),

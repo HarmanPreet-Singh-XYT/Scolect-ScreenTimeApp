@@ -1592,6 +1592,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get exportComplete => 'Exportación completada';
 
   @override
+  String get shareFailed => 'Error al compartir el archivo';
+
+  @override
   String get shareBackupQuestion =>
       '¿Te gustaría compartir el archivo de copia de seguridad?';
 
@@ -3914,6 +3917,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get browserServerPortInvalid => 'Ingresa un puerto entre 1024 y 65535';
+
+  @override
+  String get browserServerBindFailed =>
+      'No se pudo iniciar el servidor — este puerto puede estar en uso';
 
   @override
   String get browserDisableServer => 'Desactivar Servidor de Extensión';
