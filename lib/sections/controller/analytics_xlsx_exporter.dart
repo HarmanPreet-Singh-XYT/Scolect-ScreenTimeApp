@@ -6,10 +6,9 @@ import '../../utils/date_formats.dart';
 import '_xlsx_save_web.dart' if (dart.library.io) '_xlsx_save_io.dart';
 
 class AnalyticsXLSXExporter {
-  final UsageAnalyticsController _analyticsController;
   final AppLocalizations l10n;
 
-  AnalyticsXLSXExporter(this._analyticsController, this.l10n);
+  AnalyticsXLSXExporter(this.l10n);
 
   // Beautiful color palette
   static const _primaryBlue = '#4A90E2';

@@ -294,8 +294,9 @@ class OverviewTab extends StatelessWidget {
       List<String> sortedDates,
       bool hasLimit,
       app_summary_data.AppUsageSummary appSummary) {
-    if (sortedDates.isEmpty)
+    if (sortedDates.isEmpty) {
       return Text(l10n.noData, style: TextStyle(color: theme.inactiveColor));
+    }
 
     final limitMinutes =
         hasLimit ? appSummary.dailyLimit.inMinutes.toDouble() : 0.0;
@@ -436,17 +437,21 @@ class OverviewTab extends StatelessWidget {
     final growth = appDetails.comparisons.growthPercentage;
 
     if (app.isProductive) {
-      if (growth < -10)
+      if (growth < -10) {
         score += 15;
-      else if (growth < 0)
+      } else if (growth < 0) {
         score += 8;
-      else if (growth > 20) score -= 10;
+      } else if (growth > 20) {
+        score -= 10;
+      }
     } else {
-      if (growth > 10)
+      if (growth > 10) {
         score -= 15;
-      else if (growth > 0)
+      } else if (growth > 0) {
         score -= 8;
-      else if (growth < -20) score += 10;
+      } else if (growth < -20) {
+        score += 10;
+      }
     }
     score = score.clamp(0, 100);
 
@@ -515,18 +520,20 @@ class OverviewTab extends StatelessWidget {
     int overLimitStreak = 0;
 
     for (final date in sortedKeys.reversed) {
-      if ((weeklyData[date] ?? Duration.zero) > Duration.zero)
+      if ((weeklyData[date] ?? Duration.zero) > Duration.zero) {
         usedStreak++;
-      else
+      } else {
         break;
+      }
     }
 
     if (hasLimit) {
       for (final date in sortedKeys.reversed) {
-        if ((weeklyData[date] ?? Duration.zero) > appSummary.dailyLimit)
+        if ((weeklyData[date] ?? Duration.zero) > appSummary.dailyLimit) {
           overLimitStreak++;
-        else
+        } else {
           break;
+        }
       }
     }
 

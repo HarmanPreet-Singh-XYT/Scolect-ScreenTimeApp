@@ -9,7 +9,7 @@ import './controller/data_controllers/personalization/habit_profile_models.dart'
 import './controller/data_controllers/personalization/personalization_engine.dart';
 import './controller/data_controllers/personalization/personalization_store.dart';
 import 'widgets/Overview/bottom.dart';
-import 'widgets/Overview/statCards.dart';
+import 'widgets/Overview/stat_cards.dart';
 import 'widgets/Overview/main_app.dart';
 import 'widgets/Overview/changelog.dart';
 import 'widgets/Overview/personalization/narrative_card.dart';
@@ -182,9 +182,6 @@ class _OverviewState extends State<Overview>
   _ViewState _viewState = _ViewState.loading;
   String _errorMessage = '';
 
-  // Stash raw data for personalization engine
-  OverviewData? _lastOverviewData;
-
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
 
@@ -237,7 +234,6 @@ class _OverviewState extends State<Overview>
     try {
       final data = await DailyOverviewData().fetchTodayOverview();
       final snapshot = _OverviewSnapshot.fromOverviewData(data);
-      _lastOverviewData = data;
 
       if (!mounted) return;
 
@@ -266,6 +262,7 @@ class _OverviewState extends State<Overview>
     try {
       // Init store lazily here — avoids blocking app startup in main()
       await PersonalizationStore().init();
+      if (!mounted) return;
       final engine = PersonalizationEngine();
 
       // Determine top app open count from top app

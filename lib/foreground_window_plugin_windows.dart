@@ -6,13 +6,9 @@ import 'package:flutter/foundation.dart';
 
 const int _kMaxPath = 260;
 const int _kMaxTitle = 512; // increased from 256 for longer titles
-const int _kProcessQueryInformation = 0x0400;
 const int _kProcessQueryLimitedInformation = 0x1000;
-const int _kProcessVMRead = 0x0010;
 const int _kProcessTerminate = 0x0001;
-const int _kSwHide = 0;
 const int _kSwMinimize = 6;
-const int _kSwShowNoActivate = 4;
 const int _kTh32csSnapProcess = 0x00000002;
 const int _kInvalidHandleValue = -1;
 
@@ -49,11 +45,6 @@ typedef _GetWindowThreadProcessIdD = int Function(
 typedef _OpenProcessN = Pointer<Void> Function(Uint32, Int32, Uint32);
 typedef _OpenProcessD = Pointer<Void> Function(int, int, int);
 
-typedef _GetModuleFileNameExAN = Int32 Function(
-    Pointer<Void>, Pointer<Void>, Pointer<Char>, Uint32);
-typedef _GetModuleFileNameExAD = int Function(
-    Pointer<Void>, Pointer<Void>, Pointer<Char>, int);
-
 typedef _CloseHandleN = Int32 Function(Pointer<Void>);
 typedef _CloseHandleD = int Function(Pointer<Void>);
 
@@ -77,17 +68,6 @@ typedef _VerQueryValueAN = Int32 Function(
     Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
 typedef _VerQueryValueAD = int Function(
     Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
-
-typedef _ShowWindowN = Int32 Function(Pointer<Void>, Int32);
-typedef _ShowWindowD = int Function(Pointer<Void>, int);
-
-typedef _EnumWindowsN = Int32 Function(
-    Pointer<NativeFunction<Int32 Function(Pointer<Void>, IntPtr)>>, IntPtr);
-typedef _EnumWindowsD = int Function(
-    Pointer<NativeFunction<Int32 Function(Pointer<Void>, IntPtr)>>, int);
-
-typedef _TerminateProcessN = Int32 Function(Pointer<Void>, Uint32);
-typedef _TerminateProcessD = int Function(Pointer<Void>, int);
 
 // ── COM / AUMID lookup (for UWP-hosted windows, e.g. ApplicationFrameHost) ──
 
@@ -301,7 +281,6 @@ class ForegroundWindowPlugin {
 
   static final DynamicLibrary _user32 = DynamicLibrary.open('user32.dll');
   static final DynamicLibrary _kernel32 = DynamicLibrary.open('kernel32.dll');
-  static final DynamicLibrary _psapi = DynamicLibrary.open('psapi.dll');
   static final DynamicLibrary _version = DynamicLibrary.open('version.dll');
   static final DynamicLibrary _ole32 = DynamicLibrary.open('ole32.dll');
   static final DynamicLibrary _shell32 = DynamicLibrary.open('shell32.dll');
@@ -331,10 +310,6 @@ class ForegroundWindowPlugin {
   static final _QueryFullProcessImageNameWD _queryFullProcessImageNameW =
       _kernel32.lookupFunction<_QueryFullProcessImageNameWN,
           _QueryFullProcessImageNameWD>('QueryFullProcessImageNameW');
-
-  static final _GetModuleFileNameExAD _getModuleFileNameExA =
-      _psapi.lookupFunction<_GetModuleFileNameExAN, _GetModuleFileNameExAD>(
-          'GetModuleFileNameExA');
 
   static final _CloseHandleD _closeHandle =
       _kernel32.lookupFunction<_CloseHandleN, _CloseHandleD>('CloseHandle');
@@ -494,29 +469,6 @@ class ForegroundWindowPlugin {
 
   // ── Private helpers ───────────────────────────────────────────────────────
 
-  /// Safely converts a native [Pointer<Char>] to a Dart [String].
-  /// Falls back to a lossy conversion on invalid UTF-8.
-  static String _safeDartString(Pointer<Char> ptr, {int? length}) {
-    if (ptr.address == 0) return '';
-    try {
-      return ptr.cast<Utf8>().toDartString(length: length);
-    } catch (_) {
-      if (length != null && length > 0) {
-        final bytes = List.generate(
-          length,
-          (i) {
-            final b = ptr[i];
-            // Dart's FFI Char is signed; mask to unsigned byte.
-            final unsigned = b & 0xFF;
-            return unsigned == 0 ? null : unsigned; // stop at null terminator
-          },
-        ).whereType<int>().toList();
-        return String.fromCharCodes(bytes);
-      }
-      return '';
-    }
-  }
-
   /// Extracts and prettifies the executable name from a full path.
   /// e.g. `C:\Program Files\My App\my_app.exe` → `My App`
   static String _extractExecutableName(String fullPath) {
@@ -622,9 +574,8 @@ class ForegroundWindowPlugin {
   /// Minimizes all visible top-level windows owned by [pid].
   /// Runs in a compute isolate; uses static FFI bindings loaded fresh there.
   static void _minimizeProcessWindows(int pid) {
-    // We need our own DLL references inside the isolate.
+    // We need our own DLL reference inside the isolate.
     final user32 = DynamicLibrary.open('user32.dll');
-    final kernel32 = DynamicLibrary.open('kernel32.dll');
 
     final getWindowThreadProcessId = user32.lookupFunction<
         Int32 Function(Pointer<Void>, Pointer<Uint32>),
@@ -634,38 +585,10 @@ class ForegroundWindowPlugin {
         Int32 Function(Pointer<Void>, Int32),
         int Function(Pointer<Void>, int)>('ShowWindow');
 
-    // Callback closure for EnumWindows — Dart FFI requires a top-level or static
-    // function for NativeCallable. Use EnumWindows-style manual approach instead.
-    //
-    // Since Dart FFI closures can't be passed as EnumWindows callbacks portably
-    // in a compute isolate, we fall back to finding the HWND by PID via a
-    // process snapshot and then calling ShowWindow on it.
-    final createSnapshot = kernel32.lookupFunction<
-        Pointer<Void> Function(Uint32, Uint32),
-        Pointer<Void> Function(int, int)>('CreateToolhelp32Snapshot');
-
-    final process32First = kernel32.lookupFunction<
-        Int32 Function(Pointer<Void>, Pointer<PROCESSENTRY32>),
-        int Function(Pointer<Void>, Pointer<PROCESSENTRY32>)>('Process32First');
-
-    final process32Next = kernel32.lookupFunction<
-        Int32 Function(Pointer<Void>, Pointer<PROCESSENTRY32>),
-        int Function(Pointer<Void>, Pointer<PROCESSENTRY32>)>('Process32Next');
-
-    final closeHandle = kernel32.lookupFunction<
-        Int32 Function(Pointer<Void>),
-        int Function(Pointer<Void>)>('CloseHandle');
-
-    // Enumerate all windows via GetWindow chain (TH32CS_SNAPPROCESS is process-
-    // level; for windows we need a different approach). Use EnumWindows with a
-    // NativeCallable.
-    //
-    // Dart 3 NativeCallable.isolateLocal can be used from a compute isolate.
-    // Wrap the logic:
+    // Dart FFI closures can't be passed as EnumWindows callbacks portably in a
+    // compute isolate, so we walk the window chain via GetTopWindow/GetWindow
+    // instead and match each window's owning PID.
     final pidBox = calloc<Uint32>();
-    final getForeground = user32.lookupFunction<
-        Pointer<Void> Function(),
-        Pointer<Void> Function()>('GetForegroundWindow');
 
     // Walk visible windows: we use GetTopWindow / GetNextWindow (GetWindow).
     final getTopWindow = user32.lookupFunction<

@@ -10,10 +10,10 @@ import 'package:screentime/web/extension_settings.dart'
 import 'package:screentime/sections/controller/services/app_blocking_service.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'widgets/AlertsLimits/applicationlimit.dart';
-import 'widgets/AlertsLimits/blockingBehaviorCard.dart';
-import 'widgets/AlertsLimits/notificationCard.dart';
+import 'widgets/AlertsLimits/blocking_behavior_card.dart';
+import 'widgets/AlertsLimits/notification_card.dart';
 import 'widgets/AlertsLimits/overalllimit.dart';
-import 'widgets/AlertsLimits/quickStats.dart';
+import 'widgets/AlertsLimits/quick_stats.dart';
 import 'controller/services/private_mode_service.dart';
 import '../web/web_private_mode_service.dart'
     if (dart.library.io) '../web/web_private_mode_service_stub.dart';

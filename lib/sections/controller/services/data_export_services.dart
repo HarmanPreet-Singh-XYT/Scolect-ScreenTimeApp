@@ -230,10 +230,12 @@ class DataExportService {
   /// an error distinct from the user simply closing the share sheet.
   Future<bool?> shareExport(String filePath) async {
     try {
-      final result = await Share.shareXFiles(
-        [XFile(filePath)],
-        subject: 'Screen Time Backup',
-        text: 'My Screen Time data backup',
+      final result = await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile(filePath)],
+          subject: 'Screen Time Backup',
+          text: 'My Screen Time data backup',
+        ),
       );
       return result.status == ShareResultStatus.success;
     } catch (e) {

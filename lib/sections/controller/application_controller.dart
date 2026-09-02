@@ -381,8 +381,9 @@ class BackgroundAppTracker {
         appTitle = "";
         appId = "";
       }
-      if (appTitle == "Productive ScreenTime" || appTitle == "screentime")
+      if (appTitle == "Productive ScreenTime" || appTitle == "screentime") {
         return;
+      }
       if (appTitle == "loginwindow" || appTitle == "LockApp") return;
       if (appId.isEmpty || appId.toLowerCase() == 'unknown') appId = appTitle;
 
@@ -468,8 +469,9 @@ class BackgroundAppTracker {
     if (!_screenStateAllowsTracking) return;
 
     final metadata = _appDataStore?.getAppMetadata(_currentApp);
-    if (metadata != null && (!metadata.isTracking || !metadata.isVisible))
+    if (metadata != null && (!metadata.isTracking || !metadata.isVisible)) {
       return;
+    }
 
     bool idleDetectionEnabled =
         SettingsManager().getSetting("tracking.idleDetection") ?? true;
@@ -551,8 +553,9 @@ class BackgroundAppTracker {
     if (idleDetectionEnabled && !_isUserActive) return;
 
     final metadata = _appDataStore?.getAppMetadata(_currentApp);
-    if (metadata != null && (!metadata.isTracking || !metadata.isVisible))
+    if (metadata != null && (!metadata.isTracking || !metadata.isVisible)) {
       return;
+    }
 
     final now = DateTime.now();
     final elapsed = now.difference(_currentAppStartTime);
@@ -585,7 +588,9 @@ class BackgroundAppTracker {
 
     if ((window.appName != "Widgets.exe" && window.windowTitle == "") ||
         (window.appName == "explorer.exe" &&
-            window.windowTitle == "Program Manager")) return;
+            window.windowTitle == "Program Manager")) {
+      return;
+    }
 
     // Resolve richer info for the EXACT window window_focus observed (via
     // window.hwnd on Windows), not "whatever is foreground right now" — a
@@ -640,7 +645,9 @@ class BackgroundAppTracker {
     }
     if (newProgramName == "loginwindow" ||
         newProgramName == "LockApp" ||
-        newProgramName == "UnlockingApp") return;
+        newProgramName == "UnlockingApp") {
+      return;
+    }
 
     if (newAppId != _currentApp) {
       _saveCurrentAppTime();
@@ -742,8 +749,9 @@ class BackgroundAppTracker {
     if (_currentApp.isEmpty) return;
 
     final metadata = _appDataStore?.getAppMetadata(_currentApp);
-    if (metadata != null && (!metadata.isTracking || !metadata.isVisible))
+    if (metadata != null && (!metadata.isTracking || !metadata.isVisible)) {
       return;
+    }
 
     final now = DateTime.now();
     final elapsed = now.difference(_currentAppStartTime);
@@ -770,8 +778,9 @@ class BackgroundAppTracker {
   // ============================================================
   Future<AppMetadata?> _getOrCreateMetadata(String appId,
       [String? programName]) async {
-    if (appId == "Productive ScreenTime" || appId == "screentime")
+    if (appId == "Productive ScreenTime" || appId == "screentime") {
       return null;
+    }
 
     final displayLabel = programName ?? appId;
 
@@ -818,6 +827,7 @@ class BackgroundAppTracker {
   Future<void> _ensureMetadataExists(String appId, [String? programName]) async {
     await _getOrCreateMetadata(appId, programName).catchError((e) {
       debugPrint('⚠️ Metadata error for $appId: $e');
+      return null;
     });
   }
 
@@ -1111,7 +1121,7 @@ class BackgroundAppTracker {
 📊 TRACKER STATUS
    Mode: ${_trackingMode.name} | Tracking: $_isTracking | User Active: $_isUserActive
    Current App: $_currentApp
-   Screen: asleep=$_systemAsleep off=$_screenOff locked=$_locked → allows=${_screenStateAllowsTracking}
+   Screen: asleep=$_systemAsleep off=$_screenOff locked=$_locked → allows=$_screenStateAllowsTracking
 ═══════════════════════════════════════════════════════''';
   }
 }

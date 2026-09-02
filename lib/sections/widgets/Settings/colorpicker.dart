@@ -146,7 +146,7 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog> {
   }
 
   static String _colorToHex(Color color) =>
-      color.value.toRadixString(16).substring(2).toUpperCase();
+      color.toARGB32().toRadixString(16).substring(2).toUpperCase();
 
   static Color? _hexToColor(String hex) {
     hex = hex.replaceAll('#', '');
@@ -307,9 +307,9 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog> {
   // ── Sliders Tab ───────────────────────────────────────────────────────────
 
   Widget _buildSlidersPicker(AppLocalizations l10n) {
-    final r = _currentColor.red;
-    final g = _currentColor.green;
-    final b = _currentColor.blue;
+    final r = (_currentColor.r * 255.0).round().clamp(0, 255);
+    final g = (_currentColor.g * 255.0).round().clamp(0, 255);
+    final b = (_currentColor.b * 255.0).round().clamp(0, 255);
 
     return SingleChildScrollView(
       child: Column(
@@ -456,7 +456,9 @@ class _FluentColorPickerDialogState extends State<FluentColorPickerDialog> {
               ),
             ),
             Text(
-              '${_currentColor.red}, ${_currentColor.green}, ${_currentColor.blue}',
+              '${(_currentColor.r * 255.0).round().clamp(0, 255)}, '
+              '${(_currentColor.g * 255.0).round().clamp(0, 255)}, '
+              '${(_currentColor.b * 255.0).round().clamp(0, 255)}',
               style: const TextStyle(
                 fontSize: 11,
                 fontFamily: 'monospace',
@@ -513,7 +515,7 @@ class _ColorGrid extends StatelessWidget {
         for (final color in colors)
           _ColorSwatch(
             color: color,
-            isSelected: selectedColor.value == color.value,
+            isSelected: selectedColor.toARGB32() == color.toARGB32(),
             isDark: isDark,
             onTap: () => onSelect(color),
           ),

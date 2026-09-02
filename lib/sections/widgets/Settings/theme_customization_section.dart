@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fluent_ui/fluent_ui.dart' hide FilePicker;
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
@@ -26,7 +26,7 @@ class ThemeCustomizationSection extends StatefulWidget {
 }
 
 class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
-  void _refreshTheme(BuildContext context, CustomThemeData theme) {
+  void _refreshTheme(CustomThemeData theme) {
     FluentAdaptiveTheme.of(context).setTheme(
       light: buildLightTheme(theme),
       dark: buildDarkTheme(theme),
@@ -71,7 +71,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                     isSelected: provider.currentTheme.id == preset.id,
                     onTap: () async {
                       await provider.setTheme(preset);
-                      if (mounted) _refreshTheme(context, preset);
+                      if (mounted) _refreshTheme(preset);
                     },
                   );
                 }).toList(),
@@ -100,12 +100,11 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                       children: [
                         IconButton(
                           icon: const Icon(FluentIcons.download, size: 14),
-                          onPressed: () => _importTheme(context, provider),
+                          onPressed: () => _importTheme(provider),
                         ),
                         IconButton(
                           icon: const Icon(FluentIcons.add, size: 14),
-                          onPressed: () =>
-                              _createNewCustomTheme(context, provider),
+                          onPressed: () => _createNewCustomTheme(provider),
                         ),
                       ],
                     ),
@@ -118,11 +117,11 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                       isSelected: provider.currentTheme.id == ct.id,
                       onTap: () async {
                         await provider.setTheme(ct);
-                        if (mounted) _refreshTheme(context, ct);
+                        if (mounted) _refreshTheme(ct);
                       },
-                      onEdit: () => _editCustomTheme(context, provider, ct),
-                      onDelete: () => _deleteCustomTheme(context, provider, ct),
-                      onExport: () => _exportTheme(context, provider, ct),
+                      onEdit: () => _editCustomTheme(provider, ct),
+                      onDelete: () => _deleteCustomTheme(provider, ct),
+                      onExport: () => _exportTheme(provider, ct),
                     )),
               ],
             ),
@@ -138,7 +137,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
               title: l10n.createCustomTheme,
               description: l10n.designOwnColorScheme,
               control: FilledButton(
-                onPressed: () => _createNewCustomTheme(context, provider),
+                onPressed: () => _createNewCustomTheme(provider),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -154,7 +153,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
               description: l10n.importFromFile,
               showDivider: provider.customThemes.isNotEmpty,
               control: Button(
-                onPressed: () => _importTheme(context, provider),
+                onPressed: () => _importTheme(provider),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -179,7 +178,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
               children: [
                 Button(
                   onPressed: () =>
-                      _exportTheme(context, provider, provider.currentTheme),
+                      _exportTheme(provider, provider.currentTheme),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -191,8 +190,8 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
                 ),
                 const SizedBox(width: 8),
                 FilledButton(
-                  onPressed: () => _editCustomTheme(
-                      context, provider, provider.currentTheme),
+                  onPressed: () =>
+                      _editCustomTheme(provider, provider.currentTheme),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -211,8 +210,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
 
   // ---- Theme management ----
 
-  void _createNewCustomTheme(
-      BuildContext context, ThemeCustomizationProvider provider) {
+  void _createNewCustomTheme(ThemeCustomizationProvider provider) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
@@ -227,15 +225,15 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
           await provider.addCustomTheme(theme);
           await provider.setTheme(theme);
           if (mounted) {
-            _refreshTheme(context, theme);
-            _showSuccess(context, l10n.themeCreatedSuccessfully);
+            _refreshTheme(theme);
+            _showSuccess(l10n.themeCreatedSuccessfully);
           }
         },
       ),
     );
   }
 
-  void _editCustomTheme(BuildContext context,
+  void _editCustomTheme(
       ThemeCustomizationProvider provider, CustomThemeData theme) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
@@ -246,27 +244,27 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
         onSave: (updated) async {
           await provider.updateCustomTheme(updated);
           if (provider.currentTheme.id == theme.id && mounted) {
-            _refreshTheme(context, updated);
+            _refreshTheme(updated);
           }
-          if (mounted) _showSuccess(context, l10n.themeUpdatedSuccessfully);
+          if (mounted) _showSuccess(l10n.themeUpdatedSuccessfully);
         },
       ),
     );
   }
 
-  void _deleteCustomTheme(BuildContext context,
+  void _deleteCustomTheme(
       ThemeCustomizationProvider provider, CustomThemeData theme) {
     final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (_) => ContentDialog(
+      builder: (dialogContext) => ContentDialog(
         title: Text(l10n.deleteCustomTheme),
         content: Text(l10n.confirmDeleteTheme(theme.name)),
         actions: [
           Button(
             child: Text(l10n.cancel),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(dialogContext),
           ),
           FilledButton(
             style: const ButtonStyle(
@@ -276,10 +274,10 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
             onPressed: () async {
               await provider.deleteCustomTheme(theme.id);
               if (mounted) {
-                _refreshTheme(context, provider.currentTheme);
-                Navigator.pop(context);
-                _showSuccess(context, l10n.themeDeletedSuccessfully);
+                _refreshTheme(provider.currentTheme);
+                _showSuccess(l10n.themeDeletedSuccessfully);
               }
+              if (dialogContext.mounted) Navigator.pop(dialogContext);
             },
           ),
         ],
@@ -289,7 +287,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
 
   // ---- Import / Export ----
 
-  Future<void> _exportTheme(BuildContext context,
+  Future<void> _exportTheme(
       ThemeCustomizationProvider provider, CustomThemeData theme) async {
     final l10n = AppLocalizations.of(context)!;
     try {
@@ -306,20 +304,19 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       switch (result) {
         case 'file':
           await _saveThemeToFile(json, fileName);
-          if (mounted) _showSuccess(context, l10n.themeExportedSuccessfully);
+          if (mounted) _showSuccess(l10n.themeExportedSuccessfully);
         case 'clipboard':
           await Clipboard.setData(ClipboardData(text: json));
-          if (mounted) _showSuccess(context, l10n.themeCopiedToClipboard);
+          if (mounted) _showSuccess(l10n.themeCopiedToClipboard);
         case 'share':
           await _shareTheme(json, fileName);
       }
     } catch (e) {
-      if (mounted) _showError(context, '${l10n.exportFailed}: $e');
+      if (mounted) _showError('${l10n.exportFailed}: $e');
     }
   }
 
-  Future<void> _importTheme(
-      BuildContext context, ThemeCustomizationProvider provider) async {
+  Future<void> _importTheme(ThemeCustomizationProvider provider) async {
     final l10n = AppLocalizations.of(context)!;
     try {
       final result = await showDialog<String>(
@@ -337,7 +334,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       }
 
       if (json == null || json.isEmpty) {
-        if (mounted) _showError(context, l10n.noThemeDataFound);
+        if (mounted) _showError(l10n.noThemeDataFound);
         return;
       }
 
@@ -345,14 +342,14 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
       if (imported != null) {
         await provider.setTheme(imported);
         if (mounted) {
-          _refreshTheme(context, imported);
-          _showSuccess(context, l10n.themeImportedSuccessfully(imported.name));
+          _refreshTheme(imported);
+          _showSuccess(l10n.themeImportedSuccessfully(imported.name));
         }
       } else {
-        if (mounted) _showError(context, l10n.invalidThemeFormat);
+        if (mounted) _showError(l10n.invalidThemeFormat);
       }
     } catch (e) {
-      if (mounted) _showError(context, '${l10n.importFailed}: $e');
+      if (mounted) _showError('${l10n.importFailed}: $e');
     }
   }
 
@@ -362,7 +359,9 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
     if (Platform.isAndroid || Platform.isIOS) {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/$fileName')..writeAsStringSync(data);
-      await Share.shareXFiles([XFile(file.path)], subject: 'Theme Export');
+      await SharePlus.instance.share(
+        ShareParams(files: [XFile(file.path)], subject: 'Theme Export'),
+      );
     } else {
       final outputPath = await fp.FilePicker.saveFile(
         dialogTitle: 'Save JSON file',
@@ -391,16 +390,18 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
   Future<void> _shareTheme(String data, String fileName) async {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/$fileName')..writeAsStringSync(data);
-    await Share.shareXFiles(
-      [XFile(file.path)],
-      subject: 'Custom Theme',
-      text: 'Check out my custom theme!',
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile(file.path)],
+        subject: 'Custom Theme',
+        text: 'Check out my custom theme!',
+      ),
     );
   }
 
   // ---- Feedback ----
 
-  void _showSuccess(BuildContext context, String message) => displayInfoBar(
+  void _showSuccess(String message) => displayInfoBar(
         context,
         builder: (_, __) => InfoBar(
           title: Text(message),
@@ -408,7 +409,7 @@ class _ThemeCustomizationSectionState extends State<ThemeCustomizationSection> {
         ),
       );
 
-  void _showError(BuildContext context, String message) => displayInfoBar(
+  void _showError(String message) => displayInfoBar(
         context,
         builder: (_, __) => InfoBar(
           title: Text(AppLocalizations.of(context)!.error),

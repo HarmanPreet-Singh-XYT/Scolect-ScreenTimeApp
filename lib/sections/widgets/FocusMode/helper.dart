@@ -45,6 +45,7 @@ class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
     final accent = theme.accentColor;
     final size = widget.compact ? 36.0 : 44.0;
     final iconSize = widget.compact ? 14.0 : 16.0;
+    final pressScale = _isPressed ? 0.92 : 1.0;
 
     return Tooltip(
       message: widget.tooltip,
@@ -58,7 +59,8 @@ class _ControlButtonState extends State<ControlButton> with _HoverStateMixin {
             duration: const Duration(milliseconds: 150),
             width: size,
             height: size,
-            transform: Matrix4.identity()..scale(_isPressed ? 0.92 : 1.0),
+            transform: Matrix4.identity()
+              ..scaleByDouble(pressScale, pressScale, 1.0, 1.0),
             transformAlignment: Alignment.center,
             decoration: BoxDecoration(
               color: _isHovered

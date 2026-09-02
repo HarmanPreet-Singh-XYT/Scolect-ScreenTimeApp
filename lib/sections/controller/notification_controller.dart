@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:screentime/utils/platform_utils.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:flutter/material.dart';
 import 'package:local_notifier/local_notifier.dart';

@@ -142,7 +142,8 @@ class _AnalyticsCardState extends State<_AnalyticsCard>
   static const _hoverDuration = Duration(milliseconds: 200);
   static const _staggerDelay = Duration(milliseconds: 100);
   static final _identityMatrix = Matrix4.identity();
-  static final _hoverMatrix = Matrix4.identity()..translate(0.0, -2.0);
+  static final _hoverMatrix = Matrix4.identity()
+    ..translateByDouble(0.0, -2.0, 0.0, 1.0);
 
   @override
   void initState() {

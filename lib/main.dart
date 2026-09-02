@@ -32,7 +32,7 @@ import 'package:tray_manager/tray_manager.dart';
 import './sections/controller/application_controller.dart';
 import 'utils/single_instance_ipc.dart';
 import 'utils/browser_extension_server.dart';
-import 'dart:ui' show lerpDouble, PlatformDispatcher;
+import 'dart:ui' show lerpDouble;
 import 'package:provider/provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
@@ -571,21 +571,7 @@ class _MyAppState extends State<MyApp>
 
   bool _trayShowingUpdateIcon = false;
 
-  static const List<String> _sectionNames = [
-    'Overview',
-    'Applications',
-    'Alerts & Limits',
-    'Reports',
-    'Focus Mode',
-    'Settings',
-    'Help',
-  ];
-
   void changeIndex(int value) {
-    final name = (value >= 0 && value < _sectionNames.length)
-        ? _sectionNames[value]
-        : 'Section $value';
-    // SentryService.addBreadcrumb('Navigated to $name', category: 'navigation');
     navigationState.changeIndex(value);
   }
 

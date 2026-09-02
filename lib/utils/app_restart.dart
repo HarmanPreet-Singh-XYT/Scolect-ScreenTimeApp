@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 /// Utility class for restarting the application
@@ -23,7 +24,7 @@ class AppRestart {
     try {
       await _channel.invokeMethod('restartApp');
     } catch (e) {
-      print('Failed to restart app: $e');
+      debugPrint('Failed to restart app: $e');
       rethrow; // Re-throw so caller can handle the error
     }
   }

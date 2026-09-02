@@ -8,7 +8,6 @@
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:screentime/foreground_window_plugin.dart' as facade;
 import 'package:screentime/foreground_window_plugin_windows.dart'
     as windows_impl;
 

@@ -85,7 +85,7 @@ Future<String?> pickAndReadJsonFile() async {
 
   reader.addEventListener('load', (web.Event _) {
     if (!textCompleter.isCompleted) {
-      textCompleter.complete(reader.result as String);
+      textCompleter.complete((reader.result as JSString).toDart);
     }
   }.toJS);
   reader.addEventListener('error', (web.Event _) {

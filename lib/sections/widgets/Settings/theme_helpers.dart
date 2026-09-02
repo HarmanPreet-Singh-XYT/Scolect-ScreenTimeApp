@@ -473,7 +473,7 @@ class _ColorPickerRow extends StatelessWidget {
                       Border.all(color: ft.inactiveBackgroundColor, width: 1),
                 ),
                 child: Text(
-                  '#${color.value.toRadixString(16).substring(2).toUpperCase()}',
+                  '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}',
                   style: const TextStyle(
                       fontSize: 11,
                       fontFamily: 'monospace',

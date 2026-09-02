@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import '../controller/services/data_export_services.dart';
@@ -16,8 +17,8 @@ import 'package:flutter/material.dart' as mt;
 mixin HoverStateMixin<T extends StatefulWidget> on State<T> {
   bool isHovered = false;
 
-  void onEnter(_) => setState(() => isHovered = true);
-  void onExit(_) => setState(() => isHovered = false);
+  void onEnter(PointerEnterEvent _) => setState(() => isHovered = true);
+  void onExit(PointerExitEvent _) => setState(() => isHovered = false);
 
   Widget buildHoverRegion({required Widget child, MouseCursor? cursor}) {
     return MouseRegion(
@@ -111,13 +112,11 @@ class _DialogTitleRow extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String title;
-  final Widget? trailing;
 
   const _DialogTitleRow({
     required this.icon,
     required this.color,
     required this.title,
-    this.trailing,
   });
 
   @override
@@ -127,7 +126,6 @@ class _DialogTitleRow extends StatelessWidget {
         _IconBox(icon: icon, color: color, size: 18, padding: 8, radius: 8),
         const SizedBox(width: 12),
         Text(title),
-        if (trailing != null) ...[const Spacer(), trailing!],
       ],
     );
   }
@@ -615,6 +613,7 @@ class _BackupRestoreDialogState extends State<BackupRestoreDialog>
       builder: (_) => const _RefinedImportModeDialog(),
     );
     if (importMode == null) return;
+    if (!mounted) return;
 
     if (importMode == ImportMode.replace) {
       final confirmed = await showDialog<bool>(

@@ -59,7 +59,8 @@ class CustomThemeData {
         'id': id,
         'name': name,
         'isCustom': isCustom,
-        for (final entry in _colorMap().entries) entry.key: entry.value.value,
+        for (final entry in _colorMap().entries)
+          entry.key: entry.value.toARGB32(),
       };
 
   factory CustomThemeData.fromJson(Map<String, dynamic> json) =>

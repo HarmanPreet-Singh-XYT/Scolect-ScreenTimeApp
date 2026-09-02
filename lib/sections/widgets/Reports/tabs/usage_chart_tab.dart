@@ -108,8 +108,9 @@ class UsageChartTab extends StatelessWidget {
                             interval: 1,
                             getTitlesWidget: (value, _) {
                               final idx = value.round();
-                              if (idx < 0 || idx >= sortedDates.length)
+                              if (idx < 0 || idx >= sortedDates.length) {
                                 return const SizedBox.shrink();
+                              }
                               final isPeak = peakSpot?.x.round() == idx;
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8),

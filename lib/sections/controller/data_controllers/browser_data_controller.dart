@@ -98,8 +98,9 @@ class BrowserDataProvider extends ChangeNotifier {
   static final _webInstance = WebBrowserDataProvider();
 
   factory BrowserDataProvider() {
-    if (kIsWeb)
+    if (kIsWeb) {
       return _WebDelegatingProvider(_webInstance) as BrowserDataProvider;
+    }
     return _instance;
   }
 

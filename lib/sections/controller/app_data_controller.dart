@@ -369,11 +369,11 @@ class AppDataStore extends ChangeNotifier {
         // Platform-specific initialization
         String hivePath;
 
-        String? _supportDirPath;
+        String? supportDirPath;
         if (!kIsWeb && (Platform.isMacOS || Platform.isWindows)) {
           final docsDir = await getApplicationDocumentsDirectory();
           final supportDir = await getApplicationSupportDirectory();
-          _supportDirPath = supportDir.path;
+          supportDirPath = supportDir.path;
           final newHivePath = '${docsDir.path}/Scolect';
           final newDir = Directory(newHivePath);
 
@@ -441,7 +441,7 @@ class AppDataStore extends ChangeNotifier {
               if (!await dir.exists()) await dir.create(recursive: true);
               // Probe using RandomAccessFile (same as Hive's box open) to
               // accurately detect sandbox permission blocks.
-              final probeFile = File('${hivePath}/.hive_probe');
+              final probeFile = File('$hivePath/.hive_probe');
               final raf = await probeFile.open(mode: FileMode.append);
               await raf.close();
               await probeFile.delete();
@@ -465,26 +465,32 @@ class AppDataStore extends ChangeNotifier {
         }
 
         // Register adapters
-        if (!Hive.isAdapterRegistered(1))
+        if (!Hive.isAdapterRegistered(1)) {
           Hive.registerAdapter(AppUsageRecordAdapter());
-        if (!Hive.isAdapterRegistered(2))
+        }
+        if (!Hive.isAdapterRegistered(2)) {
           Hive.registerAdapter(TimeRangeAdapter());
-        if (!Hive.isAdapterRegistered(3))
+        }
+        if (!Hive.isAdapterRegistered(3)) {
           Hive.registerAdapter(FocusSessionRecordAdapter());
-        if (!Hive.isAdapterRegistered(4))
+        }
+        if (!Hive.isAdapterRegistered(4)) {
           Hive.registerAdapter(AppMetadataAdapter());
-        if (!Hive.isAdapterRegistered(5))
+        }
+        if (!Hive.isAdapterRegistered(5)) {
           Hive.registerAdapter(DurationAdapter());
-        if (!Hive.isAdapterRegistered(6))
+        }
+        if (!Hive.isAdapterRegistered(6)) {
           Hive.registerAdapter(BrowserSourceAdapter());
+        }
 
         // Open boxes — on macOS, the probe may pass but Hive's internal file
         // access can still be blocked by the sandbox (errno = 1). If that
         // happens, reinitialize Hive to Application Support and retry all boxes
         // from the new path.
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
-        if (_usageBox == null && !kIsWeb && Platform.isMacOS && _supportDirPath != null) {
-          final fallbackPath = '$_supportDirPath/Scolect';
+        if (_usageBox == null && !kIsWeb && Platform.isMacOS && supportDirPath != null) {
+          final fallbackPath = '$supportDirPath/Scolect';
           debugPrint('⚠️ Box open failed on macOS, falling back to Application Support: $fallbackPath');
           await Hive.close();
           await Directory(fallbackPath).create(recursive: true);
@@ -2582,11 +2588,13 @@ class AppDataStore extends ChangeNotifier {
 
         if (_usageBox != null && _usageBox!.isOpen) await _usageBox!.close();
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
-        if (_metadataBox != null && _metadataBox!.isOpen)
+        if (_metadataBox != null && _metadataBox!.isOpen) {
           await _metadataBox!.close();
+        }
         if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
-        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen) {
           await _webMetadataBox!.close();
+        }
 
         if (progressCallback != null) progressCallback(0.4);
 
@@ -2634,11 +2642,13 @@ class AppDataStore extends ChangeNotifier {
 
         if (_usageBox != null && _usageBox!.isOpen) await _usageBox!.close();
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
-        if (_metadataBox != null && _metadataBox!.isOpen)
+        if (_metadataBox != null && _metadataBox!.isOpen) {
           await _metadataBox!.close();
+        }
         if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
-        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen) {
           await _webMetadataBox!.close();
+        }
 
         await Hive.close();
         _isInitialized = false;
@@ -2660,11 +2670,13 @@ class AppDataStore extends ChangeNotifier {
 
         if (_usageBox != null && _usageBox!.isOpen) await _usageBox!.close();
         if (_focusBox != null && _focusBox!.isOpen) await _focusBox!.close();
-        if (_metadataBox != null && _metadataBox!.isOpen)
+        if (_metadataBox != null && _metadataBox!.isOpen) {
           await _metadataBox!.close();
+        }
         if (_webUsageBox != null && _webUsageBox!.isOpen) await _webUsageBox!.close();
-        if (_webMetadataBox != null && _webMetadataBox!.isOpen)
+        if (_webMetadataBox != null && _webMetadataBox!.isOpen) {
           await _webMetadataBox!.close();
+        }
 
         _isInitialized = false;
       } catch (e) {

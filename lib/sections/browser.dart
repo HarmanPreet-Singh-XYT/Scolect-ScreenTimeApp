@@ -614,8 +614,9 @@ class _DesktopSetupScreenState extends State<_DesktopSetupScreen> {
                         placeholder: '46000',
                         style: const TextStyle(fontSize: 13),
                         onChanged: (_) {
-                          if (_portError != null)
+                          if (_portError != null) {
                             setState(() => _portError = null);
+                          }
                         },
                         onSubmitted: (_) => _savePort(settings, l10n),
                       ),
@@ -1030,8 +1031,9 @@ class _DesktopServerSettingsState extends State<_DesktopServerSettings> {
                         placeholder: '46000',
                         style: const TextStyle(fontSize: 13),
                         onChanged: (_) {
-                          if (_portError != null)
+                          if (_portError != null) {
                             setState(() => _portError = null);
+                          }
                         },
                       ),
                     ),
@@ -1323,8 +1325,9 @@ class _BrowserSourceRow extends StatelessWidget {
   String _lastSeenLabel(AppLocalizations l10n) {
     final elapsed = DateTime.now().difference(source.lastSeen);
     if (elapsed.inMinutes < 1) return l10n.browserSyncedJustNow;
-    if (elapsed.inHours < 1)
+    if (elapsed.inHours < 1) {
       return l10n.browserSyncedMinutesAgo(elapsed.inMinutes);
+    }
     if (elapsed.inDays < 1) return l10n.browserSyncedHoursAgo(elapsed.inHours);
     return l10n.browserSourceLastSeenDaysAgo(elapsed.inDays);
   }
@@ -1462,8 +1465,8 @@ class _RenameBrowserDialogState extends State<_RenameBrowserDialog> {
           onPressed: () => Navigator.pop(context),
         ),
         FilledButton(
-          child: Text(l10n.saveButton),
           onPressed: _submit,
+          child: Text(l10n.saveButton),
         ),
       ],
     );

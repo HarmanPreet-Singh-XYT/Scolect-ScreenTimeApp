@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui' show FontFeature;
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/app_design.dart';
@@ -10,7 +9,7 @@ import 'package:screentime/main.dart' as mn;
 import 'package:screentime/sections/widgets/FocusMode/audio.dart';
 import 'package:screentime/sections/widgets/FocusMode/helper.dart';
 import 'package:screentime/sections/widgets/FocusMode/permissionbanner.dart';
-import 'package:screentime/sections/widgets/FocusMode/sessionHistory.dart';
+import 'package:screentime/sections/widgets/FocusMode/session_history.dart';
 import 'package:screentime/sections/controller/data_controllers/focus_mode_data_controller.dart';
 import 'package:screentime/sections/graphs/focus_mode_history.dart';
 import 'package:screentime/sections/graphs/focus_mode_pie_chart.dart';
@@ -548,11 +547,9 @@ class _Badge extends StatelessWidget {
 }
 
 class _LabelValue extends StatelessWidget {
-  const _LabelValue(
-      {required this.label, required this.value, this.valueColor});
+  const _LabelValue({required this.label, required this.value});
   final String label;
   final String value;
-  final Color? valueColor;
 
   @override
   Widget build(BuildContext context) {
@@ -563,7 +560,7 @@ class _LabelValue extends StatelessWidget {
         Text(label, style: theme.typography.body),
         Text(value,
             style: theme.typography.bodyStrong
-                ?.copyWith(fontWeight: FontWeight.w600, color: valueColor)),
+                ?.copyWith(fontWeight: FontWeight.w600)),
       ],
     );
   }
@@ -852,7 +849,6 @@ class _MeterState extends State<Meter> with TickerProviderStateMixin {
 
   void _onTimerUpdate(TimerUpdate update) {
     if (!mounted) return;
-    final prev = _state;
 
     final total = _totalSecondsForState(
         update.state, workDuration, shortBreak, longBreak);

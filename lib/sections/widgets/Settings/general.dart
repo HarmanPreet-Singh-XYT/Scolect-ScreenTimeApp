@@ -446,7 +446,6 @@ class _ExtensionModeCardState extends State<_ExtensionModeCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) return const SizedBox(height: 100, child: Center(child: ProgressRing()));

@@ -545,12 +545,10 @@ class _Header extends StatelessWidget {
 class _GradientIconBox extends StatelessWidget {
   final IconData icon;
   final Color color;
-  final double size;
 
   const _GradientIconBox({
     required this.icon,
     required this.color,
-    this.size = 24,
   });
 
   @override
@@ -568,7 +566,7 @@ class _GradientIconBox extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Icon(icon, size: size, color: color),
+      child: Icon(icon, size: 24, color: color),
     );
   }
 }

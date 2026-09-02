@@ -370,7 +370,6 @@ class PersonalizationEngine {
   // ── Private helpers ─────────────────────────────────────────────────────────
 
   TimeRange? _longestFocusStretch(DateTime date) {
-    final dateKey = _fmtDateKey(date);
     // Gather all usage periods from all apps for today
     final allPeriods = <TimeRange>[];
     for (final appName in _store.allAppNames) {
@@ -435,9 +434,6 @@ class PersonalizationEngine {
     };
     return productiveCategories.contains(category);
   }
-
-  static String _fmtDateKey(DateTime d) =>
-      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   static String _fmtHour(DateTime dt) {
     final h = dt.hour;

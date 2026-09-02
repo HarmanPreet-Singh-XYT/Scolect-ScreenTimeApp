@@ -71,7 +71,7 @@ class _ReportsState extends State<Reports> {
     super.didChangeDependencies();
     if (!_isInitialized) {
       _isInitialized = true;
-      _xlsxExporter = AnalyticsXLSXExporter(_analyticsController, _l10n);
+      _xlsxExporter = AnalyticsXLSXExporter(_l10n);
       _initializeAndLoadData();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         navigationState.registerRefreshCallback(_loadAnalyticsData);
