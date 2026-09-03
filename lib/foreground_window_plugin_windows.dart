@@ -271,11 +271,20 @@ class ForegroundWindowPlugin {
 
   /// Maps process ID → parent process ID.
   /// Avoids CreateToolhelp32Snapshot (full process snapshot) on repeated lookups.
+  /// Keyed by OS-recycled PIDs, so entries are never removed individually —
+  /// see [_maxPidCacheSize] for the bound on unbounded growth over long uptimes.
   static final Map<int, int> _parentPidCache = {};
 
   /// Maps parent process ID → parent process name.
   /// PIDs are reused by Windows but infrequently; good enough as a soft cache.
   static final Map<int, String> _parentNameCache = {};
+
+  /// Above this many entries, [_parentPidCache]/[_parentNameCache] are wiped
+  /// wholesale rather than evicted individually — they're soft/best-effort
+  /// caches keyed by transient PIDs, so occasional cache misses are cheap and
+  /// harmless, but leaving them unbounded means one new entry per distinct
+  /// process ever seen in the foreground, for the app's entire uptime.
+  static const int _maxPidCacheSize = 2000;
 
   // ── DLL handles (lazy, loaded once) ──
 
@@ -421,6 +430,7 @@ class ForegroundWindowPlugin {
         parentProcessId = _parentPidCache[processId]!;
       } else {
         parentProcessId = await compute(_resolveParentPid, processId);
+        if (_parentPidCache.length >= _maxPidCacheSize) _parentPidCache.clear();
         _parentPidCache[processId] = parentProcessId;
       }
 
@@ -430,6 +440,9 @@ class ForegroundWindowPlugin {
       } else {
         parentProcessName =
             await compute(_resolveParentProcessName, parentProcessId);
+        if (_parentNameCache.length >= _maxPidCacheSize) {
+          _parentNameCache.clear();
+        }
         _parentNameCache[parentProcessId] = parentProcessName;
       }
 

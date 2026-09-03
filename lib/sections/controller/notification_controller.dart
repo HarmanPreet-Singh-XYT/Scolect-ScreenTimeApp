@@ -61,6 +61,7 @@ class NotificationController with ChangeNotifier {
   final Set<String> _notifiedExceededApps = {};
   bool _notifiedOverallApproaching = false;
   bool _notifiedOverallExceeded = false;
+  DateTime? _notifiedForLogicalDate;
 
   // --------------------------------------------------------------------------
   // INITIALIZATION
@@ -454,8 +455,22 @@ class NotificationController with ChangeNotifier {
   Future<void> checkAndSendNotifications() async {
     if (!await _ensurePermission('notification check')) return;
 
+    _resetNotificationsIfNewLogicalDay();
+
     await _checkAppLimits();
     await _checkOverallLimit();
+  }
+
+  /// Dedup sets otherwise grow forever and only ever fire once per process
+  /// lifetime instead of once per day — resync against the app's logical
+  /// day (which may not be plain midnight, see [SettingsManager.getLogicalDate]).
+  void _resetNotificationsIfNewLogicalDay() {
+    final logicalDate = _settingsManager.getLogicalDate(DateTime.now());
+    if (_notifiedForLogicalDate == null ||
+        !_notifiedForLogicalDate!.isAtSameMomentAs(logicalDate)) {
+      resetNotifications();
+      _notifiedForLogicalDate = logicalDate;
+    }
   }
 
   Future<void> _checkAppLimits() async {

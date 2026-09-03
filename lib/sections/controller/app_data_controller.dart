@@ -1354,6 +1354,38 @@ class AppDataStore extends ChangeNotifier {
 
       _lastMaintenanceDate = DateTime.now();
     });
+
+    await _runtimeCacheLock.synchronized(() {
+      _pruneRuntimeCache();
+    });
+  }
+
+  /// Trims [_usageCacheByDate]/[_focusCacheByDate] back down to the
+  /// documented retention window. Writes only ever add new dateKey buckets
+  /// (see [recordAppUsage]/[setAppUsage]/[recordFocusSession]), so without
+  /// this the caches grow by one bucket per calendar day for the entire
+  /// process lifetime. Must be called with [_runtimeCacheLock] held.
+  void _pruneRuntimeCache() {
+    final usageCutoff =
+        DateTime.now().subtract(const Duration(days: _usageCacheDays));
+    final focusCutoff =
+        DateTime.now().subtract(const Duration(days: _focusCacheDays));
+    final usageCutoffKey = _formatDateKey(usageCutoff);
+    final focusCutoffKey = _formatDateKey(focusCutoff);
+
+    _usageCacheByDate.removeWhere((dateKey, _) => dateKey.compareTo(usageCutoffKey) < 0);
+    _focusCacheByDate.removeWhere((dateKey, _) => dateKey.compareTo(focusCutoffKey) < 0);
+
+    int totalUsageRecords =
+        _usageCacheByDate.values.fold(0, (sum, map) => sum + map.length);
+    if (totalUsageRecords > _maxUsageCacheSize) {
+      final sortedKeys = _usageCacheByDate.keys.toList()..sort();
+      for (final key in sortedKeys) {
+        if (totalUsageRecords <= _maxUsageCacheSize) break;
+        totalUsageRecords -= _usageCacheByDate[key]!.length;
+        _usageCacheByDate.remove(key);
+      }
+    }
   }
 
   void _schedulePeriodicMaintenance() {
@@ -1653,7 +1685,9 @@ class AppDataStore extends ChangeNotifier {
         final dateKey = _formatDateKey(date);
 
         // Initialize date map if needed
+        final isNewDateBucket = !_usageCacheByDate.containsKey(dateKey);
         _usageCacheByDate.putIfAbsent(dateKey, () => {});
+        if (isNewDateBucket) _pruneRuntimeCache();
 
         final existing = _usageCacheByDate[dateKey]![appName];
 
@@ -1707,7 +1741,9 @@ class AppDataStore extends ChangeNotifier {
     try {
       return await _runtimeCacheLock.synchronized(() async {
         final dateKey = _formatDateKey(date);
+        final isNewDateBucket = !_usageCacheByDate.containsKey(dateKey);
         _usageCacheByDate.putIfAbsent(dateKey, () => {});
+        if (isNewDateBucket) _pruneRuntimeCache();
 
         final AppUsageRecord record = AppUsageRecord(
           date: date,
@@ -2013,7 +2049,9 @@ class AppDataStore extends ChangeNotifier {
       return await _runtimeCacheLock.synchronized(() async {
         final dateKey = _formatDateKey(session.date);
 
+        final isNewDateBucket = !_focusCacheByDate.containsKey(dateKey);
         _focusCacheByDate.putIfAbsent(dateKey, () => []);
+        if (isNewDateBucket) _pruneRuntimeCache();
         final sessions = _focusCacheByDate[dateKey]!;
         sessions.add(session);
 
