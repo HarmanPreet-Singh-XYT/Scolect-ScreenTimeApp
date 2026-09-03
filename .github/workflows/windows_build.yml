@@ -34,10 +34,6 @@ jobs:
         with:
           workspaces: windows/block_overlay
 
-      - name: Build block_overlay.dll
-        working-directory: windows/block_overlay
-        run: cargo build --release
-
       - name: Build Windows (Release x64)
         run: flutter build windows --release
 

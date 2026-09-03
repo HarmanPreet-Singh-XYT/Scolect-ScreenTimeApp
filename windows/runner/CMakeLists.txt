@@ -40,22 +40,41 @@ target_include_directories(${BINARY_NAME} PRIVATE "${CMAKE_SOURCE_DIR}")
 add_dependencies(${BINARY_NAME} flutter_assemble)
 
 # ── block_overlay Rust DLL ────────────────────────────────────────────────────
-# The DLL is compiled separately with `cargo build --release` inside
-# windows/block_overlay/ before (or as part of) the Flutter Windows build.
-# We copy it next to the executable so LoadLibraryA("block_overlay.dll") works.
-set(BLOCK_OVERLAY_DLL
-    "${CMAKE_SOURCE_DIR}/block_overlay/target/x86_64-pc-windows-msvc/release/block_overlay.dll")
+# Built automatically as part of this CMake build (same pattern as the
+# window_focus plugin's windows/CMakeLists.txt) so the DLL's architecture
+# always matches the runner's — no manual `cargo build` step to remember, and
+# no risk of copying a stale/mismatched-architecture DLL (e.g. an x64 DLL
+# next to an ARM64 exe, which fails to load at runtime with
+# "block_overlay.dll not loaded" instead of failing loudly at build time).
+find_program(CARGO_EXECUTABLE cargo
+  HINTS "$ENV{CARGO_HOME}/bin" "$ENV{USERPROFILE}/.cargo/bin"
+  REQUIRED
+)
 
-if(EXISTS "${BLOCK_OVERLAY_DLL}")
-  add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-      "${BLOCK_OVERLAY_DLL}"
-      "$<TARGET_FILE_DIR:${BINARY_NAME}>/block_overlay.dll"
-    COMMENT "Copying block_overlay.dll to output directory"
-  )
+if(CMAKE_VS_PLATFORM_NAME STREQUAL "ARM64")
+  set(BLOCK_OVERLAY_RUST_TARGET "aarch64-pc-windows-msvc")
 else()
-  message(WARNING
-    "block_overlay.dll not found at ${BLOCK_OVERLAY_DLL}. "
-    "Run 'cargo build --release' inside windows/block_overlay/ first. "
-    "The overlay feature will be unavailable until the DLL is present.")
+  set(BLOCK_OVERLAY_RUST_TARGET "x86_64-pc-windows-msvc")
 endif()
+
+set(BLOCK_OVERLAY_CRATE_DIR "${CMAKE_SOURCE_DIR}/block_overlay")
+set(BLOCK_OVERLAY_DLL
+    "${BLOCK_OVERLAY_CRATE_DIR}/target/${BLOCK_OVERLAY_RUST_TARGET}/release/block_overlay.dll")
+
+add_custom_command(
+  OUTPUT "${BLOCK_OVERLAY_DLL}"
+  COMMAND "${CARGO_EXECUTABLE}" build --release --target ${BLOCK_OVERLAY_RUST_TARGET}
+          --manifest-path "${BLOCK_OVERLAY_CRATE_DIR}/Cargo.toml"
+  WORKING_DIRECTORY "${BLOCK_OVERLAY_CRATE_DIR}"
+  COMMENT "Building block_overlay.dll (${BLOCK_OVERLAY_RUST_TARGET})"
+  VERBATIM
+)
+add_custom_target(block_overlay_rust_build ALL DEPENDS "${BLOCK_OVERLAY_DLL}")
+add_dependencies(${BINARY_NAME} block_overlay_rust_build)
+
+add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${BLOCK_OVERLAY_DLL}"
+    "$<TARGET_FILE_DIR:${BINARY_NAME}>/block_overlay.dll"
+  COMMENT "Copying block_overlay.dll (${BLOCK_OVERLAY_RUST_TARGET}) to output directory"
+)
