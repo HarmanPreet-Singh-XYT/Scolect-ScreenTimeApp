@@ -483,7 +483,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: c77f522a977dd381e829b26fad19b2cc8389df08
+      resolved-ref: "9e012ac8aef88cbbb2180cf3b7db4d721d3a6331"
       url: "https://github.com/HarmanPreet-Singh-XYT/local_notifier"
     source: git
     version: "0.1.6"

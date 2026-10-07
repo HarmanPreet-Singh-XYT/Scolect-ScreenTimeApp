@@ -58,10 +58,13 @@ class NotificationController with ChangeNotifier {
 
   // Daily notification dedup tracking
   final Set<String> _notifiedApproachingApps = {};
-  final Set<String> _notifiedExceededApps = {};
   bool _notifiedOverallApproaching = false;
-  bool _notifiedOverallExceeded = false;
   DateTime? _notifiedForLogicalDate;
+
+  // Last time a limit-exceeded alert was sent, keyed by appId (or
+  // [_overallKey]); drives the "frequent alerts" repeat reminders.
+  static const String _overallKey = '__overall__';
+  final Map<String, DateTime> _lastExceededAlertAt = {};
 
   // --------------------------------------------------------------------------
   // INITIALIZATION
@@ -473,6 +476,19 @@ class NotificationController with ChangeNotifier {
     }
   }
 
+  bool _frequentAlertsEnabled() =>
+      _settingsManager.getSetting('limitsAlerts.frequent') ?? false;
+
+  /// True when the limit-exceeded alert for [key] should be (re)sent: the first
+  /// time, or — with frequent alerts on — once every reminder interval.
+  bool _shouldSendExceededAlert(String key) {
+    final last = _lastExceededAlertAt[key];
+    if (last == null) return true;
+    if (!_frequentAlertsEnabled()) return false;
+    final interval = Duration(minutes: _reminderFrequency.clamp(1, 1440));
+    return DateTime.now().difference(last) >= interval;
+  }
+
   Future<void> _checkAppLimits() async {
     final appSummaries = await _screenTimeController.getAllAppsSummary();
 
@@ -480,7 +496,8 @@ class NotificationController with ChangeNotifier {
       if (!app.limitStatus) continue;
 
       if (app.currentUsage >= app.dailyLimit) {
-        if (_notifiedExceededApps.add(app.appId)) {
+        if (_shouldSendExceededAlert(app.appId)) {
+          _lastExceededAlertAt[app.appId] = DateTime.now();
           await sendAppLimitNotification(app.appName, app.dailyLimit.inMinutes);
         }
       } else if (app.percentageOfLimitUsed >= 0.9) {
@@ -501,9 +518,9 @@ class NotificationController with ChangeNotifier {
     final currentUsage = _screenTimeController.getOverallUsage();
 
     if (currentUsage >= overallLimit) {
-      if (!_notifiedOverallExceeded) {
+      if (_shouldSendExceededAlert(_overallKey)) {
+        _lastExceededAlertAt[_overallKey] = DateTime.now();
         await sendScreenTimeNotification(overallLimit.inMinutes);
-        _notifiedOverallExceeded = true;
       }
     } else if (currentUsage.inMinutes >= overallLimit.inMinutes * 0.9) {
       if (!_notifiedOverallApproaching) {
@@ -522,9 +539,8 @@ class NotificationController with ChangeNotifier {
 
   void resetNotifications() {
     _notifiedApproachingApps.clear();
-    _notifiedExceededApps.clear();
     _notifiedOverallApproaching = false;
-    _notifiedOverallExceeded = false;
+    _lastExceededAlertAt.clear();
   }
 
   void cancelAllReminders() {
