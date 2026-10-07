@@ -38,6 +38,7 @@ import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_model.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/onboarding/onboarding_screen.dart';
+import 'package:screentime/utils/nested_scroll_behavior.dart';
 import 'package:screentime/sections/widgets/FocusMode/audio.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:window_manager/window_manager.dart';
@@ -253,6 +254,7 @@ class _AppWithThemeWeb extends StatelessWidget {
       initial: themeMode,
       builder: (theme, darkTheme) => FluentApp(
         title: 'Scolect Web',
+        scrollBehavior: const NestedScrollBehavior(),
         theme: theme,
         darkTheme: darkTheme,
         navigatorKey: navigatorKey,
@@ -783,6 +785,11 @@ class _AppWithTheme extends StatelessWidget {
     final themeMode = themeProvider.adaptiveThemeMode;
     // Object.hash gives a stable int rather than a string allocation each build
     final themeKey = Object.hash(customTheme.id, themeProvider.themeMode);
+    // The flag passed from main() is only the value at launch. A theme change
+    // rebuilds FluentApp and would re-show onboarding after it finished, so
+    // re-check the persisted state.
+    final showOnboarding =
+        this.showOnboarding && !SettingsManager().onboardingCompleted;
 
     return FluentAdaptiveTheme(
       key: ValueKey(themeKey),
@@ -791,6 +798,7 @@ class _AppWithTheme extends StatelessWidget {
       initial: themeMode,
       builder: (theme, darkTheme) => FluentApp(
         title: 'Scolect',
+        scrollBehavior: const NestedScrollBehavior(),
         theme: theme,
         darkTheme: darkTheme,
         navigatorKey: navigatorKey,
