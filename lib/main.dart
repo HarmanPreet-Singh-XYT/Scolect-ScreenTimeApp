@@ -334,6 +334,10 @@ Future<void> _appMain(List<String> args) async {
       await SettingsManager().getSetting("launchAsMinimized") ?? false;
   await NotificationController().initialize();
   await windowManager.ensureInitialized();
+  // Taskbar thumbnail X, Alt+F4 and the system menu send WM_CLOSE, bypassing
+  // the in-app close button. Intercept it so those hide to the tray too —
+  // tracking only works while the process keeps running.
+  if (Platform.isWindows) await windowManager.setPreventClose(true);
 
   final String savedTheme =
       SettingsManager().getSetting("theme.selected") ?? "System";
@@ -565,7 +569,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp>
-    with TrayListener, WidgetsBindingObserver {
+    with TrayListener, WidgetsBindingObserver, WindowListener {
   // Cached so SettingsManager is not called on every build
   final String appVersion = "v${SettingsManager().versionInfo["version"]}";
   final AppDataStore _dataStore = AppDataStore();
@@ -591,6 +595,7 @@ class _MyAppState extends State<MyApp>
     _initDataStore();
     _initTray();
     trayManager.addListener(this);
+    if (Platform.isWindows) windowManager.addListener(this);
     if (widget.savedLocale != null) _locale = Locale(widget.savedLocale!);
 
     if (autoUpdates) {
@@ -675,7 +680,17 @@ class _MyAppState extends State<MyApp>
 
   void _exitApp() {
     navigationState.stopPeriodicRefresh();
-    Platform.isMacOS ? MacOSWindow.exit() : appWindow.close();
+    if (Platform.isMacOS) {
+      MacOSWindow.exit();
+    } else {
+      // destroy() bypasses setPreventClose, unlike appWindow.close().
+      windowManager.destroy();
+    }
+  }
+
+  @override
+  void onWindowClose() {
+    if (Platform.isWindows) _hideApp();
   }
 
   void _openSection(int index) {
@@ -736,6 +751,7 @@ class _MyAppState extends State<MyApp>
     BrowserExtensionServer.dispose();
     _dataStore.dispose().then((_) => Hive.close());
     trayManager.removeListener(this);
+    if (Platform.isWindows) windowManager.removeListener(this);
     SoundManager.dispose();
     navigationState.stopPeriodicRefresh();
     super.dispose();

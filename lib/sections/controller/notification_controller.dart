@@ -48,6 +48,11 @@ class NotificationController with ChangeNotifier {
   // Pending alerts: alertId → creation time
   final Map<int, DateTime> _pendingAlerts = {};
 
+  // Latest system notification per topic (type + subject). A new one for the
+  // same topic closes the previous so repeats replace rather than pile up in
+  // the notification center.
+  final Map<String, LocalNotification> _activeSystemNotifications = {};
+
   // Popup alert callback
   Function(String title, String message,
       {Function? onClose, Function? onRemind})? _showAlertCallback;
@@ -255,6 +260,7 @@ class NotificationController with ChangeNotifier {
     if (useSystem) {
       await _showSystemNotification(
         id: id,
+        topic: '$type:${extraData ?? ''}',
         title: title,
         body: body,
         type: type,
@@ -282,6 +288,7 @@ class NotificationController with ChangeNotifier {
 
   Future<void> _showSystemNotification({
     required int id,
+    required String topic,
     required String title,
     required String body,
     required String type,
@@ -289,6 +296,15 @@ class NotificationController with ChangeNotifier {
     bool includeRemindAction = true,
   }) async {
     try {
+      final previous = _activeSystemNotifications.remove(topic);
+      if (previous != null) {
+        try {
+          await previous.close();
+        } catch (_) {
+          // Already dismissed by the user or the OS.
+        }
+      }
+
       final actions = _soundEnabled
           ? [
               LocalNotificationAction(text: 'Close', type: 'close'),
@@ -311,6 +327,13 @@ class NotificationController with ChangeNotifier {
         }
       };
 
+      notification.onClose = (_) {
+        if (identical(_activeSystemNotifications[topic], notification)) {
+          _activeSystemNotifications.remove(topic);
+        }
+      };
+
+      _activeSystemNotifications[topic] = notification;
       _autoDismiss(id, type, extraData: extraData);
       await notification.show();
     } catch (e) {

@@ -16,6 +16,30 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
   // ✅ Store the result at launch (must capture immediately)
   private var wasLaunchedAsLoginItem: Bool = false
   
+  // Tracking only works while the process runs, so Cmd+Q and Dock > Quit hide
+  // the app (like the window close button) instead of terminating it. Real
+  // exits — tray Exit, restart, Sparkle relaunch, shutdown/logout — set or
+  // satisfy this and terminate normally.
+  var allowTermination = false
+
+  override func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+    if allowTermination || isSystemInitiatedQuit() {
+      return .terminateNow
+    }
+    hideWindow()
+    return .terminateCancel
+  }
+
+  /// Shutdown, restart and logout arrive as a quit Apple event carrying a
+  /// reason; refusing those would block the whole system from shutting down.
+  private func isSystemInitiatedQuit() -> Bool {
+    guard let event = NSAppleEventManager.shared().currentAppleEvent,
+          event.eventID == kAEQuitApplication,
+          let reason = event.attributeDescriptor(forKeyword: kAEQuitReason)?.enumCodeValue
+    else { return false }
+    return reason == kAEShutDown || reason == kAERestart || reason == kAEReallyLogOut
+  }
+
   override func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
     return false
   }
@@ -28,6 +52,12 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
     // ✅ IMPORTANT: Capture login item status IMMEDIATELY at launch
     // This must be done before any async operations as the AppleEvent is transient
     wasLaunchedAsLoginItem = launchedAsLogInItem
+
+    // Sparkle terminates the app itself to install an update; let it.
+    NotificationCenter.default.addObserver(
+      forName: Notification.Name("SUUpdaterWillRestartNotification"),
+      object: nil, queue: .main
+    ) { [weak self] _ in self?.allowTermination = true }
 
     setupMethodChannel()
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -207,6 +237,7 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
   
   private func exitApp() {
     DispatchQueue.main.async {
+      self.allowTermination = true
       NSApplication.shared.terminate(nil)
     }
   }

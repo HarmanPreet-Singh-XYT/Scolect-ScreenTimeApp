@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:window_manager/window_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'macos_window.dart';
 
@@ -68,7 +69,7 @@ class SingleInstanceIPC {
     if (Platform.isMacOS) {
       MacOSWindow.exit();
     } else {
-      appWindow.close();
+      windowManager.destroy();
     }
   }
 

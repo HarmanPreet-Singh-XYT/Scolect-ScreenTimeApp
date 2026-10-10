@@ -1023,6 +1023,16 @@ class AppDataStore extends ChangeNotifier {
                 ? existing.sourceIndex
                 : _browserSourcesBox!.length,
           );
+    // lastSeen changes on every sync; persisting each one just appends to the
+    // Hive file, so only write when something real changed or it's stale.
+    if (existing != null &&
+        existing.detectedBrowser == updated.detectedBrowser &&
+        existing.displayName == updated.displayName &&
+        existing.nameUpdatedAt == updated.nameUpdatedAt &&
+        existing.sourceIndex == updated.sourceIndex &&
+        now.difference(existing.lastSeen) < const Duration(minutes: 10)) {
+      return;
+    }
     await _browserSourcesBox!.put(id, updated).catchError((e) {
       debugPrint('⚠️ Error saving browser source to Hive: $e');
     });
@@ -1183,9 +1193,80 @@ class AppDataStore extends ChangeNotifier {
   // BOX MANAGEMENT
   // ============================================================
 
+  /// Hive is append-only and reads a whole box into memory on open, so a box
+  /// file that has ballooned with superseded copies slows (or hangs) launch.
+  /// Anything above [_compactBoxFileBytes] is compacted before opening; a file
+  /// that is still above [_maxBoxFileBytes] afterwards is set aside.
+  static const int _compactBoxFileBytes = 5 * 1024 * 1024;
+  static const int _maxBoxFileBytes = 256 * 1024 * 1024;
+
+  Future<void> _salvageBloatedBox(String boxName) async {
+    final dir = _activeHiveDirPath;
+    if (kIsWeb || dir == null || Hive.isBoxOpen(boxName)) return;
+    try {
+      final file = File('$dir/$boxName.hive');
+      if (!await file.exists()) return;
+      final size = await file.length();
+      if (size <= _compactBoxFileBytes) return;
+
+      // A lazy box keeps only keys in memory and never decodes values on open,
+      // so a multi-GB file can be read without exhausting memory. Hive's own
+      // compact() fails on files over 2 GB, so rewrite the live records into a
+      // fresh file instead, keeping the old one until the rewrite succeeds.
+      final aside = File('$dir/$boxName.hive.salvage.bak');
+      var movedAside = false;
+      try {
+        debugPrint('🧹 $boxName is ${size ~/ (1024 * 1024)} MB — rewriting');
+        final lazy = await Hive.openLazyBox(boxName);
+        final live = <dynamic, dynamic>{};
+        // Any unreadable key aborts: better to leave the file alone than to
+        // rewrite it without that record.
+        for (final key in lazy.keys.toList()) {
+          live[key] = await lazy.get(key);
+        }
+        await lazy.close();
+
+        if (await aside.exists()) await aside.delete();
+        await file.rename(aside.path);
+        movedAside = true;
+
+        final fresh = await Hive.openBox(boxName);
+        await fresh.putAll(live);
+        await fresh.flush();
+        await fresh.close();
+
+        await aside.delete();
+        debugPrint('✅ $boxName rewritten: ${live.length} records, '
+            '${await file.length() ~/ 1024} KB');
+      } catch (e) {
+        debugPrint('⚠️ Could not salvage $boxName: $e');
+        try {
+          if (Hive.isBoxOpen(boxName)) await Hive.box(boxName).close();
+        } catch (_) {}
+        if (movedAside && await aside.exists()) {
+          try {
+            if (await file.exists()) await file.delete();
+            await aside.rename(file.path);
+          } catch (_) {}
+        }
+      }
+
+      final after = await file.length();
+      if (after <= _maxBoxFileBytes) return;
+      final dst = File('$dir/$boxName.hive.oversized.bak');
+      if (await dst.exists()) await dst.delete();
+      await file.rename(dst.path);
+      debugPrint('⚠️ $boxName still ${after ~/ (1024 * 1024)} MB — moved to '
+          '${dst.path} and starting fresh');
+    } catch (e) {
+      debugPrint('⚠️ Could not check size of $boxName: $e');
+    }
+  }
+
   Future<Box<T>?> _openBoxWithRetry<T>(String boxName,
       {int maxRetries = 3}) async {
     int attempts = 0;
+    await _salvageBloatedBox(boxName);
 
     while (attempts < maxRetries) {
       try {
@@ -1476,6 +1557,21 @@ class AppDataStore extends ChangeNotifier {
         displayName: displayName ?? existing?.displayName ?? '',
         updatedAt: updatedAt ?? DateTime.now().millisecondsSinceEpoch,
       );
+
+      // Hive is append-only: re-putting identical metadata (the extension
+      // re-sends every domain on each sync) only bloats the box file.
+      if (existing != null &&
+          existing.category == updated.category &&
+          existing.isProductive == updated.isProductive &&
+          existing.isTracking == updated.isTracking &&
+          existing.isVisible == updated.isVisible &&
+          existing.dailyLimit == updated.dailyLimit &&
+          existing.limitStatus == updated.limitStatus &&
+          existing.siteName == updated.siteName &&
+          existing.isPrivate == updated.isPrivate &&
+          existing.displayName == updated.displayName) {
+        return true;
+      }
 
       _metadataCache[appName] = updated;
 

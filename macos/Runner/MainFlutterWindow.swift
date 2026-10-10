@@ -64,6 +64,7 @@ class MainFlutterWindow: BitsdojoWindow {
     // Small delay to ensure clean shutdown
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
       try? task.run()
+      (NSApplication.shared.delegate as? AppDelegate)?.allowTermination = true
       NSApplication.shared.terminate(nil)
     }
   }
