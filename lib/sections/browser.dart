@@ -10,6 +10,7 @@ import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/browser_source_filter.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'package:screentime/sections/settings.dart';
+import 'package:screentime/sections/widgets/Settings/extension_access.dart';
 import 'package:screentime/utils/browser_extension_server_stub.dart'
     if (dart.library.io) 'package:screentime/utils/browser_extension_server.dart';
 import 'dart:async';
@@ -162,6 +163,7 @@ class _BrowserState extends State<Browser> with SingleTickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const ExtensionApprovalBanner(),
             // ── Page header ──────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),

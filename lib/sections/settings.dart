@@ -20,6 +20,12 @@ import 'package:screentime/sections/widgets/Settings/notification.dart';
 import 'package:screentime/sections/widgets/Settings/footer.dart';
 import 'package:screentime/sections/widgets/Settings/data.dart';
 import 'package:screentime/sections/widgets/Settings/privacy.dart';
+import 'package:screentime/sections/widgets/Settings/category_limits_section.dart';
+import 'package:screentime/sections/widgets/Settings/category_rules_section.dart';
+import 'package:screentime/sections/widgets/Settings/device_sync_section.dart';
+import 'package:screentime/sections/widgets/Settings/window_titles_section.dart';
+import 'package:screentime/sections/widgets/Settings/extension_access.dart';
+import 'package:screentime/sections/widgets/Settings/privacy_filters_section.dart';
 import 'package:screentime/sections/widgets/Settings/about.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/sections/widgets/Settings/theme_customization_section.dart';
@@ -564,9 +570,17 @@ class _SettingsContentState extends State<SettingsContent> {
               children: [
                 GeneralSection(setLocale: widget.setLocale),
                 _kSectionSpacing,
-                notificationSection,
+                const ThemeCustomizationSection(),
                 _kSectionSpacing,
-                const DataSection(),
+                notificationSection,
+                if (!kIsWeb) ...[
+                  _kSectionSpacing,
+                  const DailyDigestSection(),
+                  _kSectionSpacing,
+                  const CategoryRulesSection(),
+                  _kSectionSpacing,
+                  const CategoryLimitsSection(),
+                ],
                 _kSectionSpacing,
                 const PrivacySection(),
               ],
@@ -579,16 +593,26 @@ class _SettingsContentState extends State<SettingsContent> {
                 if (kIsWeb) ...[
                   const WebTrackingSection(),
                   _kSectionSpacing,
+                  const DataSection(),
+                  _kSectionSpacing,
                   const WebBackupSection(),
                   _kSectionSpacing,
                 ] else ...[
                   const TrackingSection(),
                   _kSectionSpacing,
+                  const WindowTitlesSection(),
+                  _kSectionSpacing,
+                  const ExtensionAccessSection(),
+                  _kSectionSpacing,
+                  const DataSection(),
+                  _kSectionSpacing,
                   const ied.BackupRestoreSection(),
                   _kSectionSpacing,
+                  const DeviceSyncSection(),
+                  _kSectionSpacing,
+                  const PrivacyFiltersSection(),
+                  _kSectionSpacing,
                 ],
-                const ThemeCustomizationSection(),
-                _kSectionSpacing,
                 const AboutSection(),
               ],
             ),
@@ -601,27 +625,44 @@ class _SettingsContentState extends State<SettingsContent> {
       children: [
         GeneralSection(setLocale: widget.setLocale),
         _kSectionSpacing,
+        const ThemeCustomizationSection(),
+        _kSectionSpacing,
         if (kIsWeb) ...[
           const WebTrackingSection(),
-          _kSectionSpacing,
-          const WebBackupSection(),
           _kSectionSpacing,
         ] else ...[
           const TrackingSection(),
           _kSectionSpacing,
+          const WindowTitlesSection(),
+          _kSectionSpacing,
+          const ExtensionAccessSection(),
+          _kSectionSpacing,
         ],
         notificationSection,
-        _kSectionSpacing,
-        const DataSection(),
+        if (!kIsWeb) ...[
+          _kSectionSpacing,
+          const DailyDigestSection(),
+          _kSectionSpacing,
+          const CategoryRulesSection(),
+          _kSectionSpacing,
+          const CategoryLimitsSection(),
+        ],
         _kSectionSpacing,
         const PrivacySection(),
         _kSectionSpacing,
-        if (!kIsWeb) ...[
+        const DataSection(),
+        _kSectionSpacing,
+        if (kIsWeb) ...[
+          const WebBackupSection(),
+          _kSectionSpacing,
+        ] else ...[
           const ied.BackupRestoreSection(),
           _kSectionSpacing,
+          const DeviceSyncSection(),
+          _kSectionSpacing,
+          const PrivacyFiltersSection(),
+          _kSectionSpacing,
         ],
-        const ThemeCustomizationSection(),
-        _kSectionSpacing,
         const AboutSection(),
       ],
     );

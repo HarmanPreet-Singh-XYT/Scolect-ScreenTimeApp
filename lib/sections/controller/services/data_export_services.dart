@@ -270,6 +270,17 @@ class DataExportService {
                     endTime: period.endTime.toIso8601String(),
                   ))
               .toList(),
+          hourlySeconds: record.effectiveHourlySeconds,
+          sessionArchive: record.archive.isEmpty
+              ? null
+              : {
+                  'count': record.archive.count,
+                  'seconds': record.archive.seconds,
+                  'longest': record.archive.longestSeconds,
+                  'shortest': record.archive.shortestSeconds,
+                },
+          titleSeconds:
+              record.titleSeconds.isEmpty ? null : record.titleSeconds,
         ));
       }
     }
@@ -397,17 +408,21 @@ class DataExportService {
               ))
           .toList();
 
+      final archive = _archiveFromJson(item.sessionArchive);
+
       if (existing != null) {
         switch (mode) {
           case ImportMode.replace:
             // Replace with imported data
-            await _dataStore.recordAppUsage(
+            await _dataStore.setAppUsage(
               item.appName,
               date,
-              Duration(microseconds: item.timeSpentMicroseconds) -
-                  existing.timeSpent,
-              item.openCount - existing.openCount,
+              Duration(microseconds: item.timeSpentMicroseconds),
+              item.openCount,
               usagePeriods,
+              hourlySeconds: item.hourlySeconds,
+              archive: archive,
+              titleSeconds: item.titleSeconds ?? const {},
             );
             updated++;
             break;
@@ -433,18 +448,31 @@ class DataExportService {
             break;
         }
       } else {
-        await _dataStore.recordAppUsage(
+        await _dataStore.setAppUsage(
           item.appName,
           date,
           Duration(microseconds: item.timeSpentMicroseconds),
           item.openCount,
           usagePeriods,
+          hourlySeconds: item.hourlySeconds,
+          archive: archive,
+          titleSeconds: item.titleSeconds ?? const {},
         );
         imported++;
       }
     }
 
     return {'imported': imported, 'skipped': skipped, 'updated': updated};
+  }
+
+  SessionArchive _archiveFromJson(Map<String, int>? json) {
+    if (json == null) return SessionArchive.empty;
+    return SessionArchive(
+      count: json['count'] ?? 0,
+      seconds: json['seconds'] ?? 0,
+      longestSeconds: json['longest'] ?? 0,
+      shortestSeconds: json['shortest'] ?? 0,
+    );
   }
 
   /// Import focus sessions (UPDATED for new API)

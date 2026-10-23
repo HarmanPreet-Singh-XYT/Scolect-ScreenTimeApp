@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/sections/widgets/Settings/category_rules_section.dart';
 import 'package:screentime/app_design.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
@@ -383,6 +384,7 @@ class _ApplicationsState extends State<Applications>
                 onRefresh: _refreshData,
               ),
               const SizedBox(height: 20),
+              if (!kIsWeb) UncategorizedHint(onRuleAdded: _refreshData),
               _FilterBar(
                 trackingFilter: _trackingFilter,
                 visibilityFilter: _visibilityFilter,
@@ -1615,11 +1617,27 @@ class _EditAppDialogState extends State<_EditAppDialog> {
   late bool _isCustomCategory;
   late TextEditingController _customCategoryController;
   late TextEditingController _siteNameController;
+  Map<String, int> _weeklyTitles = const {};
+
+  /// Window titles recorded for this app over the last 7 days, summed. Empty
+  /// unless the user turned on title recording.
+  Map<String, int> _loadWeeklyTitles() {
+    if (kIsWeb) return const {};
+    final end = DateTime.now();
+    final records = AppDataStore()
+        .getAppUsageRange(widget.app.appId, end.subtract(const Duration(days: 7)), end);
+    final totals = <String, int>{};
+    for (final r in records) {
+      r.titleSeconds.forEach((t, s) => totals[t] = (totals[t] ?? 0) + s);
+    }
+    return totals;
+  }
 
   @override
   void initState() {
     super.initState();
     final app = widget.app;
+    _weeklyTitles = _loadWeeklyTitles();
     _selectedCategory = app.category;
     _isProductive = app.isProductive;
     _isTracking = app.isTracking;
@@ -1641,6 +1659,43 @@ class _EditAppDialogState extends State<_EditAppDialog> {
     _customCategoryController.dispose();
     _siteNameController.dispose();
     super.dispose();
+  }
+
+  Widget _buildTopWindows(AppLocalizations l10n) {
+    final theme = FluentTheme.of(context);
+    final entries = _weeklyTitles.entries
+        .where((e) => e.key != AppUsageRecord.otherTitlesKey)
+        .toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final other = _weeklyTitles[AppUsageRecord.otherTitlesKey] ?? 0;
+    final rows = [
+      for (final e in entries.take(5)) MapEntry(e.key, e.value),
+      if (entries.length > 5 || other > 0)
+        MapEntry(
+          l10n.wtOther,
+          other + entries.skip(5).fold<int>(0, (s, e) => s + e.value),
+        ),
+    ];
+    return Column(
+      children: [
+        for (final r in rows)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 3),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(r.key,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.typography.body),
+                ),
+                const SizedBox(width: 12),
+                Text(Duration(seconds: r.value).toHourMinuteFormat(),
+                    style: theme.typography.caption),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   Future<void> _save(AppLocalizations l10n) async {
@@ -1750,6 +1805,15 @@ class _EditAppDialogState extends State<_EditAppDialog> {
               child: _buildCategorySection(l10n),
             ),
             const SizedBox(height: 16),
+            if (_weeklyTitles.isNotEmpty) ...[
+              _DialogSection(
+                icon: FluentIcons.app_icon_default,
+                title: l10n.wtTopWindows,
+                iconColor: _kPurpleColor,
+                child: _buildTopWindows(l10n),
+              ),
+              const SizedBox(height: 16),
+            ],
             // Behavior Section
             _DialogSection(
               icon: FluentIcons.settings,

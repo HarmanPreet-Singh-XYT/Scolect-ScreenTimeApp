@@ -108,7 +108,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get faqCategorySettings => 'সেটিংস এবং কাস্টমাইজেশন';
 
   @override
-  String get faqCategoryBrowser => 'Browser Extension';
+  String get faqCategoryBrowser => 'ব্রাউজার এক্সটেনশন';
 
   @override
   String get faqCategoryTroubleshooting => 'সমস্যা সমাধান';
@@ -151,11 +151,11 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get faqGeneralQ6 =>
-      'Which languages are supported and how do I change language?';
+      'কোন কোন ভাষা সমর্থিত এবং আমি কীভাবে ভাষা পরিবর্তন করব?';
 
   @override
   String get faqGeneralA6 =>
-      'Language can be changed in Settings under the General section — all available languages are listed there. Translations are AI-generated from English, so some may be imperfect. If you spot an error you can report it via the Report Bug button in Settings, or open an issue on GitHub. Translation contributions are welcome!';
+      'ভাষা সেটিংসের সাধারণ বিভাগে পরিবর্তন করা যায় — সব উপলব্ধ ভাষা সেখানে তালিকাভুক্ত আছে। অনুবাদগুলো ইংরেজি থেকে AI দ্বারা তৈরি, তাই কিছু অনুবাদ নিখুঁত নাও হতে পারে। কোনো ভুল চোখে পড়লে সেটিংসের বাগ রিপোর্ট করুন বোতামের মাধ্যমে জানাতে পারেন, অথবা GitHub-এ issue খুলতে পারেন। অনুবাদে অবদান রাখতে আপনাকে স্বাগত!';
 
   @override
   String get faqAppsQ1 =>
@@ -188,11 +188,11 @@ class AppLocalizationsBn extends AppLocalizations {
       'প্রাথমিক ক্যাটাগরিগুলি সিস্টেম-প্রস্তাবিত, কিন্তু আপনার কর্মপ্রবাহ এবং পছন্দ অনুযায়ী কাস্টম ক্যাটাগরি তৈরি, পরিবর্তন এবং বরাদ্দ করার সম্পূর্ণ নিয়ন্ত্রণ আপনার কাছে রয়েছে।';
 
   @override
-  String get faqAppsQ5 => 'Why is an app showing a very short or zero time?';
+  String get faqAppsQ5 => 'কোনো অ্যাপ খুব কম বা শূন্য সময় দেখাচ্ছে কেন?';
 
   @override
   String get faqAppsA5 =>
-      'Tracking starts from the moment the app is first detected in the foreground. If you just installed Scolect, historical usage is not available — only time going forward is recorded. Very short times usually mean you briefly switched to that app and away again.';
+      'অ্যাপটি প্রথমবার ফোরগ্রাউন্ডে শনাক্ত হওয়ার মুহূর্ত থেকে ট্র্যাকিং শুরু হয়। আপনি যদি সদ্য Scolect ইনস্টল করে থাকেন, তবে আগের ব্যবহারের ইতিহাস পাওয়া যাবে না — শুধু এখন থেকে সময় রেকর্ড হবে। খুব কম সময় সাধারণত বোঝায় যে আপনি অল্প সময়ের জন্য ওই অ্যাপে গিয়ে আবার সরে গেছেন।';
 
   @override
   String get faqReportsQ1 => 'কোন ধরনের রিপোর্ট উপলব্ধ?';
@@ -245,11 +245,12 @@ class AppLocalizationsBn extends AppLocalizations {
       'হ্যাঁ, আপনি সতর্কতার ফ্রিকোয়েন্সি কাস্টমাইজ করতে পারেন, নির্দিষ্ট ধরনের সতর্কতা সক্ষম/অক্ষম করতে পারেন এবং সামগ্রিক স্ক্রিন টাইম এবং পৃথক অ্যাপ্লিকেশনের জন্য বিভিন্ন সীমা সেট করতে পারেন।';
 
   @override
-  String get faqAlertsQ4 => 'Can I set different limits for different apps?';
+  String get faqAlertsQ4 =>
+      'আমি কি বিভিন্ন অ্যাপের জন্য আলাদা সীমা নির্ধারণ করতে পারি?';
 
   @override
   String get faqAlertsA4 =>
-      'Yes. In the Applications section, open any app\'s edit panel and set a per-app daily limit. You can also set limits directly from the Alerts & Limits section. Each app has its own independent limit and reset cycle.';
+      'হ্যাঁ। অ্যাপ্লিকেশন বিভাগে যেকোনো অ্যাপের সম্পাদনা প্যানেল খুলে সেটির জন্য আলাদা দৈনিক সীমা নির্ধারণ করুন। সতর্কতা এবং সীমা বিভাগ থেকেও সরাসরি সীমা নির্ধারণ করা যায়। প্রতিটি অ্যাপের নিজস্ব স্বাধীন সীমা ও রিসেট চক্র আছে।';
 
   @override
   String get faqFocusQ1 => 'কোন ধরনের ফোকাস মোড উপলব্ধ?';
@@ -303,56 +304,57 @@ class AppLocalizationsBn extends AppLocalizations {
       'ডেটা মুছে ফেলা আপনার সমস্ত ব্যবহারের পরিসংখ্যান, ফোকাস সেশন ইতিহাস এবং কাস্টম সেটিংস রিসেট করবে। এটি নতুন করে শুরু করতে বা সমস্যা সমাধানের জন্য দরকারী।';
 
   @override
-  String get faqSettingsQ4 => 'How do I report a bug or send feedback?';
+  String get faqSettingsQ4 =>
+      'আমি কীভাবে বাগ রিপোর্ট করব বা প্রতিক্রিয়া পাঠাব?';
 
   @override
   String get faqSettingsA4 =>
-      'Scroll to the bottom of the Settings section — you will find buttons to Report a Bug, Submit Feedback, and Contact Support. These open the relevant links in your browser. You can also open an issue directly on the Scolect GitHub repository.';
+      'সেটিংস বিভাগের একদম নিচে স্ক্রল করুন — সেখানে বাগ রিপোর্ট করুন, প্রতিক্রিয়া জমা দিন এবং সাপোর্টে যোগাযোগ করুন বোতাম পাবেন। এগুলো আপনার ব্রাউজারে সংশ্লিষ্ট লিংক খোলে। আপনি সরাসরি Scolect-এর GitHub রিপোজিটরিতেও issue খুলতে পারেন।';
 
   @override
-  String get faqBrowserQ1 => 'What does the browser extension track?';
+  String get faqBrowserQ1 => 'ব্রাউজার এক্সটেনশন কী ট্র্যাক করে?';
 
   @override
   String get faqBrowserA1 =>
-      'The extension tracks the domain of every website you visit and how long you spend on it, including a visit count per domain per day. All data is stored locally in your browser\'s storage — nothing leaves your device.';
+      'এক্সটেনশন আপনার দেখা প্রতিটি ওয়েবসাইটের ডোমেইন এবং সেখানে কাটানো সময় ট্র্যাক করে, এর মধ্যে প্রতি ডোমেইনে প্রতিদিনের ভিজিট সংখ্যাও আছে। সব ডেটা আপনার ব্রাউজারের স্টোরেজে স্থানীয়ভাবে সংরক্ষিত থাকে — কিছুই আপনার ডিভাইস থেকে বাইরে যায় না।';
 
   @override
   String get faqBrowserQ2 =>
-      'What are the extension modes (Standalone, Tracker Only, Hybrid)?';
+      'এক্সটেনশনের মোডগুলো (স্ট্যান্ডঅ্যালোন, শুধু ট্র্যাকার, হাইব্রিড) কী?';
 
   @override
   String get faqBrowserA2 =>
-      'Standalone mode runs the extension independently with its own dashboard and no connection to the desktop app. Tracker Only mode sends your browser usage data to the Scolect desktop app to merge with native app tracking, but the extension dashboard is not used. Hybrid mode does both — the extension has its own dashboard and also syncs data to the desktop app.';
+      'স্ট্যান্ডঅ্যালোন মোডে এক্সটেনশন নিজস্ব ড্যাশবোর্ড নিয়ে স্বাধীনভাবে চলে এবং ডেস্কটপ অ্যাপের সাথে সংযুক্ত থাকে না। শুধু ট্র্যাকার মোড আপনার ব্রাউজার ব্যবহারের ডেটা Scolect ডেস্কটপ অ্যাপে পাঠায় যাতে তা নেটিভ অ্যাপ ট্র্যাকিংয়ের সাথে একত্র হয়, কিন্তু এক্সটেনশন ড্যাশবোর্ড ব্যবহৃত হয় না। হাইব্রিড মোড উভয়ই করে — এক্সটেনশনের নিজস্ব ড্যাশবোর্ড থাকে এবং এটি ডেটা ডেস্কটপ অ্যাপের সাথে সিঙ্কও করে।';
 
   @override
   String get faqBrowserQ3 =>
-      'How does the extension connect to the desktop app?';
+      'এক্সটেনশন কীভাবে ডেস্কটপ অ্যাপের সাথে সংযুক্ত হয়?';
 
   @override
   String get faqBrowserA3 =>
-      'The desktop app runs a local HTTP server on port 46000 (configurable in Settings). When the extension is in Tracker Only or Hybrid mode it periodically sends your browsing data to that address. Both apps must be running on the same machine. If the desktop app is not open, the extension still tracks locally and will sync the next time a connection is established.';
+      'ডেস্কটপ অ্যাপ পোর্ট 46000-এ একটি স্থানীয় HTTP সার্ভার চালায় (সেটিংসে পরিবর্তনযোগ্য)। এক্সটেনশন শুধু ট্র্যাকার বা হাইব্রিড মোডে থাকলে এটি নিয়মিত বিরতিতে আপনার ব্রাউজিং ডেটা ওই ঠিকানায় পাঠায়। দুটি অ্যাপই একই মেশিনে চালু থাকতে হবে। ডেস্কটপ অ্যাপ খোলা না থাকলেও এক্সটেনশন স্থানীয়ভাবে ট্র্যাক করতে থাকে এবং পরের বার সংযোগ স্থাপিত হলে সিঙ্ক করবে।';
 
   @override
-  String get faqBrowserQ4 => 'Why is a website being blocked?';
+  String get faqBrowserQ4 => 'একটি ওয়েবসাইট ব্লক হচ্ছে কেন?';
 
   @override
   String get faqBrowserA4 =>
-      'A site is blocked when it has reached its daily time limit and blocking is enabled for that limit. You will see a blocked page with a countdown to midnight when the limit resets. To unblock immediately, go to Alerts & Limits in the desktop app and raise or remove the limit for that site, or disable blocking.';
+      'কোনো সাইট তার দৈনিক সময়সীমায় পৌঁছালে এবং ওই সীমার জন্য ব্লকিং চালু থাকলে সেটি ব্লক হয়। আপনি মধ্যরাত পর্যন্ত কাউন্টডাউনসহ একটি ব্লক পেজ দেখবেন, তখন সীমা রিসেট হয়। সঙ্গে সঙ্গে আনব্লক করতে ডেস্কটপ অ্যাপের সতর্কতা এবং সীমা-তে গিয়ে ওই সাইটের সীমা বাড়ান বা সরিয়ে দিন, অথবা ব্লকিং বন্ধ করুন।';
 
   @override
   String get faqBrowserQ5 =>
-      'Does the extension track in incognito / private mode?';
+      'এক্সটেনশন কি ইনকগনিটো / প্রাইভেট মোডে ট্র্যাক করে?';
 
   @override
   String get faqBrowserA5 =>
-      'No. By default Chrome extensions do not have access to incognito tabs. If you explicitly grant the extension access to incognito in Chrome\'s extension settings, it will track those tabs too — but this is off by default to respect your privacy.';
+      'না। ডিফল্টভাবে Chrome এক্সটেনশনের ইনকগনিটো ট্যাবে অ্যাক্সেস থাকে না। আপনি যদি Chrome-এর এক্সটেনশন সেটিংসে এক্সটেনশনকে ইনকগনিটো অ্যাক্সেস স্পষ্টভাবে দেন, তবে এটি ওই ট্যাবগুলোও ট্র্যাক করবে — তবে আপনার গোপনীয়তার প্রতি সম্মান জানিয়ে এটি ডিফল্টভাবে বন্ধ থাকে।';
 
   @override
-  String get faqBrowserQ6 => 'Where can I see my website usage data?';
+  String get faqBrowserQ6 => 'আমার ওয়েবসাইট ব্যবহারের ডেটা কোথায় দেখতে পারি?';
 
   @override
   String get faqBrowserA6 =>
-      'Open the extension dashboard by clicking the Scolect icon in your browser toolbar and selecting Open Dashboard. The Websites tab shows all tracked domains with time spent, visit counts, and a 7-day history chart for each site. You can also export this data to Excel.';
+      'ব্রাউজার টুলবারে Scolect আইকনে ক্লিক করে ড্যাশবোর্ড খুলুন নির্বাচন করে, অথবা এক্সটেনশনের ইনডেক্স পেজে গিয়ে এক্সটেনশন ড্যাশবোর্ড খুলুন। ওয়েবসাইট ট্যাবে সব ট্র্যাক করা ডোমেইন কাটানো সময়, ভিজিট সংখ্যা এবং প্রতিটি সাইটের ৭ দিনের ইতিহাস চার্টসহ দেখায়। আপনি এই ডেটা Excel-এ এক্সপোর্টও করতে পারেন।';
 
   @override
   String get faqTroubleQ1 => 'ডেটা দেখা যাচ্ছে না, হাইভ খুলছে না ত্রুটি';
@@ -370,18 +372,18 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get faqTroubleQ3 =>
-      'The browser extension is not showing any website data';
+      'ব্রাউজার এক্সটেনশন কোনো ওয়েবসাইট ডেটা দেখাচ্ছে না';
 
   @override
   String get faqTroubleA3 =>
-      'Make sure you have visited at least one website since installing the extension — there is no historical data before installation. Check that the extension has the required permissions (it needs access to all URLs to track time). If the dashboard is open but empty, try closing and reopening the dashboard tab. If the issue persists, try removing and reinstalling the extension.';
+      'এক্সটেনশন ইনস্টল করার পর অন্তত একটি ওয়েবসাইট দেখেছেন কি না নিশ্চিত করুন — ইনস্টলের আগের কোনো ঐতিহাসিক ডেটা নেই। এক্সটেনশনের প্রয়োজনীয় অনুমতি আছে কি না দেখুন (সময় ট্র্যাক করতে সব URL-এ অ্যাক্সেস লাগে)। ড্যাশবোর্ড খোলা কিন্তু ফাঁকা থাকলে ড্যাশবোর্ড ট্যাব বন্ধ করে আবার খুলে দেখুন। সমস্যা থেকে গেলে এক্সটেনশন সরিয়ে আবার ইনস্টল করুন।';
 
   @override
-  String get faqTroubleQ4 => 'Extension and desktop app are not syncing';
+  String get faqTroubleQ4 => 'এক্সটেনশন ও ডেস্কটপ অ্যাপ সিঙ্ক হচ্ছে না';
 
   @override
   String get faqTroubleA4 =>
-      'Ensure the desktop app is running and that the extension mode is set to Tracker Only or Hybrid (not Standalone). Check the port number in both places — the desktop app\'s Settings and the extension\'s Settings should both show the same port (default 46000). Firewall or antivirus software can block local connections; try temporarily disabling them to test.';
+      'নিশ্চিত করুন ডেস্কটপ অ্যাপ চালু আছে এবং এক্সটেনশন মোড শুধু ট্র্যাকার বা হাইব্রিড (স্ট্যান্ডঅ্যালোন নয়) করা আছে। দুই জায়গাতেই পোর্ট নম্বর দেখুন — ডেস্কটপ অ্যাপের সেটিংস ও এক্সটেনশনের সেটিংসে একই পোর্ট (ডিফল্ট 46000) দেখাতে হবে। ফায়ারওয়াল বা অ্যান্টিভাইরাস স্থানীয় সংযোগ ব্লক করতে পারে; পরীক্ষার জন্য সেগুলো সাময়িকভাবে বন্ধ করে দেখুন। সিঙ্ক সক্রিয় থাকলে এক্সটেনশন একটি সংযোগ সূচক দেখাবে।';
 
   @override
   String get usageAnalytics => 'ব্যবহার বিশ্লেষণ';
@@ -4481,4 +4483,425 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get onboardingSkip => 'এড়িয়ে যান';
+
+  @override
+  String get extAccessSectionTitle => 'Browser Extension Access';
+
+  @override
+  String get extAccessRequireTitle => 'Require approval for browsers';
+
+  @override
+  String get extAccessRequireDescription =>
+      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+
+  @override
+  String get extAccessPendingTitle => 'Waiting for approval';
+
+  @override
+  String get extAccessPendingDescription =>
+      'These browsers asked to sync with Scolect.';
+
+  @override
+  String get extAccessApprovedTitle => 'Approved browsers';
+
+  @override
+  String get extAccessNoneApproved =>
+      'No browsers approved yet. Open the extension and it will appear here.';
+
+  @override
+  String get extAccessApprove => 'Approve';
+
+  @override
+  String get extAccessDeny => 'Deny';
+
+  @override
+  String get extAccessRevoke => 'Revoke';
+
+  @override
+  String get extAccessUnknownBrowser => 'Unknown browser';
+
+  @override
+  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+
+  @override
+  String extAccessBlockedNotice(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count unauthorized sync attempts blocked since launch',
+      one: '1 unauthorized sync attempt blocked since launch',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+
+  @override
+  String extAccessBannerBody(String name) {
+    return '$name is waiting for your approval.';
+  }
+
+  @override
+  String get pfTitle => 'Privacy Filters';
+
+  @override
+  String get pfDescription =>
+      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+
+  @override
+  String get pfAddRule => 'Add rule';
+
+  @override
+  String get pfEditRule => 'Edit rule';
+
+  @override
+  String get pfNoRules => 'No rules yet.';
+
+  @override
+  String get pfPatternLabel => 'Pattern (regular expression)';
+
+  @override
+  String get pfPatternHint => 'e.g. bank|vault';
+
+  @override
+  String get pfAppliesTo => 'Applies to';
+
+  @override
+  String get pfTargetApps => 'Apps';
+
+  @override
+  String get pfTargetWebsites => 'Websites';
+
+  @override
+  String get pfTargetBoth => 'Apps and websites';
+
+  @override
+  String get pfActionLabel => 'Action';
+
+  @override
+  String get pfActionExclude => 'Don\'t track';
+
+  @override
+  String get pfActionRedact => 'Track under another name';
+
+  @override
+  String get pfReplacementLabel => 'Name to record instead';
+
+  @override
+  String get pfReplacementHint => 'Redacted';
+
+  @override
+  String get pfErrorEmpty => 'Enter a pattern.';
+
+  @override
+  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+
+  @override
+  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+
+  @override
+  String get pfRuleSummaryExclude => 'Not tracked';
+
+  @override
+  String pfRuleSummaryRedact(String name) {
+    return 'Recorded as \"$name\"';
+  }
+
+  @override
+  String get crTitle => 'Category Rules';
+
+  @override
+  String get crDescription =>
+      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+
+  @override
+  String get crCategoryLabel => 'Category';
+
+  @override
+  String get crCategoryHint => 'Pick one or type your own';
+
+  @override
+  String get crErrorCategory => 'Choose a category.';
+
+  @override
+  String get crApplyExisting => 'Apply to existing apps';
+
+  @override
+  String crApplyResult(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps recategorized',
+      one: '1 app recategorized',
+      zero: 'No apps needed changing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get crMoveUp => 'Move up';
+
+  @override
+  String get crMoveDown => 'Move down';
+
+  @override
+  String get crHintTitle => 'A lot of your time is uncategorized';
+
+  @override
+  String crHintBody(int percent, String apps) {
+    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+  }
+
+  @override
+  String get crHintAction => 'Add a rule';
+
+  @override
+  String get crHintDismiss => 'Dismiss';
+
+  @override
+  String get wtSectionTitle => 'Window Titles';
+
+  @override
+  String get wtToggleTitle => 'Record window titles';
+
+  @override
+  String get wtToggleDescription =>
+      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+
+  @override
+  String get wtClearTitle => 'Delete stored titles';
+
+  @override
+  String get wtClearDescription =>
+      'Removes every recorded window title. Your usage totals are not affected.';
+
+  @override
+  String get wtClearAction => 'Delete titles';
+
+  @override
+  String wtCleared(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Titles removed from $count records',
+      one: 'Titles removed from 1 record',
+      zero: 'No stored titles found',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get wtTopWindows => 'Top windows (last 7 days)';
+
+  @override
+  String get wtOther => 'Other windows';
+
+  @override
+  String get insTitle => 'Insights';
+
+  @override
+  String get insTrendsTitle => 'This week vs last week';
+
+  @override
+  String get insThisWeek => 'This week';
+
+  @override
+  String get insLastWeek => 'Last week';
+
+  @override
+  String get insByCategory => 'By category';
+
+  @override
+  String get insBiggestChanges => 'Biggest changes';
+
+  @override
+  String get insNoData => 'Not enough data yet.';
+
+  @override
+  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+
+  @override
+  String insHeatmapTip(String date, String time) {
+    return '$date: $time';
+  }
+
+  @override
+  String get insLess => 'Less';
+
+  @override
+  String get insMore => 'More';
+
+  @override
+  String get insTimelineTitle => 'Day timeline';
+
+  @override
+  String get insTimelineOther => 'Other apps';
+
+  @override
+  String get insTimelineEmpty => 'No activity recorded for this day.';
+
+  @override
+  String get insPrevDay => 'Previous day';
+
+  @override
+  String get insNextDay => 'Next day';
+
+  @override
+  String get insSearchTitle => 'Search window titles';
+
+  @override
+  String get insSearchHint => 'Search document, page or project names';
+
+  @override
+  String get insSearchDisabled =>
+      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+
+  @override
+  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+
+  @override
+  String get tlTitle => 'Time log';
+
+  @override
+  String get tlHint => 'What are you working on?';
+
+  @override
+  String get tlStart => 'Start';
+
+  @override
+  String get tlStop => 'Stop';
+
+  @override
+  String get tlDiscard => 'Discard';
+
+  @override
+  String get tlAddEntry => 'Add entry';
+
+  @override
+  String get tlToday => 'Today';
+
+  @override
+  String get tlThisWeek => 'This week';
+
+  @override
+  String get tlNothingToday => 'Nothing logged today.';
+
+  @override
+  String get tlDescription =>
+      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+
+  @override
+  String get tlDurationLabel => 'Duration';
+
+  @override
+  String get tlHours => 'hours';
+
+  @override
+  String get tlMinutes => 'minutes';
+
+  @override
+  String get tlDateLabel => 'Date';
+
+  @override
+  String get tlErrorLabel => 'Enter what you worked on.';
+
+  @override
+  String get tlErrorDuration => 'Enter a duration greater than zero.';
+
+  @override
+  String get clTitle => 'Category Limits';
+
+  @override
+  String get clDescription =>
+      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+
+  @override
+  String get clAdd => 'Add limit';
+
+  @override
+  String get clEdit => 'Edit limit';
+
+  @override
+  String get clLimitLabel => 'Daily limit';
+
+  @override
+  String get clErrorLimit => 'Enter a limit greater than zero.';
+
+  @override
+  String get clErrorCategory => 'Choose a category.';
+
+  @override
+  String get ddTitle => 'Daily Digest';
+
+  @override
+  String get ddToggleTitle => 'Daily digest';
+
+  @override
+  String get ddToggleDescription =>
+      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+
+  @override
+  String get ddHourLabel => 'Send after';
+
+  @override
+  String get dsTitle => 'Device Sync';
+
+  @override
+  String get dsDescription =>
+      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+
+  @override
+  String get dsToggle => 'Sync through a folder';
+
+  @override
+  String get dsFolder => 'Sync folder';
+
+  @override
+  String get dsNoFolder => 'No folder chosen';
+
+  @override
+  String get dsChooseFolder => 'Choose folder';
+
+  @override
+  String get dsDeviceName => 'This device\'s name';
+
+  @override
+  String get dsSyncNow => 'Sync now';
+
+  @override
+  String get dsNeverSynced => 'Not synced yet';
+
+  @override
+  String dsLastSynced(String time) {
+    return 'Last synced $time';
+  }
+
+  @override
+  String get dsOtherDevices => 'Other devices';
+
+  @override
+  String get dsNoOthers =>
+      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+
+  @override
+  String dsPeerUpdated(String name, String time) {
+    return '$name · updated $time';
+  }
+
+  @override
+  String dsError(String error) {
+    return 'Sync problem: $error';
+  }
+
+  @override
+  String get insThisDevice => 'This device';
+
+  @override
+  String get insAllDevices => 'All devices';
+
+  @override
+  String insTimelineUnplaced(String time) {
+    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+  }
 }

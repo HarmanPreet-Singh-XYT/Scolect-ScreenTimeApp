@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/sections/widgets/Reports/insights/insights_view.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/graphs/reports_line_chart.dart';
@@ -24,6 +25,7 @@ class Reports extends StatefulWidget {
 }
 
 class _ReportsState extends State<Reports> {
+  bool _showInsights = false;
   final UsageAnalyticsController _analyticsController =
       UsageAnalyticsController();
   AnalyticsXLSXExporter? _xlsxExporter;
@@ -378,7 +380,11 @@ class _ReportsState extends State<Reports> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildHeader(),
+              if (!_showInsights || kIsWeb) _buildHeader(),
+              if (!kIsWeb) ...[
+                const SizedBox(height: 12),
+                _buildViewToggle(),
+              ],
               const SizedBox(height: 20),
               _buildBody(),
             ],
@@ -389,6 +395,7 @@ class _ReportsState extends State<Reports> {
   }
 
   Widget _buildBody() {
+    if (_showInsights && !kIsWeb) return const InsightsView();
     if (_isLoading) return const _LoadingIndicator();
     if (_error != null) {
       return _ErrorDisplay(
@@ -412,6 +419,29 @@ class _ReportsState extends State<Reports> {
         const SizedBox(height: 20),
         ApplicationUsage(appUsageDetails: summary.appUsageDetails),
       ],
+    );
+  }
+
+  Widget _buildViewToggle() {
+    final l10n = AppLocalizations.of(context)!;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ToggleButton(
+            checked: !_showInsights,
+            onChanged: (_) => setState(() => _showInsights = false),
+            child: Text(l10n.navReports),
+          ),
+          const SizedBox(width: 8),
+          ToggleButton(
+            checked: _showInsights,
+            onChanged: (_) => setState(() => _showInsights = true),
+            child: Text(l10n.insTitle),
+          ),
+        ],
+      ),
     );
   }
 

@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:screentime/sections/controller/app_data_controller.dart';
+import 'package:screentime/utils/category_limits.dart';
+import 'package:screentime/utils/daily_digest.dart';
 import 'package:screentime/utils/platform_utils.dart';
 
 import 'package:flutter/material.dart';
@@ -17,6 +20,8 @@ class _NotificationType {
   static const String screenTime = 'screenTime';
   static const String appLimit = 'appLimit';
   static const String popup = 'popup';
+  static const String categoryLimit = 'categoryLimit';
+  static const String digest = 'digest';
 }
 
 // ============================================================================
@@ -63,6 +68,7 @@ class NotificationController with ChangeNotifier {
 
   // Daily notification dedup tracking
   final Set<String> _notifiedApproachingApps = {};
+  final Set<String> _notifiedApproachingCategories = {};
   bool _notifiedOverallApproaching = false;
   DateTime? _notifiedForLogicalDate;
 
@@ -485,6 +491,8 @@ class NotificationController with ChangeNotifier {
 
     await _checkAppLimits();
     await _checkOverallLimit();
+    await _checkCategoryLimits();
+    await _checkDailyDigest();
   }
 
   /// Dedup sets otherwise grow forever and only ever fire once per process
@@ -556,11 +564,81 @@ class NotificationController with ChangeNotifier {
     }
   }
 
+  Future<void> _checkCategoryLimits() async {
+    if (!_isSettingEnabled('notifications.enabled')) return;
+    final limits = CategoryLimits.instance;
+    if (!limits.hasActiveLimits) return;
+
+    final store = AppDataStore();
+    if (!store.isInitialized) return;
+    final day = _settingsManager.getLogicalDate(DateTime.now());
+    final statuses = limits.evaluate(CategoryLimits.usageByCategory(store, day));
+
+    for (final s in statuses) {
+      final category = s.limit.category.trim();
+      switch (s.state) {
+        case LimitState.under:
+          break;
+        case LimitState.approaching:
+          if (_notifiedApproachingCategories.add(s.limit.id)) {
+            await showPopupAlert(
+              'Approaching Category Limit',
+              "You're about to reach your daily limit of "
+                  '${DailyDigest.formatDuration(s.limit.limit)} for $category apps',
+            );
+          }
+        case LimitState.reached:
+          final key = 'category:${s.limit.id}';
+          if (_shouldSendExceededAlert(key)) {
+            _lastExceededAlertAt[key] = DateTime.now();
+            await _sendNotification(
+              'Category Limit Reached',
+              'You have reached your daily limit of '
+                  '${DailyDigest.formatDuration(s.limit.limit)} for $category apps.',
+              _NotificationType.categoryLimit,
+              extraData: category,
+            );
+          }
+      }
+    }
+  }
+
+  Future<void> _checkDailyDigest() async {
+    if (!_isSettingEnabled('notifications.enabled')) return;
+    final now = DateTime.now();
+    final day = _settingsManager.getLogicalDate(now);
+    final due = DailyDigest.isDue(
+      enabled: _settingsManager.getSetting('dailyDigest.enabled') == true,
+      hour: (_settingsManager.getSetting('dailyDigest.hour') as num?)?.toInt() ?? 21,
+      now: now,
+      logicalDay: day,
+      lastSent: _settingsManager.getSetting('dailyDigest.lastSent') as String? ?? '',
+    );
+    if (!due) return;
+
+    final store = AppDataStore();
+    if (!store.isInitialized) return;
+
+    // Mark it sent before anything async so overlapping checks can't repeat it.
+    _settingsManager.updateSetting('dailyDigest.lastSent', DailyDigest.dayKey(day));
+
+    final digest = DailyDigest.build(store, day);
+    if (digest.isEmpty) return;
+    await _sendNotification(
+      digest.title,
+      digest.body,
+      _NotificationType.digest,
+      includeRemindAction: false,
+      scheduleReminder: false,
+    );
+  }
+
   // --------------------------------------------------------------------------
   // CLEANUP
   // --------------------------------------------------------------------------
 
   void resetNotifications() {
+    _notifiedApproachingCategories.clear();
     _notifiedApproachingApps.clear();
     _notifiedOverallApproaching = false;
     _lastExceededAlertAt.clear();

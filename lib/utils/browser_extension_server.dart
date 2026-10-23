@@ -8,6 +8,8 @@ import '../sections/controller/app_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
 import '../sections/controller/focus_mode_controller.dart';
 import '../sections/controller/settings_data_controller.dart';
+import 'extension_auth.dart';
+import 'privacy_filters.dart';
 
 /// Lightweight server on port 46000 for the Scolect browser extension.
 ///
@@ -36,6 +38,10 @@ class BrowserExtensionServer {
   // ─── WebSocket state ─────────────────────────────────────────────────────
   static final Set<WebSocket> _clients = {};
   static final Map<WebSocket, String> _clientBrowserIds = {};
+
+  /// Browser id each socket authenticated as. Messages claiming another id
+  /// are dropped. Empty when approval isn't required.
+  static final Map<WebSocket, String> _wsAuthIds = {};
   static StreamSubscription<TimerUpdate>? _timerSubscription;
   static TimerState? _lastBroadcastState;
   static bool? _lastBroadcastRunning;
@@ -47,6 +53,7 @@ class BrowserExtensionServer {
   /// to the user rather than letting the UI silently claim "enabled".
   static Future<bool> startServer({int port = defaultPort}) async {
     _currentPort = port;
+    await ExtensionAuth.instance.load();
     try {
       _server = await HttpServer.bind(InternetAddress.loopbackIPv4, _currentPort);
       debugPrint('✅ Extension server started on port $_currentPort');
@@ -89,6 +96,7 @@ class BrowserExtensionServer {
       await ws.close(WebSocketStatus.goingAway).catchError((_) {});
     }
     _clients.clear();
+    _wsAuthIds.clear();
 
     await _server?.close(force: true);
     _server = null;
@@ -119,14 +127,28 @@ class BrowserExtensionServer {
     }
 
     try {
-      switch ('${req.method} ${req.uri.path}') {
+      final route = '${req.method} ${req.uri.path}';
+
+      // /ping stays open as a liveness probe (and reports auth status when
+      // credentials are supplied); every other route needs an approved browser.
+      String? authedBrowserId;
+      if (route != 'GET /ping') {
+        final status = _authenticate(req);
+        if (status != AuthStatus.approved) {
+          await _sendAuthError(req, status);
+          return;
+        }
+        authedBrowserId = _credentials(req).id;
+      }
+
+      switch (route) {
         case 'GET /ping':
           await _handlePing(req);
         case 'GET /ws':
-          await _handleWsUpgrade(req);
+          await _handleWsUpgrade(req, authedBrowserId);
         case 'POST /usage':
         case 'POST /api/browser-sync':
-          await _handleUsage(req);
+          await _handleUsage(req, authedBrowserId);
         case 'POST /clear-web-data':
           await _handleClearWebData(req);
         case 'GET /focus':
@@ -140,14 +162,56 @@ class BrowserExtensionServer {
     }
   }
 
+  // ─── Authentication ──────────────────────────────────────────────────────
+
+  /// Browser id and token from `Authorization: Bearer` / `X-Scolect-Browser`
+  /// headers, or the `browserId`/`token` query parameters (WebSocket upgrades
+  /// can't set headers from a browser).
+  static ({String? id, String? token}) _credentials(HttpRequest req) {
+    final auth = req.headers.value(HttpHeaders.authorizationHeader);
+    final bearer = (auth != null && auth.startsWith('Bearer '))
+        ? auth.substring(7).trim()
+        : null;
+    return (
+      id: req.headers.value('x-scolect-browser') ??
+          req.uri.queryParameters['browserId'],
+      token: bearer ?? req.uri.queryParameters['token'],
+    );
+  }
+
+  static AuthStatus _authenticate(HttpRequest req) {
+    final c = _credentials(req);
+    return ExtensionAuth.instance.check(
+      c.id,
+      c.token,
+      browserName: req.headers.value('x-scolect-browser-name') ??
+          req.uri.queryParameters['browserName'],
+    );
+  }
+
+  static Future<void> _sendAuthError(HttpRequest req, AuthStatus status) async {
+    final code = status == AuthStatus.denied
+        ? HttpStatus.forbidden
+        : HttpStatus.unauthorized;
+    await _sendJson(req.response, code, {
+      'error': 'unauthorized',
+      'pairing': status.name,
+    });
+  }
+
   // ─── GET /ping ───────────────────────────────────────────────────────────
 
   static Future<void> _handlePing(HttpRequest req) async {
     final timer = PomodoroTimerService.instance;
+    final hasCreds = _credentials(req).id != null;
     await _sendJson(req.response, HttpStatus.ok, {
       'ok': true,
       'version': _version,
       'focusActive': timer.isRunning && timer.currentState != TimerState.idle,
+      // Only present when credentials were sent, so the extension can show
+      // "waiting for approval" without hitting a data endpoint.
+      if (hasCreds) 'pairing': _authenticate(req).name,
+      'authRequired': ExtensionAuth.instance.isRequired,
     });
   }
 
@@ -160,7 +224,8 @@ class BrowserExtensionServer {
 
   // ─── GET /ws  (WebSocket upgrade) ────────────────────────────────────────
 
-  static Future<void> _handleWsUpgrade(HttpRequest req) async {
+  static Future<void> _handleWsUpgrade(
+      HttpRequest req, String? authedBrowserId) async {
     WebSocket ws;
     try {
       ws = await WebSocketTransformer.upgrade(req);
@@ -170,6 +235,9 @@ class BrowserExtensionServer {
     }
 
     _clients.add(ws);
+    if (ExtensionAuth.instance.isRequired && authedBrowserId != null) {
+      _wsAuthIds[ws] = authedBrowserId;
+    }
     debugPrint('🔌 WS client connected (${_clients.length} total)');
 
     // Immediately push current focus state so the extension is in sync.
@@ -180,11 +248,13 @@ class BrowserExtensionServer {
       onDone: () {
         _clients.remove(ws);
         _clientBrowserIds.remove(ws);
+        _wsAuthIds.remove(ws);
         debugPrint('🔌 WS client disconnected (${_clients.length} remaining)');
       },
       onError: (e) {
         _clients.remove(ws);
         _clientBrowserIds.remove(ws);
+        _wsAuthIds.remove(ws);
         debugPrint('⚠️ WS client error: $e');
       },
       cancelOnError: true,
@@ -196,6 +266,14 @@ class BrowserExtensionServer {
   static Future<void> _handleWsMessage(WebSocket ws, dynamic data) async {
     try {
       final msg = jsonDecode(data as String) as Map<String, dynamic>;
+
+      // An authenticated socket may only speak for its own browser.
+      final authId = _wsAuthIds[ws];
+      final claimed = msg['browserId'] as String?;
+      if (authId != null && claimed != null && claimed != authId) {
+        debugPrint('⚠️ WS message rejected: browserId does not match auth');
+        return;
+      }
 
       if (msg['type'] == 'usage') {
         final dateStr = msg['date'] as String?;
@@ -302,7 +380,8 @@ class BrowserExtensionServer {
 
   // ─── POST /usage ─────────────────────────────────────────────────────────
 
-  static Future<void> _handleUsage(HttpRequest req) async {
+  static Future<void> _handleUsage(
+      HttpRequest req, String? authedBrowserId) async {
     final body = await _readBody(req);
     final Map<String, dynamic> json;
     try {
@@ -326,7 +405,16 @@ class BrowserExtensionServer {
       return;
     }
 
-    final browserId = json['browserId'] as String?;
+    final claimedId = json['browserId'] as String?;
+    if (ExtensionAuth.instance.isRequired &&
+        authedBrowserId != null &&
+        claimedId != null &&
+        claimedId != authedBrowserId) {
+      await _sendJson(req.response, HttpStatus.forbidden,
+          {'error': 'browserId does not match credentials'});
+      return;
+    }
+    final browserId = claimedId ?? authedBrowserId;
     final browserName = json['browserName'] as String?;
     final displayName = json['displayName'] as String?;
     final nameUpdatedAt = (json['nameUpdatedAt'] as num?)?.toInt() ?? 0;
@@ -383,8 +471,8 @@ class BrowserExtensionServer {
       );
     }
 
-    for (final raw in domains) {
-      final entry = raw as Map<String, dynamic>;
+    // Apply the user's privacy rules before anything is recorded.
+    for (final entry in PrivacyFilters.instance.filterDomainEntries(domains)) {
       final domain = entry['domain'] as String?;
       final seconds = (entry['seconds'] as num?)?.toInt() ?? 0;
       final visits = (entry['visits'] as num?)?.toInt() ?? 0;
@@ -658,7 +746,8 @@ class BrowserExtensionServer {
     response.headers
       ..add('Access-Control-Allow-Origin', allowedOrigin)
       ..add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-      ..add('Access-Control-Allow-Headers', 'Content-Type')
+      ..add('Access-Control-Allow-Headers',
+          'Content-Type, Authorization, X-Scolect-Browser, X-Scolect-Browser-Name')
       ..add('Vary', 'Origin');
   }
 

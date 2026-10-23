@@ -13,6 +13,8 @@ import 'app_data_controller.dart';
 import 'services/app_blocking_service.dart';
 import 'categories_controller.dart';
 import 'data_controllers/alerts_limits_data_controller.dart';
+import 'package:screentime/utils/category_rules.dart';
+import 'package:screentime/utils/privacy_filters.dart';
 
 enum TrackingMode {
   polling,
@@ -55,6 +57,11 @@ class BackgroundAppTracker {
   bool _systemAsleep = false;
   bool _screenOff = false;
   bool _locked = false;
+
+  // Window-title sampling (opt-in). _currentRawAppId is the pre-filter id of
+  // the focused app so a freshly sampled title is only attributed to it.
+  String _currentTitle = '';
+  String _currentRawAppId = '';
 
   // Debounce timers for resume events — macOS fires spurious unlock/awaked
   // before screenOff/locked, so we delay acting on them briefly.
@@ -387,6 +394,13 @@ class BackgroundAppTracker {
       if (appTitle == "loginwindow" || appTitle == "LockApp") return;
       if (appId.isEmpty || appId.toLowerCase() == 'unknown') appId = appTitle;
 
+      final filtered = PrivacyFilters.instance.applyToApp(appId, appTitle);
+      if (filtered.excluded) return;
+      // Titles are never recorded for a redacted app.
+      final redacted = filtered.name != appId;
+      appId = filtered.name;
+      appTitle = filtered.name;
+
       AppMetadata? metadata = await _getOrCreateMetadata(appId, appTitle);
 
       if (metadata != null && metadata.isTracking && metadata.isVisible) {
@@ -398,6 +412,10 @@ class BackgroundAppTracker {
           const Duration(minutes: 1),
           1,
           [TimeRange(startTime: startTime, endTime: now)],
+          titleSeconds: redacted || !_titleTrackingEnabled
+              ? null
+              : _storableTitleSample(
+                  currentAppInfo['windowTitle'] as String? ?? '', 60),
         );
         debugPrint('📊 Polling: $appTitle ($appId) (+1 min)');
       }
@@ -488,12 +506,14 @@ class BackgroundAppTracker {
       final now = DateTime.now();
       final elapsed = now.difference(_currentAppStartTime);
       if (elapsed.inSeconds > 0) {
+        await _refreshCurrentTitle();
         await _appDataStore?.recordAppUsage(
           _currentApp,
           SettingsManager().getLogicalDate(now),
           elapsed,
           0,
           [TimeRange(startTime: _currentAppStartTime, endTime: now)],
+          titleSeconds: _titleSample(elapsed.inSeconds),
         );
         _currentAppStartTime = now;
         debugPrint('💓 Heartbeat: $_currentApp (+${elapsed.inSeconds}s)');
@@ -575,6 +595,47 @@ class BackgroundAppTracker {
   // ============================================================
   // FOCUS CHANGE
   // ============================================================
+  bool get _titleTrackingEnabled =>
+      SettingsManager().getSetting('trackWindowTitles') == true;
+
+  /// Cleans, clips and filters a window title for storage. Returns null when
+  /// there is nothing worth recording or a privacy rule excludes it.
+  String? _storableTitle(String raw) {
+    var title = _sanitizeWindowTitle(raw);
+    if (title.isEmpty) return null;
+    if (title.length > AppUsageRecord.maxTitleLength) {
+      title = title.substring(0, AppUsageRecord.maxTitleLength);
+    }
+    final filtered = PrivacyFilters.instance.applyToTitle(title);
+    if (filtered.excluded || filtered.name.isEmpty) return null;
+    return filtered.name;
+  }
+
+  Map<String, int>? _storableTitleSample(String rawTitle, int seconds) {
+    final title = _storableTitle(rawTitle);
+    return title == null ? null : {title: seconds};
+  }
+
+  /// `{title: seconds}` for the title currently being sampled, or null.
+  Map<String, int>? _titleSample(int seconds) {
+    if (seconds <= 0 || !_titleTrackingEnabled || _currentApp == _selfAppId) {
+      return null;
+    }
+    final title = _storableTitle(_currentTitle);
+    return title == null ? null : {title: seconds};
+  }
+
+  /// Re-reads the focused window's title, but only if it still belongs to the
+  /// app we are tracking.
+  Future<void> _refreshCurrentTitle() async {
+    if (!_titleTrackingEnabled || _currentRawAppId.isEmpty) return;
+    if (_currentApp != _currentRawAppId) return; // redacted: never read titles
+    try {
+      final info = await ForegroundWindowPlugin.getForegroundWindowInfo();
+      if (info.appId == _currentRawAppId) _currentTitle = info.windowTitle;
+    } catch (_) {}
+  }
+
   String _sanitizeWindowTitle(String title) {
     return title
         .replaceAll('\u0000', '')
@@ -649,11 +710,37 @@ class BackgroundAppTracker {
       return;
     }
 
+    final rawAppId = newAppId;
+
+    // User privacy rules: an excluded app is never recorded (and stops the
+    // previous app's clock); a redacted one is tracked under its replacement.
+    final filtered =
+        PrivacyFilters.instance.applyToApp(newAppId, newProgramName);
+    if (filtered.excluded) {
+      if (_currentApp.isNotEmpty) {
+        _saveCurrentAppTime();
+        _currentApp = '';
+        _currentProgramName = '';
+        _currentRawAppId = '';
+        _currentTitle = '';
+        _stopSelfTrackingHeartbeat();
+        _appUpdateController.add(_currentApp);
+      }
+      return;
+    }
+    if (filtered.name != newAppId) {
+      newAppId = filtered.name;
+      newProgramName = filtered.name;
+    }
+
     if (newAppId != _currentApp) {
       _saveCurrentAppTime();
 
       _currentApp = newAppId;
       _currentProgramName = newProgramName;
+      _currentRawAppId = rawAppId;
+      // A redacted app must not leak its real window titles.
+      _currentTitle = filtered.name == rawAppId ? currentTitle : '';
       _currentAppStartTime = DateTime.now();
 
       await _ensureMetadataExists(newAppId, newProgramName);
@@ -763,6 +850,7 @@ class BackgroundAppTracker {
       elapsed,
       1,
       [TimeRange(startTime: _currentAppStartTime, endTime: now)],
+      titleSeconds: _titleSample(elapsed.inSeconds),
     ).then((_) {
       debugPrint('💾 Committed: $_currentApp (${elapsed.inSeconds}s)');
     }).catchError((e) {
@@ -802,12 +890,12 @@ class BackgroundAppTracker {
       }
     }
 
-    String appCategory =
-        displayLabel.isEmpty ? 'Idle' : _categorizeAppWithLocale(displayLabel);
-    bool isProductive = !(appCategory == "Social Media" ||
-        appCategory == "Entertainment" ||
-        appCategory == "Gaming" ||
-        appCategory == "Uncategorized");
+    // The user's own rules win over the built-in name list.
+    String appCategory = displayLabel.isEmpty
+        ? 'Idle'
+        : (CategoryRules.instance.categorize(appId, displayLabel) ??
+            _categorizeAppWithLocale(displayLabel));
+    bool isProductive = CategoryRules.isProductiveCategory(appCategory);
 
     if (_appDataStore != null) {
       await _appDataStore!.updateAppMetadata(appId,
@@ -863,7 +951,11 @@ class BackgroundAppTracker {
   Future<Map<String, dynamic>?> _getCurrentActiveAppInfo() async {
     try {
       WindowInfo info = await ForegroundWindowPlugin.getForegroundWindowInfo();
-      return {'title': info.programName, 'appId': info.appId};
+      return {
+        'title': info.programName,
+        'appId': info.appId,
+        'windowTitle': info.windowTitle,
+      };
     } catch (e) {
       return null;
     }

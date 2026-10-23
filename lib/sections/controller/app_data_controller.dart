@@ -14,6 +14,59 @@ import '../../utils/browser_extension_server_stub.dart'
     if (dart.library.io) '../../utils/browser_extension_server.dart';
 
 // TypeAdapters for complex types
+
+/// Aggregate of sessions that no longer fit in [AppUsageRecord.usagePeriods].
+/// Keeps session counts and extremes exact after the retained list is capped.
+/// A zero [longestSeconds]/[shortestSeconds] means "none recorded".
+class SessionArchive {
+  final int count;
+  final int seconds;
+  final int longestSeconds;
+  final int shortestSeconds;
+
+  const SessionArchive({
+    this.count = 0,
+    this.seconds = 0,
+    this.longestSeconds = 0,
+    this.shortestSeconds = 0,
+  });
+
+  static const SessionArchive empty = SessionArchive();
+
+  bool get isEmpty => count == 0;
+
+  SessionArchive addPeriods(Iterable<TimeRange> dropped) {
+    var result = this;
+    for (final p in dropped) {
+      final secs = p.duration.inSeconds;
+      if (secs <= 0) continue;
+      result = result.merge(SessionArchive(
+        count: 1,
+        seconds: secs,
+        longestSeconds: secs,
+        shortestSeconds: secs,
+      ));
+    }
+    return result;
+  }
+
+  SessionArchive merge(SessionArchive other) {
+    if (other.isEmpty) return this;
+    if (isEmpty) return other;
+    return SessionArchive(
+      count: count + other.count,
+      seconds: seconds + other.seconds,
+      longestSeconds:
+          longestSeconds > other.longestSeconds ? longestSeconds : other.longestSeconds,
+      shortestSeconds: shortestSeconds == 0
+          ? other.shortestSeconds
+          : (other.shortestSeconds == 0 || shortestSeconds < other.shortestSeconds
+              ? shortestSeconds
+              : other.shortestSeconds),
+    );
+  }
+}
+
 @HiveType(typeId: 1)
 class AppUsageRecord {
   @HiveField(0)
@@ -28,12 +81,113 @@ class AppUsageRecord {
   @HiveField(3)
   final List<TimeRange> usagePeriods;
 
+  /// Exact seconds of use per hour of day (0-23). Unlike [usagePeriods], which
+  /// is capped to the most recent sessions, this never loses data and holds at
+  /// most 24 entries. Empty for records written before this field existed.
+  @HiveField(4)
+  final Map<int, int> hourlySeconds;
+
+  /// Sessions that were dropped from [usagePeriods] by the retention cap.
+  /// Persisted as Hive fields 5-8 (count, seconds, longest, shortest).
+  final SessionArchive archive;
+
+  /// Sampled seconds per window title (opt-in; empty unless the user turned on
+  /// title recording). Bounded to [maxTitles] entries of at most
+  /// [maxTitleLength] characters; the rest is folded into [otherTitlesKey].
+  @HiveField(9)
+  final Map<String, int> titleSeconds;
+
+  static const int maxTitles = 15;
+  static const int maxTitleLength = 80;
+
+  /// Bucket for titles beyond [maxTitles]. Empty so it can't collide with a
+  /// real title (those are never empty).
+  static const String otherTitlesKey = '';
+
   AppUsageRecord({
     required this.date,
     required this.timeSpent,
     required this.openCount,
     required this.usagePeriods,
+    this.hourlySeconds = const {},
+    this.archive = SessionArchive.empty,
+    this.titleSeconds = const {},
   });
+
+  /// Sums [a] and [b], keeping the [maxTitles] longest titles and folding the
+  /// rest into [otherTitlesKey]. Never mutates its inputs.
+  static Map<String, int> mergeTitles(Map<String, int> a, Map<String, int> b) {
+    if (b.isEmpty) return a;
+    final merged = Map<String, int>.of(a);
+    b.forEach((t, s) => merged[t] = (merged[t] ?? 0) + s);
+    final named = merged.entries.where((e) => e.key != otherTitlesKey).toList();
+    if (named.length <= maxTitles) return merged;
+    named.sort((x, y) => y.value.compareTo(x.value));
+    final result = <String, int>{
+      for (final e in named.take(maxTitles)) e.key: e.value,
+    };
+    var other = merged[otherTitlesKey] ?? 0;
+    for (final e in named.skip(maxTitles)) {
+      other += e.value;
+    }
+    if (other > 0) result[otherTitlesKey] = other;
+    return result;
+  }
+
+  /// Total sessions, including those archived out of [usagePeriods].
+  int get sessionCount => usagePeriods.length + archive.count;
+
+  int get totalSessionSeconds =>
+      usagePeriods.fold<int>(0, (sum, p) => sum + p.duration.inSeconds) +
+      archive.seconds;
+
+  Duration get longestSession {
+    var best = archive.longestSeconds;
+    for (final p in usagePeriods) {
+      if (p.duration.inSeconds > best) best = p.duration.inSeconds;
+    }
+    return Duration(seconds: best);
+  }
+
+  /// Shortest non-empty session, or [Duration.zero] if there are none.
+  Duration get shortestSession {
+    var best = archive.shortestSeconds;
+    for (final p in usagePeriods) {
+      final secs = p.duration.inSeconds;
+      if (secs > 0 && (best == 0 || secs < best)) best = secs;
+    }
+    return Duration(seconds: best);
+  }
+
+  /// [hourlySeconds], or for legacy records an approximation derived from the
+  /// retained [usagePeriods].
+  Map<int, int> get effectiveHourlySeconds =>
+      hourlySeconds.isNotEmpty ? hourlySeconds : hourlyFromPeriods(usagePeriods);
+
+  /// Splits [periods] at hour boundaries into seconds per hour of day.
+  static Map<int, int> hourlyFromPeriods(List<TimeRange> periods) {
+    final result = <int, int>{};
+    for (final p in periods) {
+      var cursor = p.startTime;
+      while (cursor.isBefore(p.endTime)) {
+        final nextHour =
+            DateTime(cursor.year, cursor.month, cursor.day, cursor.hour + 1);
+        final segmentEnd = nextHour.isBefore(p.endTime) ? nextHour : p.endTime;
+        final secs = segmentEnd.difference(cursor).inSeconds;
+        if (secs > 0) result[cursor.hour] = (result[cursor.hour] ?? 0) + secs;
+        cursor = segmentEnd;
+      }
+    }
+    return result;
+  }
+
+  static Map<int, int> mergeHourly(Map<int, int> a, Map<int, int> b) {
+    if (b.isEmpty) return a;
+    if (a.isEmpty) return b;
+    final result = Map<int, int>.of(a);
+    b.forEach((h, s) => result[h] = (result[h] ?? 0) + s);
+    return result;
+  }
 
   AppUsageRecord merge(AppUsageRecord other) {
     return AppUsageRecord(
@@ -41,6 +195,10 @@ class AppUsageRecord {
       timeSpent: timeSpent + other.timeSpent,
       openCount: openCount + other.openCount,
       usagePeriods: [...usagePeriods, ...other.usagePeriods],
+      hourlySeconds:
+          mergeHourly(effectiveHourlySeconds, other.effectiveHourlySeconds),
+      archive: archive.merge(other.archive),
+      titleSeconds: mergeTitles(titleSeconds, other.titleSeconds),
     );
   }
 
@@ -49,12 +207,18 @@ class AppUsageRecord {
     Duration? timeSpent,
     int? openCount,
     List<TimeRange>? usagePeriods,
+    Map<int, int>? hourlySeconds,
+    SessionArchive? archive,
+    Map<String, int>? titleSeconds,
   }) {
     return AppUsageRecord(
       date: date ?? this.date,
       timeSpent: timeSpent ?? this.timeSpent,
       openCount: openCount ?? this.openCount,
       usagePeriods: usagePeriods ?? this.usagePeriods,
+      hourlySeconds: hourlySeconds ?? this.hourlySeconds,
+      archive: archive ?? this.archive,
+      titleSeconds: titleSeconds ?? this.titleSeconds,
     );
   }
 }
@@ -1772,8 +1936,9 @@ class AppDataStore extends ChangeNotifier {
     DateTime date,
     Duration timeSpent,
     int openCount,
-    List<TimeRange> usagePeriods,
-  ) async {
+    List<TimeRange> usagePeriods, {
+    Map<String, int>? titleSeconds,
+  }) async {
     if (!_ensureInitialized()) return false;
 
     try {
@@ -1788,15 +1953,23 @@ class AppDataStore extends ChangeNotifier {
         final existing = _usageCacheByDate[dateKey]![appName];
 
         if (existing != null) {
-          final List<TimeRange> optimizedPeriods = _optimizeUsagePeriods(
+          final optimized = _optimizeUsagePeriods(
             [...existing.usagePeriods, ...usagePeriods],
           );
+          final List<TimeRange> optimizedPeriods = optimized.kept;
 
           final AppUsageRecord updated = AppUsageRecord(
             date: date,
             timeSpent: existing.timeSpent + timeSpent,
             openCount: existing.openCount + openCount,
             usagePeriods: optimizedPeriods,
+            hourlySeconds: AppUsageRecord.mergeHourly(
+              existing.effectiveHourlySeconds,
+              AppUsageRecord.hourlyFromPeriods(usagePeriods),
+            ),
+            archive: existing.archive.addPeriods(optimized.dropped),
+            titleSeconds: AppUsageRecord.mergeTitles(
+                existing.titleSeconds, titleSeconds ?? const {}),
           );
 
           _usageCacheByDate[dateKey]![appName] = updated;
@@ -1806,6 +1979,8 @@ class AppDataStore extends ChangeNotifier {
             timeSpent: timeSpent,
             openCount: openCount,
             usagePeriods: usagePeriods,
+            hourlySeconds: AppUsageRecord.hourlyFromPeriods(usagePeriods),
+            titleSeconds: titleSeconds ?? const {},
           );
 
           _usageCacheByDate[dateKey]![appName] = record;
@@ -1830,8 +2005,11 @@ class AppDataStore extends ChangeNotifier {
     DateTime date,
     Duration timeSpent,
     int openCount,
-    List<TimeRange> usagePeriods,
-  ) async {
+    List<TimeRange> usagePeriods, {
+    Map<int, int>? hourlySeconds,
+    SessionArchive archive = SessionArchive.empty,
+    Map<String, int> titleSeconds = const {},
+  }) async {
     if (!_ensureInitialized()) return false;
 
     try {
@@ -1846,6 +2024,10 @@ class AppDataStore extends ChangeNotifier {
           timeSpent: timeSpent,
           openCount: openCount,
           usagePeriods: usagePeriods,
+          hourlySeconds:
+              hourlySeconds ?? AppUsageRecord.hourlyFromPeriods(usagePeriods),
+          archive: archive,
+          titleSeconds: titleSeconds,
         );
 
         _usageCacheByDate[dateKey]![appName] = record;
@@ -1862,8 +2044,16 @@ class AppDataStore extends ChangeNotifier {
     }
   }
 
-  List<TimeRange> _optimizeUsagePeriods(List<TimeRange> periods) {
-    if (periods.length <= 10) return periods;
+  static const int _maxRetainedPeriods = 10;
+
+  /// Merges periods separated by 5 seconds or less and keeps the most recent
+  /// [_maxRetainedPeriods]. Anything pushed out is returned in `dropped` so the
+  /// caller can fold it into the record's [SessionArchive].
+  ({List<TimeRange> kept, List<TimeRange> dropped}) _optimizeUsagePeriods(
+      List<TimeRange> periods) {
+    if (periods.length <= _maxRetainedPeriods) {
+      return (kept: periods, dropped: const <TimeRange>[]);
+    }
 
     // Check if already sorted
     bool isSorted = true;
@@ -1895,11 +2085,15 @@ class AppDataStore extends ChangeNotifier {
 
     optimizedPeriods.add(current);
 
-    if (optimizedPeriods.length > 10) {
-      return optimizedPeriods.sublist(optimizedPeriods.length - 10);
+    if (optimizedPeriods.length > _maxRetainedPeriods) {
+      final cut = optimizedPeriods.length - _maxRetainedPeriods;
+      return (
+        kept: optimizedPeriods.sublist(cut),
+        dropped: optimizedPeriods.sublist(0, cut),
+      );
     }
 
-    return optimizedPeriods;
+    return (kept: optimizedPeriods, dropped: const <TimeRange>[]);
   }
 
   /// Get single app usage - O(1) lookup with date-indexed cache
@@ -2698,6 +2892,48 @@ class AppDataStore extends ChangeNotifier {
     });
   }
 
+  /// Removes every stored window title (cached and on disk) while keeping all
+  /// usage totals. Returns the number of records that had titles.
+  Future<int> clearWindowTitles() async {
+    if (!_ensureInitialized()) return 0;
+    try {
+      return await _runtimeCacheLock.synchronized(() async {
+        var cleared = 0;
+        for (final dayMap in _usageCacheByDate.values) {
+          for (final entry in dayMap.entries.toList()) {
+            if (entry.value.titleSeconds.isEmpty) continue;
+            dayMap[entry.key] = entry.value.copyWith(titleSeconds: const {});
+            cleared++;
+          }
+        }
+        // Cached records are now clean; any that are still waiting to be
+        // flushed will be written without titles. The scan below clears the
+        // copies already on disk. (Committing here would deadlock: it takes
+        // the same non-reentrant lock.)
+        for (final box in [_usageBox, _webUsageBox]) {
+          if (box == null) continue;
+          final updates = <dynamic, AppUsageRecord>{};
+          for (final key in box.keys) {
+            final record = box.get(key);
+            if (record != null && record.titleSeconds.isNotEmpty) {
+              updates[key] = record.copyWith(titleSeconds: const {});
+            }
+          }
+          if (updates.isNotEmpty) {
+            await box.putAll(updates);
+            cleared += updates.length;
+          }
+        }
+        notifyListeners();
+        return cleared;
+      });
+    } catch (e) {
+      _lastError = 'Error clearing window titles: $e';
+      debugPrint(_lastError);
+      return 0;
+    }
+  }
+
   Future<bool> clearAllData({Function(double)? progressCallback}) async {
     return await _initLock.synchronized(() async {
       if (!_ensureInitialized()) return false;
@@ -2791,6 +3027,24 @@ class AppDataStore extends ChangeNotifier {
         debugPrint(_lastError);
       }
     });
+  }
+
+  /// Closes Hive and clears every in-memory cache so the singleton can be
+  /// re-initialised from scratch. Tests only.
+  @visibleForTesting
+  Future<void> resetForTesting() async {
+    await closeHive();
+    _usageCacheByDate.clear();
+    _focusCacheByDate.clear();
+    _metadataCache.clear();
+    _dateStringCache.clear();
+    _dirtyUsageKeys.clear();
+    _dirtyFocusKeys.clear();
+    _cachedAppNames = null;
+    _hasDirtyData = false;
+    _lastMaintenanceDate = null;
+    _activeHiveDirPath = null;
+    _lastError = null;
   }
 
   @override
@@ -3012,12 +3266,20 @@ class AppUsageRecordAdapter extends TypeAdapter<AppUsageRecord> {
       timeSpent: fields[1] as Duration,
       openCount: fields[2] as int,
       usagePeriods: (fields[3] as List).cast<TimeRange>(),
+      hourlySeconds: (fields[4] as Map?)?.cast<int, int>() ?? const {},
+      archive: SessionArchive(
+        count: fields[5] as int? ?? 0,
+        seconds: fields[6] as int? ?? 0,
+        longestSeconds: fields[7] as int? ?? 0,
+        shortestSeconds: fields[8] as int? ?? 0,
+      ),
+      titleSeconds: (fields[9] as Map?)?.cast<String, int>() ?? const {},
     );
   }
 
   @override
   void write(BinaryWriter writer, AppUsageRecord obj) {
-    writer.writeByte(4);
+    writer.writeByte(10);
     writer.writeByte(0);
     writer.write(obj.date);
     writer.writeByte(1);
@@ -3026,6 +3288,18 @@ class AppUsageRecordAdapter extends TypeAdapter<AppUsageRecord> {
     writer.write(obj.openCount);
     writer.writeByte(3);
     writer.write(obj.usagePeriods);
+    writer.writeByte(4);
+    writer.write(obj.hourlySeconds);
+    writer.writeByte(5);
+    writer.write(obj.archive.count);
+    writer.writeByte(6);
+    writer.write(obj.archive.seconds);
+    writer.writeByte(7);
+    writer.write(obj.archive.longestSeconds);
+    writer.writeByte(8);
+    writer.write(obj.archive.shortestSeconds);
+    writer.writeByte(9);
+    writer.write(obj.titleSeconds);
   }
 }
 

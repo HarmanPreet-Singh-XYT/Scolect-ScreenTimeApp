@@ -31,6 +31,46 @@ async function getBrowserId() {
   return _browserId;
 }
 
+// ─── Desktop auth ─────────────────────────────────────────────────────────────
+// A random secret generated once per install. It is sent with the browser id on
+// every request to the desktop; the user approves this browser once in the
+// desktop app, after which only requests carrying this token are accepted.
+const AUTH_TOKEN_KEY = `${STORAGE_PREFIX}auth_token`;
+let _authToken = null;
+
+async function getAuthToken() {
+  if (_authToken) return _authToken;
+  const result = await chrome.storage.local.get(AUTH_TOKEN_KEY);
+  if (result[AUTH_TOKEN_KEY]) {
+    _authToken = result[AUTH_TOKEN_KEY];
+    return _authToken;
+  }
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  _authToken = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  await chrome.storage.local.set({ [AUTH_TOKEN_KEY]: _authToken });
+  return _authToken;
+}
+
+async function desktopAuthHeaders(extra = {}) {
+  return {
+    ...extra,
+    'Authorization': `Bearer ${await getAuthToken()}`,
+    'X-Scolect-Browser': await getBrowserId(),
+    'X-Scolect-Browser-Name': detectBrowserName(),
+  };
+}
+
+// Pairing state reported by the desktop: 'approved' | 'pending' | 'denied' |
+// 'invalid' | 'missing'. Stored in app_state for the popup and dashboard.
+async function recordPairing(resp) {
+  let pairing = 'unknown';
+  if (resp.status === 401 || resp.status === 403) {
+    const body = await resp.json().catch(() => null);
+    pairing = body?.pairing || (resp.status === 403 ? 'denied' : 'missing');
+  }
+  return pairing;
+}
+
 async function getBrowserNameMetadata() {
   const result = await chrome.storage.local.get([BROWSER_NAME_KEY, BROWSER_NAME_UPDATED_AT_KEY]);
   return {
@@ -47,7 +87,7 @@ async function setBrowserDisplayName(name) {
     [BROWSER_NAME_UPDATED_AT_KEY]: now,
   });
   try {
-    const ws = getWs();
+    const ws = await getWs();
     const browserId = await getBrowserId();
     await _sendWhenOpen(ws, {
       type: 'rename_browser',
@@ -91,11 +131,19 @@ let _idleReady = false;
 let _idleReadyResolve = null;
 const _idleReadyPromise = new Promise(resolve => { _idleReadyResolve = resolve; });
 
-function getWs() {
-  if (_ws && (_ws.readyState === WebSocket.OPEN || _ws.readyState === WebSocket.CONNECTING)) {
-    return _ws;
-  }
-  _ws = new WebSocket(WS_URL);
+function _wsAlive() {
+  return _ws && (_ws.readyState === WebSocket.OPEN || _ws.readyState === WebSocket.CONNECTING);
+}
+
+async function getWs() {
+  if (_wsAlive()) return _ws;
+  // WebSocket upgrades can't carry custom headers, so credentials go in the
+  // query string (loopback only).
+  const [id, token] = await Promise.all([getBrowserId(), getAuthToken()]);
+  // Another caller may have connected while we awaited the credentials.
+  if (_wsAlive()) return _ws;
+  const params = new URLSearchParams({ browserId: id, token, browserName: detectBrowserName() });
+  _ws = new WebSocket(`${WS_URL}?${params}`);
   _ws.onmessage = handleDesktopMessage;
   _ws.onerror   = () => { _ws = null; };
   _ws.onclose   = () => { _ws = null; };
@@ -919,7 +967,7 @@ async function refreshBlockedDomains() {
   } else {
     // Hybrid / Tracker-Only: focus_state is pushed over WebSocket by the desktop.
     // Ensure the WS connection is being established (getWs() is idempotent).
-    getWs();
+    getWs().catch(() => {});
 
     if (_pendingFocusState) {
       // Desktop already pushed state this SW session — apply it.
@@ -1058,7 +1106,7 @@ async function sendFocusControl(action) {
     return;
   }
   try {
-    const ws = getWs();
+    const ws = await getWs();
     await _sendWhenOpen(ws, { type: 'focus_control', action });
   } catch (e) {
     console.warn('Focus control send failed:', e);
@@ -1130,10 +1178,12 @@ async function runSync() {
   };
 
   let connected = false;
+  let pairing = 'unknown';
   try {
-    const ws = getWs();
+    const ws = await getWs();
     await _sendWhenOpen(ws, payload);
     connected = true;
+    pairing = 'approved';
   } catch {
     // WebSocket failed (service worker restarted, desktop not running, etc.).
     // Fall back to HTTP POST which works even without a persistent connection.
@@ -1141,10 +1191,12 @@ async function runSync() {
       const desktopUrl = settings.desktopUrl || `http://localhost:${FLUTTER_PORT}`;
       const resp = await fetch(`${desktopUrl}/usage`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await desktopAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(payload),
       });
       connected = resp.ok;
+      if (resp.ok) pairing = 'approved';
+      else pairing = await recordPairing(resp);
       if (resp.ok) {
         const respJson = await resp.json().catch(() => null);
         if (respJson && typeof respJson.displayName === 'string' && (respJson.nameUpdatedAt || 0) > nameMeta.nameUpdatedAt) {
@@ -1165,7 +1217,11 @@ async function runSync() {
   const stateKey = `${STORAGE_PREFIX}app_state`;
   const existing = await chrome.storage.local.get(stateKey);
   const prev = existing[stateKey] ?? {};
-  const update = { [stateKey]: { ...prev, appConnected: connected, lastSyncAt: connected ? Date.now() : prev.lastSyncAt } };
+  // A 401/403 means the desktop is reachable but hasn't approved this browser:
+  // report that instead of "not reachable".
+  const awaitingApproval = pairing === 'pending' || pairing === 'denied' || pairing === 'invalid' || pairing === 'missing';
+  const update = { [stateKey]: { ...prev, appConnected: connected, pairing, lastSyncAt: connected ? Date.now() : prev.lastSyncAt } };
+  if (awaitingApproval) update[stateKey].appConnected = false;
   if (connected) update[`${STORAGE_PREFIX}ever_connected`] = true;
   await chrome.storage.local.set(update);
 }
@@ -1197,7 +1253,10 @@ async function _clearDesktopWebData() {
   if (settings.mode === 'standalone') return;
   const desktopUrl = settings.desktopUrl || `http://localhost:${FLUTTER_PORT}`;
   try {
-    const resp = await fetch(`${desktopUrl}/clear-web-data`, { method: 'POST' });
+    const resp = await fetch(`${desktopUrl}/clear-web-data`, {
+      method: 'POST',
+      headers: await desktopAuthHeaders(),
+    });
     if (resp.ok) {
       // Clear succeeded — remove the pending flag so we don't retry.
       await chrome.storage.local.remove(_PENDING_CLEAR_KEY);

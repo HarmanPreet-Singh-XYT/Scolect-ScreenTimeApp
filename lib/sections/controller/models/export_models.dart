@@ -108,6 +108,15 @@ class ExportableAppUsage {
   final int openCount;
   final List<ExportableTimeRange> usagePeriods;
 
+  /// Seconds per hour of day. Null in exports made before this was recorded.
+  final Map<int, int>? hourlySeconds;
+
+  /// Sessions archived out of [usagePeriods]. Null in older exports.
+  final Map<String, int>? sessionArchive;
+
+  /// Sampled seconds per window title. Absent unless title recording was on.
+  final Map<String, int>? titleSeconds;
+
   ExportableAppUsage({
     required this.appName,
     required this.dateKey,
@@ -115,6 +124,9 @@ class ExportableAppUsage {
     required this.timeSpentMicroseconds,
     required this.openCount,
     required this.usagePeriods,
+    this.hourlySeconds,
+    this.sessionArchive,
+    this.titleSeconds,
   });
 
   Map<String, dynamic> toJson() => {
@@ -124,6 +136,11 @@ class ExportableAppUsage {
     'timeSpentMicroseconds': timeSpentMicroseconds,
     'openCount': openCount,
     'usagePeriods': usagePeriods.map((e) => e.toJson()).toList(),
+    if (hourlySeconds != null)
+      'hourlySeconds': hourlySeconds!.map((h, s) => MapEntry('$h', s)),
+    if (sessionArchive != null) 'sessionArchive': sessionArchive,
+    if (titleSeconds != null && titleSeconds!.isNotEmpty)
+      'titleSeconds': titleSeconds,
   };
 
   factory ExportableAppUsage.fromJson(Map<String, dynamic> json) {
@@ -136,6 +153,12 @@ class ExportableAppUsage {
       usagePeriods: (json['usagePeriods'] as List)
           .map((e) => ExportableTimeRange.fromJson(e as Map<String, dynamic>))
           .toList(),
+      hourlySeconds: (json['hourlySeconds'] as Map?)
+          ?.map((h, s) => MapEntry(int.parse('$h'), (s as num).toInt())),
+      sessionArchive: (json['sessionArchive'] as Map?)
+          ?.map((k, v) => MapEntry('$k', (v as num).toInt())),
+      titleSeconds: (json['titleSeconds'] as Map?)
+          ?.map((k, v) => MapEntry('$k', (v as num).toInt())),
     );
   }
 }

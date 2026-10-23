@@ -524,7 +524,20 @@ async function render() {
     const connected = state?.appConnected;
     const lastSync  = state?.lastSyncAt;
 
-    if (connected === true) {
+    const pairing = state?.pairing;
+    if (pairing === 'pending') {
+      syncDot.className = 'sync-dot unknown';
+      syncLabel.textContent = 'Waiting for approval in Scolect Desktop';
+      syncTime.textContent  = '';
+    } else if (pairing === 'denied') {
+      syncDot.className = 'sync-dot disconnected';
+      syncLabel.textContent = 'Blocked in Scolect Desktop';
+      syncTime.textContent  = '';
+    } else if (pairing === 'invalid' || pairing === 'missing') {
+      syncDot.className = 'sync-dot disconnected';
+      syncLabel.textContent = 'Not authorized — re-approve in Scolect Desktop';
+      syncTime.textContent  = '';
+    } else if (connected === true) {
       syncDot.className = 'sync-dot connected';
       syncLabel.textContent = 'Connected to Scolect Desktop';
       syncTime.textContent  = lastSync ? `${timeSince(lastSync)} ago` : '';

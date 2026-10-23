@@ -7990,6 +7990,738 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get onboardingSkip;
+
+  /// No description provided for @extAccessSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Browser Extension Access'**
+  String get extAccessSectionTitle;
+
+  /// No description provided for @extAccessRequireTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Require approval for browsers'**
+  String get extAccessRequireTitle;
+
+  /// No description provided for @extAccessRequireDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.'**
+  String get extAccessRequireDescription;
+
+  /// No description provided for @extAccessPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for approval'**
+  String get extAccessPendingTitle;
+
+  /// No description provided for @extAccessPendingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'These browsers asked to sync with Scolect.'**
+  String get extAccessPendingDescription;
+
+  /// No description provided for @extAccessApprovedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved browsers'**
+  String get extAccessApprovedTitle;
+
+  /// No description provided for @extAccessNoneApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'No browsers approved yet. Open the extension and it will appear here.'**
+  String get extAccessNoneApproved;
+
+  /// No description provided for @extAccessApprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get extAccessApprove;
+
+  /// No description provided for @extAccessDeny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get extAccessDeny;
+
+  /// No description provided for @extAccessRevoke.
+  ///
+  /// In en, this message translates to:
+  /// **'Revoke'**
+  String get extAccessRevoke;
+
+  /// No description provided for @extAccessUnknownBrowser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown browser'**
+  String get extAccessUnknownBrowser;
+
+  /// No description provided for @extAccessAllowDeniedAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Let denied browsers ask again'**
+  String get extAccessAllowDeniedAgain;
+
+  /// No description provided for @extAccessBlockedNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 unauthorized sync attempt blocked since launch} other{{count} unauthorized sync attempts blocked since launch}}'**
+  String extAccessBlockedNotice(int count);
+
+  /// No description provided for @extAccessBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A browser wants to sync with Scolect'**
+  String get extAccessBannerTitle;
+
+  /// No description provided for @extAccessBannerBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is waiting for your approval.'**
+  String extAccessBannerBody(String name);
+
+  /// No description provided for @pfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Filters'**
+  String get pfTitle;
+
+  /// No description provided for @pfDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.'**
+  String get pfDescription;
+
+  /// No description provided for @pfAddRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Add rule'**
+  String get pfAddRule;
+
+  /// No description provided for @pfEditRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit rule'**
+  String get pfEditRule;
+
+  /// No description provided for @pfNoRules.
+  ///
+  /// In en, this message translates to:
+  /// **'No rules yet.'**
+  String get pfNoRules;
+
+  /// No description provided for @pfPatternLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pattern (regular expression)'**
+  String get pfPatternLabel;
+
+  /// No description provided for @pfPatternHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. bank|vault'**
+  String get pfPatternHint;
+
+  /// No description provided for @pfAppliesTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Applies to'**
+  String get pfAppliesTo;
+
+  /// No description provided for @pfTargetApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps'**
+  String get pfTargetApps;
+
+  /// No description provided for @pfTargetWebsites.
+  ///
+  /// In en, this message translates to:
+  /// **'Websites'**
+  String get pfTargetWebsites;
+
+  /// No description provided for @pfTargetBoth.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps and websites'**
+  String get pfTargetBoth;
+
+  /// No description provided for @pfActionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Action'**
+  String get pfActionLabel;
+
+  /// No description provided for @pfActionExclude.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t track'**
+  String get pfActionExclude;
+
+  /// No description provided for @pfActionRedact.
+  ///
+  /// In en, this message translates to:
+  /// **'Track under another name'**
+  String get pfActionRedact;
+
+  /// No description provided for @pfReplacementLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name to record instead'**
+  String get pfReplacementLabel;
+
+  /// No description provided for @pfReplacementHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Redacted'**
+  String get pfReplacementHint;
+
+  /// No description provided for @pfErrorEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a pattern.'**
+  String get pfErrorEmpty;
+
+  /// No description provided for @pfErrorInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This isn\'t a valid regular expression.'**
+  String get pfErrorInvalid;
+
+  /// No description provided for @pfErrorTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Pattern is too long (200 characters max).'**
+  String get pfErrorTooLong;
+
+  /// No description provided for @pfRuleSummaryExclude.
+  ///
+  /// In en, this message translates to:
+  /// **'Not tracked'**
+  String get pfRuleSummaryExclude;
+
+  /// No description provided for @pfRuleSummaryRedact.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded as \"{name}\"'**
+  String pfRuleSummaryRedact(String name);
+
+  /// No description provided for @crTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Rules'**
+  String get crTitle;
+
+  /// No description provided for @crDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.'**
+  String get crDescription;
+
+  /// No description provided for @crCategoryLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get crCategoryLabel;
+
+  /// No description provided for @crCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick one or type your own'**
+  String get crCategoryHint;
+
+  /// No description provided for @crErrorCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category.'**
+  String get crErrorCategory;
+
+  /// No description provided for @crApplyExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply to existing apps'**
+  String get crApplyExisting;
+
+  /// No description provided for @crApplyResult.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No apps needed changing} =1{1 app recategorized} other{{count} apps recategorized}}'**
+  String crApplyResult(int count);
+
+  /// No description provided for @crMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get crMoveUp;
+
+  /// No description provided for @crMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get crMoveDown;
+
+  /// No description provided for @crHintTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A lot of your time is uncategorized'**
+  String get crHintTitle;
+
+  /// No description provided for @crHintBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of the last 7 days is in apps without a category, mostly {apps}. A category rule can sort them for you.'**
+  String crHintBody(int percent, String apps);
+
+  /// No description provided for @crHintAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a rule'**
+  String get crHintAction;
+
+  /// No description provided for @crHintDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get crHintDismiss;
+
+  /// No description provided for @wtSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Window Titles'**
+  String get wtSectionTitle;
+
+  /// No description provided for @wtToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record window titles'**
+  String get wtToggleTitle;
+
+  /// No description provided for @wtToggleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.'**
+  String get wtToggleDescription;
+
+  /// No description provided for @wtClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete stored titles'**
+  String get wtClearTitle;
+
+  /// No description provided for @wtClearDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes every recorded window title. Your usage totals are not affected.'**
+  String get wtClearDescription;
+
+  /// No description provided for @wtClearAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete titles'**
+  String get wtClearAction;
+
+  /// No description provided for @wtCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No stored titles found} =1{Titles removed from 1 record} other{Titles removed from {count} records}}'**
+  String wtCleared(int count);
+
+  /// No description provided for @wtTopWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'Top windows (last 7 days)'**
+  String get wtTopWindows;
+
+  /// No description provided for @wtOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other windows'**
+  String get wtOther;
+
+  /// No description provided for @insTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Insights'**
+  String get insTitle;
+
+  /// No description provided for @insTrendsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This week vs last week'**
+  String get insTrendsTitle;
+
+  /// No description provided for @insThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get insThisWeek;
+
+  /// No description provided for @insLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week'**
+  String get insLastWeek;
+
+  /// No description provided for @insByCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By category'**
+  String get insByCategory;
+
+  /// No description provided for @insBiggestChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Biggest changes'**
+  String get insBiggestChanges;
+
+  /// No description provided for @insNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough data yet.'**
+  String get insNoData;
+
+  /// No description provided for @insHeatmapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily activity, last 26 weeks'**
+  String get insHeatmapTitle;
+
+  /// No description provided for @insHeatmapTip.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}: {time}'**
+  String insHeatmapTip(String date, String time);
+
+  /// No description provided for @insLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Less'**
+  String get insLess;
+
+  /// No description provided for @insMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get insMore;
+
+  /// No description provided for @insTimelineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Day timeline'**
+  String get insTimelineTitle;
+
+  /// No description provided for @insTimelineOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other apps'**
+  String get insTimelineOther;
+
+  /// No description provided for @insTimelineEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity recorded for this day.'**
+  String get insTimelineEmpty;
+
+  /// No description provided for @insPrevDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get insPrevDay;
+
+  /// No description provided for @insNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get insNextDay;
+
+  /// No description provided for @insSearchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Search window titles'**
+  String get insSearchTitle;
+
+  /// No description provided for @insSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search document, page or project names'**
+  String get insSearchHint;
+
+  /// No description provided for @insSearchDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'No window titles recorded yet. You can turn on recording in Settings > Window Titles.'**
+  String get insSearchDisabled;
+
+  /// No description provided for @insSearchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching windows in the last 30 days.'**
+  String get insSearchNoResults;
+
+  /// No description provided for @tlTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Time log'**
+  String get tlTitle;
+
+  /// No description provided for @tlHint.
+  ///
+  /// In en, this message translates to:
+  /// **'What are you working on?'**
+  String get tlHint;
+
+  /// No description provided for @tlStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get tlStart;
+
+  /// No description provided for @tlStop.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop'**
+  String get tlStop;
+
+  /// No description provided for @tlDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get tlDiscard;
+
+  /// No description provided for @tlAddEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Add entry'**
+  String get tlAddEntry;
+
+  /// No description provided for @tlToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get tlToday;
+
+  /// No description provided for @tlThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get tlThisWeek;
+
+  /// No description provided for @tlNothingToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing logged today.'**
+  String get tlNothingToday;
+
+  /// No description provided for @tlDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.'**
+  String get tlDescription;
+
+  /// No description provided for @tlDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get tlDurationLabel;
+
+  /// No description provided for @tlHours.
+  ///
+  /// In en, this message translates to:
+  /// **'hours'**
+  String get tlHours;
+
+  /// No description provided for @tlMinutes.
+  ///
+  /// In en, this message translates to:
+  /// **'minutes'**
+  String get tlMinutes;
+
+  /// No description provided for @tlDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get tlDateLabel;
+
+  /// No description provided for @tlErrorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what you worked on.'**
+  String get tlErrorLabel;
+
+  /// No description provided for @tlErrorDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a duration greater than zero.'**
+  String get tlErrorDuration;
+
+  /// No description provided for @clTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Category Limits'**
+  String get clTitle;
+
+  /// No description provided for @clDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.'**
+  String get clDescription;
+
+  /// No description provided for @clAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add limit'**
+  String get clAdd;
+
+  /// No description provided for @clEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit limit'**
+  String get clEdit;
+
+  /// No description provided for @clLimitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily limit'**
+  String get clLimitLabel;
+
+  /// No description provided for @clErrorLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a limit greater than zero.'**
+  String get clErrorLimit;
+
+  /// No description provided for @clErrorCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category.'**
+  String get clErrorCategory;
+
+  /// No description provided for @ddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Digest'**
+  String get ddTitle;
+
+  /// No description provided for @ddToggleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily digest'**
+  String get ddToggleTitle;
+
+  /// No description provided for @ddToggleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'A notification summing up your day once the chosen hour has passed. Private apps are left out.'**
+  String get ddToggleDescription;
+
+  /// No description provided for @ddHourLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Send after'**
+  String get ddHourLabel;
+
+  /// No description provided for @dsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device Sync'**
+  String get dsTitle;
+
+  /// No description provided for @dsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.'**
+  String get dsDescription;
+
+  /// No description provided for @dsToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync through a folder'**
+  String get dsToggle;
+
+  /// No description provided for @dsFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync folder'**
+  String get dsFolder;
+
+  /// No description provided for @dsNoFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'No folder chosen'**
+  String get dsNoFolder;
+
+  /// No description provided for @dsChooseFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose folder'**
+  String get dsChooseFolder;
+
+  /// No description provided for @dsDeviceName.
+  ///
+  /// In en, this message translates to:
+  /// **'This device\'s name'**
+  String get dsDeviceName;
+
+  /// No description provided for @dsSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get dsSyncNow;
+
+  /// No description provided for @dsNeverSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Not synced yet'**
+  String get dsNeverSynced;
+
+  /// No description provided for @dsLastSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Last synced {time}'**
+  String dsLastSynced(String time);
+
+  /// No description provided for @dsOtherDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'Other devices'**
+  String get dsOtherDevices;
+
+  /// No description provided for @dsNoOthers.
+  ///
+  /// In en, this message translates to:
+  /// **'No other devices found yet. Turn on sync on your other computer and choose the same folder.'**
+  String get dsNoOthers;
+
+  /// No description provided for @dsPeerUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} · updated {time}'**
+  String dsPeerUpdated(String name, String time);
+
+  /// No description provided for @dsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync problem: {error}'**
+  String dsError(String error);
+
+  /// No description provided for @insThisDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'This device'**
+  String get insThisDevice;
+
+  /// No description provided for @insAllDevices.
+  ///
+  /// In en, this message translates to:
+  /// **'All devices'**
+  String get insAllDevices;
+
+  /// No description provided for @insTimelineUnplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} of this day isn\'t shown above because no time of day was recorded for it.'**
+  String insTimelineUnplaced(String time);
 }
 
 class _AppLocalizationsDelegate

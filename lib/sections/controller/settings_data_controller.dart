@@ -144,6 +144,13 @@ class SettingsManager {
         "launchAtStartup": true,
         "launchAsMinimized": false,
         "browserExtensionEnabled": false,
+        "browserExtensionRequireApproval": false,
+        "privacyFilters": <Map<String, dynamic>>[],
+        "categoryRules": <Map<String, dynamic>>[],
+        "trackWindowTitles": false,
+        "categoryLimits": <Map<String, dynamic>>[],
+        "dailyDigest": {"enabled": false, "hour": 21, "lastSent": ""},
+        "deviceSync": {"enabled": false, "folder": "", "deviceId": "", "deviceName": ""},
         "crashReportingEnabled": true,
         "notifications": {
           "enabled": !_isMacOS,
@@ -200,6 +207,7 @@ class SettingsManager {
         },
         "migrations": {
           "appIdKeyMigrationDone": false,
+          "duplicateAppCleanupDone": false,
         },
       };
 

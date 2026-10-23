@@ -446,33 +446,11 @@ class ApplicationsDataProvider {
     }
 
     for (final record in records.values) {
-      if (record == null || record.usagePeriods.isEmpty) continue;
+      if (record == null) continue;
 
-      for (final period in record.usagePeriods) {
-        final startHour = period.startTime.hour;
-        final endHour = period.endTime.hour;
-
-        if (startHour == endHour) {
-          hourlyUsage[startHour] = hourlyUsage[startHour]! + period.duration;
-        } else {
-          for (int hour = startHour; hour <= endHour; hour++) {
-            final hourStart = DateTime(
-              period.startTime.year,
-              period.startTime.month,
-              period.startTime.day,
-              hour,
-            );
-            final hourEnd = hourStart.add(const Duration(hours: 1));
-
-            final effectiveStart =
-                hour == startHour ? period.startTime : hourStart;
-            final effectiveEnd = hour == endHour ? period.endTime : hourEnd;
-
-            hourlyUsage[hour] =
-                hourlyUsage[hour]! + effectiveEnd.difference(effectiveStart);
-          }
-        }
-      }
+      record.effectiveHourlySeconds.forEach((hour, seconds) {
+        hourlyUsage[hour] = hourlyUsage[hour]! + Duration(seconds: seconds);
+      });
     }
 
     return hourlyUsage;
@@ -502,8 +480,9 @@ class ApplicationsDataProvider {
     Duration totalUsage = Duration.zero;
     int daysWithUsage = 0;
     Duration longestSession = Duration.zero;
-    Duration shortestSession = const Duration(days: 365);
-    final sessionDurations = <Duration>[];
+    Duration shortestSession = Duration.zero;
+    int sessionCount = 0;
+    int totalSessionSeconds = 0;
     int totalLaunches = 0;
     int maxLaunchesPerDay = 0;
     int daysWithLaunches = 0;
@@ -525,15 +504,20 @@ class ApplicationsDataProvider {
         }
       }
 
-      for (final period in record.usagePeriods) {
-        sessionDurations.add(period.duration);
+      // Counts and extremes include sessions archived out of usagePeriods.
+      sessionCount += record.sessionCount;
+      totalSessionSeconds += record.totalSessionSeconds;
+      if (record.longestSession > longestSession) {
+        longestSession = record.longestSession;
+      }
+      final recordShortest = record.shortestSession;
+      if (recordShortest > Duration.zero &&
+          (shortestSession == Duration.zero ||
+              recordShortest < shortestSession)) {
+        shortestSession = recordShortest;
+      }
 
-        if (period.duration > longestSession) {
-          longestSession = period.duration;
-        }
-        if (period.duration < shortestSession) {
-          shortestSession = period.duration;
-        }
+      for (final period in record.usagePeriods) {
         if (lastUsedTimestamp == null ||
             period.endTime.isAfter(lastUsedTimestamp)) {
           lastUsedTimestamp = period.endTime;
@@ -541,20 +525,14 @@ class ApplicationsDataProvider {
       }
     }
 
-    if (sessionDurations.isEmpty) {
-      shortestSession = Duration.zero;
-    }
-
     final averageDailyUsage = daysWithUsage > 0
         ? Duration(seconds: totalUsage.inSeconds ~/ daysWithUsage)
         : Duration.zero;
 
     Duration averageSessionDuration = Duration.zero;
-    if (sessionDurations.isNotEmpty) {
-      final totalSessionSeconds =
-          sessionDurations.fold<int>(0, (sum, d) => sum + d.inSeconds);
+    if (sessionCount > 0) {
       averageSessionDuration =
-          Duration(seconds: totalSessionSeconds ~/ sessionDurations.length);
+          Duration(seconds: totalSessionSeconds ~/ sessionCount);
     }
 
     final insights = UsageInsights(
@@ -567,7 +545,7 @@ class ApplicationsDataProvider {
       averageSessionDuration: averageSessionDuration,
       longestSessionDuration: longestSession,
       shortestSessionDuration: shortestSession,
-      totalSessions: sessionDurations.length,
+      totalSessions: sessionCount,
       averageLaunchesPerDay:
           daysWithLaunches > 0 ? totalLaunches / daysWithLaunches : 0,
       maxLaunchesPerDay: maxLaunchesPerDay,

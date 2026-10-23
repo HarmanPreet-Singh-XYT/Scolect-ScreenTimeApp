@@ -2863,5 +2863,213 @@
   "onboarding100PrivateTitle": "100% Private",
   "onboarding100PrivateDesc": "All tracking data is stored locally in your browser and on your machine. Nothing is ever sent to the cloud.",
   "onboardingBack": "Back",
-  "onboardingSkip": "Skip"
+  "onboardingSkip": "Skip",
+  "extAccessSectionTitle": "Browser Extension Access",
+  "extAccessRequireTitle": "Require approval for browsers",
+  "extAccessRequireDescription": "Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.",
+  "extAccessPendingTitle": "Waiting for approval",
+  "extAccessPendingDescription": "These browsers asked to sync with Scolect.",
+  "extAccessApprovedTitle": "Approved browsers",
+  "extAccessNoneApproved": "No browsers approved yet. Open the extension and it will appear here.",
+  "extAccessApprove": "Approve",
+  "extAccessDeny": "Deny",
+  "extAccessRevoke": "Revoke",
+  "extAccessUnknownBrowser": "Unknown browser",
+  "extAccessAllowDeniedAgain": "Let denied browsers ask again",
+  "extAccessBlockedNotice": "{count, plural, =1{1 unauthorized sync attempt blocked since launch} other{{count} unauthorized sync attempts blocked since launch}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "A browser wants to sync with Scolect",
+  "extAccessBannerBody": "{name} is waiting for your approval.",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "Privacy Filters",
+  "pfDescription": "Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.",
+  "pfAddRule": "Add rule",
+  "pfEditRule": "Edit rule",
+  "pfNoRules": "No rules yet.",
+  "pfPatternLabel": "Pattern (regular expression)",
+  "pfPatternHint": "e.g. bank|vault",
+  "pfAppliesTo": "Applies to",
+  "pfTargetApps": "Apps",
+  "pfTargetWebsites": "Websites",
+  "pfTargetBoth": "Apps and websites",
+  "pfActionLabel": "Action",
+  "pfActionExclude": "Don't track",
+  "pfActionRedact": "Track under another name",
+  "pfReplacementLabel": "Name to record instead",
+  "pfReplacementHint": "Redacted",
+  "pfErrorEmpty": "Enter a pattern.",
+  "pfErrorInvalid": "This isn't a valid regular expression.",
+  "pfErrorTooLong": "Pattern is too long (200 characters max).",
+  "pfRuleSummaryExclude": "Not tracked",
+  "pfRuleSummaryRedact": "Recorded as \"{name}\"",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "Category Rules",
+  "crDescription": "Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.",
+  "crCategoryLabel": "Category",
+  "crCategoryHint": "Pick one or type your own",
+  "crErrorCategory": "Choose a category.",
+  "crApplyExisting": "Apply to existing apps",
+  "crApplyResult": "{count, plural, =0{No apps needed changing} =1{1 app recategorized} other{{count} apps recategorized}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "Move up",
+  "crMoveDown": "Move down",
+  "crHintTitle": "A lot of your time is uncategorized",
+  "crHintBody": "{percent}% of the last 7 days is in apps without a category, mostly {apps}. A category rule can sort them for you.",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "Add a rule",
+  "crHintDismiss": "Dismiss",
+  "wtSectionTitle": "Window Titles",
+  "wtToggleTitle": "Record window titles",
+  "wtToggleDescription": "Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.",
+  "wtClearTitle": "Delete stored titles",
+  "wtClearDescription": "Removes every recorded window title. Your usage totals are not affected.",
+  "wtClearAction": "Delete titles",
+  "wtCleared": "{count, plural, =0{No stored titles found} =1{Titles removed from 1 record} other{Titles removed from {count} records}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "Top windows (last 7 days)",
+  "wtOther": "Other windows",
+  "insTitle": "Insights",
+  "insTrendsTitle": "This week vs last week",
+  "insThisWeek": "This week",
+  "insLastWeek": "Last week",
+  "insByCategory": "By category",
+  "insBiggestChanges": "Biggest changes",
+  "insNoData": "Not enough data yet.",
+  "insHeatmapTitle": "Daily activity, last 26 weeks",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "Less",
+  "insMore": "More",
+  "insTimelineTitle": "Day timeline",
+  "insTimelineOther": "Other apps",
+  "insTimelineEmpty": "No activity recorded for this day.",
+  "insPrevDay": "Previous day",
+  "insNextDay": "Next day",
+  "insSearchTitle": "Search window titles",
+  "insSearchHint": "Search document, page or project names",
+  "insSearchDisabled": "No window titles recorded yet. You can turn on recording in Settings > Window Titles.",
+  "insSearchNoResults": "No matching windows in the last 30 days.",
+  "tlTitle": "Time log",
+  "tlHint": "What are you working on?",
+  "tlStart": "Start",
+  "tlStop": "Stop",
+  "tlDiscard": "Discard",
+  "tlAddEntry": "Add entry",
+  "tlToday": "Today",
+  "tlThisWeek": "This week",
+  "tlNothingToday": "Nothing logged today.",
+  "tlDescription": "Log time that isn't tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.",
+  "tlDurationLabel": "Duration",
+  "tlHours": "hours",
+  "tlMinutes": "minutes",
+  "tlDateLabel": "Date",
+  "tlErrorLabel": "Enter what you worked on.",
+  "tlErrorDuration": "Enter a duration greater than zero.",
+  "clTitle": "Category Limits",
+  "clDescription": "Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.",
+  "clAdd": "Add limit",
+  "clEdit": "Edit limit",
+  "clLimitLabel": "Daily limit",
+  "clErrorLimit": "Enter a limit greater than zero.",
+  "clErrorCategory": "Choose a category.",
+  "ddTitle": "Daily Digest",
+  "ddToggleTitle": "Daily digest",
+  "ddToggleDescription": "A notification summing up your day once the chosen hour has passed. Private apps are left out.",
+  "ddHourLabel": "Send after",
+  "dsTitle": "Device Sync",
+  "dsDescription": "Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device's file from the folder.",
+  "dsToggle": "Sync through a folder",
+  "dsFolder": "Sync folder",
+  "dsNoFolder": "No folder chosen",
+  "dsChooseFolder": "Choose folder",
+  "dsDeviceName": "This device's name",
+  "dsSyncNow": "Sync now",
+  "dsNeverSynced": "Not synced yet",
+  "dsLastSynced": "Last synced {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "Other devices",
+  "dsNoOthers": "No other devices found yet. Turn on sync on your other computer and choose the same folder.",
+  "dsPeerUpdated": "{name} · updated {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "Sync problem: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "This device",
+  "insAllDevices": "All devices",
+  "insTimelineUnplaced": "{time} of this day isn't shown above because no time of day was recorded for it.",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

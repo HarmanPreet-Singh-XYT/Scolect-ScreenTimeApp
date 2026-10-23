@@ -13,6 +13,7 @@ import 'package:screentime/sections/controller/notification_controller.dart';
 import 'package:screentime/utils/mac_launch.dart';
 import 'package:screentime/utils/macos_window.dart';
 import 'package:screentime/utils/update_service.dart';
+import 'package:screentime/utils/device_sync.dart';
 import './sections/overview.dart';
 import './sections/applications.dart';
 import './sections/alerts_limits.dart';
@@ -627,7 +628,11 @@ class _MyAppState extends State<MyApp>
     }
   }
 
-  Future<void> _initDataStore() async => await _dataStore.init();
+  Future<void> _initDataStore() async {
+    await _dataStore.init();
+    // Folder sync needs the store, so it starts here rather than earlier.
+    if (!kIsWeb) unawaited(DeviceSync.instance.start());
+  }
 
   Future<void> _initTray() async {
     await trayManager.setIcon(_trayIconNormal);
