@@ -4475,241 +4475,239 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingSkip => 'تخطي';
 
   @override
-  String get extAccessSectionTitle => 'Browser Extension Access';
+  String get extAccessSectionTitle => 'الوصول إلى ملحقات المتصفح';
 
   @override
-  String get extAccessRequireTitle => 'Require approval for browsers';
+  String get extAccessRequireTitle => 'طلب الموافقة للمتصفحات';
 
   @override
   String get extAccessRequireDescription =>
-      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+      'اختياري. عند التفعيل، يجب الموافقة على كل ملحق متصفح هنا قبل المزامنة، حتى لا تتمكن البرامج الأخرى على هذا الكمبيوتر من إرسال البيانات إلى Scolect. لا يمكن الموافقة على إصدارات الملحقات القديمة وستتوقف عن المزامنة حتى يتم تحديثها.';
 
   @override
-  String get extAccessPendingTitle => 'Waiting for approval';
+  String get extAccessPendingTitle => 'في انتظار الموافقة';
 
   @override
   String get extAccessPendingDescription =>
-      'These browsers asked to sync with Scolect.';
+      'طلبت هذه المتصفحات المزامنة مع Scolect.';
 
   @override
-  String get extAccessApprovedTitle => 'Approved browsers';
+  String get extAccessApprovedTitle => 'المتصفحات المعتمدة';
 
   @override
   String get extAccessNoneApproved =>
-      'No browsers approved yet. Open the extension and it will appear here.';
+      'لم تتم الموافقة على أي متصفح بعد. افتح الملحق وسيظهر هنا.';
 
   @override
-  String get extAccessApprove => 'Approve';
+  String get extAccessApprove => 'موافقة';
 
   @override
-  String get extAccessDeny => 'Deny';
+  String get extAccessDeny => 'رفض';
 
   @override
-  String get extAccessRevoke => 'Revoke';
+  String get extAccessRevoke => 'إلغاء الصلاحية';
 
   @override
-  String get extAccessUnknownBrowser => 'Unknown browser';
+  String get extAccessUnknownBrowser => 'متصفح غير معروف';
 
   @override
-  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+  String get extAccessAllowDeniedAgain =>
+      'السماح للمتصفحات المرفوضة بالسؤال مرة أخرى';
 
   @override
   String extAccessBlockedNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count unauthorized sync attempts blocked since launch',
-      one: '1 unauthorized sync attempt blocked since launch',
+      other: 'تم حظر $count محاولة مزامنة غير مصرح بها منذ التشغيل',
     );
     return '$_temp0';
   }
 
   @override
-  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+  String get extAccessBannerTitle => 'يريد أحد المتصفحات المزامنة مع Scolect';
 
   @override
   String extAccessBannerBody(String name) {
-    return '$name is waiting for your approval.';
+    return '$name في انتظار موافقتك.';
   }
 
   @override
-  String get pfTitle => 'Privacy Filters';
+  String get pfTitle => 'عوامل تصفية الخصوصية';
 
   @override
   String get pfDescription =>
-      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+      'استبعد التطبيقات والمواقع المحددة من بيانات التتبع الخاصة بك. القواعد عبارة عن تعبيرات نمطية متطابقة مع أسماء التطبيقات ونطاقات المواقع. السجل المسجل مسبقاً لا يتغير.';
 
   @override
-  String get pfAddRule => 'Add rule';
+  String get pfAddRule => 'إضافة قاعدة';
 
   @override
-  String get pfEditRule => 'Edit rule';
+  String get pfEditRule => 'تعديل القاعدة';
 
   @override
-  String get pfNoRules => 'No rules yet.';
+  String get pfNoRules => 'لا توجد قواعد بعد.';
 
   @override
-  String get pfPatternLabel => 'Pattern (regular expression)';
+  String get pfPatternLabel => 'النمط (تعبير نمطي)';
 
   @override
-  String get pfPatternHint => 'e.g. bank|vault';
+  String get pfPatternHint => 'مثال: bank|vault';
 
   @override
-  String get pfAppliesTo => 'Applies to';
+  String get pfAppliesTo => 'ينطبق على';
 
   @override
-  String get pfTargetApps => 'Apps';
+  String get pfTargetApps => 'التطبيقات';
 
   @override
-  String get pfTargetWebsites => 'Websites';
+  String get pfTargetWebsites => 'المواقع الإلكترونية';
 
   @override
-  String get pfTargetBoth => 'Apps and websites';
+  String get pfTargetBoth => 'التطبيقات والمواقع الإلكترونية';
 
   @override
-  String get pfActionLabel => 'Action';
+  String get pfActionLabel => 'الإجراء';
 
   @override
-  String get pfActionExclude => 'Don\'t track';
+  String get pfActionExclude => 'عدم التتبع';
 
   @override
-  String get pfActionRedact => 'Track under another name';
+  String get pfActionRedact => 'التتبع باسم آخر';
 
   @override
-  String get pfReplacementLabel => 'Name to record instead';
+  String get pfReplacementLabel => 'الاسم للتسجيل بدلاً منه';
 
   @override
-  String get pfReplacementHint => 'Redacted';
+  String get pfReplacementHint => 'مُنقح';
 
   @override
-  String get pfErrorEmpty => 'Enter a pattern.';
+  String get pfErrorEmpty => 'أدخل نمطاً.';
 
   @override
-  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+  String get pfErrorInvalid => 'هذا ليس تعبيراً نمطياً صالحاً.';
 
   @override
-  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+  String get pfErrorTooLong => 'النمط طويل جداً (الحد الأقصى 200 حرف).';
 
   @override
-  String get pfRuleSummaryExclude => 'Not tracked';
+  String get pfRuleSummaryExclude => 'غير متبع';
 
   @override
   String pfRuleSummaryRedact(String name) {
-    return 'Recorded as \"$name\"';
+    return 'مسجل باسم \"$name\"';
   }
 
   @override
-  String get crTitle => 'Category Rules';
+  String get crTitle => 'قواعد الفئات';
 
   @override
   String get crDescription =>
-      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+      'فرز التطبيقات في فئات تلقائياً. القاعدة الأولى المتطابقة هي التي تفوز وتتجاوز القائمة المضمنة. الأنماط عبارة عن تعبيرات نمطية متطابقة مع اسم التطبيق.';
 
   @override
-  String get crCategoryLabel => 'Category';
+  String get crCategoryLabel => 'الفئة';
 
   @override
-  String get crCategoryHint => 'Pick one or type your own';
+  String get crCategoryHint => 'اختر واحدة أو اكتب فئتك الخاصة';
 
   @override
-  String get crErrorCategory => 'Choose a category.';
+  String get crErrorCategory => 'اختر فئة.';
 
   @override
-  String get crApplyExisting => 'Apply to existing apps';
+  String get crApplyExisting => 'تطبيق على التطبيقات الحالية';
 
   @override
   String crApplyResult(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps recategorized',
-      one: '1 app recategorized',
-      zero: 'No apps needed changing',
+      other: 'تمت إعادة تصنيف $count تطبيق',
+      zero: 'لم تتطلب أي تطبيقات تغييراً',
     );
     return '$_temp0';
   }
 
   @override
-  String get crMoveUp => 'Move up';
+  String get crMoveUp => 'تحريك لأعلى';
 
   @override
-  String get crMoveDown => 'Move down';
+  String get crMoveDown => 'تحريك لأسفل';
 
   @override
-  String get crHintTitle => 'A lot of your time is uncategorized';
+  String get crHintTitle => 'جزء كبير من وقتك غير مصنف';
 
   @override
   String crHintBody(int percent, String apps) {
-    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+    return '$percent% من آخر 7 أيام في تطبيقات بدون فئة، معظمها $apps. يمكن لقاعدة الفئة فرزها لك.';
   }
 
   @override
-  String get crHintAction => 'Add a rule';
+  String get crHintAction => 'إضافة قاعدة';
 
   @override
-  String get crHintDismiss => 'Dismiss';
+  String get crHintDismiss => 'تجاهل';
 
   @override
-  String get wtSectionTitle => 'Window Titles';
+  String get wtSectionTitle => 'عناوين النوافذ';
 
   @override
-  String get wtToggleTitle => 'Record window titles';
+  String get wtToggleTitle => 'تسجيل عناوين النوافذ';
 
   @override
   String get wtToggleDescription =>
-      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+      'تذكر النوافذ التي تقضي وقتاً فيها، مثل عنوان مستند أو صفحة، يتم أخذ عينات منها مرة واحدة تقريباً في الدقيقة. تبقى العناوين على هذا الجهاز، وتتبع عوامل تصفية الخصوصية، ويتم الاحتفاظ بأطول 15 عنواناً فقط لكل تطبيق في اليوم. معطل افتراضياً.';
 
   @override
-  String get wtClearTitle => 'Delete stored titles';
+  String get wtClearTitle => 'حذف العناوين المخزنة';
 
   @override
   String get wtClearDescription =>
-      'Removes every recorded window title. Your usage totals are not affected.';
+      'يحذف كل عنوان نافذة مسجل. لن تتأثر إجماليات الاستخدام الخاصة بك.';
 
   @override
-  String get wtClearAction => 'Delete titles';
+  String get wtClearAction => 'حذف العناوين';
 
   @override
   String wtCleared(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Titles removed from $count records',
-      one: 'Titles removed from 1 record',
-      zero: 'No stored titles found',
+      other: 'تمت إزالة العناوين من $count سجل',
+      zero: 'لم يتم العثور على عناوين مخزنة',
     );
     return '$_temp0';
   }
 
   @override
-  String get wtTopWindows => 'Top windows (last 7 days)';
+  String get wtTopWindows => 'أهم النوافذ (آخر 7 أيام)';
 
   @override
-  String get wtOther => 'Other windows';
+  String get wtOther => 'نوافذ أخرى';
 
   @override
-  String get insTitle => 'Insights';
+  String get insTitle => 'الرؤى';
 
   @override
-  String get insTrendsTitle => 'This week vs last week';
+  String get insTrendsTitle => 'هذا الأسبوع مقابل الأسبوع الماضي';
 
   @override
-  String get insThisWeek => 'This week';
+  String get insThisWeek => 'هذا الأسبوع';
 
   @override
-  String get insLastWeek => 'Last week';
+  String get insLastWeek => 'الأسبوع الماضي';
 
   @override
-  String get insByCategory => 'By category';
+  String get insByCategory => 'حسب الفئة';
 
   @override
-  String get insBiggestChanges => 'Biggest changes';
+  String get insBiggestChanges => 'أكبر التغييرات';
 
   @override
-  String get insNoData => 'Not enough data yet.';
+  String get insNoData => 'لا توجد بيانات كافية بعد.';
 
   @override
-  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+  String get insHeatmapTitle => 'النشاط اليومي، آخر 26 أسبوعاً';
 
   @override
   String insHeatmapTip(String date, String time) {
@@ -4717,181 +4715,181 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get insLess => 'Less';
+  String get insLess => 'أقل';
 
   @override
-  String get insMore => 'More';
+  String get insMore => 'أكثر';
 
   @override
-  String get insTimelineTitle => 'Day timeline';
+  String get insTimelineTitle => 'الجدول الزمني لليوم';
 
   @override
-  String get insTimelineOther => 'Other apps';
+  String get insTimelineOther => 'تطبيقات أخرى';
 
   @override
-  String get insTimelineEmpty => 'No activity recorded for this day.';
+  String get insTimelineEmpty => 'لم يتم تسجيل أي نشاط لهذا اليوم.';
 
   @override
-  String get insPrevDay => 'Previous day';
+  String get insPrevDay => 'اليوم السابق';
 
   @override
-  String get insNextDay => 'Next day';
+  String get insNextDay => 'اليوم التالي';
 
   @override
-  String get insSearchTitle => 'Search window titles';
+  String get insSearchTitle => 'البحث في عناوين النوافذ';
 
   @override
-  String get insSearchHint => 'Search document, page or project names';
+  String get insSearchHint => 'ابحث عن أسماء المستندات أو الصفحات أو المشاريع';
 
   @override
   String get insSearchDisabled =>
-      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+      'لم يتم تسجيل أي عناوين نوافذ بعد. يمكنك تشغيل التسجيل في الإعدادات > عناوين النوافذ.';
 
   @override
-  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+  String get insSearchNoResults => 'لا توجد نوافذ متطابقة في آخر 30 يوماً.';
 
   @override
-  String get tlTitle => 'Time log';
+  String get tlTitle => 'سجل الوقت';
 
   @override
-  String get tlHint => 'What are you working on?';
+  String get tlHint => 'على ماذا تعمل؟';
 
   @override
-  String get tlStart => 'Start';
+  String get tlStart => 'بدء';
 
   @override
-  String get tlStop => 'Stop';
+  String get tlStop => 'إيقاف';
 
   @override
-  String get tlDiscard => 'Discard';
+  String get tlDiscard => 'تجاهل';
 
   @override
-  String get tlAddEntry => 'Add entry';
+  String get tlAddEntry => 'إضافة إدخال';
 
   @override
-  String get tlToday => 'Today';
+  String get tlToday => 'اليوم';
 
   @override
-  String get tlThisWeek => 'This week';
+  String get tlThisWeek => 'هذا الأسبوع';
 
   @override
-  String get tlNothingToday => 'Nothing logged today.';
+  String get tlNothingToday => 'لم يتم تسجيل أي شيء اليوم.';
 
   @override
   String get tlDescription =>
-      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+      'سجل الوقت الذي لا يتم تتبعه تلقائياً، مثل الاجتماعات أو القراءة. يتم الاحتفاظ به منفصلاً عن وقت التطبيقات، حتى لا يتم حساب أي شيء مرتين.';
 
   @override
-  String get tlDurationLabel => 'Duration';
+  String get tlDurationLabel => 'المدة';
 
   @override
-  String get tlHours => 'hours';
+  String get tlHours => 'ساعات';
 
   @override
-  String get tlMinutes => 'minutes';
+  String get tlMinutes => 'دقائق';
 
   @override
-  String get tlDateLabel => 'Date';
+  String get tlDateLabel => 'التاريخ';
 
   @override
-  String get tlErrorLabel => 'Enter what you worked on.';
+  String get tlErrorLabel => 'أدخل ما عملت عليه.';
 
   @override
-  String get tlErrorDuration => 'Enter a duration greater than zero.';
+  String get tlErrorDuration => 'أدخل مدة أكبر من الصفر.';
 
   @override
-  String get clTitle => 'Category Limits';
+  String get clTitle => 'حدود الفئات';
 
   @override
   String get clDescription =>
-      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+      'احصل على تنبيه عندما يتجاوز الوقت الإجمالي في فئة حداً يومياً. هذه تنبيهات فقط؛ لا يتم حظر التطبيقات.';
 
   @override
-  String get clAdd => 'Add limit';
+  String get clAdd => 'إضافة حد';
 
   @override
-  String get clEdit => 'Edit limit';
+  String get clEdit => 'تعديل الحد';
 
   @override
-  String get clLimitLabel => 'Daily limit';
+  String get clLimitLabel => 'الحد اليومي';
 
   @override
-  String get clErrorLimit => 'Enter a limit greater than zero.';
+  String get clErrorLimit => 'أدخل حداً أكبر من الصفر.';
 
   @override
-  String get clErrorCategory => 'Choose a category.';
+  String get clErrorCategory => 'اختر فئة.';
 
   @override
-  String get ddTitle => 'Daily Digest';
+  String get ddTitle => 'الموجز اليومي';
 
   @override
-  String get ddToggleTitle => 'Daily digest';
+  String get ddToggleTitle => 'الموجز اليومي';
 
   @override
   String get ddToggleDescription =>
-      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+      'إشعار يلخص يومك بمجرد مرور الساعة المحددة. يتم استبعاد التطبيقات الخاصة.';
 
   @override
-  String get ddHourLabel => 'Send after';
+  String get ddHourLabel => 'إرسال بعد';
 
   @override
-  String get dsTitle => 'Device Sync';
+  String get dsTitle => 'مزامنة الأجهزة';
 
   @override
   String get dsDescription =>
-      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+      'شارك استخدامك مع أجهزة الكمبيوتر الأخرى الخاصة بك من خلال مجلد يحتفظ به Dropbox أو iCloud Drive أو Syncthing متزامناً بالفعل. يكتب كل جهاز ملفه الخاص فقط، ويتم عرض بيانات الأجهزة الأخرى في الرؤى دون خلطها ببياناتك. لا تتم مشاركة التطبيقات الخاصة والمواقع وعناوين النوافذ أبداً. يؤدي إيقاف تشغيل المزامنة إلى إزالة ملف هذا الجهاز من المجلد.';
 
   @override
-  String get dsToggle => 'Sync through a folder';
+  String get dsToggle => 'مزامنة من خلال مجلد';
 
   @override
-  String get dsFolder => 'Sync folder';
+  String get dsFolder => 'مجلد المزامنة';
 
   @override
-  String get dsNoFolder => 'No folder chosen';
+  String get dsNoFolder => 'لم يتم اختيار مجلد';
 
   @override
-  String get dsChooseFolder => 'Choose folder';
+  String get dsChooseFolder => 'اختيار مجلد';
 
   @override
-  String get dsDeviceName => 'This device\'s name';
+  String get dsDeviceName => 'اسم هذا الجهاز';
 
   @override
-  String get dsSyncNow => 'Sync now';
+  String get dsSyncNow => 'مزامنة الآن';
 
   @override
-  String get dsNeverSynced => 'Not synced yet';
+  String get dsNeverSynced => 'لم تتم المزامنة بعد';
 
   @override
   String dsLastSynced(String time) {
-    return 'Last synced $time';
+    return 'آخر مزامنة $time';
   }
 
   @override
-  String get dsOtherDevices => 'Other devices';
+  String get dsOtherDevices => 'أجهزة أخرى';
 
   @override
   String get dsNoOthers =>
-      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+      'لم يتم العثور على أجهزة أخرى بعد. قم بتشغيل المزامنة على جهاز الكمبيوتر الآخر واختر نفس المجلد.';
 
   @override
   String dsPeerUpdated(String name, String time) {
-    return '$name · updated $time';
+    return '$name · تم التحديث $time';
   }
 
   @override
   String dsError(String error) {
-    return 'Sync problem: $error';
+    return 'مشكلة في المزامنة: $error';
   }
 
   @override
-  String get insThisDevice => 'This device';
+  String get insThisDevice => 'هذا الجهاز';
 
   @override
-  String get insAllDevices => 'All devices';
+  String get insAllDevices => 'جميع الأجهزة';
 
   @override
   String insTimelineUnplaced(String time) {
-    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+    return '$time من هذا اليوم غير معروضة أعلاه لأنه لم يتم تسجيل وقت محدد لها.';
   }
 }

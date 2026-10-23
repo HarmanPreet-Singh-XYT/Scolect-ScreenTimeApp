@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% निजी",
   "onboarding100PrivateDesc": "सभी ट्रैकिंग डेटा आपके ब्राउज़र और आपकी मशीन में स्थानीय रूप से संग्रहीत होते हैं। क्लाउड पर कुछ भी नहीं भेजा जाता है।",
   "onboardingBack": "वापस",
-  "onboardingSkip": "छोड़ें"
+  "onboardingSkip": "छोड़ें",
+  "extAccessSectionTitle": "ब्राउज़र एक्सटेंशन एक्सेस",
+  "extAccessRequireTitle": "ब्राउज़र के लिए स्वीकृति आवश्यक करें",
+  "extAccessRequireDescription": "वैकल्पिक। चालू होने पर, सिंक करने से पहले प्रत्येक ब्राउज़र एक्सटेंशन को यहां स्वीकृत किया जाना चाहिए, ताकि इस कंप्यूटर के अन्य प्रोग्राम Scolect को डेटा न भेज सकें। पुराने एक्सटेंशन संस्करण स्वीकृत नहीं किए जा सकते और अपडेट होने तक सिंक करना बंद कर देंगे।",
+  "extAccessPendingTitle": "स्वीकृति की प्रतीक्षा में",
+  "extAccessPendingDescription": "इन ब्राउज़रों ने Scolect के साथ सिंक करने का अनुरोध किया है।",
+  "extAccessApprovedTitle": "स्वीकृत ब्राउज़र",
+  "extAccessNoneApproved": "अभी तक कोई ब्राउज़र स्वीकृत नहीं हुआ है। एक्सटेंशन खोलें और यह यहां दिखाई देगा।",
+  "extAccessApprove": "स्वीकृत करें",
+  "extAccessDeny": "अस्वीकार करें",
+  "extAccessRevoke": "रद्द करें",
+  "extAccessUnknownBrowser": "अज्ञात ब्राउज़र",
+  "extAccessAllowDeniedAgain": "अस्वीकृत ब्राउज़रों को दोबारा पूछने की अनुमति दें",
+  "extAccessBlockedNotice": "{count, plural, =1{लॉन्च के बाद से 1 अनधिकृत सिंक प्रयास ब्लॉक किया गया} other{लॉन्च के बाद से {count} अनधिकृत सिंक प्रयास ब्लॉक किए गए}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "एक ब्राउज़र Scolect के साथ सिंक करना चाहता है",
+  "extAccessBannerBody": "{name} आपकी स्वीकृति की प्रतीक्षा कर रहा है।",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "गोपनीयता फ़िल्टर",
+  "pfDescription": "चुने गए ऐप्स और वेबसाइटों को अपने ट्रैक किए गए डेटा से बाहर रखें। नियम ऐप के नामों और वेबसाइट डोमेन से मेल खाने वाले रेगुलर एक्सप्रेशन हैं। पहले से रिकॉर्ड किया गया इतिहास नहीं बदला जाता है।",
+  "pfAddRule": "नियम जोड़ें",
+  "pfEditRule": "नियम संपादित करें",
+  "pfNoRules": "अभी कोई नियम नहीं हैं।",
+  "pfPatternLabel": "पैटर्न (रेगुलर एक्सप्रेशन)",
+  "pfPatternHint": "उदा. bank|vault",
+  "pfAppliesTo": "लागू होता है",
+  "pfTargetApps": "ऐप्स",
+  "pfTargetWebsites": "वेबसाइटें",
+  "pfTargetBoth": "ऐप्स और वेबसाइटें",
+  "pfActionLabel": "कार्रवाई",
+  "pfActionExclude": "ट्रैक न करें",
+  "pfActionRedact": "दूसरे नाम से ट्रैक करें",
+  "pfReplacementLabel": "इसके स्थान पर रिकॉर्ड करने के लिए नाम",
+  "pfReplacementHint": "संपादित",
+  "pfErrorEmpty": "एक पैटर्न दर्ज करें।",
+  "pfErrorInvalid": "यह एक मान्य रेगुलर एक्सप्रेशन नहीं है।",
+  "pfErrorTooLong": "पैटर्न बहुत लंबा है (अधिकतम 200 वर्ण)।",
+  "pfRuleSummaryExclude": "ट्रैक नहीं किया गया",
+  "pfRuleSummaryRedact": "\"{name}\" के रूप में रिकॉर्ड किया गया",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "श्रेणी के नियम",
+  "crDescription": "ऐप्स को स्वचालित रूप से श्रेणियों में क्रमबद्ध करें। पहला मेल खाने वाला नियम जीतता है और अंतर्निहित सूची से ऊपर रहता है। पैटर्न ऐप के नाम से मेल खाने वाले रेगुलर एक्सप्रेशन हैं।",
+  "crCategoryLabel": "श्रेणी",
+  "crCategoryHint": "एक चुनें या अपनी खुद की लिखें",
+  "crErrorCategory": "एक श्रेणी चुनें।",
+  "crApplyExisting": "मौजूदा ऐप्स पर लागू करें",
+  "crApplyResult": "{count, plural, =0{किसी भी ऐप में बदलाव की आवश्यकता नहीं पड़ी} =1{1 ऐप पुनर्वर्गीकृत किया गया} other{{count} ऐप्स पुनर्वर्गीकृत किए गए}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "ऊपर ले जाएं",
+  "crMoveDown": "नीचे ले जाएं",
+  "crHintTitle": "आपका बहुत सारा समय बिना श्रेणी का है",
+  "crHintBody": "पिछले 7 दिनों का {percent}% समय बिना श्रेणी वाले ऐप्स में बीता है, मुख्य रूप से {apps}। एक श्रेणी नियम उन्हें आपके लिए क्रमबद्ध कर सकता है।",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "एक नियम जोड़ें",
+  "crHintDismiss": "खारिज करें",
+  "wtSectionTitle": "विंडो शीर्षक",
+  "wtToggleTitle": "विंडो शीर्षक रिकॉर्ड करें",
+  "wtToggleDescription": "याद रखें कि आप किन विंडो में समय बिताते हैं, जैसे दस्तावेज़ या पेज शीर्षक, जिसे लगभग मिनट में एक बार जांचा जाता है। शीर्षक इस डिवाइस पर रहते हैं, आपके गोपनीयता फ़िल्टर का पालन करते हैं, और प्रति ऐप प्रति दिन केवल 15 सबसे लंबे शीर्षक रखे जाते हैं। डिफ़ॉल्ट रूप से बंद।",
+  "wtClearTitle": "सहेजे गए शीर्षक हटाएं",
+  "wtClearDescription": "प्रत्येक रिकॉर्ड किए गए विंडो शीर्षक को हटाता है। आपका कुल उपयोग प्रभावित नहीं होता है।",
+  "wtClearAction": "शीर्षक हटाएं",
+  "wtCleared": "{count, plural, =0{कोई सहेजा गया शीर्षक नहीं मिला} =1{1 रिकॉर्ड से शीर्षक हटाए गए} other{{count} रिकॉर्ड से शीर्षक हटाए गए}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "शीर्ष विंडो (पिछले 7 दिन)",
+  "wtOther": "अन्य विंडो",
+  "insTitle": "अंतर्दृष्टि",
+  "insTrendsTitle": "इस सप्ताह बनाम पिछला सप्ताह",
+  "insThisWeek": "इस सप्ताह",
+  "insLastWeek": "पिछला सप्ताह",
+  "insByCategory": "श्रेणी के अनुसार",
+  "insBiggestChanges": "सबसे बड़े बदलाव",
+  "insNoData": "अभी पर्याप्त डेटा नहीं है।",
+  "insHeatmapTitle": "दैनिक गतिविधि, पिछले 26 सप्ताह",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "कम",
+  "insMore": "अधिक",
+  "insTimelineTitle": "दिन की समयरेखा",
+  "insTimelineOther": "अन्य ऐप्स",
+  "insTimelineEmpty": "इस दिन के लिए कोई गतिविधि रिकॉर्ड नहीं की गई।",
+  "insPrevDay": "पिछला दिन",
+  "insNextDay": "अगला दिन",
+  "insSearchTitle": "विंडो शीर्षक खोजें",
+  "insSearchHint": "दस्तावेज़, पेज या प्रोजेक्ट के नाम खोजें",
+  "insSearchDisabled": "अभी तक कोई विंडो शीर्षक रिकॉर्ड नहीं किया गया है। आप सेटिंग्स > विंडो शीर्षक में रिकॉर्डिंग चालू कर सकते हैं।",
+  "insSearchNoResults": "पिछले 30 दिनों में कोई मेल खाने वाली विंडो नहीं मिली।",
+  "tlTitle": "समय लॉग",
+  "tlHint": "आप किस पर काम कर रहे हैं?",
+  "tlStart": "शुरू करें",
+  "tlStop": "रोकें",
+  "tlDiscard": "खारिज करें",
+  "tlAddEntry": "प्रविष्टि जोड़ें",
+  "tlToday": "आज",
+  "tlThisWeek": "इस सप्ताह",
+  "tlNothingToday": "आज कुछ भी लॉग नहीं किया गया।",
+  "tlDescription": "उस समय को लॉग करें जो स्वचालित रूप से ट्रैक नहीं होता है, जैसे मीटिंग या पढ़ना। इसे ऐप के समय से अलग रखा जाता है, ताकि कुछ भी दो बार न गिना जाए।",
+  "tlDurationLabel": "अवधि",
+  "tlHours": "घंटे",
+  "tlMinutes": "मिनट",
+  "tlDateLabel": "तारीख",
+  "tlErrorLabel": "दर्ज करें कि आपने किस पर काम किया।",
+  "tlErrorDuration": "शून्य से अधिक अवधि दर्ज करें।",
+  "clTitle": "श्रेणी सीमाएं",
+  "clDescription": "जब किसी श्रेणी में संयुक्त समय दैनिक सीमा पार कर जाए तो अलर्ट प्राप्त करें। ये केवल अलर्ट हैं; ऐप्स ब्लॉक नहीं होते हैं।",
+  "clAdd": "सीमा जोड़ें",
+  "clEdit": "सीमा संपादित करें",
+  "clLimitLabel": "दैनिक सीमा",
+  "clErrorLimit": "शून्य से अधिक सीमा दर्ज करें।",
+  "clErrorCategory": "एक श्रेणी चुनें।",
+  "ddTitle": "दैनिक डाइजेस्ट",
+  "ddToggleTitle": "दैनिक डाइजेस्ट",
+  "ddToggleDescription": "चुने गए घंटे के बीत जाने के बाद आपके दिन का सारांश देने वाली एक अधिसूचना। निजी ऐप्स को छोड़ दिया जाता है।",
+  "ddHourLabel": "इसके बाद भेजें",
+  "dsTitle": "डिवाइस सिंक",
+  "dsDescription": "अपने अन्य कंप्यूटरों के साथ उस फ़ोल्डर के माध्यम से अपना उपयोग साझा करें जिसे Dropbox, iCloud Drive या Syncthing पहले से सिंक रखता है। प्रत्येक डिवाइस केवल अपनी फ़ाइल लिखता है, और अन्य उपकरणों का डेटा आपके डेटा में मिले बिना अंतर्दृष्टि में दिखाया जाता है। निजी ऐप्स, वेबसाइटें और विंडो शीर्षक कभी साझा नहीं किए जाते हैं। सिंक बंद करने से फ़ोल्डर से इस डिवाइस की फ़ाइल हट जाती है।",
+  "dsToggle": "फ़ोल्डर के माध्यम से सिंक करें",
+  "dsFolder": "सिंक फ़ोल्डर",
+  "dsNoFolder": "कोई फ़ोल्डर नहीं चुना गया",
+  "dsChooseFolder": "फ़ोल्डर चुनें",
+  "dsDeviceName": "इस डिवाइस का नाम",
+  "dsSyncNow": "अभी सिंक करें",
+  "dsNeverSynced": "अभी सिंक नहीं हुआ है",
+  "dsLastSynced": "अंतिम सिंक {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "अन्य डिवाइस",
+  "dsNoOthers": "अभी तक कोई अन्य डिवाइस नहीं मिला। अपने दूसरे कंप्यूटर पर सिंक चालू करें और वही फ़ोल्डर चुनें।",
+  "dsPeerUpdated": "{name} · अपडेट किया गया {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "सिंक समस्या: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "यह डिवाइस",
+  "insAllDevices": "सभी डिवाइस",
+  "insTimelineUnplaced": "इस दिन का {time} ऊपर नहीं दिखाया गया है क्योंकि इसके लिए दिन का कोई विशिष्ट समय रिकॉर्ड नहीं किया गया था।",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

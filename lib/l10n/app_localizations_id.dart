@@ -4478,241 +4478,240 @@ class AppLocalizationsId extends AppLocalizations {
   String get onboardingSkip => 'Lewati';
 
   @override
-  String get extAccessSectionTitle => 'Browser Extension Access';
+  String get extAccessSectionTitle => 'Akses Ekstensi Browser';
 
   @override
-  String get extAccessRequireTitle => 'Require approval for browsers';
+  String get extAccessRequireTitle => 'Wajibkan persetujuan untuk browser';
 
   @override
   String get extAccessRequireDescription =>
-      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+      'Opsional. Saat aktif, setiap ekstensi browser harus disetujui di sini sebelum dapat menyinkronkan, sehingga program lain di komputer ini tidak dapat mengirim data ke Scolect. Versi ekstensi yang lebih lama tidak dapat disetujui dan akan berhenti menyinkronkan hingga diperbarui.';
 
   @override
-  String get extAccessPendingTitle => 'Waiting for approval';
+  String get extAccessPendingTitle => 'Menunggu persetujuan';
 
   @override
   String get extAccessPendingDescription =>
-      'These browsers asked to sync with Scolect.';
+      'Browser ini meminta untuk disinkronkan dengan Scolect.';
 
   @override
-  String get extAccessApprovedTitle => 'Approved browsers';
+  String get extAccessApprovedTitle => 'Browser yang disetujui';
 
   @override
   String get extAccessNoneApproved =>
-      'No browsers approved yet. Open the extension and it will appear here.';
+      'Belum ada browser yang disetujui. Buka ekstensi dan akan muncul di sini.';
 
   @override
-  String get extAccessApprove => 'Approve';
+  String get extAccessApprove => 'Setujui';
 
   @override
-  String get extAccessDeny => 'Deny';
+  String get extAccessDeny => 'Tolak';
 
   @override
-  String get extAccessRevoke => 'Revoke';
+  String get extAccessRevoke => 'Cabut';
 
   @override
-  String get extAccessUnknownBrowser => 'Unknown browser';
+  String get extAccessUnknownBrowser => 'Browser tidak dikenal';
 
   @override
-  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+  String get extAccessAllowDeniedAgain =>
+      'Izinkan browser yang ditolak bertanya lagi';
 
   @override
   String extAccessBlockedNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count unauthorized sync attempts blocked since launch',
-      one: '1 unauthorized sync attempt blocked since launch',
+      other: '$count upaya sinkronisasi tanpa izin diblokir sejak peluncuran',
     );
     return '$_temp0';
   }
 
   @override
-  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+  String get extAccessBannerTitle =>
+      'Browser ingin menyinkronkan dengan Scolect';
 
   @override
   String extAccessBannerBody(String name) {
-    return '$name is waiting for your approval.';
+    return '$name sedang menunggu persetujuan Anda.';
   }
 
   @override
-  String get pfTitle => 'Privacy Filters';
+  String get pfTitle => 'Filter Privasi';
 
   @override
   String get pfDescription =>
-      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+      'Keluarkan aplikasi dan situs web tertentu dari data pelacakan Anda. Aturan berupa ekspresi reguler yang dicocokkan dengan nama aplikasi dan domain situs web. Riwayat yang sudah dicatat tidak diubah.';
 
   @override
-  String get pfAddRule => 'Add rule';
+  String get pfAddRule => 'Tambah aturan';
 
   @override
-  String get pfEditRule => 'Edit rule';
+  String get pfEditRule => 'Edit aturan';
 
   @override
-  String get pfNoRules => 'No rules yet.';
+  String get pfNoRules => 'Belum ada aturan.';
 
   @override
-  String get pfPatternLabel => 'Pattern (regular expression)';
+  String get pfPatternLabel => 'Pola (ekspresi reguler)';
 
   @override
-  String get pfPatternHint => 'e.g. bank|vault';
+  String get pfPatternHint => 'cth. bank|vault';
 
   @override
-  String get pfAppliesTo => 'Applies to';
+  String get pfAppliesTo => 'Berlaku untuk';
 
   @override
-  String get pfTargetApps => 'Apps';
+  String get pfTargetApps => 'Aplikasi';
 
   @override
-  String get pfTargetWebsites => 'Websites';
+  String get pfTargetWebsites => 'Situs web';
 
   @override
-  String get pfTargetBoth => 'Apps and websites';
+  String get pfTargetBoth => 'Aplikasi dan situs web';
 
   @override
-  String get pfActionLabel => 'Action';
+  String get pfActionLabel => 'Tindakan';
 
   @override
-  String get pfActionExclude => 'Don\'t track';
+  String get pfActionExclude => 'Jangan lacak';
 
   @override
-  String get pfActionRedact => 'Track under another name';
+  String get pfActionRedact => 'Lacak dengan nama lain';
 
   @override
-  String get pfReplacementLabel => 'Name to record instead';
+  String get pfReplacementLabel => 'Nama untuk dicatat sebagai gantinya';
 
   @override
-  String get pfReplacementHint => 'Redacted';
+  String get pfReplacementHint => 'Disunting';
 
   @override
-  String get pfErrorEmpty => 'Enter a pattern.';
+  String get pfErrorEmpty => 'Masukkan pola.';
 
   @override
-  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+  String get pfErrorInvalid => 'Ini bukan ekspresi reguler yang valid.';
 
   @override
-  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+  String get pfErrorTooLong => 'Pola terlalu panjang (maksimal 200 karakter).';
 
   @override
-  String get pfRuleSummaryExclude => 'Not tracked';
+  String get pfRuleSummaryExclude => 'Tidak dilacak';
 
   @override
   String pfRuleSummaryRedact(String name) {
-    return 'Recorded as \"$name\"';
+    return 'Dicatat sebagai \"$name\"';
   }
 
   @override
-  String get crTitle => 'Category Rules';
+  String get crTitle => 'Aturan Kategori';
 
   @override
   String get crDescription =>
-      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+      'Urutkan aplikasi ke dalam kategori secara otomatis. Aturan pertama yang cocok menang dan mengesampingkan daftar bawaan. Pola berupa ekspresi reguler yang dicocokkan dengan nama aplikasi.';
 
   @override
-  String get crCategoryLabel => 'Category';
+  String get crCategoryLabel => 'Kategori';
 
   @override
-  String get crCategoryHint => 'Pick one or type your own';
+  String get crCategoryHint => 'Pilih satu atau ketik milik Anda sendiri';
 
   @override
-  String get crErrorCategory => 'Choose a category.';
+  String get crErrorCategory => 'Pilih kategori.';
 
   @override
-  String get crApplyExisting => 'Apply to existing apps';
+  String get crApplyExisting => 'Terapkan ke aplikasi yang ada';
 
   @override
   String crApplyResult(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps recategorized',
-      one: '1 app recategorized',
-      zero: 'No apps needed changing',
+      other: '$count aplikasi dikategorikan ulang',
+      zero: 'Tidak ada aplikasi yang perlu diubah',
     );
     return '$_temp0';
   }
 
   @override
-  String get crMoveUp => 'Move up';
+  String get crMoveUp => 'Pindah ke atas';
 
   @override
-  String get crMoveDown => 'Move down';
+  String get crMoveDown => 'Pindah ke bawah';
 
   @override
-  String get crHintTitle => 'A lot of your time is uncategorized';
+  String get crHintTitle => 'Banyak waktu Anda belum dikategorikan';
 
   @override
   String crHintBody(int percent, String apps) {
-    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+    return '$percent% dari 7 hari terakhir berada di aplikasi tanpa kategori, sebagian besar $apps. Aturan kategori dapat mengurutkannya untuk Anda.';
   }
 
   @override
-  String get crHintAction => 'Add a rule';
+  String get crHintAction => 'Tambah aturan';
 
   @override
-  String get crHintDismiss => 'Dismiss';
+  String get crHintDismiss => 'Tutup';
 
   @override
-  String get wtSectionTitle => 'Window Titles';
+  String get wtSectionTitle => 'Judul Jendela';
 
   @override
-  String get wtToggleTitle => 'Record window titles';
+  String get wtToggleTitle => 'Rekam judul jendela';
 
   @override
   String get wtToggleDescription =>
-      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+      'Ingat jendela mana yang Anda gunakan, seperti judul dokumen atau halaman, yang diambil sampelnya sekitar satu menit sekali. Judul tetap ada di perangkat ini, mengikuti filter privasi Anda, dan hanya 15 judul terlama per aplikasi per hari yang disimpan. Nonaktif secara default.';
 
   @override
-  String get wtClearTitle => 'Delete stored titles';
+  String get wtClearTitle => 'Hapus judul yang disimpan';
 
   @override
   String get wtClearDescription =>
-      'Removes every recorded window title. Your usage totals are not affected.';
+      'Menghapus setiap judul jendela yang direkam. Total penggunaan Anda tidak terpengaruh.';
 
   @override
-  String get wtClearAction => 'Delete titles';
+  String get wtClearAction => 'Hapus judul';
 
   @override
   String wtCleared(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Titles removed from $count records',
-      one: 'Titles removed from 1 record',
-      zero: 'No stored titles found',
+      other: 'Judul dihapus dari $count catatan',
+      zero: 'Tidak ada judul tersimpan yang ditemukan',
     );
     return '$_temp0';
   }
 
   @override
-  String get wtTopWindows => 'Top windows (last 7 days)';
+  String get wtTopWindows => 'Jendela teratas (7 hari terakhir)';
 
   @override
-  String get wtOther => 'Other windows';
+  String get wtOther => 'Jendela lainnya';
 
   @override
-  String get insTitle => 'Insights';
+  String get insTitle => 'Wawasan';
 
   @override
-  String get insTrendsTitle => 'This week vs last week';
+  String get insTrendsTitle => 'Minggu ini vs minggu lalu';
 
   @override
-  String get insThisWeek => 'This week';
+  String get insThisWeek => 'Minggu ini';
 
   @override
-  String get insLastWeek => 'Last week';
+  String get insLastWeek => 'Minggu lalu';
 
   @override
-  String get insByCategory => 'By category';
+  String get insByCategory => 'Berdasarkan kategori';
 
   @override
-  String get insBiggestChanges => 'Biggest changes';
+  String get insBiggestChanges => 'Perubahan terbesar';
 
   @override
-  String get insNoData => 'Not enough data yet.';
+  String get insNoData => 'Data belum cukup.';
 
   @override
-  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+  String get insHeatmapTitle => 'Aktivitas harian, 26 minggu terakhir';
 
   @override
   String insHeatmapTip(String date, String time) {
@@ -4720,181 +4719,183 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get insLess => 'Less';
+  String get insLess => 'Kurang';
 
   @override
-  String get insMore => 'More';
+  String get insMore => 'Lebih';
 
   @override
-  String get insTimelineTitle => 'Day timeline';
+  String get insTimelineTitle => 'Linimasa hari';
 
   @override
-  String get insTimelineOther => 'Other apps';
+  String get insTimelineOther => 'Aplikasi lainnya';
 
   @override
-  String get insTimelineEmpty => 'No activity recorded for this day.';
+  String get insTimelineEmpty =>
+      'Tidak ada aktivitas yang tercatat untuk hari ini.';
 
   @override
-  String get insPrevDay => 'Previous day';
+  String get insPrevDay => 'Hari sebelumnya';
 
   @override
-  String get insNextDay => 'Next day';
+  String get insNextDay => 'Hari berikutnya';
 
   @override
-  String get insSearchTitle => 'Search window titles';
+  String get insSearchTitle => 'Cari judul jendela';
 
   @override
-  String get insSearchHint => 'Search document, page or project names';
+  String get insSearchHint => 'Cari nama dokumen, halaman, atau proyek';
 
   @override
   String get insSearchDisabled =>
-      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+      'Belum ada judul jendela yang direkam. Anda dapat mengaktifkan perekaman di Pengaturan > Judul Jendela.';
 
   @override
-  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+  String get insSearchNoResults =>
+      'Tidak ada jendela yang cocok dalam 30 hari terakhir.';
 
   @override
-  String get tlTitle => 'Time log';
+  String get tlTitle => 'Catatan waktu';
 
   @override
-  String get tlHint => 'What are you working on?';
+  String get tlHint => 'Apa yang sedang Anda kerjakan?';
 
   @override
-  String get tlStart => 'Start';
+  String get tlStart => 'Mulai';
 
   @override
-  String get tlStop => 'Stop';
+  String get tlStop => 'Hentikan';
 
   @override
-  String get tlDiscard => 'Discard';
+  String get tlDiscard => 'Buang';
 
   @override
-  String get tlAddEntry => 'Add entry';
+  String get tlAddEntry => 'Tambah entri';
 
   @override
-  String get tlToday => 'Today';
+  String get tlToday => 'Hari ini';
 
   @override
-  String get tlThisWeek => 'This week';
+  String get tlThisWeek => 'Minggu ini';
 
   @override
-  String get tlNothingToday => 'Nothing logged today.';
+  String get tlNothingToday => 'Belum ada yang dicatat hari ini.';
 
   @override
   String get tlDescription =>
-      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+      'Catat waktu yang tidak dilacak secara otomatis, seperti rapat atau membaca. Waktu ini disimpan terpisah dari waktu aplikasi, sehingga tidak ada yang dihitung dua kali.';
 
   @override
-  String get tlDurationLabel => 'Duration';
+  String get tlDurationLabel => 'Durasi';
 
   @override
-  String get tlHours => 'hours';
+  String get tlHours => 'jam';
 
   @override
-  String get tlMinutes => 'minutes';
+  String get tlMinutes => 'menit';
 
   @override
-  String get tlDateLabel => 'Date';
+  String get tlDateLabel => 'Tanggal';
 
   @override
-  String get tlErrorLabel => 'Enter what you worked on.';
+  String get tlErrorLabel => 'Masukkan apa yang Anda kerjakan.';
 
   @override
-  String get tlErrorDuration => 'Enter a duration greater than zero.';
+  String get tlErrorDuration => 'Masukkan durasi lebih dari nol.';
 
   @override
-  String get clTitle => 'Category Limits';
+  String get clTitle => 'Batas Kategori';
 
   @override
   String get clDescription =>
-      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+      'Dapatkan peringatan saat waktu gabungan dalam suatu kategori melampaui batas harian. Ini hanya peringatan; aplikasi tidak diblokir.';
 
   @override
-  String get clAdd => 'Add limit';
+  String get clAdd => 'Tambah batasan';
 
   @override
-  String get clEdit => 'Edit limit';
+  String get clEdit => 'Edit batasan';
 
   @override
-  String get clLimitLabel => 'Daily limit';
+  String get clLimitLabel => 'Batas harian';
 
   @override
-  String get clErrorLimit => 'Enter a limit greater than zero.';
+  String get clErrorLimit => 'Masukkan batasan lebih dari nol.';
 
   @override
-  String get clErrorCategory => 'Choose a category.';
+  String get clErrorCategory => 'Pilih kategori.';
 
   @override
-  String get ddTitle => 'Daily Digest';
+  String get ddTitle => 'Ringkasan Harian';
 
   @override
-  String get ddToggleTitle => 'Daily digest';
+  String get ddToggleTitle => 'Ringkasan harian';
 
   @override
   String get ddToggleDescription =>
-      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+      'Pemberitahuan yang merangkum hari Anda setelah jam yang dipilih berlalu. Aplikasi privat tidak disertakan.';
 
   @override
-  String get ddHourLabel => 'Send after';
+  String get ddHourLabel => 'Kirim setelah';
 
   @override
-  String get dsTitle => 'Device Sync';
+  String get dsTitle => 'Sinkronisasi Perangkat';
 
   @override
   String get dsDescription =>
-      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+      'Bagikan penggunaan Anda dengan komputer lain melalui folder yang sudah disinkronkan oleh Dropbox, iCloud Drive, atau Syncthing. Setiap perangkat hanya menulis filenya sendiri, dan data perangkat lain ditampilkan di Wawasan tanpa tercampur dengan milik Anda. Aplikasi privat, situs web, dan judul jendela tidak pernah dibagikan. Menonaktifkan sinkronisasi akan menghapus file perangkat ini dari folder.';
 
   @override
-  String get dsToggle => 'Sync through a folder';
+  String get dsToggle => 'Sinkronkan melalui folder';
 
   @override
-  String get dsFolder => 'Sync folder';
+  String get dsFolder => 'Folder sinkronisasi';
 
   @override
-  String get dsNoFolder => 'No folder chosen';
+  String get dsNoFolder => 'Belum ada folder yang dipilih';
 
   @override
-  String get dsChooseFolder => 'Choose folder';
+  String get dsChooseFolder => 'Pilih folder';
 
   @override
-  String get dsDeviceName => 'This device\'s name';
+  String get dsDeviceName => 'Nama perangkat ini';
 
   @override
-  String get dsSyncNow => 'Sync now';
+  String get dsSyncNow => 'Sinkronkan sekarang';
 
   @override
-  String get dsNeverSynced => 'Not synced yet';
+  String get dsNeverSynced => 'Belum disinkronkan';
 
   @override
   String dsLastSynced(String time) {
-    return 'Last synced $time';
+    return 'Terakhir disinkronkan $time';
   }
 
   @override
-  String get dsOtherDevices => 'Other devices';
+  String get dsOtherDevices => 'Perangkat lainnya';
 
   @override
   String get dsNoOthers =>
-      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+      'Belum ada perangkat lain yang ditemukan. Aktifkan sinkronisasi di komputer Anda yang lain dan pilih folder yang sama.';
 
   @override
   String dsPeerUpdated(String name, String time) {
-    return '$name · updated $time';
+    return '$name · diperbarui $time';
   }
 
   @override
   String dsError(String error) {
-    return 'Sync problem: $error';
+    return 'Masalah sinkronisasi: $error';
   }
 
   @override
-  String get insThisDevice => 'This device';
+  String get insThisDevice => 'Perangkat ini';
 
   @override
-  String get insAllDevices => 'All devices';
+  String get insAllDevices => 'Semua perangkat';
 
   @override
   String insTimelineUnplaced(String time) {
-    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+    return '$time hari ini tidak ditampilkan di atas karena tidak ada waktu harian yang dicatat untuknya.';
   }
 }

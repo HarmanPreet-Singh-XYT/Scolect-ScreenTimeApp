@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "خصوصية 100%",
   "onboarding100PrivateDesc": "يتم تخزين جميع بيانات التتبع محليًا في متصفحك وعلى جهازك. لا يتم إرسال أي شيء إلى السحابة مطلقًا.",
   "onboardingBack": "رجوع",
-  "onboardingSkip": "تخطي"
+  "onboardingSkip": "تخطي",
+  "extAccessSectionTitle": "الوصول إلى ملحقات المتصفح",
+  "extAccessRequireTitle": "طلب الموافقة للمتصفحات",
+  "extAccessRequireDescription": "اختياري. عند التفعيل، يجب الموافقة على كل ملحق متصفح هنا قبل المزامنة، حتى لا تتمكن البرامج الأخرى على هذا الكمبيوتر من إرسال البيانات إلى Scolect. لا يمكن الموافقة على إصدارات الملحقات القديمة وستتوقف عن المزامنة حتى يتم تحديثها.",
+  "extAccessPendingTitle": "في انتظار الموافقة",
+  "extAccessPendingDescription": "طلبت هذه المتصفحات المزامنة مع Scolect.",
+  "extAccessApprovedTitle": "المتصفحات المعتمدة",
+  "extAccessNoneApproved": "لم تتم الموافقة على أي متصفح بعد. افتح الملحق وسيظهر هنا.",
+  "extAccessApprove": "موافقة",
+  "extAccessDeny": "رفض",
+  "extAccessRevoke": "إلغاء الصلاحية",
+  "extAccessUnknownBrowser": "متصفح غير معروف",
+  "extAccessAllowDeniedAgain": "السماح للمتصفحات المرفوضة بالسؤال مرة أخرى",
+  "extAccessBlockedNotice": "{count, plural, other{تم حظر {count} محاولة مزامنة غير مصرح بها منذ التشغيل}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "يريد أحد المتصفحات المزامنة مع Scolect",
+  "extAccessBannerBody": "{name} في انتظار موافقتك.",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "عوامل تصفية الخصوصية",
+  "pfDescription": "استبعد التطبيقات والمواقع المحددة من بيانات التتبع الخاصة بك. القواعد عبارة عن تعبيرات نمطية متطابقة مع أسماء التطبيقات ونطاقات المواقع. السجل المسجل مسبقاً لا يتغير.",
+  "pfAddRule": "إضافة قاعدة",
+  "pfEditRule": "تعديل القاعدة",
+  "pfNoRules": "لا توجد قواعد بعد.",
+  "pfPatternLabel": "النمط (تعبير نمطي)",
+  "pfPatternHint": "مثال: bank|vault",
+  "pfAppliesTo": "ينطبق على",
+  "pfTargetApps": "التطبيقات",
+  "pfTargetWebsites": "المواقع الإلكترونية",
+  "pfTargetBoth": "التطبيقات والمواقع الإلكترونية",
+  "pfActionLabel": "الإجراء",
+  "pfActionExclude": "عدم التتبع",
+  "pfActionRedact": "التتبع باسم آخر",
+  "pfReplacementLabel": "الاسم للتسجيل بدلاً منه",
+  "pfReplacementHint": "مُنقح",
+  "pfErrorEmpty": "أدخل نمطاً.",
+  "pfErrorInvalid": "هذا ليس تعبيراً نمطياً صالحاً.",
+  "pfErrorTooLong": "النمط طويل جداً (الحد الأقصى 200 حرف).",
+  "pfRuleSummaryExclude": "غير متبع",
+  "pfRuleSummaryRedact": "مسجل باسم \"{name}\"",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "قواعد الفئات",
+  "crDescription": "فرز التطبيقات في فئات تلقائياً. القاعدة الأولى المتطابقة هي التي تفوز وتتجاوز القائمة المضمنة. الأنماط عبارة عن تعبيرات نمطية متطابقة مع اسم التطبيق.",
+  "crCategoryLabel": "الفئة",
+  "crCategoryHint": "اختر واحدة أو اكتب فئتك الخاصة",
+  "crErrorCategory": "اختر فئة.",
+  "crApplyExisting": "تطبيق على التطبيقات الحالية",
+  "crApplyResult": "{count, plural, =0{لم تتطلب أي تطبيقات تغييراً} other{تمت إعادة تصنيف {count} تطبيق}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "تحريك لأعلى",
+  "crMoveDown": "تحريك لأسفل",
+  "crHintTitle": "جزء كبير من وقتك غير مصنف",
+  "crHintBody": "{percent}% من آخر 7 أيام في تطبيقات بدون فئة، معظمها {apps}. يمكن لقاعدة الفئة فرزها لك.",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "إضافة قاعدة",
+  "crHintDismiss": "تجاهل",
+  "wtSectionTitle": "عناوين النوافذ",
+  "wtToggleTitle": "تسجيل عناوين النوافذ",
+  "wtToggleDescription": "تذكر النوافذ التي تقضي وقتاً فيها، مثل عنوان مستند أو صفحة، يتم أخذ عينات منها مرة واحدة تقريباً في الدقيقة. تبقى العناوين على هذا الجهاز، وتتبع عوامل تصفية الخصوصية، ويتم الاحتفاظ بأطول 15 عنواناً فقط لكل تطبيق في اليوم. معطل افتراضياً.",
+  "wtClearTitle": "حذف العناوين المخزنة",
+  "wtClearDescription": "يحذف كل عنوان نافذة مسجل. لن تتأثر إجماليات الاستخدام الخاصة بك.",
+  "wtClearAction": "حذف العناوين",
+  "wtCleared": "{count, plural, =0{لم يتم العثور على عناوين مخزنة} other{تمت إزالة العناوين من {count} سجل}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "أهم النوافذ (آخر 7 أيام)",
+  "wtOther": "نوافذ أخرى",
+  "insTitle": "الرؤى",
+  "insTrendsTitle": "هذا الأسبوع مقابل الأسبوع الماضي",
+  "insThisWeek": "هذا الأسبوع",
+  "insLastWeek": "الأسبوع الماضي",
+  "insByCategory": "حسب الفئة",
+  "insBiggestChanges": "أكبر التغييرات",
+  "insNoData": "لا توجد بيانات كافية بعد.",
+  "insHeatmapTitle": "النشاط اليومي، آخر 26 أسبوعاً",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "أقل",
+  "insMore": "أكثر",
+  "insTimelineTitle": "الجدول الزمني لليوم",
+  "insTimelineOther": "تطبيقات أخرى",
+  "insTimelineEmpty": "لم يتم تسجيل أي نشاط لهذا اليوم.",
+  "insPrevDay": "اليوم السابق",
+  "insNextDay": "اليوم التالي",
+  "insSearchTitle": "البحث في عناوين النوافذ",
+  "insSearchHint": "ابحث عن أسماء المستندات أو الصفحات أو المشاريع",
+  "insSearchDisabled": "لم يتم تسجيل أي عناوين نوافذ بعد. يمكنك تشغيل التسجيل في الإعدادات > عناوين النوافذ.",
+  "insSearchNoResults": "لا توجد نوافذ متطابقة في آخر 30 يوماً.",
+  "tlTitle": "سجل الوقت",
+  "tlHint": "على ماذا تعمل؟",
+  "tlStart": "بدء",
+  "tlStop": "إيقاف",
+  "tlDiscard": "تجاهل",
+  "tlAddEntry": "إضافة إدخال",
+  "tlToday": "اليوم",
+  "tlThisWeek": "هذا الأسبوع",
+  "tlNothingToday": "لم يتم تسجيل أي شيء اليوم.",
+  "tlDescription": "سجل الوقت الذي لا يتم تتبعه تلقائياً، مثل الاجتماعات أو القراءة. يتم الاحتفاظ به منفصلاً عن وقت التطبيقات، حتى لا يتم حساب أي شيء مرتين.",
+  "tlDurationLabel": "المدة",
+  "tlHours": "ساعات",
+  "tlMinutes": "دقائق",
+  "tlDateLabel": "التاريخ",
+  "tlErrorLabel": "أدخل ما عملت عليه.",
+  "tlErrorDuration": "أدخل مدة أكبر من الصفر.",
+  "clTitle": "حدود الفئات",
+  "clDescription": "احصل على تنبيه عندما يتجاوز الوقت الإجمالي في فئة حداً يومياً. هذه تنبيهات فقط؛ لا يتم حظر التطبيقات.",
+  "clAdd": "إضافة حد",
+  "clEdit": "تعديل الحد",
+  "clLimitLabel": "الحد اليومي",
+  "clErrorLimit": "أدخل حداً أكبر من الصفر.",
+  "clErrorCategory": "اختر فئة.",
+  "ddTitle": "الموجز اليومي",
+  "ddToggleTitle": "الموجز اليومي",
+  "ddToggleDescription": "إشعار يلخص يومك بمجرد مرور الساعة المحددة. يتم استبعاد التطبيقات الخاصة.",
+  "ddHourLabel": "إرسال بعد",
+  "dsTitle": "مزامنة الأجهزة",
+  "dsDescription": "شارك استخدامك مع أجهزة الكمبيوتر الأخرى الخاصة بك من خلال مجلد يحتفظ به Dropbox أو iCloud Drive أو Syncthing متزامناً بالفعل. يكتب كل جهاز ملفه الخاص فقط، ويتم عرض بيانات الأجهزة الأخرى في الرؤى دون خلطها ببياناتك. لا تتم مشاركة التطبيقات الخاصة والمواقع وعناوين النوافذ أبداً. يؤدي إيقاف تشغيل المزامنة إلى إزالة ملف هذا الجهاز من المجلد.",
+  "dsToggle": "مزامنة من خلال مجلد",
+  "dsFolder": "مجلد المزامنة",
+  "dsNoFolder": "لم يتم اختيار مجلد",
+  "dsChooseFolder": "اختيار مجلد",
+  "dsDeviceName": "اسم هذا الجهاز",
+  "dsSyncNow": "مزامنة الآن",
+  "dsNeverSynced": "لم تتم المزامنة بعد",
+  "dsLastSynced": "آخر مزامنة {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "أجهزة أخرى",
+  "dsNoOthers": "لم يتم العثور على أجهزة أخرى بعد. قم بتشغيل المزامنة على جهاز الكمبيوتر الآخر واختر نفس المجلد.",
+  "dsPeerUpdated": "{name} · تم التحديث {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "مشكلة في المزامنة: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "هذا الجهاز",
+  "insAllDevices": "جميع الأجهزة",
+  "insTimelineUnplaced": "{time} من هذا اليوم غير معروضة أعلاه لأنه لم يتم تسجيل وقت محدد لها.",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

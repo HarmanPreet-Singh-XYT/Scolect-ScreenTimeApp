@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% privado",
   "onboarding100PrivateDesc": "Todos los datos de seguimiento se almacenan localmente en tu navegador y en tu equipo. Nada se envía a la nube.",
   "onboardingBack": "Atrás",
-  "onboardingSkip": "Omitir"
+  "onboardingSkip": "Omitir",
+  "extAccessSectionTitle": "Acceso de extensiones de navegador",
+  "extAccessRequireTitle": "Requerir aprobación para navegadores",
+  "extAccessRequireDescription": "Opcional. Al activarlo, cada extensión de navegador debe aprobarse aquí antes de sincronizar, para que otros programas en esta computadora no envíen datos a Scolect. Las versiones anteriores no pueden aprobarse y dejarán de sincronizarse hasta actualizarse.",
+  "extAccessPendingTitle": "Esperando aprobación",
+  "extAccessPendingDescription": "Estos navegadores solicitaron sincronizarse con Scolect.",
+  "extAccessApprovedTitle": "Navegadores aprobados",
+  "extAccessNoneApproved": "Aún no hay navegadores aprobados. Abre la extensión y aparecerá aquí.",
+  "extAccessApprove": "Aprobar",
+  "extAccessDeny": "Denegar",
+  "extAccessRevoke": "Revocar",
+  "extAccessUnknownBrowser": "Navegador desconocido",
+  "extAccessAllowDeniedAgain": "Permitir que los navegadores denegados vuelvan a preguntar",
+  "extAccessBlockedNotice": "{count, plural, =1{1 intento de sincronización no autorizado bloqueado desde el inicio} other{{count} intentos de sincronización no autorizados bloqueados desde el inicio}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "Un navegador quiere sincronizarse con Scolect",
+  "extAccessBannerBody": "{name} está esperando tu aprobación.",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "Filtros de privacidad",
+  "pfDescription": "Mantén aplicaciones y sitios web seleccionados fuera de tus datos rastreados. Las reglas son expresiones regulares comparadas con nombres de aplicaciones y dominios web. El historial ya registrado no se modifica.",
+  "pfAddRule": "Agregar regla",
+  "pfEditRule": "Editar regla",
+  "pfNoRules": "Aún no hay reglas.",
+  "pfPatternLabel": "Patrón (expresión regular)",
+  "pfPatternHint": "ej. bank|vault",
+  "pfAppliesTo": "Se aplica a",
+  "pfTargetApps": "Aplicaciones",
+  "pfTargetWebsites": "Sitios web",
+  "pfTargetBoth": "Aplicaciones y sitios web",
+  "pfActionLabel": "Acción",
+  "pfActionExclude": "No rastrear",
+  "pfActionRedact": "Rastrear con otro nombre",
+  "pfReplacementLabel": "Nombre para registrar en su lugar",
+  "pfReplacementHint": "Redactado",
+  "pfErrorEmpty": "Introduce un patrón.",
+  "pfErrorInvalid": "Esta no es una expresión regular válida.",
+  "pfErrorTooLong": "El patrón es demasiado largo (máximo 200 caracteres).",
+  "pfRuleSummaryExclude": "No rastreado",
+  "pfRuleSummaryRedact": "Registrado como \"{name}\"",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "Reglas de categoría",
+  "crDescription": "Clasifica aplicaciones en categorías automáticamente. La primera regla que coincida gana y tiene prioridad sobre la lista integrada. Los patrones son expresiones regulares comparadas con el nombre de la aplicación.",
+  "crCategoryLabel": "Categoría",
+  "crCategoryHint": "Elige una o escribe la tuya",
+  "crErrorCategory": "Elige una categoría.",
+  "crApplyExisting": "Aplicar a aplicaciones existentes",
+  "crApplyResult": "{count, plural, =0{No se necesitaron cambios en ninguna aplicación} =1{1 aplicación reclasificada} other{{count} aplicaciones reclasificadas}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "Subir",
+  "crMoveDown": "Bajar",
+  "crHintTitle": "Gran parte de tu tiempo no tiene categoría",
+  "crHintBody": "El {percent}% de los últimos 7 días está en aplicaciones sin categoría, principalmente {apps}. Una regla de categoría puede clasificarlas por ti.",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "Agregar una regla",
+  "crHintDismiss": "Descartar",
+  "wtSectionTitle": "Títulos de ventana",
+  "wtToggleTitle": "Registrar títulos de ventana",
+  "wtToggleDescription": "Recuerda en qué ventanas pasas tiempo, como el título de un documento o página, muestreado aproximadamente una vez por minuto. Los títulos se quedan en este dispositivo, respetan tus filtros de privacidad y solo se guardan los 15 más largos por aplicación al día. Desactivado por defecto.",
+  "wtClearTitle": "Eliminar títulos almacenados",
+  "wtClearDescription": "Elimina todos los títulos de ventana registrados. Tus totales de uso no se verán afectados.",
+  "wtClearAction": "Eliminar títulos",
+  "wtCleared": "{count, plural, =0{No se encontraron títulos almacenados} =1{Títulos eliminados de 1 registro} other{Títulos eliminados de {count} registros}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "Ventanas principales (últimos 7 días)",
+  "wtOther": "Otras ventanas",
+  "insTitle": "Perspectivas",
+  "insTrendsTitle": "Esta semana vs semana pasada",
+  "insThisWeek": "Esta semana",
+  "insLastWeek": "Semana pasada",
+  "insByCategory": "Por categoría",
+  "insBiggestChanges": "Mayores cambios",
+  "insNoData": "Aún no hay suficientes datos.",
+  "insHeatmapTitle": "Actividad diaria, últimas 26 semanas",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "Menos",
+  "insMore": "Más",
+  "insTimelineTitle": "Cronología del día",
+  "insTimelineOther": "Otras aplicaciones",
+  "insTimelineEmpty": "No hay actividad registrada para este día.",
+  "insPrevDay": "Día anterior",
+  "insNextDay": "Día siguiente",
+  "insSearchTitle": "Buscar títulos de ventana",
+  "insSearchHint": "Buscar nombres de documentos, páginas o proyectos",
+  "insSearchDisabled": "Aún no se han registrado títulos de ventana. Puedes activar el registro en Configuración > Títulos de ventana.",
+  "insSearchNoResults": "No se encontraron ventanas coincidentes en los últimos 30 días.",
+  "tlTitle": "Registro de tiempo",
+  "tlHint": "¿En qué estás trabajando?",
+  "tlStart": "Iniciar",
+  "tlStop": "Detener",
+  "tlDiscard": "Descartar",
+  "tlAddEntry": "Agregar entrada",
+  "tlToday": "Hoy",
+  "tlThisWeek": "Esta semana",
+  "tlNothingToday": "Nada registrado hoy.",
+  "tlDescription": "Registra el tiempo que no se rastrea automáticamente, como reuniones o lectura. Se mantiene separado del tiempo de aplicaciones, para que nada se cuente dos veces.",
+  "tlDurationLabel": "Duración",
+  "tlHours": "horas",
+  "tlMinutes": "minutos",
+  "tlDateLabel": "Fecha",
+  "tlErrorLabel": "Introduce en qué trabajaste.",
+  "tlErrorDuration": "Introduce una duración mayor a cero.",
+  "clTitle": "Límites de categoría",
+  "clDescription": "Recibe una alerta cuando el tiempo combinado en una categoría supere un límite diario. Son solo alertas; las aplicaciones no se bloquean.",
+  "clAdd": "Agregar límite",
+  "clEdit": "Editar límite",
+  "clLimitLabel": "Límite diario",
+  "clErrorLimit": "Introduce un límite mayor a cero.",
+  "clErrorCategory": "Elige una categoría.",
+  "ddTitle": "Resumen diario",
+  "ddToggleTitle": "Resumen diario",
+  "ddToggleDescription": "Una notificación con el resumen de tu día una vez pasada la hora elegida. Las aplicaciones privadas quedan excluidas.",
+  "ddHourLabel": "Enviar después de",
+  "dsTitle": "Sincronización de dispositivos",
+  "dsDescription": "Comparte tu uso con tus otras computadoras a través de una carpeta que Dropbox, iCloud Drive o Syncthing ya mantenga sincronizada. Cada dispositivo escribe solo su propio archivo, y los datos de otros dispositivos se muestran en Perspectivas sin mezclarse con los tuyos. Las aplicaciones privadas, sitios web y títulos de ventana nunca se comparten. Al desactivar la sincronización, se elimina el archivo de este dispositivo de la carpeta.",
+  "dsToggle": "Sincronizar mediante una carpeta",
+  "dsFolder": "Carpeta de sincronización",
+  "dsNoFolder": "Ninguna carpeta elegida",
+  "dsChooseFolder": "Elegir carpeta",
+  "dsDeviceName": "Nombre de este dispositivo",
+  "dsSyncNow": "Sincronizar ahora",
+  "dsNeverSynced": "Aún no sincronizado",
+  "dsLastSynced": "Última sincronización {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "Otros dispositivos",
+  "dsNoOthers": "Aún no se encontraron otros dispositivos. Activa la sincronización en tu otra computadora y elige la misma carpeta.",
+  "dsPeerUpdated": "{name} · actualizado {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "Problema de sincronización: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "Este dispositivo",
+  "insAllDevices": "Todos los dispositivos",
+  "insTimelineUnplaced": "{time} de este día no se muestra arriba porque no se registró una hora del día.",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

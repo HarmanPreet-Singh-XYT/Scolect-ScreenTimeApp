@@ -4310,423 +4310,411 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboardingSkip => '跳过';
 
   @override
-  String get extAccessSectionTitle => 'Browser Extension Access';
+  String get extAccessSectionTitle => '浏览器扩展访问';
 
   @override
-  String get extAccessRequireTitle => 'Require approval for browsers';
+  String get extAccessRequireTitle => '需要浏览器审批';
 
   @override
   String get extAccessRequireDescription =>
-      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+      '可选。启用后，每个浏览器扩展在同步之前必须在此处获得批准，以防止此计算机上的其他程序向 Scolect 发送数据。较早的扩展版本无法批准，需要更新后才能恢复同步。';
 
   @override
-  String get extAccessPendingTitle => 'Waiting for approval';
+  String get extAccessPendingTitle => '等待批准';
 
   @override
-  String get extAccessPendingDescription =>
-      'These browsers asked to sync with Scolect.';
+  String get extAccessPendingDescription => '这些浏览器请求与 Scolect 同步。';
 
   @override
-  String get extAccessApprovedTitle => 'Approved browsers';
+  String get extAccessApprovedTitle => '已批准的浏览器';
 
   @override
-  String get extAccessNoneApproved =>
-      'No browsers approved yet. Open the extension and it will appear here.';
+  String get extAccessNoneApproved => '尚未批准任何浏览器。打开扩展后它将显示在此处。';
 
   @override
-  String get extAccessApprove => 'Approve';
+  String get extAccessApprove => '批准';
 
   @override
-  String get extAccessDeny => 'Deny';
+  String get extAccessDeny => '拒绝';
 
   @override
-  String get extAccessRevoke => 'Revoke';
+  String get extAccessRevoke => '撤销';
 
   @override
-  String get extAccessUnknownBrowser => 'Unknown browser';
+  String get extAccessUnknownBrowser => '未知浏览器';
 
   @override
-  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+  String get extAccessAllowDeniedAgain => '允许被拒绝的浏览器再次请求';
 
   @override
   String extAccessBlockedNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count unauthorized sync attempts blocked since launch',
-      one: '1 unauthorized sync attempt blocked since launch',
+      other: '自启动以来已拦截 $count 次未授权的同步尝试',
     );
     return '$_temp0';
   }
 
   @override
-  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+  String get extAccessBannerTitle => '有浏览器想要与 Scolect 同步';
 
   @override
   String extAccessBannerBody(String name) {
-    return '$name is waiting for your approval.';
+    return '$name 正在等待您的批准。';
   }
 
   @override
-  String get pfTitle => 'Privacy Filters';
+  String get pfTitle => '隐私过滤器';
 
   @override
   String get pfDescription =>
-      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+      '将选定的应用程序和网站排除在跟踪数据之外。规则是与应用程序名称和网站域名匹配的正则表达式。已记录的历史记录不会更改。';
 
   @override
-  String get pfAddRule => 'Add rule';
+  String get pfAddRule => '添加规则';
 
   @override
-  String get pfEditRule => 'Edit rule';
+  String get pfEditRule => '编辑规则';
 
   @override
-  String get pfNoRules => 'No rules yet.';
+  String get pfNoRules => '暂无规则。';
 
   @override
-  String get pfPatternLabel => 'Pattern (regular expression)';
+  String get pfPatternLabel => '模式（正则表达式）';
 
   @override
-  String get pfPatternHint => 'e.g. bank|vault';
+  String get pfPatternHint => '例如 bank|vault';
 
   @override
-  String get pfAppliesTo => 'Applies to';
+  String get pfAppliesTo => '适用于';
 
   @override
-  String get pfTargetApps => 'Apps';
+  String get pfTargetApps => '应用程序';
 
   @override
-  String get pfTargetWebsites => 'Websites';
+  String get pfTargetWebsites => '网站';
 
   @override
-  String get pfTargetBoth => 'Apps and websites';
+  String get pfTargetBoth => '应用程序和网站';
 
   @override
-  String get pfActionLabel => 'Action';
+  String get pfActionLabel => '操作';
 
   @override
-  String get pfActionExclude => 'Don\'t track';
+  String get pfActionExclude => '不跟踪';
 
   @override
-  String get pfActionRedact => 'Track under another name';
+  String get pfActionRedact => '使用其他名称跟踪';
 
   @override
-  String get pfReplacementLabel => 'Name to record instead';
+  String get pfReplacementLabel => '要记录的替代名称';
 
   @override
-  String get pfReplacementHint => 'Redacted';
+  String get pfReplacementHint => '已隐去';
 
   @override
-  String get pfErrorEmpty => 'Enter a pattern.';
+  String get pfErrorEmpty => '请输入模式。';
 
   @override
-  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+  String get pfErrorInvalid => '这不是有效的正则表达式。';
 
   @override
-  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+  String get pfErrorTooLong => '模式过长（最多 200 个字符）。';
 
   @override
-  String get pfRuleSummaryExclude => 'Not tracked';
+  String get pfRuleSummaryExclude => '不跟踪';
 
   @override
   String pfRuleSummaryRedact(String name) {
-    return 'Recorded as \"$name\"';
+    return '记录为 \"$name\"';
   }
 
   @override
-  String get crTitle => 'Category Rules';
+  String get crTitle => '类别规则';
 
   @override
-  String get crDescription =>
-      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+  String get crDescription => '自动将应用程序分类。第一个匹配的规则优先于内置列表。模式是与应用程序名称匹配的正则表达式。';
 
   @override
-  String get crCategoryLabel => 'Category';
+  String get crCategoryLabel => '类别';
 
   @override
-  String get crCategoryHint => 'Pick one or type your own';
+  String get crCategoryHint => '选择一个或输入您自己的类别';
 
   @override
-  String get crErrorCategory => 'Choose a category.';
+  String get crErrorCategory => '请选择一个类别。';
 
   @override
-  String get crApplyExisting => 'Apply to existing apps';
+  String get crApplyExisting => '应用到现有应用程序';
 
   @override
   String crApplyResult(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps recategorized',
-      one: '1 app recategorized',
-      zero: 'No apps needed changing',
+      other: '已重新分类 $count 个应用程序',
+      zero: '没有应用程序需要更改',
     );
     return '$_temp0';
   }
 
   @override
-  String get crMoveUp => 'Move up';
+  String get crMoveUp => '上移';
 
   @override
-  String get crMoveDown => 'Move down';
+  String get crMoveDown => '下移';
 
   @override
-  String get crHintTitle => 'A lot of your time is uncategorized';
+  String get crHintTitle => '您的大部分时间未分类';
 
   @override
   String crHintBody(int percent, String apps) {
-    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+    return '过去 7 天中有 $percent% 的时间用于未分类的应用程序，主要是 $apps。类别规则可以帮您自动分类。';
   }
 
   @override
-  String get crHintAction => 'Add a rule';
+  String get crHintAction => '添加规则';
 
   @override
-  String get crHintDismiss => 'Dismiss';
+  String get crHintDismiss => '忽略';
 
   @override
-  String get wtSectionTitle => 'Window Titles';
+  String get wtSectionTitle => '窗口标题';
 
   @override
-  String get wtToggleTitle => 'Record window titles';
+  String get wtToggleTitle => '记录窗口标题';
 
   @override
   String get wtToggleDescription =>
-      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+      '记住您在哪些窗口中花费了时间（例如文档或页面标题），大约每分钟采样一次。标题保留在此设备上，遵循您的隐私过滤器，并且每个应用程序每天仅保留停留时间最长的 15 个。默认关闭。';
 
   @override
-  String get wtClearTitle => 'Delete stored titles';
+  String get wtClearTitle => '删除已存储的标题';
 
   @override
-  String get wtClearDescription =>
-      'Removes every recorded window title. Your usage totals are not affected.';
+  String get wtClearDescription => '删除所有已记录的窗口标题。您的使用总量不受影响。';
 
   @override
-  String get wtClearAction => 'Delete titles';
+  String get wtClearAction => '删除标题';
 
   @override
   String wtCleared(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Titles removed from $count records',
-      one: 'Titles removed from 1 record',
-      zero: 'No stored titles found',
+      other: '已从 $count 条记录中删除标题',
+      zero: '未找到已存储的标题',
     );
     return '$_temp0';
   }
 
   @override
-  String get wtTopWindows => 'Top windows (last 7 days)';
+  String get wtTopWindows => '热门窗口（过去 7 天）';
 
   @override
-  String get wtOther => 'Other windows';
+  String get wtOther => '其他窗口';
 
   @override
-  String get insTitle => 'Insights';
+  String get insTitle => '洞察';
 
   @override
-  String get insTrendsTitle => 'This week vs last week';
+  String get insTrendsTitle => '本周与上周对比';
 
   @override
-  String get insThisWeek => 'This week';
+  String get insThisWeek => '本周';
 
   @override
-  String get insLastWeek => 'Last week';
+  String get insLastWeek => '上周';
 
   @override
-  String get insByCategory => 'By category';
+  String get insByCategory => '按类别';
 
   @override
-  String get insBiggestChanges => 'Biggest changes';
+  String get insBiggestChanges => '最大变化';
 
   @override
-  String get insNoData => 'Not enough data yet.';
+  String get insNoData => '数据尚不足。';
 
   @override
-  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+  String get insHeatmapTitle => '每日活动（过去 26 周）';
 
   @override
   String insHeatmapTip(String date, String time) {
-    return '$date: $time';
+    return '$date：$time';
   }
 
   @override
-  String get insLess => 'Less';
+  String get insLess => '较少';
 
   @override
-  String get insMore => 'More';
+  String get insMore => '较多';
 
   @override
-  String get insTimelineTitle => 'Day timeline';
+  String get insTimelineTitle => '日时间线';
 
   @override
-  String get insTimelineOther => 'Other apps';
+  String get insTimelineOther => '其他应用程序';
 
   @override
-  String get insTimelineEmpty => 'No activity recorded for this day.';
+  String get insTimelineEmpty => '当天未记录任何活动。';
 
   @override
-  String get insPrevDay => 'Previous day';
+  String get insPrevDay => '前一天';
 
   @override
-  String get insNextDay => 'Next day';
+  String get insNextDay => '后一天';
 
   @override
-  String get insSearchTitle => 'Search window titles';
+  String get insSearchTitle => '搜索窗口标题';
 
   @override
-  String get insSearchHint => 'Search document, page or project names';
+  String get insSearchHint => '搜索文档、页面或项目名称';
 
   @override
-  String get insSearchDisabled =>
-      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+  String get insSearchDisabled => '尚未记录任何窗口标题。您可以在“设置 > 窗口标题”中开启记录。';
 
   @override
-  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+  String get insSearchNoResults => '过去 30 天内没有匹配的窗口。';
 
   @override
-  String get tlTitle => 'Time log';
+  String get tlTitle => '时间日志';
 
   @override
-  String get tlHint => 'What are you working on?';
+  String get tlHint => '您正在忙什么？';
 
   @override
-  String get tlStart => 'Start';
+  String get tlStart => '开始';
 
   @override
-  String get tlStop => 'Stop';
+  String get tlStop => '停止';
 
   @override
-  String get tlDiscard => 'Discard';
+  String get tlDiscard => '放弃';
 
   @override
-  String get tlAddEntry => 'Add entry';
+  String get tlAddEntry => '添加条目';
 
   @override
-  String get tlToday => 'Today';
+  String get tlToday => '今天';
 
   @override
-  String get tlThisWeek => 'This week';
+  String get tlThisWeek => '本周';
 
   @override
-  String get tlNothingToday => 'Nothing logged today.';
+  String get tlNothingToday => '今天没有任何记录。';
 
   @override
-  String get tlDescription =>
-      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+  String get tlDescription => '记录未自动跟踪的时间，例如会议或阅读。它与应用程序时间分开保存，因此不会重复计算。';
 
   @override
-  String get tlDurationLabel => 'Duration';
+  String get tlDurationLabel => '时长';
 
   @override
-  String get tlHours => 'hours';
+  String get tlHours => '小时';
 
   @override
-  String get tlMinutes => 'minutes';
+  String get tlMinutes => '分钟';
 
   @override
-  String get tlDateLabel => 'Date';
+  String get tlDateLabel => '日期';
 
   @override
-  String get tlErrorLabel => 'Enter what you worked on.';
+  String get tlErrorLabel => '请输入您的工作内容。';
 
   @override
-  String get tlErrorDuration => 'Enter a duration greater than zero.';
+  String get tlErrorDuration => '请输入大于零的时长。';
 
   @override
-  String get clTitle => 'Category Limits';
+  String get clTitle => '类别限制';
 
   @override
-  String get clDescription =>
-      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+  String get clDescription => '当某个类别中的合并时间超过每日限额时接收提醒。这些仅是提醒；不会阻止应用程序使用。';
 
   @override
-  String get clAdd => 'Add limit';
+  String get clAdd => '添加限制';
 
   @override
-  String get clEdit => 'Edit limit';
+  String get clEdit => '编辑限制';
 
   @override
-  String get clLimitLabel => 'Daily limit';
+  String get clLimitLabel => '每日限额';
 
   @override
-  String get clErrorLimit => 'Enter a limit greater than zero.';
+  String get clErrorLimit => '请输入大于零的限额。';
 
   @override
-  String get clErrorCategory => 'Choose a category.';
+  String get clErrorCategory => '请选择一个类别。';
 
   @override
-  String get ddTitle => 'Daily Digest';
+  String get ddTitle => '每日摘要';
 
   @override
-  String get ddToggleTitle => 'Daily digest';
+  String get ddToggleTitle => '每日摘要';
 
   @override
-  String get ddToggleDescription =>
-      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+  String get ddToggleDescription => '超过选定时间后发送总结您一天情况的通知。隐私应用程序会被排除。';
 
   @override
-  String get ddHourLabel => 'Send after';
+  String get ddHourLabel => '发送时间晚于';
 
   @override
-  String get dsTitle => 'Device Sync';
+  String get dsTitle => '设备同步';
 
   @override
   String get dsDescription =>
-      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+      '通过 Dropbox、iCloud Drive 或 Syncthing 保持同步的文件夹与其他计算机共享您的使用情况。每台设备仅写入自己的文件，其他设备的数据会显示在“洞察”中，而不会与您的数据混淆。私密应用、网站和窗口标题绝不会共享。关闭同步将从文件夹中删除此设备的文件。';
 
   @override
-  String get dsToggle => 'Sync through a folder';
+  String get dsToggle => '通过文件夹同步';
 
   @override
-  String get dsFolder => 'Sync folder';
+  String get dsFolder => '同步文件夹';
 
   @override
-  String get dsNoFolder => 'No folder chosen';
+  String get dsNoFolder => '未选择文件夹';
 
   @override
-  String get dsChooseFolder => 'Choose folder';
+  String get dsChooseFolder => '选择文件夹';
 
   @override
-  String get dsDeviceName => 'This device\'s name';
+  String get dsDeviceName => '此设备名称';
 
   @override
-  String get dsSyncNow => 'Sync now';
+  String get dsSyncNow => '立即同步';
 
   @override
-  String get dsNeverSynced => 'Not synced yet';
+  String get dsNeverSynced => '尚未同步';
 
   @override
   String dsLastSynced(String time) {
-    return 'Last synced $time';
+    return '上次同步时间：$time';
   }
 
   @override
-  String get dsOtherDevices => 'Other devices';
+  String get dsOtherDevices => '其他设备';
 
   @override
-  String get dsNoOthers =>
-      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+  String get dsNoOthers => '尚未找到其他设备。请在另一台计算机上开启同步并选择相同的文件夹。';
 
   @override
   String dsPeerUpdated(String name, String time) {
-    return '$name · updated $time';
+    return '$name · 更新于 $time';
   }
 
   @override
   String dsError(String error) {
-    return 'Sync problem: $error';
+    return '同步问题：$error';
   }
 
   @override
-  String get insThisDevice => 'This device';
+  String get insThisDevice => '此设备';
 
   @override
-  String get insAllDevices => 'All devices';
+  String get insAllDevices => '所有设备';
 
   @override
   String insTimelineUnplaced(String time) {
-    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+    return '当天的 $time 未在上方显示，因为未记录其具体时段。';
   }
 }

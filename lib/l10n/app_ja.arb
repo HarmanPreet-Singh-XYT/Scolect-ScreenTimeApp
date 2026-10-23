@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% 完全プライベート",
   "onboarding100PrivateDesc": "すべての追跡データはブラウザおよび端末内にローカル保存されます。クラウドにデータが送信されることは一切ありません。",
   "onboardingBack": "戻る",
-  "onboardingSkip": "スキップ"
+  "onboardingSkip": "スキップ",
+  "extAccessSectionTitle": "ブラウザ拡張機能のアクセス",
+  "extAccessRequireTitle": "ブラウザの承認を必須にする",
+  "extAccessRequireDescription": "任意。有効にすると、同期する前に各ブラウザ拡張機能をここで承認する必要があるため、このコンピュータ上の他のプログラムがScolectにデータを送信できなくなります。古いバージョンの拡張機能は承認できず、更新するまで同期が停止します。",
+  "extAccessPendingTitle": "承認待ち",
+  "extAccessPendingDescription": "これらのブラウザがScolectとの同期を要求しました。",
+  "extAccessApprovedTitle": "承認されたブラウザ",
+  "extAccessNoneApproved": "まだ承認されたブラウザはありません。拡張機能を開くとここに表示されます。",
+  "extAccessApprove": "承認",
+  "extAccessDeny": "拒否",
+  "extAccessRevoke": "取り消し",
+  "extAccessUnknownBrowser": "不明なブラウザ",
+  "extAccessAllowDeniedAgain": "拒否されたブラウザの再要求を許可",
+  "extAccessBlockedNotice": "{count, plural, other{起動以降に不正な同期試行を {count} 件ブロックしました}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "ブラウザがScolectとの同期を求めています",
+  "extAccessBannerBody": "{name} があなたの承認を待っています。",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "プライバシーフィルター",
+  "pfDescription": "選択したアプリやウェブサイトを追跡データから除外します。ルールはアプリ名やウェブサイトのドメインと照合される正規表現です。すでに記録された履歴は変更されません。",
+  "pfAddRule": "ルールを追加",
+  "pfEditRule": "ルールを編集",
+  "pfNoRules": "ルールはまだありません。",
+  "pfPatternLabel": "パターン（正規表現）",
+  "pfPatternHint": "例: bank|vault",
+  "pfAppliesTo": "適用対象",
+  "pfTargetApps": "アプリ",
+  "pfTargetWebsites": "ウェブサイト",
+  "pfTargetBoth": "アプリとウェブサイト",
+  "pfActionLabel": "アクション",
+  "pfActionExclude": "追跡しない",
+  "pfActionRedact": "別の名前で追跡",
+  "pfReplacementLabel": "代わりに記録する名前",
+  "pfReplacementHint": "墨消し済み",
+  "pfErrorEmpty": "パターンを入力してください。",
+  "pfErrorInvalid": "有効な正規表現ではありません。",
+  "pfErrorTooLong": "パターンが長すぎます（最大200文字）。",
+  "pfRuleSummaryExclude": "追跡対象外",
+  "pfRuleSummaryRedact": "「{name}」として記録",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "カテゴリのルール",
+  "crDescription": "アプリを自動的にカテゴリに分類します。最初に一致したルールが優先され、組み込みリストより優先されます。パターンはアプリ名と照合される正規表現です。",
+  "crCategoryLabel": "カテゴリ",
+  "crCategoryHint": "選択するか独自に入力してください",
+  "crErrorCategory": "カテゴリを選択してください。",
+  "crApplyExisting": "既存のアプリに適用",
+  "crApplyResult": "{count, plural, =0{変更が必要なアプリはありませんでした} other{{count} 個のアプリを再分類しました}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "上へ移動",
+  "crMoveDown": "下へ移動",
+  "crHintTitle": "時間の多くが未分類です",
+  "crHintBody": "過去7日間の {percent}% がカテゴリのないアプリ（主に {apps}）に費やされています。カテゴリのルールを設定すれば自動で分類できます。",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "ルールを追加",
+  "crHintDismiss": "閉じる",
+  "wtSectionTitle": "ウィンドウタイトル",
+  "wtToggleTitle": "ウィンドウタイトルを記録",
+  "wtToggleDescription": "ドキュメントやページのタイトルなど、使用したウィンドウを約1分に1回サンプリングして記憶します。タイトルはこのデバイスに留まり、プライバシーフィルターに従い、1アプリあたり1日最長15件のみ保持されます。デフォルトはオフです。",
+  "wtClearTitle": "保存されたタイトルを削除",
+  "wtClearDescription": "記録されたすべてのウィンドウタイトルを削除します。利用時間の合計には影響しません。",
+  "wtClearAction": "タイトルを削除",
+  "wtCleared": "{count, plural, =0{保存されたタイトルが見つかりません} other{{count} 件の記録からタイトルを削除しました}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "上位のウィンドウ（過去7日間）",
+  "wtOther": "他のウィンドウ",
+  "insTitle": "インサイト",
+  "insTrendsTitle": "今週と先週の比較",
+  "insThisWeek": "今週",
+  "insLastWeek": "先週",
+  "insByCategory": "カテゴリ別",
+  "insBiggestChanges": "最大の変化",
+  "insNoData": "十分なデータがまだありません。",
+  "insHeatmapTitle": "日ごとのアクティビティ（過去26週間）",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "少ない",
+  "insMore": "多い",
+  "insTimelineTitle": "1日のタイムライン",
+  "insTimelineOther": "他のアプリ",
+  "insTimelineEmpty": "この日のアクティビティは記録されていません。",
+  "insPrevDay": "前の日",
+  "insNextDay": "次の日",
+  "insSearchTitle": "ウィンドウタイトルを検索",
+  "insSearchHint": "ドキュメント、ページ、またはプロジェクト名を検索",
+  "insSearchDisabled": "ウィンドウタイトルはまだ記録されていません。設定 > ウィンドウタイトル で記録をオンにできます。",
+  "insSearchNoResults": "過去30日間に一致するウィンドウはありません。",
+  "tlTitle": "タイムログ",
+  "tlHint": "何に取り組んでいますか？",
+  "tlStart": "開始",
+  "tlStop": "停止",
+  "tlDiscard": "破棄",
+  "tlAddEntry": "エントリーを追加",
+  "tlToday": "今日",
+  "tlThisWeek": "今週",
+  "tlNothingToday": "今日の記録はありません。",
+  "tlDescription": "会議や読書など、自動追跡されない時間を記録します。アプリの時間とは別に保持されるため、重複してカウントされることはありません。",
+  "tlDurationLabel": "時間",
+  "tlHours": "時間",
+  "tlMinutes": "分",
+  "tlDateLabel": "日付",
+  "tlErrorLabel": "取り組んだ内容を入力してください。",
+  "tlErrorDuration": "0より大きい時間を入力してください。",
+  "clTitle": "カテゴリ制限",
+  "clDescription": "カテゴリ内の合計時間が1日の制限を超えたときにアラートを受け取ります。これらはアラートのみであり、アプリはブロックされません。",
+  "clAdd": "制限を追加",
+  "clEdit": "制限を編集",
+  "clLimitLabel": "1日の制限",
+  "clErrorLimit": "0より大きい制限を入力してください。",
+  "clErrorCategory": "カテゴリを選択してください。",
+  "ddTitle": "デイリーダイジェスト",
+  "ddToggleTitle": "デイリーダイジェスト",
+  "ddToggleDescription": "指定した時間を過ぎると1日を総括する通知が届きます。プライベートアプリは除外されます。",
+  "ddHourLabel": "送信時刻",
+  "dsTitle": "デバイス同期",
+  "dsDescription": "Dropbox、iCloud Drive、またはSyncthingですでに同期されているフォルダを通じて、他のコンピュータと利用状況を共有します。各デバイスは自身のファイルのみを書き込み、他のデバイスのデータは自分と混ざることなくインサイトに表示されます。プライベートアプリ、ウェブサイト、ウィンドウタイトルは共有されません。同期をオフにすると、このデバイスのファイルがフォルダから削除されます。",
+  "dsToggle": "フォルダ経由で同期",
+  "dsFolder": "同期フォルダ",
+  "dsNoFolder": "フォルダが選択されていません",
+  "dsChooseFolder": "フォルダを選択",
+  "dsDeviceName": "このデバイスの名前",
+  "dsSyncNow": "今すぐ同期",
+  "dsNeverSynced": "まだ同期されていません",
+  "dsLastSynced": "最終同期 {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "他のデバイス",
+  "dsNoOthers": "他のデバイスがまだ見つかりません。もう一方のコンピュータで同期をオンにし、同じフォルダを選択してください。",
+  "dsPeerUpdated": "{name} · 更新 {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "同期の問題: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "このデバイス",
+  "insAllDevices": "すべてのデバイス",
+  "insTimelineUnplaced": "時間帯が記録されていないため、この日の {time} は上に表示されていません。",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

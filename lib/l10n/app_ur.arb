@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% نجی",
   "onboarding100PrivateDesc": "تمام ٹریکنگ ڈیٹا مقامی طور پر آپ کے براؤزر اور مشین پر محفوظ ہوتا ہے۔ کلاؤڈ پر کچھ بھی نہیں بھیجا جاتا ہے۔",
   "onboardingBack": "پیچھے",
-  "onboardingSkip": "چھوڑیں"
+  "onboardingSkip": "چھوڑیں",
+  "extAccessSectionTitle": "براؤزر ایکسٹینشن تک رسائی",
+  "extAccessRequireTitle": "براؤزرز کے لیے منظوری لازمی قرار دیں",
+  "extAccessRequireDescription": "اختیاری۔ فعال ہونے پر، مطابقت پذیری (sync) سے پہلے ہر براؤزر ایکسٹینشن کی یہاں منظوری ہونی چاہیے، تاکہ اس کمپیوٹر پر موجود دیگر پروگرام Scolect کو ڈیٹا نہ بھیج سکیں۔ پرانے ایکسٹینشن ورژنز کی منظوری نہیں دی جا سکتی اور اپ ڈیٹ ہونے تک ان کی مطابقت پذیری رک جائے گی۔",
+  "extAccessPendingTitle": "منظوری کے منتظر",
+  "extAccessPendingDescription": "ان براؤزرز نے Scolect کے ساتھ مطابقت پذیری کی درخواست کی ہے۔",
+  "extAccessApprovedTitle": "منظور شدہ براؤزرز",
+  "extAccessNoneApproved": "ابھی تک کوئی براؤزر منظور نہیں ہوا۔ ایکسٹینشن کھولیں اور یہ یہاں ظاہر ہو جائے گا۔",
+  "extAccessApprove": "منظور کریں",
+  "extAccessDeny": "مسترد کریں",
+  "extAccessRevoke": "واپس لیں",
+  "extAccessUnknownBrowser": "نامعلوم براؤزر",
+  "extAccessAllowDeniedAgain": "مسترد شدہ براؤزرز کو دوبارہ پوچھنے کی اجازت دیں",
+  "extAccessBlockedNotice": "{count, plural, other{لانچ کے بعد سے {count} غیر مجاز مطابقت پذیری کی کوششیں بلاک کی گئیں}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "ایک براؤزر Scolect کے ساتھ مطابقت پذیری چاہتا ہے",
+  "extAccessBannerBody": "{name} آپ کی منظوری کا منتظر ہے۔",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "پرائیویسی فلٹرز",
+  "pfDescription": "منتخب ایپس اور ویب سائٹس کو اپنے ٹریک کردہ ڈیٹا سے باہر رکھیں۔ قواعد ریگولر ایکسپریشنز ہیں جو ایپ کے ناموں اور ویب سائٹ ڈومینز سے ملائے جاتے ہیں۔ پہلے سے ریکارڈ شدہ ہسٹری تبدیل نہیں ہوتی۔",
+  "pfAddRule": "قاعدہ شامل کریں",
+  "pfEditRule": "قاعدہ میں ترمیم کریں",
+  "pfNoRules": "ابھی تک کوئی قواعد نہیں۔",
+  "pfPatternLabel": "پیٹرن (ریگولر ایکسپریشن)",
+  "pfPatternHint": "مثال کے طور پر bank|vault",
+  "pfAppliesTo": "لاگو ہوتا ہے بر",
+  "pfTargetApps": "ایپس",
+  "pfTargetWebsites": "ویب سائٹس",
+  "pfTargetBoth": "ایپس اور ویب سائٹس",
+  "pfActionLabel": "کارروائی",
+  "pfActionExclude": "ٹریک نہ کریں",
+  "pfActionRedact": "دوسرے نام سے ٹریک کریں",
+  "pfReplacementLabel": "اس کی جگہ ریکارڈ کرنے کے لیے نام",
+  "pfReplacementHint": "پوشیدہ",
+  "pfErrorEmpty": "ایک پیٹرن درج کریں۔",
+  "pfErrorInvalid": "یہ ایک درست ریگولر ایکسپریشن نہیں ہے۔",
+  "pfErrorTooLong": "پیٹرن بہت طویل ہے (زیادہ سے زیادہ 200 حروف)۔",
+  "pfRuleSummaryExclude": "ٹریک نہیں کیا گیا",
+  "pfRuleSummaryRedact": "\"{name}\" کے طور پر ریکارڈ کیا گیا",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "زمرے کے قواعد",
+  "crDescription": "ایپس کو خودکار طریقے سے زمروں میں ترتیب دیں۔ پہلا مماثل قاعدہ ترجیح پاتا ہے اور پہلے سے موجود فہرست پر غالب آتا ہے۔ پیٹرنز ایپ کے نام سے ملائے جانے والے ریگولر ایکسپریشنز ہیں۔",
+  "crCategoryLabel": "زمرہ",
+  "crCategoryHint": "ایک منتخب کریں یا اپنا درج کریں",
+  "crErrorCategory": "ایک زمرہ منتخب کریں۔",
+  "crApplyExisting": "موجودہ ایپس پر لاگو کریں",
+  "crApplyResult": "{count, plural, =0{کسی ایپ میں تبدیلی کی ضرورت نہیں پڑی} other{{count} ایپس دوبارہ زمرہ بند کی گئیں}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "اوپر لے جائیں",
+  "crMoveDown": "نیچے لے جائیں",
+  "crHintTitle": "آپ کا بہت سا وقت غیر زمرہ بند ہے",
+  "crHintBody": "گزشتہ 7 دنوں کا {percent}% وقت بغیر زمرے کی ایپس میں گزرا ہے، زیادہ تر {apps}۔ زمرے کا قاعدہ انہیں آپ کے لیے ترتیب دے سکتا ہے۔",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "قاعدہ شامل کریں",
+  "crHintDismiss": "مسترد کریں",
+  "wtSectionTitle": "ونڈو کے عنوانات",
+  "wtToggleTitle": "ونڈو کے عنوانات ریکارڈ کریں",
+  "wtToggleDescription": "یاد رکھیں کہ آپ کن ونڈوز میں وقت گزارتے ہیں، جیسے دستاویز یا صفحہ کا عنوان، جس کا تقریباً فی منٹ ایک بار جائزہ لیا جاتا ہے۔ عنوانات اسی ڈیوائس پر رہتے ہیں، آپ کے پرائیویسی فلٹرز کی پیروی کرتے ہیں، اور فی ایپ روزانہ صرف 15 طویل ترین عنوانات رکھے جاتے ہیں۔ پہلے سے بند ہے۔",
+  "wtClearTitle": "محفوظ شدہ عنوانات حذف کریں",
+  "wtClearDescription": "ہر ریکارڈ شدہ ونڈو کا عنوان حذف کر دیتا ہے۔ آپ کے استعمال کے کل اوقات متاثر نہیں ہوتے۔",
+  "wtClearAction": "عنوانات حذف کریں",
+  "wtCleared": "{count, plural, =0{کوئی محفوظ شدہ عنوانات نہیں ملے} other{{count} ریکارڈز سے عنوانات حذف کر دیے گئے}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "اہم ونڈوز (گزشتہ 7 دن)",
+  "wtOther": "دیگر ونڈوز",
+  "insTitle": "بصیرت",
+  "insTrendsTitle": "اس ہفتے بمقابلہ پچھلا ہفتہ",
+  "insThisWeek": "اس ہفتے",
+  "insLastWeek": "پچھلا ہفتہ",
+  "insByCategory": "زمرے کے لحاظ سے",
+  "insBiggestChanges": "سب سے بڑی تبدیلیاں",
+  "insNoData": "ابھی تک کافی ڈیٹا دستیاب نہیں۔",
+  "insHeatmapTitle": "روزانہ کی سرگرمی، گزشتہ 26 ہفتے",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "کم",
+  "insMore": "زیادہ",
+  "insTimelineTitle": "دن کی ٹائم لائن",
+  "insTimelineOther": "دیگر ایپس",
+  "insTimelineEmpty": "اس دن کے لیے کوئی سرگرمی ریکارڈ نہیں کی گئی۔",
+  "insPrevDay": "پچھلا دن",
+  "insNextDay": "اگلا دن",
+  "insSearchTitle": "ونڈو کے عنوانات تلاش کریں",
+  "insSearchHint": "دستاویز، صفحہ یا پروجیکٹ کے نام تلاش کریں",
+  "insSearchDisabled": "ابھی تک ونڈو کا کوئی عنوان ریکارڈ نہیں ہوا۔ آپ ترتیبات > ونڈو کے عنوانات میں ریکارڈنگ آن کر سکتے ہیں۔",
+  "insSearchNoResults": "گزشتہ 30 دنوں میں کوئی مماثل ونڈوز نہیں ملیں۔",
+  "tlTitle": "ٹائم لاگ",
+  "tlHint": "آپ کس چیز پر کام کر رہے ہیں؟",
+  "tlStart": "شروع کریں",
+  "tlStop": "روکیں",
+  "tlDiscard": "مسترد کریں",
+  "tlAddEntry": "اندراج شامل کریں",
+  "tlToday": "آج",
+  "tlThisWeek": "اس ہفتے",
+  "tlNothingToday": "آج کچھ لاگ نہیں کیا گیا۔",
+  "tlDescription": "وہ وقت لاگ کریں جو خودکار طور پر ٹریک نہیں ہوتا، جیسے میٹنگز یا مطالعہ۔ اسے ایپ کے وقت سے الگ رکھا جاتا ہے، تاکہ کوئی چیز دو بار شمار نہ ہو۔",
+  "tlDurationLabel": "دورانیہ",
+  "tlHours": "گھنٹے",
+  "tlMinutes": "منٹ",
+  "tlDateLabel": "تاریخ",
+  "tlErrorLabel": "درج کریں کہ آپ نے کس چیز پر کام کیا۔",
+  "tlErrorDuration": "صفر سے زیادہ کا دورانیہ درج کریں۔",
+  "clTitle": "زمرے کی حدود",
+  "clDescription": "جب کسی زمرے میں مشترکہ وقت یومیہ حد سے تجاوز کر جائے تو الرٹ حاصل کریں۔ یہ صرف الرٹس ہیں؛ ایپس کو بلاک نہیں کیا جاتا۔",
+  "clAdd": "حد شامل کریں",
+  "clEdit": "حد میں ترمیم کریں",
+  "clLimitLabel": "یومیہ حد",
+  "clErrorLimit": "صفر سے زیادہ حد درج کریں۔",
+  "clErrorCategory": "ایک زمرہ منتخب کریں۔",
+  "ddTitle": "روزانہ کا خلاصہ",
+  "ddToggleTitle": "روزانہ کا خلاصہ",
+  "ddToggleDescription": "منتخب کردہ گھنٹہ گزرنے کے بعد آپ کے دن کا خلاصہ پیش کرنے والا نوٹیفکیشن۔ نجی ایپس کو چھوڑ دیا جاتا ہے۔",
+  "ddHourLabel": "اس کے بعد بھیجیں",
+  "dsTitle": "ڈیوائس سنک",
+  "dsDescription": "اپنے دیگر کمپیوٹرز کے ساتھ اس فولڈر کے ذریعے اپنے استعمال کا اشتراک کریں جسے Dropbox، iCloud Drive یا Syncthing پہلے سے ہم آہنگ رکھتا ہے۔ ہر ڈیوائس صرف اپنی فائل لکھتی ہے، اور دیگر آلات کا ڈیٹا آپ کے ڈیٹا میں ملے بغیر بصیرت میں دکھایا جاتا ہے۔ نجی ایپس، ویب سائٹس اور ونڈو کے عنوانات کا اشتراک کبھی نہیں کیا جاتا۔ مطابقت پذیری بند کرنے سے فولڈر سے اس ڈیوائس کی فائل ہٹ جاتی ہے۔",
+  "dsToggle": "فولڈر کے ذریعے مطابقت پذیری کریں",
+  "dsFolder": "سنک فولڈر",
+  "dsNoFolder": "کوئی فولڈر منتخب نہیں کیا گیا",
+  "dsChooseFolder": "فولڈر منتخب کریں",
+  "dsDeviceName": "اس ڈیوائس کا نام",
+  "dsSyncNow": "ابھی سنک کریں",
+  "dsNeverSynced": "ابھی تک سنک نہیں ہوا",
+  "dsLastSynced": "آخری سنک {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "دیگر آلات",
+  "dsNoOthers": "ابھی تک کوئی دوسرا آلہ نہیں ملا۔ اپنے دوسرے کمپیوٹر پر سنک آن کریں اور وہی فولڈر منتخب کریں۔",
+  "dsPeerUpdated": "{name} · اپ ڈیٹ شدہ {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "سنک کا مسئلہ: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "یہ آلہ",
+  "insAllDevices": "تمام آلات",
+  "insTimelineUnplaced": "اس دن کا {time} اوپر نہیں دکھایا گیا ہے کیونکہ اس کے لیے دن کا کوئی مخصوص وقت ریکارڈ نہیں کیا گیا تھا۔",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

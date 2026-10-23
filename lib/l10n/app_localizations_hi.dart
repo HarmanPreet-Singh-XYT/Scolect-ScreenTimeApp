@@ -4492,241 +4492,243 @@ class AppLocalizationsHi extends AppLocalizations {
   String get onboardingSkip => 'छोड़ें';
 
   @override
-  String get extAccessSectionTitle => 'Browser Extension Access';
+  String get extAccessSectionTitle => 'ब्राउज़र एक्सटेंशन एक्सेस';
 
   @override
-  String get extAccessRequireTitle => 'Require approval for browsers';
+  String get extAccessRequireTitle => 'ब्राउज़र के लिए स्वीकृति आवश्यक करें';
 
   @override
   String get extAccessRequireDescription =>
-      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+      'वैकल्पिक। चालू होने पर, सिंक करने से पहले प्रत्येक ब्राउज़र एक्सटेंशन को यहां स्वीकृत किया जाना चाहिए, ताकि इस कंप्यूटर के अन्य प्रोग्राम Scolect को डेटा न भेज सकें। पुराने एक्सटेंशन संस्करण स्वीकृत नहीं किए जा सकते और अपडेट होने तक सिंक करना बंद कर देंगे।';
 
   @override
-  String get extAccessPendingTitle => 'Waiting for approval';
+  String get extAccessPendingTitle => 'स्वीकृति की प्रतीक्षा में';
 
   @override
   String get extAccessPendingDescription =>
-      'These browsers asked to sync with Scolect.';
+      'इन ब्राउज़रों ने Scolect के साथ सिंक करने का अनुरोध किया है।';
 
   @override
-  String get extAccessApprovedTitle => 'Approved browsers';
+  String get extAccessApprovedTitle => 'स्वीकृत ब्राउज़र';
 
   @override
   String get extAccessNoneApproved =>
-      'No browsers approved yet. Open the extension and it will appear here.';
+      'अभी तक कोई ब्राउज़र स्वीकृत नहीं हुआ है। एक्सटेंशन खोलें और यह यहां दिखाई देगा।';
 
   @override
-  String get extAccessApprove => 'Approve';
+  String get extAccessApprove => 'स्वीकृत करें';
 
   @override
-  String get extAccessDeny => 'Deny';
+  String get extAccessDeny => 'अस्वीकार करें';
 
   @override
-  String get extAccessRevoke => 'Revoke';
+  String get extAccessRevoke => 'रद्द करें';
 
   @override
-  String get extAccessUnknownBrowser => 'Unknown browser';
+  String get extAccessUnknownBrowser => 'अज्ञात ब्राउज़र';
 
   @override
-  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+  String get extAccessAllowDeniedAgain =>
+      'अस्वीकृत ब्राउज़रों को दोबारा पूछने की अनुमति दें';
 
   @override
   String extAccessBlockedNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count unauthorized sync attempts blocked since launch',
-      one: '1 unauthorized sync attempt blocked since launch',
+      other: 'लॉन्च के बाद से $count अनधिकृत सिंक प्रयास ब्लॉक किए गए',
+      one: 'लॉन्च के बाद से 1 अनधिकृत सिंक प्रयास ब्लॉक किया गया',
     );
     return '$_temp0';
   }
 
   @override
-  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+  String get extAccessBannerTitle =>
+      'एक ब्राउज़र Scolect के साथ सिंक करना चाहता है';
 
   @override
   String extAccessBannerBody(String name) {
-    return '$name is waiting for your approval.';
+    return '$name आपकी स्वीकृति की प्रतीक्षा कर रहा है।';
   }
 
   @override
-  String get pfTitle => 'Privacy Filters';
+  String get pfTitle => 'गोपनीयता फ़िल्टर';
 
   @override
   String get pfDescription =>
-      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+      'चुने गए ऐप्स और वेबसाइटों को अपने ट्रैक किए गए डेटा से बाहर रखें। नियम ऐप के नामों और वेबसाइट डोमेन से मेल खाने वाले रेगुलर एक्सप्रेशन हैं। पहले से रिकॉर्ड किया गया इतिहास नहीं बदला जाता है।';
 
   @override
-  String get pfAddRule => 'Add rule';
+  String get pfAddRule => 'नियम जोड़ें';
 
   @override
-  String get pfEditRule => 'Edit rule';
+  String get pfEditRule => 'नियम संपादित करें';
 
   @override
-  String get pfNoRules => 'No rules yet.';
+  String get pfNoRules => 'अभी कोई नियम नहीं हैं।';
 
   @override
-  String get pfPatternLabel => 'Pattern (regular expression)';
+  String get pfPatternLabel => 'पैटर्न (रेगुलर एक्सप्रेशन)';
 
   @override
-  String get pfPatternHint => 'e.g. bank|vault';
+  String get pfPatternHint => 'उदा. bank|vault';
 
   @override
-  String get pfAppliesTo => 'Applies to';
+  String get pfAppliesTo => 'लागू होता है';
 
   @override
-  String get pfTargetApps => 'Apps';
+  String get pfTargetApps => 'ऐप्स';
 
   @override
-  String get pfTargetWebsites => 'Websites';
+  String get pfTargetWebsites => 'वेबसाइटें';
 
   @override
-  String get pfTargetBoth => 'Apps and websites';
+  String get pfTargetBoth => 'ऐप्स और वेबसाइटें';
 
   @override
-  String get pfActionLabel => 'Action';
+  String get pfActionLabel => 'कार्रवाई';
 
   @override
-  String get pfActionExclude => 'Don\'t track';
+  String get pfActionExclude => 'ट्रैक न करें';
 
   @override
-  String get pfActionRedact => 'Track under another name';
+  String get pfActionRedact => 'दूसरे नाम से ट्रैक करें';
 
   @override
-  String get pfReplacementLabel => 'Name to record instead';
+  String get pfReplacementLabel => 'इसके स्थान पर रिकॉर्ड करने के लिए नाम';
 
   @override
-  String get pfReplacementHint => 'Redacted';
+  String get pfReplacementHint => 'संपादित';
 
   @override
-  String get pfErrorEmpty => 'Enter a pattern.';
+  String get pfErrorEmpty => 'एक पैटर्न दर्ज करें।';
 
   @override
-  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+  String get pfErrorInvalid => 'यह एक मान्य रेगुलर एक्सप्रेशन नहीं है।';
 
   @override
-  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+  String get pfErrorTooLong => 'पैटर्न बहुत लंबा है (अधिकतम 200 वर्ण)।';
 
   @override
-  String get pfRuleSummaryExclude => 'Not tracked';
+  String get pfRuleSummaryExclude => 'ट्रैक नहीं किया गया';
 
   @override
   String pfRuleSummaryRedact(String name) {
-    return 'Recorded as \"$name\"';
+    return '\"$name\" के रूप में रिकॉर्ड किया गया';
   }
 
   @override
-  String get crTitle => 'Category Rules';
+  String get crTitle => 'श्रेणी के नियम';
 
   @override
   String get crDescription =>
-      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+      'ऐप्स को स्वचालित रूप से श्रेणियों में क्रमबद्ध करें। पहला मेल खाने वाला नियम जीतता है और अंतर्निहित सूची से ऊपर रहता है। पैटर्न ऐप के नाम से मेल खाने वाले रेगुलर एक्सप्रेशन हैं।';
 
   @override
-  String get crCategoryLabel => 'Category';
+  String get crCategoryLabel => 'श्रेणी';
 
   @override
-  String get crCategoryHint => 'Pick one or type your own';
+  String get crCategoryHint => 'एक चुनें या अपनी खुद की लिखें';
 
   @override
-  String get crErrorCategory => 'Choose a category.';
+  String get crErrorCategory => 'एक श्रेणी चुनें।';
 
   @override
-  String get crApplyExisting => 'Apply to existing apps';
+  String get crApplyExisting => 'मौजूदा ऐप्स पर लागू करें';
 
   @override
   String crApplyResult(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps recategorized',
-      one: '1 app recategorized',
-      zero: 'No apps needed changing',
+      other: '$count ऐप्स पुनर्वर्गीकृत किए गए',
+      one: '1 ऐप पुनर्वर्गीकृत किया गया',
+      zero: 'किसी भी ऐप में बदलाव की आवश्यकता नहीं पड़ी',
     );
     return '$_temp0';
   }
 
   @override
-  String get crMoveUp => 'Move up';
+  String get crMoveUp => 'ऊपर ले जाएं';
 
   @override
-  String get crMoveDown => 'Move down';
+  String get crMoveDown => 'नीचे ले जाएं';
 
   @override
-  String get crHintTitle => 'A lot of your time is uncategorized';
+  String get crHintTitle => 'आपका बहुत सारा समय बिना श्रेणी का है';
 
   @override
   String crHintBody(int percent, String apps) {
-    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+    return 'पिछले 7 दिनों का $percent% समय बिना श्रेणी वाले ऐप्स में बीता है, मुख्य रूप से $apps। एक श्रेणी नियम उन्हें आपके लिए क्रमबद्ध कर सकता है।';
   }
 
   @override
-  String get crHintAction => 'Add a rule';
+  String get crHintAction => 'एक नियम जोड़ें';
 
   @override
-  String get crHintDismiss => 'Dismiss';
+  String get crHintDismiss => 'खारिज करें';
 
   @override
-  String get wtSectionTitle => 'Window Titles';
+  String get wtSectionTitle => 'विंडो शीर्षक';
 
   @override
-  String get wtToggleTitle => 'Record window titles';
+  String get wtToggleTitle => 'विंडो शीर्षक रिकॉर्ड करें';
 
   @override
   String get wtToggleDescription =>
-      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+      'याद रखें कि आप किन विंडो में समय बिताते हैं, जैसे दस्तावेज़ या पेज शीर्षक, जिसे लगभग मिनट में एक बार जांचा जाता है। शीर्षक इस डिवाइस पर रहते हैं, आपके गोपनीयता फ़िल्टर का पालन करते हैं, और प्रति ऐप प्रति दिन केवल 15 सबसे लंबे शीर्षक रखे जाते हैं। डिफ़ॉल्ट रूप से बंद।';
 
   @override
-  String get wtClearTitle => 'Delete stored titles';
+  String get wtClearTitle => 'सहेजे गए शीर्षक हटाएं';
 
   @override
   String get wtClearDescription =>
-      'Removes every recorded window title. Your usage totals are not affected.';
+      'प्रत्येक रिकॉर्ड किए गए विंडो शीर्षक को हटाता है। आपका कुल उपयोग प्रभावित नहीं होता है।';
 
   @override
-  String get wtClearAction => 'Delete titles';
+  String get wtClearAction => 'शीर्षक हटाएं';
 
   @override
   String wtCleared(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Titles removed from $count records',
-      one: 'Titles removed from 1 record',
-      zero: 'No stored titles found',
+      other: '$count रिकॉर्ड से शीर्षक हटाए गए',
+      one: '1 रिकॉर्ड से शीर्षक हटाए गए',
+      zero: 'कोई सहेजा गया शीर्षक नहीं मिला',
     );
     return '$_temp0';
   }
 
   @override
-  String get wtTopWindows => 'Top windows (last 7 days)';
+  String get wtTopWindows => 'शीर्ष विंडो (पिछले 7 दिन)';
 
   @override
-  String get wtOther => 'Other windows';
+  String get wtOther => 'अन्य विंडो';
 
   @override
-  String get insTitle => 'Insights';
+  String get insTitle => 'अंतर्दृष्टि';
 
   @override
-  String get insTrendsTitle => 'This week vs last week';
+  String get insTrendsTitle => 'इस सप्ताह बनाम पिछला सप्ताह';
 
   @override
-  String get insThisWeek => 'This week';
+  String get insThisWeek => 'इस सप्ताह';
 
   @override
-  String get insLastWeek => 'Last week';
+  String get insLastWeek => 'पिछला सप्ताह';
 
   @override
-  String get insByCategory => 'By category';
+  String get insByCategory => 'श्रेणी के अनुसार';
 
   @override
-  String get insBiggestChanges => 'Biggest changes';
+  String get insBiggestChanges => 'सबसे बड़े बदलाव';
 
   @override
-  String get insNoData => 'Not enough data yet.';
+  String get insNoData => 'अभी पर्याप्त डेटा नहीं है।';
 
   @override
-  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+  String get insHeatmapTitle => 'दैनिक गतिविधि, पिछले 26 सप्ताह';
 
   @override
   String insHeatmapTip(String date, String time) {
@@ -4734,181 +4736,183 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get insLess => 'Less';
+  String get insLess => 'कम';
 
   @override
-  String get insMore => 'More';
+  String get insMore => 'अधिक';
 
   @override
-  String get insTimelineTitle => 'Day timeline';
+  String get insTimelineTitle => 'दिन की समयरेखा';
 
   @override
-  String get insTimelineOther => 'Other apps';
+  String get insTimelineOther => 'अन्य ऐप्स';
 
   @override
-  String get insTimelineEmpty => 'No activity recorded for this day.';
+  String get insTimelineEmpty =>
+      'इस दिन के लिए कोई गतिविधि रिकॉर्ड नहीं की गई।';
 
   @override
-  String get insPrevDay => 'Previous day';
+  String get insPrevDay => 'पिछला दिन';
 
   @override
-  String get insNextDay => 'Next day';
+  String get insNextDay => 'अगला दिन';
 
   @override
-  String get insSearchTitle => 'Search window titles';
+  String get insSearchTitle => 'विंडो शीर्षक खोजें';
 
   @override
-  String get insSearchHint => 'Search document, page or project names';
+  String get insSearchHint => 'दस्तावेज़, पेज या प्रोजेक्ट के नाम खोजें';
 
   @override
   String get insSearchDisabled =>
-      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+      'अभी तक कोई विंडो शीर्षक रिकॉर्ड नहीं किया गया है। आप सेटिंग्स > विंडो शीर्षक में रिकॉर्डिंग चालू कर सकते हैं।';
 
   @override
-  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+  String get insSearchNoResults =>
+      'पिछले 30 दिनों में कोई मेल खाने वाली विंडो नहीं मिली।';
 
   @override
-  String get tlTitle => 'Time log';
+  String get tlTitle => 'समय लॉग';
 
   @override
-  String get tlHint => 'What are you working on?';
+  String get tlHint => 'आप किस पर काम कर रहे हैं?';
 
   @override
-  String get tlStart => 'Start';
+  String get tlStart => 'शुरू करें';
 
   @override
-  String get tlStop => 'Stop';
+  String get tlStop => 'रोकें';
 
   @override
-  String get tlDiscard => 'Discard';
+  String get tlDiscard => 'खारिज करें';
 
   @override
-  String get tlAddEntry => 'Add entry';
+  String get tlAddEntry => 'प्रविष्टि जोड़ें';
 
   @override
-  String get tlToday => 'Today';
+  String get tlToday => 'आज';
 
   @override
-  String get tlThisWeek => 'This week';
+  String get tlThisWeek => 'इस सप्ताह';
 
   @override
-  String get tlNothingToday => 'Nothing logged today.';
+  String get tlNothingToday => 'आज कुछ भी लॉग नहीं किया गया।';
 
   @override
   String get tlDescription =>
-      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+      'उस समय को लॉग करें जो स्वचालित रूप से ट्रैक नहीं होता है, जैसे मीटिंग या पढ़ना। इसे ऐप के समय से अलग रखा जाता है, ताकि कुछ भी दो बार न गिना जाए।';
 
   @override
-  String get tlDurationLabel => 'Duration';
+  String get tlDurationLabel => 'अवधि';
 
   @override
-  String get tlHours => 'hours';
+  String get tlHours => 'घंटे';
 
   @override
-  String get tlMinutes => 'minutes';
+  String get tlMinutes => 'मिनट';
 
   @override
-  String get tlDateLabel => 'Date';
+  String get tlDateLabel => 'तारीख';
 
   @override
-  String get tlErrorLabel => 'Enter what you worked on.';
+  String get tlErrorLabel => 'दर्ज करें कि आपने किस पर काम किया।';
 
   @override
-  String get tlErrorDuration => 'Enter a duration greater than zero.';
+  String get tlErrorDuration => 'शून्य से अधिक अवधि दर्ज करें।';
 
   @override
-  String get clTitle => 'Category Limits';
+  String get clTitle => 'श्रेणी सीमाएं';
 
   @override
   String get clDescription =>
-      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+      'जब किसी श्रेणी में संयुक्त समय दैनिक सीमा पार कर जाए तो अलर्ट प्राप्त करें। ये केवल अलर्ट हैं; ऐप्स ब्लॉक नहीं होते हैं।';
 
   @override
-  String get clAdd => 'Add limit';
+  String get clAdd => 'सीमा जोड़ें';
 
   @override
-  String get clEdit => 'Edit limit';
+  String get clEdit => 'सीमा संपादित करें';
 
   @override
-  String get clLimitLabel => 'Daily limit';
+  String get clLimitLabel => 'दैनिक सीमा';
 
   @override
-  String get clErrorLimit => 'Enter a limit greater than zero.';
+  String get clErrorLimit => 'शून्य से अधिक सीमा दर्ज करें।';
 
   @override
-  String get clErrorCategory => 'Choose a category.';
+  String get clErrorCategory => 'एक श्रेणी चुनें।';
 
   @override
-  String get ddTitle => 'Daily Digest';
+  String get ddTitle => 'दैनिक डाइजेस्ट';
 
   @override
-  String get ddToggleTitle => 'Daily digest';
+  String get ddToggleTitle => 'दैनिक डाइजेस्ट';
 
   @override
   String get ddToggleDescription =>
-      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+      'चुने गए घंटे के बीत जाने के बाद आपके दिन का सारांश देने वाली एक अधिसूचना। निजी ऐप्स को छोड़ दिया जाता है।';
 
   @override
-  String get ddHourLabel => 'Send after';
+  String get ddHourLabel => 'इसके बाद भेजें';
 
   @override
-  String get dsTitle => 'Device Sync';
+  String get dsTitle => 'डिवाइस सिंक';
 
   @override
   String get dsDescription =>
-      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+      'अपने अन्य कंप्यूटरों के साथ उस फ़ोल्डर के माध्यम से अपना उपयोग साझा करें जिसे Dropbox, iCloud Drive या Syncthing पहले से सिंक रखता है। प्रत्येक डिवाइस केवल अपनी फ़ाइल लिखता है, और अन्य उपकरणों का डेटा आपके डेटा में मिले बिना अंतर्दृष्टि में दिखाया जाता है। निजी ऐप्स, वेबसाइटें और विंडो शीर्षक कभी साझा नहीं किए जाते हैं। सिंक बंद करने से फ़ोल्डर से इस डिवाइस की फ़ाइल हट जाती है।';
 
   @override
-  String get dsToggle => 'Sync through a folder';
+  String get dsToggle => 'फ़ोल्डर के माध्यम से सिंक करें';
 
   @override
-  String get dsFolder => 'Sync folder';
+  String get dsFolder => 'सिंक फ़ोल्डर';
 
   @override
-  String get dsNoFolder => 'No folder chosen';
+  String get dsNoFolder => 'कोई फ़ोल्डर नहीं चुना गया';
 
   @override
-  String get dsChooseFolder => 'Choose folder';
+  String get dsChooseFolder => 'फ़ोल्डर चुनें';
 
   @override
-  String get dsDeviceName => 'This device\'s name';
+  String get dsDeviceName => 'इस डिवाइस का नाम';
 
   @override
-  String get dsSyncNow => 'Sync now';
+  String get dsSyncNow => 'अभी सिंक करें';
 
   @override
-  String get dsNeverSynced => 'Not synced yet';
+  String get dsNeverSynced => 'अभी सिंक नहीं हुआ है';
 
   @override
   String dsLastSynced(String time) {
-    return 'Last synced $time';
+    return 'अंतिम सिंक $time';
   }
 
   @override
-  String get dsOtherDevices => 'Other devices';
+  String get dsOtherDevices => 'अन्य डिवाइस';
 
   @override
   String get dsNoOthers =>
-      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+      'अभी तक कोई अन्य डिवाइस नहीं मिला। अपने दूसरे कंप्यूटर पर सिंक चालू करें और वही फ़ोल्डर चुनें।';
 
   @override
   String dsPeerUpdated(String name, String time) {
-    return '$name · updated $time';
+    return '$name · अपडेट किया गया $time';
   }
 
   @override
   String dsError(String error) {
-    return 'Sync problem: $error';
+    return 'सिंक समस्या: $error';
   }
 
   @override
-  String get insThisDevice => 'This device';
+  String get insThisDevice => 'यह डिवाइस';
 
   @override
-  String get insAllDevices => 'All devices';
+  String get insAllDevices => 'सभी डिवाइस';
 
   @override
   String insTimelineUnplaced(String time) {
-    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+    return 'इस दिन का $time ऊपर नहीं दिखाया गया है क्योंकि इसके लिए दिन का कोई विशिष्ट समय रिकॉर्ड नहीं किया गया था।';
   }
 }

@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% Pribadi",
   "onboarding100PrivateDesc": "Semua data pelacakan disimpan secara lokal di browser dan di perangkat Anda. Tidak ada yang dikirim ke cloud.",
   "onboardingBack": "Kembali",
-  "onboardingSkip": "Lewati"
+  "onboardingSkip": "Lewati",
+  "extAccessSectionTitle": "Akses Ekstensi Browser",
+  "extAccessRequireTitle": "Wajibkan persetujuan untuk browser",
+  "extAccessRequireDescription": "Opsional. Saat aktif, setiap ekstensi browser harus disetujui di sini sebelum dapat menyinkronkan, sehingga program lain di komputer ini tidak dapat mengirim data ke Scolect. Versi ekstensi yang lebih lama tidak dapat disetujui dan akan berhenti menyinkronkan hingga diperbarui.",
+  "extAccessPendingTitle": "Menunggu persetujuan",
+  "extAccessPendingDescription": "Browser ini meminta untuk disinkronkan dengan Scolect.",
+  "extAccessApprovedTitle": "Browser yang disetujui",
+  "extAccessNoneApproved": "Belum ada browser yang disetujui. Buka ekstensi dan akan muncul di sini.",
+  "extAccessApprove": "Setujui",
+  "extAccessDeny": "Tolak",
+  "extAccessRevoke": "Cabut",
+  "extAccessUnknownBrowser": "Browser tidak dikenal",
+  "extAccessAllowDeniedAgain": "Izinkan browser yang ditolak bertanya lagi",
+  "extAccessBlockedNotice": "{count, plural, other{{count} upaya sinkronisasi tanpa izin diblokir sejak peluncuran}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "Browser ingin menyinkronkan dengan Scolect",
+  "extAccessBannerBody": "{name} sedang menunggu persetujuan Anda.",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "Filter Privasi",
+  "pfDescription": "Keluarkan aplikasi dan situs web tertentu dari data pelacakan Anda. Aturan berupa ekspresi reguler yang dicocokkan dengan nama aplikasi dan domain situs web. Riwayat yang sudah dicatat tidak diubah.",
+  "pfAddRule": "Tambah aturan",
+  "pfEditRule": "Edit aturan",
+  "pfNoRules": "Belum ada aturan.",
+  "pfPatternLabel": "Pola (ekspresi reguler)",
+  "pfPatternHint": "cth. bank|vault",
+  "pfAppliesTo": "Berlaku untuk",
+  "pfTargetApps": "Aplikasi",
+  "pfTargetWebsites": "Situs web",
+  "pfTargetBoth": "Aplikasi dan situs web",
+  "pfActionLabel": "Tindakan",
+  "pfActionExclude": "Jangan lacak",
+  "pfActionRedact": "Lacak dengan nama lain",
+  "pfReplacementLabel": "Nama untuk dicatat sebagai gantinya",
+  "pfReplacementHint": "Disunting",
+  "pfErrorEmpty": "Masukkan pola.",
+  "pfErrorInvalid": "Ini bukan ekspresi reguler yang valid.",
+  "pfErrorTooLong": "Pola terlalu panjang (maksimal 200 karakter).",
+  "pfRuleSummaryExclude": "Tidak dilacak",
+  "pfRuleSummaryRedact": "Dicatat sebagai \"{name}\"",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "Aturan Kategori",
+  "crDescription": "Urutkan aplikasi ke dalam kategori secara otomatis. Aturan pertama yang cocok menang dan mengesampingkan daftar bawaan. Pola berupa ekspresi reguler yang dicocokkan dengan nama aplikasi.",
+  "crCategoryLabel": "Kategori",
+  "crCategoryHint": "Pilih satu atau ketik milik Anda sendiri",
+  "crErrorCategory": "Pilih kategori.",
+  "crApplyExisting": "Terapkan ke aplikasi yang ada",
+  "crApplyResult": "{count, plural, =0{Tidak ada aplikasi yang perlu diubah} other{{count} aplikasi dikategorikan ulang}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "Pindah ke atas",
+  "crMoveDown": "Pindah ke bawah",
+  "crHintTitle": "Banyak waktu Anda belum dikategorikan",
+  "crHintBody": "{percent}% dari 7 hari terakhir berada di aplikasi tanpa kategori, sebagian besar {apps}. Aturan kategori dapat mengurutkannya untuk Anda.",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "Tambah aturan",
+  "crHintDismiss": "Tutup",
+  "wtSectionTitle": "Judul Jendela",
+  "wtToggleTitle": "Rekam judul jendela",
+  "wtToggleDescription": "Ingat jendela mana yang Anda gunakan, seperti judul dokumen atau halaman, yang diambil sampelnya sekitar satu menit sekali. Judul tetap ada di perangkat ini, mengikuti filter privasi Anda, dan hanya 15 judul terlama per aplikasi per hari yang disimpan. Nonaktif secara default.",
+  "wtClearTitle": "Hapus judul yang disimpan",
+  "wtClearDescription": "Menghapus setiap judul jendela yang direkam. Total penggunaan Anda tidak terpengaruh.",
+  "wtClearAction": "Hapus judul",
+  "wtCleared": "{count, plural, =0{Tidak ada judul tersimpan yang ditemukan} other{Judul dihapus dari {count} catatan}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "Jendela teratas (7 hari terakhir)",
+  "wtOther": "Jendela lainnya",
+  "insTitle": "Wawasan",
+  "insTrendsTitle": "Minggu ini vs minggu lalu",
+  "insThisWeek": "Minggu ini",
+  "insLastWeek": "Minggu lalu",
+  "insByCategory": "Berdasarkan kategori",
+  "insBiggestChanges": "Perubahan terbesar",
+  "insNoData": "Data belum cukup.",
+  "insHeatmapTitle": "Aktivitas harian, 26 minggu terakhir",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "Kurang",
+  "insMore": "Lebih",
+  "insTimelineTitle": "Linimasa hari",
+  "insTimelineOther": "Aplikasi lainnya",
+  "insTimelineEmpty": "Tidak ada aktivitas yang tercatat untuk hari ini.",
+  "insPrevDay": "Hari sebelumnya",
+  "insNextDay": "Hari berikutnya",
+  "insSearchTitle": "Cari judul jendela",
+  "insSearchHint": "Cari nama dokumen, halaman, atau proyek",
+  "insSearchDisabled": "Belum ada judul jendela yang direkam. Anda dapat mengaktifkan perekaman di Pengaturan > Judul Jendela.",
+  "insSearchNoResults": "Tidak ada jendela yang cocok dalam 30 hari terakhir.",
+  "tlTitle": "Catatan waktu",
+  "tlHint": "Apa yang sedang Anda kerjakan?",
+  "tlStart": "Mulai",
+  "tlStop": "Hentikan",
+  "tlDiscard": "Buang",
+  "tlAddEntry": "Tambah entri",
+  "tlToday": "Hari ini",
+  "tlThisWeek": "Minggu ini",
+  "tlNothingToday": "Belum ada yang dicatat hari ini.",
+  "tlDescription": "Catat waktu yang tidak dilacak secara otomatis, seperti rapat atau membaca. Waktu ini disimpan terpisah dari waktu aplikasi, sehingga tidak ada yang dihitung dua kali.",
+  "tlDurationLabel": "Durasi",
+  "tlHours": "jam",
+  "tlMinutes": "menit",
+  "tlDateLabel": "Tanggal",
+  "tlErrorLabel": "Masukkan apa yang Anda kerjakan.",
+  "tlErrorDuration": "Masukkan durasi lebih dari nol.",
+  "clTitle": "Batas Kategori",
+  "clDescription": "Dapatkan peringatan saat waktu gabungan dalam suatu kategori melampaui batas harian. Ini hanya peringatan; aplikasi tidak diblokir.",
+  "clAdd": "Tambah batasan",
+  "clEdit": "Edit batasan",
+  "clLimitLabel": "Batas harian",
+  "clErrorLimit": "Masukkan batasan lebih dari nol.",
+  "clErrorCategory": "Pilih kategori.",
+  "ddTitle": "Ringkasan Harian",
+  "ddToggleTitle": "Ringkasan harian",
+  "ddToggleDescription": "Pemberitahuan yang merangkum hari Anda setelah jam yang dipilih berlalu. Aplikasi privat tidak disertakan.",
+  "ddHourLabel": "Kirim setelah",
+  "dsTitle": "Sinkronisasi Perangkat",
+  "dsDescription": "Bagikan penggunaan Anda dengan komputer lain melalui folder yang sudah disinkronkan oleh Dropbox, iCloud Drive, atau Syncthing. Setiap perangkat hanya menulis filenya sendiri, dan data perangkat lain ditampilkan di Wawasan tanpa tercampur dengan milik Anda. Aplikasi privat, situs web, dan judul jendela tidak pernah dibagikan. Menonaktifkan sinkronisasi akan menghapus file perangkat ini dari folder.",
+  "dsToggle": "Sinkronkan melalui folder",
+  "dsFolder": "Folder sinkronisasi",
+  "dsNoFolder": "Belum ada folder yang dipilih",
+  "dsChooseFolder": "Pilih folder",
+  "dsDeviceName": "Nama perangkat ini",
+  "dsSyncNow": "Sinkronkan sekarang",
+  "dsNeverSynced": "Belum disinkronkan",
+  "dsLastSynced": "Terakhir disinkronkan {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "Perangkat lainnya",
+  "dsNoOthers": "Belum ada perangkat lain yang ditemukan. Aktifkan sinkronisasi di komputer Anda yang lain dan pilih folder yang sama.",
+  "dsPeerUpdated": "{name} · diperbarui {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "Masalah sinkronisasi: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "Perangkat ini",
+  "insAllDevices": "Semua perangkat",
+  "insTimelineUnplaced": "{time} hari ini tidak ditampilkan di atas karena tidak ada waktu harian yang dicatat untuknya.",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

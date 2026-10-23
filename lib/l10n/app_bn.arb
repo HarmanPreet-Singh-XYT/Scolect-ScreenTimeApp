@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "১০০% ব্যক্তিগত",
   "onboarding100PrivateDesc": "সমস্ত ট্র্যাকিং ডেটা স্থানীয়ভাবে আপনার ব্রাউজারে এবং আপনার মেশিনে সংরক্ষিত হয়। ক্লাউডে কিছুই পাঠানো হয় না।",
   "onboardingBack": "পেছনে",
-  "onboardingSkip": "এড়িয়ে যান"
+  "onboardingSkip": "এড়িয়ে যান",
+  "extAccessSectionTitle": "ব্রাউজার এক্সটেনশন অ্যাক্সেস",
+  "extAccessRequireTitle": "ব্রাউজারের জন্য অনুমোদন প্রয়োজন",
+  "extAccessRequireDescription": "ঐচ্ছিক। সক্রিয় থাকলে, সিঙ্ক করার আগে প্রতিটি ব্রাউজার এক্সটেনশন এখানে অনুমোদিত হতে হবে, যাতে এই কম্পিউটারের অন্যান্য প্রোগ্রাম Scolect-এ ডেটা পাঠাতে না পারে। পুরানো এক্সটেনশন সংস্করণগুলি অনুমোদিত হতে পারে না এবং আপডেট না হওয়া পর্যন্ত সিঙ্ক করা বন্ধ থাকবে।",
+  "extAccessPendingTitle": "অনুমোদনের অপেক্ষায়",
+  "extAccessPendingDescription": "এই ব্রাউজারগুলি Scolect-এর সাথে সিঙ্ক করার জন্য অনুরোধ করেছে।",
+  "extAccessApprovedTitle": "অনুমোদিত ব্রাউজার",
+  "extAccessNoneApproved": "এখনও কোনো ব্রাউজার অনুমোদিত হয়নি। এক্সটেনশনটি খুলুন এবং এটি এখানে উপস্থিত হবে।",
+  "extAccessApprove": "অনুমোদন করুন",
+  "extAccessDeny": "প্রত্যাখ্যান করুন",
+  "extAccessRevoke": "প্রত্যাহার করুন",
+  "extAccessUnknownBrowser": "অজানা ব্রাউজার",
+  "extAccessAllowDeniedAgain": "প্রত্যাখ্যাত ব্রাউজারগুলিকে আবার জিজ্ঞাসা করার অনুমতি দিন",
+  "extAccessBlockedNotice": "{count, plural, =1{চালু করার পর থেকে 1টি অননুমোদিত সিঙ্ক প্রচেষ্টা অবরুদ্ধ করা হয়েছে} other{চালু করার পর থেকে {count}টি অননুমোদিত সিঙ্ক প্রচেষ্টা অবরুদ্ধ করা হয়েছে}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "একটি ব্রাউজার Scolect-এর সাথে সিঙ্ক করতে চায়",
+  "extAccessBannerBody": "{name} আপনার অনুমোদনের জন্য অপেক্ষা করছে।",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "গোপনীয়তা ফিল্টার",
+  "pfDescription": "বাছাই করা অ্যাপ্লিকেশন এবং ওয়েবসাইটগুলিকে আপনার ট্র্যাক করা ডেটা থেকে বাইরে রাখুন। নিয়মগুলি হলো অ্যাপের নাম এবং ওয়েবসাইটের ডোমেনের সাথে মেলানো রেগুলার এক্সপ্রেশন। ইতিমধ্যে রেকর্ড করা ইতিহাস পরিবর্তন করা হয় না।",
+  "pfAddRule": "নিয়ম যোগ করুন",
+  "pfEditRule": "নিয়ম সম্পাদনা করুন",
+  "pfNoRules": "এখনও কোনো নিয়ম নেই।",
+  "pfPatternLabel": "প্যাটার্ন (রেগুলার এক্সপ্রেশন)",
+  "pfPatternHint": "যেমন bank|vault",
+  "pfAppliesTo": "প্রযোজ্য",
+  "pfTargetApps": "অ্যাপ্লিকেশন",
+  "pfTargetWebsites": "ওয়েবসাইট",
+  "pfTargetBoth": "অ্যাপ্লিকেশন এবং ওয়েবসাইট",
+  "pfActionLabel": "পদক্ষেপ",
+  "pfActionExclude": "ট্র্যাক করবেন না",
+  "pfActionRedact": "অন্য নামে ট্র্যাক করুন",
+  "pfReplacementLabel": "বিকল্পে রেকর্ড করার নাম",
+  "pfReplacementHint": "সম্পাদিত",
+  "pfErrorEmpty": "একটি প্যাটার্ন লিখুন।",
+  "pfErrorInvalid": "এটি একটি বৈধ রেগুলার এক্সপ্রেশন নয়।",
+  "pfErrorTooLong": "প্যাটার্নটি খুব দীর্ঘ (সর্বোচ্চ ২০০টি অক্ষর)।",
+  "pfRuleSummaryExclude": "ট্র্যাক করা হয় না",
+  "pfRuleSummaryRedact": "\"{name}\" হিসাবে রেকর্ড করা হয়েছে",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "বিভাগের নিয়ম",
+  "crDescription": "স্বয়ংক্রিয়ভাবে অ্যাপ্লিকেশনগুলিকে বিভাগে সাজান। প্রথম মেলানো নিয়মটি অগ্রাধিকার পায় এবং অন্তর্নির্মিত তালিকাকে অতিক্রম করে। প্যাটার্নগুলি হলো অ্যাপের নামের সাথে মেলানো রেগুলার এক্সপ্রেশন।",
+  "crCategoryLabel": "বিভাগ",
+  "crCategoryHint": "একটি চয়ন করুন বা আপনার নিজস্ব লিখুন",
+  "crErrorCategory": "একটি বিভাগ চয়ন করুন।",
+  "crApplyExisting": "বিদ্যমান অ্যাপ্লিকেশনগুলিতে প্রয়োগ করুন",
+  "crApplyResult": "{count, plural, =0{কোনো অ্যাপ্লিকেশনে পরিবর্তনের প্রয়োজন হয়নি} =1{1টি অ্যাপ্লিকেশন পুনরায় শ্রেণীবদ্ধ করা হয়েছে} other{{count}টি অ্যাপ্লিকেশন পুনরায় শ্রেণীবদ্ধ করা হয়েছে}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "উপরে সরান",
+  "crMoveDown": "নিচে সরান",
+  "crHintTitle": "আপনার সময়ের অনেকটাই বিভাগহীন",
+  "crHintBody": "গত ৭ দিনের {percent}% সময় বিভাগহীন অ্যাপে কেটেছে, যার বেশিরভাগই {apps}। একটি বিভাগের নিয়ম সেগুলি সাজাতে সাহায্য করতে পারে।",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "একটি নিয়ম যোগ করুন",
+  "crHintDismiss": "খারিজ করুন",
+  "wtSectionTitle": "উইন্ডোর শিরোনাম",
+  "wtToggleTitle": "উইন্ডোর শিরোনাম রেকর্ড করুন",
+  "wtToggleDescription": "আপনি কোন উইন্ডোতে সময় ব্যয় করেছেন তা মনে রাখুন, যেমন একটি নথি বা পৃষ্ঠার শিরোনাম, যা প্রতি মিনিটে একবার নমুনা নেওয়া হয়। শিরোনামগুলি এই ডিভাইসে থাকে, আপনার গোপনীয়তা ফিল্টার অনুসরণ করে এবং প্রতি অ্যাপে প্রতিদিন কেবল ১৫টি দীর্ঘতম শিরোনাম রাখা হয়। ডিফল্টভাবে বন্ধ।",
+  "wtClearTitle": "সংরক্ষিত শিরোনাম মুছুন",
+  "wtClearDescription": "প্রতিটি রেকর্ড করা উইন্ডো শিরোনাম মুছে ফেলে। আপনার মোট ব্যবহারের সময় প্রভাবিত হয় না।",
+  "wtClearAction": "শিরোনাম মুছুন",
+  "wtCleared": "{count, plural, =0{কোনো সংরক্ষিত শিরোনাম পাওয়া যায়নি} =1{1টি রেকর্ড থেকে শিরোনাম সরানো হয়েছে} other{{count}টি রেকর্ড থেকে শিরোনাম সরানো হয়েছে}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "শীর্ষ উইন্ডো (গত ৭ দিন)",
+  "wtOther": "অন্যান্য উইন্ডো",
+  "insTitle": "অন্তর্দৃষ্টি",
+  "insTrendsTitle": "এই সপ্তাহ বনাম গত সপ্তাহ",
+  "insThisWeek": "এই সপ্তাহ",
+  "insLastWeek": "গত সপ্তাহ",
+  "insByCategory": "বিভাগ অনুসারে",
+  "insBiggestChanges": "সবচেয়ে বড় পরিবর্তন",
+  "insNoData": "এখনও পর্যাপ্ত ডেটা নেই।",
+  "insHeatmapTitle": "দৈনিক কার্যকলাপ, গত ২৬ সপ্তাহ",
+  "insHeatmapTip": "{date}: {time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "কম",
+  "insMore": "বেশি",
+  "insTimelineTitle": "দিনের সময়রেখা",
+  "insTimelineOther": "অন্যান্য অ্যাপ্লিকেশন",
+  "insTimelineEmpty": "এই দিনের জন্য কোনো কার্যকলাপ রেকর্ড করা হয়নি।",
+  "insPrevDay": "আগের দিন",
+  "insNextDay": "পরের দিন",
+  "insSearchTitle": "উইন্ডোর শিরোনাম অনুসন্ধান করুন",
+  "insSearchHint": "নথি, পৃষ্ঠা বা প্রকল্পের নাম অনুসন্ধান করুন",
+  "insSearchDisabled": "এখনও কোনো উইন্ডোর শিরোনাম রেকর্ড করা হয়নি। আপনি সেটিংস > উইন্ডোর শিরোনাম-এ রেকর্ডিং চালু করতে পারেন।",
+  "insSearchNoResults": "গত ৩০ দিনে কোনো মেলানো উইন্ডো নেই।",
+  "tlTitle": "সময় লগ",
+  "tlHint": "আপনি কিসের উপর কাজ করছেন?",
+  "tlStart": "শুরু করুন",
+  "tlStop": "বন্ধ করুন",
+  "tlDiscard": "বাতিল করুন",
+  "tlAddEntry": "এন্ট্রি যোগ করুন",
+  "tlToday": "আজ",
+  "tlThisWeek": "এই সপ্তাহ",
+  "tlNothingToday": "আজ কিছুই লগ করা হয়নি।",
+  "tlDescription": "যে সময় স্বয়ংক্রিয়ভাবে ট্র্যাক করা হয় না তা লগ করুন, যেমন মিটিং বা পড়াশোনা। এটি অ্যাপের সময় থেকে আলাদা রাখা হয়, যাতে কোনো কিছুই দুবার গণনা না হয়।",
+  "tlDurationLabel": "সময়কাল",
+  "tlHours": "ঘন্টা",
+  "tlMinutes": "মিনিট",
+  "tlDateLabel": "তারিখ",
+  "tlErrorLabel": "আপনি কিসের উপর কাজ করেছেন তা লিখুন।",
+  "tlErrorDuration": "শূন্যের চেয়ে বেশি সময়কাল লিখুন।",
+  "clTitle": "বিভাগের সীমা",
+  "clDescription": "একটি বিভাগে মিলিত সময় দৈনিক সীমা অতিক্রম করলে একটি সতর্কতা পান। এগুলি কেবল সতর্কতা; অ্যাপ্লিকেশন অবরুদ্ধ করা হয় না।",
+  "clAdd": "সীমা যোগ করুন",
+  "clEdit": "সীমা সম্পাদনা করুন",
+  "clLimitLabel": "দৈনিক সীমা",
+  "clErrorLimit": "শূন্যের চেয়ে বেশি একটি সীমা লিখুন।",
+  "clErrorCategory": "একটি বিভাগ চয়ন করুন।",
+  "ddTitle": "দৈনিক ডাইজেস্ট",
+  "ddToggleTitle": "দৈনিক ডাইজেস্ট",
+  "ddToggleDescription": "নির্বাচিত ঘন্টা পার হয়ে গেলে আপনার দিনের সংক্ষিপ্ত বিবরণ সংবলিত একটি বিজ্ঞপ্তি। ব্যক্তিগত অ্যাপগুলি বাদ দেওয়া হয়।",
+  "ddHourLabel": "এর পরে পাঠান",
+  "dsTitle": "ডিভাইস সিঙ্ক",
+  "dsDescription": "Dropbox, iCloud Drive বা Syncthing ইতিমধ্যে সিঙ্কে রাখে এমন একটি ফোল্ডারের মাধ্যমে আপনার অন্যান্য কম্পিউটারের সাথে আপনার ব্যবহার ভাগ করুন। প্রতিটি ডিভাইস কেবল তার নিজস্ব ফাইল লেখে এবং অন্যান্য ডিভাইসের ডেটা আপনার ডেটার সাথে মিশ্রিত না করে অন্তর্দৃষ্টি-তে দেখানো হয়। ব্যক্তিগত অ্যাপ, ওয়েবসাইট এবং উইন্ডোর শিরোনাম কখনোই ভাগ করা হয় না। সিঙ্ক বন্ধ করলে ফোল্ডার থেকে এই ডিভাইসের ফাইল মুছে ফেলা হয়।",
+  "dsToggle": "ফোল্ডারের মাধ্যমে সিঙ্ক করুন",
+  "dsFolder": "সিঙ্ক ফোল্ডার",
+  "dsNoFolder": "কোনো ফোল্ডার বেছে নেওয়া হয়নি",
+  "dsChooseFolder": "ফোল্ডার চয়ন করুন",
+  "dsDeviceName": "এই ডিভাইসের নাম",
+  "dsSyncNow": "এখনই সিঙ্ক করুন",
+  "dsNeverSynced": "এখনও সিঙ্ক হয়নি",
+  "dsLastSynced": "সর্বশেষ সিঙ্ক হয়েছে {time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "অন্যান্য ডিভাইস",
+  "dsNoOthers": "এখনও অন্য কোনো ডিভাইস পাওয়া যায়নি। আপনার অন্য কম্পিউটারে সিঙ্ক চালু করুন এবং একই ফোল্ডার বেছে নিন।",
+  "dsPeerUpdated": "{name} · আপডেট হয়েছে {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "সিঙ্ক সমস্যা: {error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "এই ডিভাইস",
+  "insAllDevices": "সমস্ত ডিভাইস",
+  "insTimelineUnplaced": "এই দিনের {time} উপরে দেখানো হয়নি কারণ এর জন্য দিনের কোনো নির্দিষ্ট সময় রেকর্ড করা হয়নি।",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }

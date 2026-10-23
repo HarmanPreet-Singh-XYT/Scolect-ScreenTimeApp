@@ -4365,241 +4365,235 @@ class AppLocalizationsJa extends AppLocalizations {
   String get onboardingSkip => 'スキップ';
 
   @override
-  String get extAccessSectionTitle => 'Browser Extension Access';
+  String get extAccessSectionTitle => 'ブラウザ拡張機能のアクセス';
 
   @override
-  String get extAccessRequireTitle => 'Require approval for browsers';
+  String get extAccessRequireTitle => 'ブラウザの承認を必須にする';
 
   @override
   String get extAccessRequireDescription =>
-      'Optional. When on, each browser extension must be approved here before it can sync, so other programs on this computer cannot send data to Scolect. Older extension versions cannot be approved and will stop syncing until updated.';
+      '任意。有効にすると、同期する前に各ブラウザ拡張機能をここで承認する必要があるため、このコンピュータ上の他のプログラムがScolectにデータを送信できなくなります。古いバージョンの拡張機能は承認できず、更新するまで同期が停止します。';
 
   @override
-  String get extAccessPendingTitle => 'Waiting for approval';
+  String get extAccessPendingTitle => '承認待ち';
 
   @override
-  String get extAccessPendingDescription =>
-      'These browsers asked to sync with Scolect.';
+  String get extAccessPendingDescription => 'これらのブラウザがScolectとの同期を要求しました。';
 
   @override
-  String get extAccessApprovedTitle => 'Approved browsers';
+  String get extAccessApprovedTitle => '承認されたブラウザ';
 
   @override
-  String get extAccessNoneApproved =>
-      'No browsers approved yet. Open the extension and it will appear here.';
+  String get extAccessNoneApproved => 'まだ承認されたブラウザはありません。拡張機能を開くとここに表示されます。';
 
   @override
-  String get extAccessApprove => 'Approve';
+  String get extAccessApprove => '承認';
 
   @override
-  String get extAccessDeny => 'Deny';
+  String get extAccessDeny => '拒否';
 
   @override
-  String get extAccessRevoke => 'Revoke';
+  String get extAccessRevoke => '取り消し';
 
   @override
-  String get extAccessUnknownBrowser => 'Unknown browser';
+  String get extAccessUnknownBrowser => '不明なブラウザ';
 
   @override
-  String get extAccessAllowDeniedAgain => 'Let denied browsers ask again';
+  String get extAccessAllowDeniedAgain => '拒否されたブラウザの再要求を許可';
 
   @override
   String extAccessBlockedNotice(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count unauthorized sync attempts blocked since launch',
-      one: '1 unauthorized sync attempt blocked since launch',
+      other: '起動以降に不正な同期試行を $count 件ブロックしました',
     );
     return '$_temp0';
   }
 
   @override
-  String get extAccessBannerTitle => 'A browser wants to sync with Scolect';
+  String get extAccessBannerTitle => 'ブラウザがScolectとの同期を求めています';
 
   @override
   String extAccessBannerBody(String name) {
-    return '$name is waiting for your approval.';
+    return '$name があなたの承認を待っています。';
   }
 
   @override
-  String get pfTitle => 'Privacy Filters';
+  String get pfTitle => 'プライバシーフィルター';
 
   @override
   String get pfDescription =>
-      'Keep chosen apps and websites out of your tracked data. Rules are regular expressions matched against app names and website domains. History that was already recorded is not changed.';
+      '選択したアプリやウェブサイトを追跡データから除外します。ルールはアプリ名やウェブサイトのドメインと照合される正規表現です。すでに記録された履歴は変更されません。';
 
   @override
-  String get pfAddRule => 'Add rule';
+  String get pfAddRule => 'ルールを追加';
 
   @override
-  String get pfEditRule => 'Edit rule';
+  String get pfEditRule => 'ルールを編集';
 
   @override
-  String get pfNoRules => 'No rules yet.';
+  String get pfNoRules => 'ルールはまだありません。';
 
   @override
-  String get pfPatternLabel => 'Pattern (regular expression)';
+  String get pfPatternLabel => 'パターン（正規表現）';
 
   @override
-  String get pfPatternHint => 'e.g. bank|vault';
+  String get pfPatternHint => '例: bank|vault';
 
   @override
-  String get pfAppliesTo => 'Applies to';
+  String get pfAppliesTo => '適用対象';
 
   @override
-  String get pfTargetApps => 'Apps';
+  String get pfTargetApps => 'アプリ';
 
   @override
-  String get pfTargetWebsites => 'Websites';
+  String get pfTargetWebsites => 'ウェブサイト';
 
   @override
-  String get pfTargetBoth => 'Apps and websites';
+  String get pfTargetBoth => 'アプリとウェブサイト';
 
   @override
-  String get pfActionLabel => 'Action';
+  String get pfActionLabel => 'アクション';
 
   @override
-  String get pfActionExclude => 'Don\'t track';
+  String get pfActionExclude => '追跡しない';
 
   @override
-  String get pfActionRedact => 'Track under another name';
+  String get pfActionRedact => '別の名前で追跡';
 
   @override
-  String get pfReplacementLabel => 'Name to record instead';
+  String get pfReplacementLabel => '代わりに記録する名前';
 
   @override
-  String get pfReplacementHint => 'Redacted';
+  String get pfReplacementHint => '墨消し済み';
 
   @override
-  String get pfErrorEmpty => 'Enter a pattern.';
+  String get pfErrorEmpty => 'パターンを入力してください。';
 
   @override
-  String get pfErrorInvalid => 'This isn\'t a valid regular expression.';
+  String get pfErrorInvalid => '有効な正規表現ではありません。';
 
   @override
-  String get pfErrorTooLong => 'Pattern is too long (200 characters max).';
+  String get pfErrorTooLong => 'パターンが長すぎます（最大200文字）。';
 
   @override
-  String get pfRuleSummaryExclude => 'Not tracked';
+  String get pfRuleSummaryExclude => '追跡対象外';
 
   @override
   String pfRuleSummaryRedact(String name) {
-    return 'Recorded as \"$name\"';
+    return '「$name」として記録';
   }
 
   @override
-  String get crTitle => 'Category Rules';
+  String get crTitle => 'カテゴリのルール';
 
   @override
   String get crDescription =>
-      'Sort apps into categories automatically. The first matching rule wins and beats the built-in list. Patterns are regular expressions matched against the app name.';
+      'アプリを自動的にカテゴリに分類します。最初に一致したルールが優先され、組み込みリストより優先されます。パターンはアプリ名と照合される正規表現です。';
 
   @override
-  String get crCategoryLabel => 'Category';
+  String get crCategoryLabel => 'カテゴリ';
 
   @override
-  String get crCategoryHint => 'Pick one or type your own';
+  String get crCategoryHint => '選択するか独自に入力してください';
 
   @override
-  String get crErrorCategory => 'Choose a category.';
+  String get crErrorCategory => 'カテゴリを選択してください。';
 
   @override
-  String get crApplyExisting => 'Apply to existing apps';
+  String get crApplyExisting => '既存のアプリに適用';
 
   @override
   String crApplyResult(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps recategorized',
-      one: '1 app recategorized',
-      zero: 'No apps needed changing',
+      other: '$count 個のアプリを再分類しました',
+      zero: '変更が必要なアプリはありませんでした',
     );
     return '$_temp0';
   }
 
   @override
-  String get crMoveUp => 'Move up';
+  String get crMoveUp => '上へ移動';
 
   @override
-  String get crMoveDown => 'Move down';
+  String get crMoveDown => '下へ移動';
 
   @override
-  String get crHintTitle => 'A lot of your time is uncategorized';
+  String get crHintTitle => '時間の多くが未分類です';
 
   @override
   String crHintBody(int percent, String apps) {
-    return '$percent% of the last 7 days is in apps without a category, mostly $apps. A category rule can sort them for you.';
+    return '過去7日間の $percent% がカテゴリのないアプリ（主に $apps）に費やされています。カテゴリのルールを設定すれば自動で分類できます。';
   }
 
   @override
-  String get crHintAction => 'Add a rule';
+  String get crHintAction => 'ルールを追加';
 
   @override
-  String get crHintDismiss => 'Dismiss';
+  String get crHintDismiss => '閉じる';
 
   @override
-  String get wtSectionTitle => 'Window Titles';
+  String get wtSectionTitle => 'ウィンドウタイトル';
 
   @override
-  String get wtToggleTitle => 'Record window titles';
+  String get wtToggleTitle => 'ウィンドウタイトルを記録';
 
   @override
   String get wtToggleDescription =>
-      'Remember which windows you spend time in, such as a document or page title, sampled about once a minute. Titles stay on this device, follow your privacy filters, and only the 15 longest per app per day are kept. Off by default.';
+      'ドキュメントやページのタイトルなど、使用したウィンドウを約1分に1回サンプリングして記憶します。タイトルはこのデバイスに留まり、プライバシーフィルターに従い、1アプリあたり1日最長15件のみ保持されます。デフォルトはオフです。';
 
   @override
-  String get wtClearTitle => 'Delete stored titles';
+  String get wtClearTitle => '保存されたタイトルを削除';
 
   @override
-  String get wtClearDescription =>
-      'Removes every recorded window title. Your usage totals are not affected.';
+  String get wtClearDescription => '記録されたすべてのウィンドウタイトルを削除します。利用時間の合計には影響しません。';
 
   @override
-  String get wtClearAction => 'Delete titles';
+  String get wtClearAction => 'タイトルを削除';
 
   @override
   String wtCleared(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'Titles removed from $count records',
-      one: 'Titles removed from 1 record',
-      zero: 'No stored titles found',
+      other: '$count 件の記録からタイトルを削除しました',
+      zero: '保存されたタイトルが見つかりません',
     );
     return '$_temp0';
   }
 
   @override
-  String get wtTopWindows => 'Top windows (last 7 days)';
+  String get wtTopWindows => '上位のウィンドウ（過去7日間）';
 
   @override
-  String get wtOther => 'Other windows';
+  String get wtOther => '他のウィンドウ';
 
   @override
-  String get insTitle => 'Insights';
+  String get insTitle => 'インサイト';
 
   @override
-  String get insTrendsTitle => 'This week vs last week';
+  String get insTrendsTitle => '今週と先週の比較';
 
   @override
-  String get insThisWeek => 'This week';
+  String get insThisWeek => '今週';
 
   @override
-  String get insLastWeek => 'Last week';
+  String get insLastWeek => '先週';
 
   @override
-  String get insByCategory => 'By category';
+  String get insByCategory => 'カテゴリ別';
 
   @override
-  String get insBiggestChanges => 'Biggest changes';
+  String get insBiggestChanges => '最大の変化';
 
   @override
-  String get insNoData => 'Not enough data yet.';
+  String get insNoData => '十分なデータがまだありません。';
 
   @override
-  String get insHeatmapTitle => 'Daily activity, last 26 weeks';
+  String get insHeatmapTitle => '日ごとのアクティビティ（過去26週間）';
 
   @override
   String insHeatmapTip(String date, String time) {
@@ -4607,181 +4601,181 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get insLess => 'Less';
+  String get insLess => '少ない';
 
   @override
-  String get insMore => 'More';
+  String get insMore => '多い';
 
   @override
-  String get insTimelineTitle => 'Day timeline';
+  String get insTimelineTitle => '1日のタイムライン';
 
   @override
-  String get insTimelineOther => 'Other apps';
+  String get insTimelineOther => '他のアプリ';
 
   @override
-  String get insTimelineEmpty => 'No activity recorded for this day.';
+  String get insTimelineEmpty => 'この日のアクティビティは記録されていません。';
 
   @override
-  String get insPrevDay => 'Previous day';
+  String get insPrevDay => '前の日';
 
   @override
-  String get insNextDay => 'Next day';
+  String get insNextDay => '次の日';
 
   @override
-  String get insSearchTitle => 'Search window titles';
+  String get insSearchTitle => 'ウィンドウタイトルを検索';
 
   @override
-  String get insSearchHint => 'Search document, page or project names';
+  String get insSearchHint => 'ドキュメント、ページ、またはプロジェクト名を検索';
 
   @override
   String get insSearchDisabled =>
-      'No window titles recorded yet. You can turn on recording in Settings > Window Titles.';
+      'ウィンドウタイトルはまだ記録されていません。設定 > ウィンドウタイトル で記録をオンにできます。';
 
   @override
-  String get insSearchNoResults => 'No matching windows in the last 30 days.';
+  String get insSearchNoResults => '過去30日間に一致するウィンドウはありません。';
 
   @override
-  String get tlTitle => 'Time log';
+  String get tlTitle => 'タイムログ';
 
   @override
-  String get tlHint => 'What are you working on?';
+  String get tlHint => '何に取り組んでいますか？';
 
   @override
-  String get tlStart => 'Start';
+  String get tlStart => '開始';
 
   @override
-  String get tlStop => 'Stop';
+  String get tlStop => '停止';
 
   @override
-  String get tlDiscard => 'Discard';
+  String get tlDiscard => '破棄';
 
   @override
-  String get tlAddEntry => 'Add entry';
+  String get tlAddEntry => 'エントリーを追加';
 
   @override
-  String get tlToday => 'Today';
+  String get tlToday => '今日';
 
   @override
-  String get tlThisWeek => 'This week';
+  String get tlThisWeek => '今週';
 
   @override
-  String get tlNothingToday => 'Nothing logged today.';
+  String get tlNothingToday => '今日の記録はありません。';
 
   @override
   String get tlDescription =>
-      'Log time that isn\'t tracked automatically, like meetings or reading. It is kept separate from app time, so nothing is counted twice.';
+      '会議や読書など、自動追跡されない時間を記録します。アプリの時間とは別に保持されるため、重複してカウントされることはありません。';
 
   @override
-  String get tlDurationLabel => 'Duration';
+  String get tlDurationLabel => '時間';
 
   @override
-  String get tlHours => 'hours';
+  String get tlHours => '時間';
 
   @override
-  String get tlMinutes => 'minutes';
+  String get tlMinutes => '分';
 
   @override
-  String get tlDateLabel => 'Date';
+  String get tlDateLabel => '日付';
 
   @override
-  String get tlErrorLabel => 'Enter what you worked on.';
+  String get tlErrorLabel => '取り組んだ内容を入力してください。';
 
   @override
-  String get tlErrorDuration => 'Enter a duration greater than zero.';
+  String get tlErrorDuration => '0より大きい時間を入力してください。';
 
   @override
-  String get clTitle => 'Category Limits';
+  String get clTitle => 'カテゴリ制限';
 
   @override
   String get clDescription =>
-      'Get an alert when the combined time in a category passes a daily limit. These are alerts only; apps are not blocked.';
+      'カテゴリ内の合計時間が1日の制限を超えたときにアラートを受け取ります。これらはアラートのみであり、アプリはブロックされません。';
 
   @override
-  String get clAdd => 'Add limit';
+  String get clAdd => '制限を追加';
 
   @override
-  String get clEdit => 'Edit limit';
+  String get clEdit => '制限を編集';
 
   @override
-  String get clLimitLabel => 'Daily limit';
+  String get clLimitLabel => '1日の制限';
 
   @override
-  String get clErrorLimit => 'Enter a limit greater than zero.';
+  String get clErrorLimit => '0より大きい制限を入力してください。';
 
   @override
-  String get clErrorCategory => 'Choose a category.';
+  String get clErrorCategory => 'カテゴリを選択してください。';
 
   @override
-  String get ddTitle => 'Daily Digest';
+  String get ddTitle => 'デイリーダイジェスト';
 
   @override
-  String get ddToggleTitle => 'Daily digest';
+  String get ddToggleTitle => 'デイリーダイジェスト';
 
   @override
   String get ddToggleDescription =>
-      'A notification summing up your day once the chosen hour has passed. Private apps are left out.';
+      '指定した時間を過ぎると1日を総括する通知が届きます。プライベートアプリは除外されます。';
 
   @override
-  String get ddHourLabel => 'Send after';
+  String get ddHourLabel => '送信時刻';
 
   @override
-  String get dsTitle => 'Device Sync';
+  String get dsTitle => 'デバイス同期';
 
   @override
   String get dsDescription =>
-      'Share your usage with your other computers through a folder that Dropbox, iCloud Drive or Syncthing already keeps in sync. Each device writes only its own file, and other devices\' data is shown in Insights without being mixed into yours. Private apps, websites and window titles are never shared. Turning sync off removes this device\'s file from the folder.';
+      'Dropbox、iCloud Drive、またはSyncthingですでに同期されているフォルダを通じて、他のコンピュータと利用状況を共有します。各デバイスは自身のファイルのみを書き込み、他のデバイスのデータは自分と混ざることなくインサイトに表示されます。プライベートアプリ、ウェブサイト、ウィンドウタイトルは共有されません。同期をオフにすると、このデバイスのファイルがフォルダから削除されます。';
 
   @override
-  String get dsToggle => 'Sync through a folder';
+  String get dsToggle => 'フォルダ経由で同期';
 
   @override
-  String get dsFolder => 'Sync folder';
+  String get dsFolder => '同期フォルダ';
 
   @override
-  String get dsNoFolder => 'No folder chosen';
+  String get dsNoFolder => 'フォルダが選択されていません';
 
   @override
-  String get dsChooseFolder => 'Choose folder';
+  String get dsChooseFolder => 'フォルダを選択';
 
   @override
-  String get dsDeviceName => 'This device\'s name';
+  String get dsDeviceName => 'このデバイスの名前';
 
   @override
-  String get dsSyncNow => 'Sync now';
+  String get dsSyncNow => '今すぐ同期';
 
   @override
-  String get dsNeverSynced => 'Not synced yet';
+  String get dsNeverSynced => 'まだ同期されていません';
 
   @override
   String dsLastSynced(String time) {
-    return 'Last synced $time';
+    return '最終同期 $time';
   }
 
   @override
-  String get dsOtherDevices => 'Other devices';
+  String get dsOtherDevices => '他のデバイス';
 
   @override
   String get dsNoOthers =>
-      'No other devices found yet. Turn on sync on your other computer and choose the same folder.';
+      '他のデバイスがまだ見つかりません。もう一方のコンピュータで同期をオンにし、同じフォルダを選択してください。';
 
   @override
   String dsPeerUpdated(String name, String time) {
-    return '$name · updated $time';
+    return '$name · 更新 $time';
   }
 
   @override
   String dsError(String error) {
-    return 'Sync problem: $error';
+    return '同期の問題: $error';
   }
 
   @override
-  String get insThisDevice => 'This device';
+  String get insThisDevice => 'このデバイス';
 
   @override
-  String get insAllDevices => 'All devices';
+  String get insAllDevices => 'すべてのデバイス';
 
   @override
   String insTimelineUnplaced(String time) {
-    return '$time of this day isn\'t shown above because no time of day was recorded for it.';
+    return '時間帯が記録されていないため、この日の $time は上に表示されていません。';
   }
 }

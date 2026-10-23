@@ -2321,5 +2321,213 @@
   "onboarding100PrivateTitle": "100% 本地隐私",
   "onboarding100PrivateDesc": "所有记录数据均保存在本地浏览器和您的电脑中，绝不向任何云端上传数据。",
   "onboardingBack": "返回",
-  "onboardingSkip": "跳过"
+  "onboardingSkip": "跳过",
+  "extAccessSectionTitle": "浏览器扩展访问",
+  "extAccessRequireTitle": "需要浏览器审批",
+  "extAccessRequireDescription": "可选。启用后，每个浏览器扩展在同步之前必须在此处获得批准，以防止此计算机上的其他程序向 Scolect 发送数据。较早的扩展版本无法批准，需要更新后才能恢复同步。",
+  "extAccessPendingTitle": "等待批准",
+  "extAccessPendingDescription": "这些浏览器请求与 Scolect 同步。",
+  "extAccessApprovedTitle": "已批准的浏览器",
+  "extAccessNoneApproved": "尚未批准任何浏览器。打开扩展后它将显示在此处。",
+  "extAccessApprove": "批准",
+  "extAccessDeny": "拒绝",
+  "extAccessRevoke": "撤销",
+  "extAccessUnknownBrowser": "未知浏览器",
+  "extAccessAllowDeniedAgain": "允许被拒绝的浏览器再次请求",
+  "extAccessBlockedNotice": "{count, plural, other{自启动以来已拦截 {count} 次未授权的同步尝试}}",
+  "@extAccessBlockedNotice": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extAccessBannerTitle": "有浏览器想要与 Scolect 同步",
+  "extAccessBannerBody": "{name} 正在等待您的批准。",
+  "@extAccessBannerBody": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "pfTitle": "隐私过滤器",
+  "pfDescription": "将选定的应用程序和网站排除在跟踪数据之外。规则是与应用程序名称和网站域名匹配的正则表达式。已记录的历史记录不会更改。",
+  "pfAddRule": "添加规则",
+  "pfEditRule": "编辑规则",
+  "pfNoRules": "暂无规则。",
+  "pfPatternLabel": "模式（正则表达式）",
+  "pfPatternHint": "例如 bank|vault",
+  "pfAppliesTo": "适用于",
+  "pfTargetApps": "应用程序",
+  "pfTargetWebsites": "网站",
+  "pfTargetBoth": "应用程序和网站",
+  "pfActionLabel": "操作",
+  "pfActionExclude": "不跟踪",
+  "pfActionRedact": "使用其他名称跟踪",
+  "pfReplacementLabel": "要记录的替代名称",
+  "pfReplacementHint": "已隐去",
+  "pfErrorEmpty": "请输入模式。",
+  "pfErrorInvalid": "这不是有效的正则表达式。",
+  "pfErrorTooLong": "模式过长（最多 200 个字符）。",
+  "pfRuleSummaryExclude": "不跟踪",
+  "pfRuleSummaryRedact": "记录为 \"{name}\"",
+  "@pfRuleSummaryRedact": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "crTitle": "类别规则",
+  "crDescription": "自动将应用程序分类。第一个匹配的规则优先于内置列表。模式是与应用程序名称匹配的正则表达式。",
+  "crCategoryLabel": "类别",
+  "crCategoryHint": "选择一个或输入您自己的类别",
+  "crErrorCategory": "请选择一个类别。",
+  "crApplyExisting": "应用到现有应用程序",
+  "crApplyResult": "{count, plural, =0{没有应用程序需要更改} other{已重新分类 {count} 个应用程序}}",
+  "@crApplyResult": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "crMoveUp": "上移",
+  "crMoveDown": "下移",
+  "crHintTitle": "您的大部分时间未分类",
+  "crHintBody": "过去 7 天中有 {percent}% 的时间用于未分类的应用程序，主要是 {apps}。类别规则可以帮您自动分类。",
+  "@crHintBody": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "apps": {
+        "type": "String"
+      }
+    }
+  },
+  "crHintAction": "添加规则",
+  "crHintDismiss": "忽略",
+  "wtSectionTitle": "窗口标题",
+  "wtToggleTitle": "记录窗口标题",
+  "wtToggleDescription": "记住您在哪些窗口中花费了时间（例如文档或页面标题），大约每分钟采样一次。标题保留在此设备上，遵循您的隐私过滤器，并且每个应用程序每天仅保留停留时间最长的 15 个。默认关闭。",
+  "wtClearTitle": "删除已存储的标题",
+  "wtClearDescription": "删除所有已记录的窗口标题。您的使用总量不受影响。",
+  "wtClearAction": "删除标题",
+  "wtCleared": "{count, plural, =0{未找到已存储的标题} other{已从 {count} 条记录中删除标题}}",
+  "@wtCleared": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "wtTopWindows": "热门窗口（过去 7 天）",
+  "wtOther": "其他窗口",
+  "insTitle": "洞察",
+  "insTrendsTitle": "本周与上周对比",
+  "insThisWeek": "本周",
+  "insLastWeek": "上周",
+  "insByCategory": "按类别",
+  "insBiggestChanges": "最大变化",
+  "insNoData": "数据尚不足。",
+  "insHeatmapTitle": "每日活动（过去 26 周）",
+  "insHeatmapTip": "{date}：{time}",
+  "@insHeatmapTip": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insLess": "较少",
+  "insMore": "较多",
+  "insTimelineTitle": "日时间线",
+  "insTimelineOther": "其他应用程序",
+  "insTimelineEmpty": "当天未记录任何活动。",
+  "insPrevDay": "前一天",
+  "insNextDay": "后一天",
+  "insSearchTitle": "搜索窗口标题",
+  "insSearchHint": "搜索文档、页面或项目名称",
+  "insSearchDisabled": "尚未记录任何窗口标题。您可以在“设置 > 窗口标题”中开启记录。",
+  "insSearchNoResults": "过去 30 天内没有匹配的窗口。",
+  "tlTitle": "时间日志",
+  "tlHint": "您正在忙什么？",
+  "tlStart": "开始",
+  "tlStop": "停止",
+  "tlDiscard": "放弃",
+  "tlAddEntry": "添加条目",
+  "tlToday": "今天",
+  "tlThisWeek": "本周",
+  "tlNothingToday": "今天没有任何记录。",
+  "tlDescription": "记录未自动跟踪的时间，例如会议或阅读。它与应用程序时间分开保存，因此不会重复计算。",
+  "tlDurationLabel": "时长",
+  "tlHours": "小时",
+  "tlMinutes": "分钟",
+  "tlDateLabel": "日期",
+  "tlErrorLabel": "请输入您的工作内容。",
+  "tlErrorDuration": "请输入大于零的时长。",
+  "clTitle": "类别限制",
+  "clDescription": "当某个类别中的合并时间超过每日限额时接收提醒。这些仅是提醒；不会阻止应用程序使用。",
+  "clAdd": "添加限制",
+  "clEdit": "编辑限制",
+  "clLimitLabel": "每日限额",
+  "clErrorLimit": "请输入大于零的限额。",
+  "clErrorCategory": "请选择一个类别。",
+  "ddTitle": "每日摘要",
+  "ddToggleTitle": "每日摘要",
+  "ddToggleDescription": "超过选定时间后发送总结您一天情况的通知。隐私应用程序会被排除。",
+  "ddHourLabel": "发送时间晚于",
+  "dsTitle": "设备同步",
+  "dsDescription": "通过 Dropbox、iCloud Drive 或 Syncthing 保持同步的文件夹与其他计算机共享您的使用情况。每台设备仅写入自己的文件，其他设备的数据会显示在“洞察”中，而不会与您的数据混淆。私密应用、网站和窗口标题绝不会共享。关闭同步将从文件夹中删除此设备的文件。",
+  "dsToggle": "通过文件夹同步",
+  "dsFolder": "同步文件夹",
+  "dsNoFolder": "未选择文件夹",
+  "dsChooseFolder": "选择文件夹",
+  "dsDeviceName": "此设备名称",
+  "dsSyncNow": "立即同步",
+  "dsNeverSynced": "尚未同步",
+  "dsLastSynced": "上次同步时间：{time}",
+  "@dsLastSynced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsOtherDevices": "其他设备",
+  "dsNoOthers": "尚未找到其他设备。请在另一台计算机上开启同步并选择相同的文件夹。",
+  "dsPeerUpdated": "{name} · 更新于 {time}",
+  "@dsPeerUpdated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "dsError": "同步问题：{error}",
+  "@dsError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "insThisDevice": "此设备",
+  "insAllDevices": "所有设备",
+  "insTimelineUnplaced": "当天的 {time} 未在上方显示，因为未记录其具体时段。",
+  "@insTimelineUnplaced": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  }
 }
