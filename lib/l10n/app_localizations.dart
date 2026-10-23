@@ -8405,6 +8405,84 @@ abstract class AppLocalizations {
   /// **'More'**
   String get insMore;
 
+  /// No description provided for @insLastWeekValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Last: {time}'**
+  String insLastWeekValue(String time);
+
+  /// No description provided for @insConsistency.
+  ///
+  /// In en, this message translates to:
+  /// **'Consistency'**
+  String get insConsistency;
+
+  /// No description provided for @insDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day} other{{count} days}}'**
+  String insDaysCount(int count);
+
+  /// No description provided for @insAvgPerActiveDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg {time} / active day'**
+  String insAvgPerActiveDay(String time);
+
+  /// No description provided for @insSelectedDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected day'**
+  String get insSelectedDay;
+
+  /// No description provided for @insAppsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 app} other{{count} apps}}'**
+  String insAppsCount(int count);
+
+  /// No description provided for @insIdle.
+  ///
+  /// In en, this message translates to:
+  /// **'Idle'**
+  String get insIdle;
+
+  /// No description provided for @insLive.
+  ///
+  /// In en, this message translates to:
+  /// **'LIVE'**
+  String get insLive;
+
+  /// No description provided for @insTodayValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Today: {time}'**
+  String insTodayValue(String time);
+
+  /// No description provided for @insActiveDaysSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{days, plural, =1{1 active day} other{{days} active days}} · {time}'**
+  String insActiveDaysSummary(int days, String time);
+
+  /// No description provided for @insSelectedSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{date} · {time}'**
+  String insSelectedSummary(String date, String time);
+
+  /// No description provided for @insMatchingWindows.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 matching window} other{{count} matching windows}}'**
+  String insMatchingWindows(int count);
+
+  /// No description provided for @insShowingFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing the first {shown} of {total}'**
+  String insShowingFirst(int shown, int total);
+
   /// No description provided for @insTimelineTitle.
   ///
   /// In en, this message translates to:

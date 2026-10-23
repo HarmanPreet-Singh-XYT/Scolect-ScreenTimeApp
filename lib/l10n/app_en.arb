@@ -2988,6 +2988,91 @@
   },
   "insLess": "Less",
   "insMore": "More",
+  "insLastWeekValue": "Last: {time}",
+  "@insLastWeekValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insConsistency": "Consistency",
+  "insDaysCount": "{count, plural, =1{1 day} other{{count} days}}",
+  "@insDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insAvgPerActiveDay": "Avg {time} / active day",
+  "@insAvgPerActiveDay": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insSelectedDay": "Selected day",
+  "insAppsCount": "{count, plural, =1{1 app} other{{count} apps}}",
+  "@insAppsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insIdle": "Idle",
+  "insLive": "LIVE",
+  "insTodayValue": "Today: {time}",
+  "@insTodayValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insActiveDaysSummary": "{days, plural, =1{1 active day} other{{days} active days}} · {time}",
+  "@insActiveDaysSummary": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insSelectedSummary": "{date} · {time}",
+  "@insSelectedSummary": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insMatchingWindows": "{count, plural, =1{1 matching window} other{{count} matching windows}}",
+  "@insMatchingWindows": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insShowingFirst": "Showing the first {shown} of {total}",
+  "@insShowingFirst": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
   "insTimelineTitle": "Day timeline",
   "insTimelineOther": "Other apps",
   "insTimelineEmpty": "No activity recorded for this day.",

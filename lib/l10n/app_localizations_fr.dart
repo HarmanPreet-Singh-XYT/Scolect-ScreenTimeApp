@@ -4875,6 +4875,87 @@ class AppLocalizationsFr extends AppLocalizations {
   String get insMore => 'Plus';
 
   @override
+  String insLastWeekValue(String time) {
+    return 'Last: $time';
+  }
+
+  @override
+  String get insConsistency => 'Consistency';
+
+  @override
+  String insDaysCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insAvgPerActiveDay(String time) {
+    return 'Avg $time / active day';
+  }
+
+  @override
+  String get insSelectedDay => 'Selected day';
+
+  @override
+  String insAppsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count apps',
+      one: '1 app',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get insIdle => 'Idle';
+
+  @override
+  String get insLive => 'LIVE';
+
+  @override
+  String insTodayValue(String time) {
+    return 'Today: $time';
+  }
+
+  @override
+  String insActiveDaysSummary(int days, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days active days',
+      one: '1 active day',
+    );
+    return '$_temp0 · $time';
+  }
+
+  @override
+  String insSelectedSummary(String date, String time) {
+    return '$date · $time';
+  }
+
+  @override
+  String insMatchingWindows(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count matching windows',
+      one: '1 matching window',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insShowingFirst(int shown, int total) {
+    return 'Showing the first $shown of $total';
+  }
+
+  @override
   String get insTimelineTitle => 'Chronologie de la journée';
 
   @override

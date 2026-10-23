@@ -1,1 +1,177 @@
-{}
+{
+  "ar": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "bn": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "es": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "fr": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "hi": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "id": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "ja": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "pt": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "ru": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "ur": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ],
+
+  "zh": [
+    "insLastWeekValue",
+    "insConsistency",
+    "insDaysCount",
+    "insAvgPerActiveDay",
+    "insSelectedDay",
+    "insAppsCount",
+    "insIdle",
+    "insLive",
+    "insTodayValue",
+    "insActiveDaysSummary",
+    "insSelectedSummary",
+    "insMatchingWindows",
+    "insShowingFirst"
+  ]
+}

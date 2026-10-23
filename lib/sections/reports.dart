@@ -380,12 +380,8 @@ class _ReportsState extends State<Reports> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (!_showInsights || kIsWeb) _buildHeader(),
-              if (!kIsWeb) ...[
-                const SizedBox(height: 12),
-                _buildViewToggle(),
-              ],
-              const SizedBox(height: 20),
+              _buildHeader(),
+              const SizedBox(height: 16),
               _buildBody(),
             ],
           ),
@@ -424,21 +420,87 @@ class _ReportsState extends State<Reports> {
 
   Widget _buildViewToggle() {
     final l10n = AppLocalizations.of(context)!;
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
+    final theme = FluentTheme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    Widget pill({
+      required bool selected,
+      required IconData icon,
+      required String label,
+      required VoidCallback onTap,
+    }) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: selected
+                  ? (isDark ? const Color(0xFF243044) : Colors.white)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: selected
+                  ? [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.08),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  size: 13,
+                  color: selected
+                      ? (isDark ? Colors.white : theme.accentColor.normal)
+                      : theme.typography.caption?.color?.withValues(alpha: 0.7),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: selected
+                        ? (isDark ? Colors.white : const Color(0xFF0F172A))
+                        : theme.typography.caption?.color?.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF131B28) : const Color(0xFFE2E8F0),
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ToggleButton(
-            checked: !_showInsights,
-            onChanged: (_) => setState(() => _showInsights = false),
-            child: Text(l10n.navReports),
+          pill(
+            selected: !_showInsights,
+            icon: FluentIcons.chart,
+            label: l10n.navReports,
+            onTap: () => setState(() => _showInsights = false),
           ),
-          const SizedBox(width: 8),
-          ToggleButton(
-            checked: _showInsights,
-            onChanged: (_) => setState(() => _showInsights = true),
-            child: Text(l10n.insTitle),
+          const SizedBox(width: 2),
+          pill(
+            selected: _showInsights,
+            icon: FluentIcons.insights,
+            label: l10n.insTitle,
+            onTap: () => setState(() => _showInsights = true),
           ),
         ],
       ),
@@ -446,14 +508,33 @@ class _ReportsState extends State<Reports> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
+    final isInsights = _showInsights && !kIsWeb;
+
     Widget buildTitle(BuildContext context) => Text(
-          _l10n.usageAnalytics,
+          isInsights ? l10n.insTitle : _l10n.usageAnalytics,
           style: FluentTheme.of(context)
               .typography
               .subtitle
-              ?.copyWith(fontWeight: FontWeight.w600),
+              ?.copyWith(fontWeight: FontWeight.w700),
           overflow: TextOverflow.ellipsis,
         );
+
+    final viewToggle = !kIsWeb ? _buildViewToggle() : null;
+
+    if (isInsights) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Flexible(child: buildTitle(context)),
+              if (viewToggle != null) viewToggle,
+            ],
+          );
+        },
+      );
+    }
 
     final periodDropdown = ComboBox<PeriodType>(
       value: _selectedPeriod,
@@ -496,10 +577,16 @@ class _ReportsState extends State<Reports> {
                   periodDropdown,
                 ],
               ),
-              if (exportButton != null) ...[
-                const SizedBox(height: 12),
-                SizedBox(width: double.infinity, child: exportButton),
-              ],
+              const SizedBox(height: 12),
+              Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (viewToggle != null) viewToggle,
+                  if (exportButton != null) exportButton,
+                ],
+              ),
             ],
           );
         }
@@ -510,6 +597,10 @@ class _ReportsState extends State<Reports> {
             Flexible(child: buildTitle(context)),
             Row(
               children: [
+                if (viewToggle != null) ...[
+                  viewToggle,
+                  const SizedBox(width: 12),
+                ],
                 if (exportButton != null)
                   Padding(
                     padding: const EdgeInsets.only(right: 12),
