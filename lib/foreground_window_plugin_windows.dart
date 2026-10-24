@@ -54,20 +54,20 @@ typedef _CreateToolhelp32SnapshotD = Pointer<Void> Function(int, int);
 typedef _Process32N = Int32 Function(Pointer<Void>, Pointer<PROCESSENTRY32>);
 typedef _Process32D = int Function(Pointer<Void>, Pointer<PROCESSENTRY32>);
 
-typedef _GetFileVersionInfoSizeAN = Uint32 Function(
-    Pointer<Char>, Pointer<Uint32>);
-typedef _GetFileVersionInfoSizeAD = int Function(
-    Pointer<Char>, Pointer<Uint32>);
+typedef _GetFileVersionInfoSizeWN = Uint32 Function(
+    Pointer<Utf16>, Pointer<Uint32>);
+typedef _GetFileVersionInfoSizeWD = int Function(
+    Pointer<Utf16>, Pointer<Uint32>);
 
-typedef _GetFileVersionInfoAN = Int32 Function(
-    Pointer<Char>, Uint32, Uint32, Pointer<Void>);
-typedef _GetFileVersionInfoAD = int Function(
-    Pointer<Char>, int, int, Pointer<Void>);
+typedef _GetFileVersionInfoWN = Int32 Function(
+    Pointer<Utf16>, Uint32, Uint32, Pointer<Void>);
+typedef _GetFileVersionInfoWD = int Function(
+    Pointer<Utf16>, int, int, Pointer<Void>);
 
-typedef _VerQueryValueAN = Int32 Function(
-    Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
-typedef _VerQueryValueAD = int Function(
-    Pointer<Void>, Pointer<Char>, Pointer<Pointer<Void>>, Pointer<Uint32>);
+typedef _VerQueryValueWN = Int32 Function(
+    Pointer<Void>, Pointer<Utf16>, Pointer<Pointer<Void>>, Pointer<Uint32>);
+typedef _VerQueryValueWD = int Function(
+    Pointer<Void>, Pointer<Utf16>, Pointer<Pointer<Void>>, Pointer<Uint32>);
 
 // ── COM / AUMID lookup (for UWP-hosted windows, e.g. ApplicationFrameHost) ──
 
@@ -333,16 +333,16 @@ class ForegroundWindowPlugin {
   static final _Process32D _process32Next =
       _kernel32.lookupFunction<_Process32N, _Process32D>('Process32Next');
 
-  static final _GetFileVersionInfoSizeAD _getFileVersionInfoSizeA = _version
-      .lookupFunction<_GetFileVersionInfoSizeAN, _GetFileVersionInfoSizeAD>(
-          'GetFileVersionInfoSizeA');
+  static final _GetFileVersionInfoSizeWD _getFileVersionInfoSizeW = _version
+      .lookupFunction<_GetFileVersionInfoSizeWN, _GetFileVersionInfoSizeWD>(
+          'GetFileVersionInfoSizeW');
 
-  static final _GetFileVersionInfoAD _getFileVersionInfoA =
-      _version.lookupFunction<_GetFileVersionInfoAN, _GetFileVersionInfoAD>(
-          'GetFileVersionInfoA');
+  static final _GetFileVersionInfoWD _getFileVersionInfoW =
+      _version.lookupFunction<_GetFileVersionInfoWN, _GetFileVersionInfoWD>(
+          'GetFileVersionInfoW');
 
-  static final _VerQueryValueAD _verQueryValueA = _version
-      .lookupFunction<_VerQueryValueAN, _VerQueryValueAD>('VerQueryValueA');
+  static final _VerQueryValueWD _verQueryValueW = _version
+      .lookupFunction<_VerQueryValueWN, _VerQueryValueWD>('VerQueryValueW');
 
   static final _CoInitializeExD _coInitializeEx = _ole32
       .lookupFunction<_CoInitializeExN, _CoInitializeExD>('CoInitializeEx');
@@ -518,19 +518,19 @@ class ForegroundWindowPlugin {
       return _extractExecutableName(fullPath);
     }
 
-    Pointer<Char> pathPtr = nullptr;
+    Pointer<Utf16> pathPtr = nullptr;
     Pointer<Uint32> handlePtr = nullptr;
     Pointer<Uint8> versionInfoPtr = nullptr;
 
     try {
-      pathPtr = fullPath.toNativeUtf8().cast<Char>();
+      pathPtr = fullPath.toNativeUtf16();
       handlePtr = calloc<Uint32>();
 
-      final versionInfoSize = _getFileVersionInfoSizeA(pathPtr, handlePtr);
+      final versionInfoSize = _getFileVersionInfoSizeW(pathPtr, handlePtr);
       if (versionInfoSize == 0) return _extractExecutableName(fullPath);
 
       versionInfoPtr = calloc<Uint8>(versionInfoSize);
-      if (_getFileVersionInfoA(
+      if (_getFileVersionInfoW(
               pathPtr, 0, versionInfoSize, versionInfoPtr.cast()) ==
           0) {
         return _extractExecutableName(fullPath);
@@ -549,16 +549,16 @@ class ForegroundWindowPlugin {
       for (final langCode in languageCodes) {
         for (final field in ['FileDescription', 'ProductName']) {
           final subPath = '$langCode\\$field';
-          final subPathPtr = subPath.toNativeUtf8().cast<Char>();
+          final subPathPtr = subPath.toNativeUtf16();
           final bufferPtr = calloc<Pointer<Void>>();
           final lengthPtr = calloc<Uint32>();
           try {
-            final ok = _verQueryValueA(
+            final ok = _verQueryValueW(
                 versionInfoPtr.cast(), subPathPtr, bufferPtr, lengthPtr);
             if (ok != 0 &&
                 lengthPtr.value > 0 &&
                 bufferPtr.value.address != 0) {
-              final name = bufferPtr.value.cast<Utf8>().toDartString();
+              final name = bufferPtr.value.cast<Utf16>().toDartString();
               final cleaned = _cleanProgramName(name.trim());
               if (cleaned.isNotEmpty) return cleaned;
             }
@@ -944,11 +944,11 @@ class ForegroundWindowPlugin {
   static String _getAumidForWindow(Pointer<Void> hwnd) {
     // COM requires per-thread initialization; this runs inside a compute()
     // isolate, so there is no ambient apartment to rely on — init/uninit on
-    // every call.
-    final hr = _coInitializeEx(nullptr, 0 /* COINIT_MULTITHREADED */);
-    // S_OK = 0, S_FALSE = 1 (already initialized) are both fine; anything
-    // else means COM isn't usable here.
-    final comInitialized = hr == 0 || hr == 1;
+    // every call. Shell window property store requires apartment threading (STA).
+    final hr = _coInitializeEx(nullptr, 2 /* COINIT_APARTMENTTHREADED */);
+    // S_OK = 0, S_FALSE = 1 (already initialized), or RPC_E_CHANGED_MODE = 0x80010106
+    // are all acceptable so COM can be used.
+    final comInitialized = hr == 0 || hr == 1 || (hr & 0xFFFFFFFF) == 0x80010106;
     if (!comInitialized) {
       debugPrint('AUMID: CoInitializeEx failed, hr=0x${hr.toRadixString(16)}');
       return '';
@@ -1052,7 +1052,7 @@ class ForegroundWindowPlugin {
         }
         calloc.free(propvarPtr);
       }
-      if (comInitialized) _coUninitialize();
+      if (comInitialized && (hr == 0 || hr == 1)) _coUninitialize();
     }
   }
 

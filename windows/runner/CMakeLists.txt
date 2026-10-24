@@ -78,3 +78,7 @@ add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
     "$<TARGET_FILE_DIR:${BINARY_NAME}>/block_overlay.dll"
   COMMENT "Copying block_overlay.dll (${BLOCK_OVERLAY_RUST_TARGET}) to output directory"
 )
+
+install(FILES "${BLOCK_OVERLAY_DLL}"
+  DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
+  COMPONENT Runtime)

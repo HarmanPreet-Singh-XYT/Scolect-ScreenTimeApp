@@ -1,12 +1,14 @@
 #include "flutter_window.h"
 
 #include <windows.h>
+#include <shellapi.h>
 #include <powrprof.h>
 #include <optional>
 #include <string>
 #include "flutter/generated_plugin_registrant.h"
 
 #pragma comment(lib, "powrprof.lib")
+#pragma comment(lib, "shell32.lib")
 
 // Custom window message used to marshal overlay callbacks from the Rust Win32
 // thread back to the Flutter engine messenger thread (the main Win32 thread).
@@ -348,6 +350,14 @@ void RestartApplication() {
     ExitProcess(0);
   }
 
+  // First try ShellExecuteW, which correctly handles packaged MSIX applications
+  // (via AppX activation / shell execution alias) as well as unpackaged binaries.
+  HINSTANCE hInst = ShellExecuteW(nullptr, L"open", exePath, nullptr, nullptr, SW_SHOWNORMAL);
+  if (reinterpret_cast<INT_PTR>(hInst) > 32) {
+    ExitProcess(0);
+  }
+
+  // Fallback to CreateProcessW if ShellExecute was not handled
   STARTUPINFOW si{};
   si.cb = sizeof(si);
   PROCESS_INFORMATION pi{};

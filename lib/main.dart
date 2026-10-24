@@ -679,7 +679,14 @@ class _MyAppState extends State<MyApp>
   }
 
   void _showApp() {
-    Platform.isMacOS ? MacOSWindow.show() : appWindow.show();
+    if (Platform.isMacOS) {
+      MacOSWindow.show();
+    } else {
+      appWindow.show();
+      appWindow.restore();
+      windowManager.show();
+      windowManager.focus();
+    }
     navigationState.startPeriodicRefresh(refreshImmediately: true);
   }
 

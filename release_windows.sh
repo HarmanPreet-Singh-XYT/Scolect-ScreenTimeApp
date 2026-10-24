@@ -1,32 +1,14 @@
-#!/bin/bash
-
-# Exit on any error
+#!/usr/bin/env bash
+# Delegate to the canonical PowerShell Windows release script
 set -e
 
-# 1. Get version from pubspec.yaml
-VERSION=$(grep '^version: ' pubspec.yaml | sed 's/version: //' | cut -d '+' -f 1)
-echo "🚀 Starting Windows release process for version $VERSION..."
-
-# 2. Build the Windows setup using flutter_distributor
-echo "📦 Generating Windows Setup..."
-flutter_distributor release --name prod --jobs windows-exe
-
-# 3. Locate the generated executable and rename it
-SOURCE_EXE=$(find dist/prod/windows-exe -name "*.exe" | head -n 1)
-DEST_EXE="dist/screentime-$VERSION-windows-setup.exe"
-
-if [ -f "$SOURCE_EXE" ]; then
-    echo "📂 Moving $SOURCE_EXE to $DEST_EXE"
-    mv "$SOURCE_EXE" "$DEST_EXE"
+if command -v powershell.exe &> /dev/null; then
+    powershell.exe -ExecutionPolicy Bypass -File "./release_windows.ps1" "$@"
+elif command -v pwsh &> /dev/null; then
+    pwsh -ExecutionPolicy Bypass -File "./release_windows.ps1" "$@"
 else
-    echo "❌ Error: Could not find generated executable in dist/prod/windows-exe"
+    echo "❌ Error: PowerShell (powershell.exe or pwsh) is required to run the Windows release script."
+    echo "Please run release_windows.ps1 directly from PowerShell on Windows."
     exit 1
 fi
 
-# 4. Sign the update and print the signature for appcast.xml
-echo "✍️ Signing update for WinSparkle..."
-echo "--------------------------------------------------------------------------------"
-dart run auto_updater:sign_update "$DEST_EXE"
-echo "--------------------------------------------------------------------------------"
-
-echo "✅ Done! Your signed release is ready at: $DEST_EXE"
