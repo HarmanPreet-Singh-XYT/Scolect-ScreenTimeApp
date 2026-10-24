@@ -1,5 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/sections/controller/app_data_controller.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart';
 
 class AppCategory {
   final String name;
@@ -219,7 +221,7 @@ class AppCategories {
   };
 
   static Color getCategoryColor(String categoryName) =>
-      _colorMap[categoryName] ?? Colors.grey[500];
+      _colorMap[categoryName] ?? Colors.grey;
 
   static List<String> getCategoryNames() =>
       categories.map((c) => c.name).toList(growable: false);
@@ -228,6 +230,107 @@ class AppCategories {
       categories
           .map((c) => c.getLocalizedName(context))
           .toList(growable: false);
+
+  /// Notifier triggered whenever user-defined categories are added or removed.
+  static final ValueNotifier<int> changeNotifier = ValueNotifier<int>(0);
+
+  static const String customCategoriesKey = 'customCategories';
+
+  /// Returns user-created categories permanently stored in SettingsManager.
+  static List<String> get userCustomCategories {
+    try {
+      final list = SettingsManager().getSetting(customCategoriesKey);
+      if (list is List) {
+        return list
+            .map((e) => e.toString().trim())
+            .where((s) => s.isNotEmpty)
+            .toList();
+      }
+    } catch (_) {}
+    return const [];
+  }
+
+  /// Permanently saves a user-defined category so it is reused across the entire app.
+  static void addCustomCategory(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    final lower = trimmed.toLowerCase();
+    if (lower == 'all' || lower == 'uncategorized') return;
+    if (categories.any((c) => c.name.toLowerCase() == lower)) return;
+
+    final existing = userCustomCategories;
+    if (!existing.any((c) => c.toLowerCase() == lower)) {
+      final updated = [...existing, trimmed];
+      SettingsManager().updateSetting(customCategoriesKey, updated);
+      changeNotifier.value++;
+    }
+  }
+
+  /// Removes a user-defined category from the permanently stored list.
+  static void removeCustomCategory(String name) {
+    final lower = name.trim().toLowerCase();
+    final existing = userCustomCategories;
+    final updated =
+        existing.where((c) => c.trim().toLowerCase() != lower).toList();
+    if (updated.length != existing.length) {
+      SettingsManager().updateSetting(customCategoriesKey, updated);
+      changeNotifier.value++;
+    }
+  }
+
+  /// Returns an alphabetically sorted list of categories including built-in categories,
+  /// permanently saved custom categories, any user-assigned app categories,
+  /// and any additional categories passed in.
+  static List<String> getAllCategories({
+    Iterable<String>? additionalCategories,
+    String? currentCategory,
+  }) {
+    final seen = <String>{};
+    final result = <String>[];
+
+    void addCandidate(String? name) {
+      if (name == null) return;
+      final trimmed = name.trim();
+      if (trimmed.isEmpty) return;
+      final lower = trimmed.toLowerCase();
+      if (lower == 'all' || lower == 'uncategorized') return;
+      if (seen.add(lower)) {
+        result.add(trimmed);
+      }
+    }
+
+    // 1. Built-in categories
+    for (final c in categories) {
+      addCandidate(c.name);
+    }
+
+    // 2. Permanently saved custom categories
+    for (final c in userCustomCategories) {
+      addCandidate(c);
+    }
+
+    // 3. User-assigned categories from app metadata
+    try {
+      if (AppDataStore().isInitialized) {
+        for (final c in AppDataStore().allCustomCategories) {
+          addCandidate(c);
+        }
+      }
+    } catch (_) {}
+
+    // 4. Any additional categories passed in
+    if (additionalCategories != null) {
+      for (final cat in additionalCategories) {
+        addCandidate(cat);
+      }
+    }
+
+    // 5. Current category being edited
+    addCandidate(currentCategory);
+
+    result.sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+    return result;
+  }
 }
 
 // ────────────────────── Website Auto-Categorization ─────────────

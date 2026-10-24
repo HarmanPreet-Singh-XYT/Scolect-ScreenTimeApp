@@ -1675,6 +1675,26 @@ class AppDataStore extends ChangeNotifier {
     }
   }
 
+  /// Returns all unique custom categories currently assigned to any app in metadata.
+  List<String> get allCustomCategories {
+    if (!_ensureInitialized()) return [];
+    try {
+      final categories = <String>{};
+      for (final meta in _metadataCache.values) {
+        final cat = meta.category.trim();
+        if (cat.isNotEmpty &&
+            cat.toLowerCase() != 'all' &&
+            cat.toLowerCase() != 'uncategorized') {
+          categories.add(cat);
+        }
+      }
+      return categories.toList();
+    } catch (e) {
+      debugPrint('Error getting custom categories: $e');
+      return [];
+    }
+  }
+
   Future<bool> updateAppMetadata(
     String appName, {
     String? category,

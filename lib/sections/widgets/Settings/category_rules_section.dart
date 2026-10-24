@@ -181,29 +181,55 @@ class _CategoryRuleDialog extends StatefulWidget {
 }
 
 class _CategoryRuleDialogState extends State<_CategoryRuleDialog> {
+  static const String _otherValue = '__other__';
+
   late final TextEditingController _pattern = TextEditingController(
       text: widget.existing?.pattern ?? widget.prefillPattern ?? '');
-  late final TextEditingController _categoryController =
-      TextEditingController(text: widget.existing?.category ?? '');
+  late final List<String> _categories;
+  String? _selectedCategory;
+  late final TextEditingController _customCategoryController;
   String? _error;
 
-  static List<String> get _suggestions => [
-        for (final c in AppCategories.categories)
-          if (c.name != 'All' && c.name != CategoryRules.uncategorized) c.name
-      ];
+  @override
+  void initState() {
+    super.initState();
+    final customFromApps = AppDataStore().allCustomCategories;
+    final customFromRules =
+        CategoryRules.instance.rules.map((r) => r.category);
+    _categories = AppCategories.getAllCategories(
+      additionalCategories: [...customFromApps, ...customFromRules],
+      currentCategory: widget.existing?.category,
+    );
+
+    final existing = widget.existing?.category.trim();
+    if (existing == null || existing.isEmpty) {
+      _selectedCategory = null;
+      _customCategoryController = TextEditingController();
+    } else if (_categories.any((c) => c.toLowerCase() == existing.toLowerCase())) {
+      _selectedCategory = _categories
+          .firstWhere((c) => c.toLowerCase() == existing.toLowerCase());
+      _customCategoryController = TextEditingController();
+    } else {
+      _selectedCategory = _otherValue;
+      _customCategoryController = TextEditingController(text: existing);
+    }
+  }
 
   @override
   void dispose() {
     _pattern.dispose();
-    _categoryController.dispose();
+    _customCategoryController.dispose();
     super.dispose();
   }
 
   void _submit(AppLocalizations l10n) {
     final pattern = _pattern.text.trim();
     final code = CategoryRules.validate(pattern);
+    final category = (_selectedCategory == _otherValue)
+        ? _customCategoryController.text.trim()
+        : (_selectedCategory ?? '').trim();
     final error = switch (code) {
-      null => _categoryController.text.trim().isEmpty ? l10n.crErrorCategory : null,
+      null => category.isEmpty ? l10n.crErrorCategory : null,
       'empty' => l10n.pfErrorEmpty,
       'too_long' => l10n.pfErrorTooLong,
       _ => l10n.pfErrorInvalid,
@@ -212,11 +238,12 @@ class _CategoryRuleDialogState extends State<_CategoryRuleDialog> {
       setState(() => _error = error);
       return;
     }
+    AppCategories.addCustomCategory(category);
     Navigator.of(context).pop(CategoryRule(
       id: widget.existing?.id ?? DateTime.now().microsecondsSinceEpoch.toString(),
       enabled: widget.existing?.enabled ?? true,
       pattern: pattern,
-      category: _categoryController.text.trim(),
+      category: category,
     ));
   }
 
@@ -245,18 +272,37 @@ class _CategoryRuleDialogState extends State<_CategoryRuleDialog> {
           const SizedBox(height: 12),
           InfoLabel(
             label: l10n.crCategoryLabel,
-            child: AutoSuggestBox<String>(
-              controller: _categoryController,
-              placeholder: l10n.crCategoryHint,
+            child: ComboBox<String>(
+              value: _selectedCategory,
+              isExpanded: true,
+              placeholder: Text(l10n.crCategoryHint),
               items: [
-                for (final name in _suggestions)
-                  AutoSuggestBoxItem<String>(value: name, label: name),
+                for (final name in _categories)
+                  ComboBoxItem<String>(value: name, child: Text(name)),
+                ComboBoxItem<String>(
+                  value: _otherValue,
+                  child: Text(l10n.customCategory),
+                ),
               ],
-              onChanged: (_, __) {
-                if (_error != null) setState(() => _error = null);
+              onChanged: (v) {
+                setState(() {
+                  _selectedCategory = v;
+                  if (_error != null) _error = null;
+                });
               },
             ),
           ),
+          if (_selectedCategory == _otherValue) ...[
+            const SizedBox(height: 8),
+            TextBox(
+              controller: _customCategoryController,
+              placeholder: l10n.customCategoryPlaceholder,
+              autofocus: true,
+              onChanged: (_) {
+                if (_error != null) setState(() => _error = null);
+              },
+            ),
+          ],
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),

@@ -21,7 +21,6 @@ import 'package:screentime/sections/widgets/Settings/footer.dart';
 import 'package:screentime/sections/widgets/Settings/data.dart';
 import 'package:screentime/sections/widgets/Settings/privacy.dart';
 import 'package:screentime/sections/widgets/Settings/category_limits_section.dart';
-import 'package:screentime/sections/widgets/Settings/category_rules_section.dart';
 import 'package:screentime/sections/widgets/Settings/device_sync_section.dart';
 import 'package:screentime/sections/widgets/Settings/window_titles_section.dart';
 import 'package:screentime/sections/widgets/Settings/extension_access.dart';
@@ -576,10 +575,6 @@ class _SettingsContentState extends State<SettingsContent> {
                 if (!kIsWeb) ...[
                   _kSectionSpacing,
                   const DailyDigestSection(),
-                  _kSectionSpacing,
-                  const CategoryRulesSection(),
-                  _kSectionSpacing,
-                  const CategoryLimitsSection(),
                 ],
                 _kSectionSpacing,
                 const PrivacySection(),
@@ -642,10 +637,6 @@ class _SettingsContentState extends State<SettingsContent> {
         if (!kIsWeb) ...[
           _kSectionSpacing,
           const DailyDigestSection(),
-          _kSectionSpacing,
-          const CategoryRulesSection(),
-          _kSectionSpacing,
-          const CategoryLimitsSection(),
         ],
         _kSectionSpacing,
         const PrivacySection(),

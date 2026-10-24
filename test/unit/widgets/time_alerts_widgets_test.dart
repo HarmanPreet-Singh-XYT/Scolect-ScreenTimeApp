@@ -11,8 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/sections/controller/categories_controller.dart';
 import 'package:screentime/sections/widgets/Reports/insights/time_log_card.dart';
 import 'package:screentime/sections/widgets/Settings/category_limits_section.dart';
+import 'package:screentime/sections/widgets/Settings/custom_categories_section.dart';
 import 'package:screentime/utils/category_limits.dart';
 import 'package:screentime/utils/manual_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,6 +43,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await SettingsManager().init();
     SettingsManager().updateSetting(CategoryLimits.settingKey, <dynamic>[]);
+    SettingsManager().updateSetting(AppCategories.customCategoriesKey, <String>[]);
     CategoryLimits.instance.refresh();
   });
 
@@ -135,8 +138,10 @@ void main() {
 
       await tester.tap(find.text('Add limit'));
       await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextBox).first, 'Social Media');
-      await tester.pump();
+      await tester.tap(find.byType(ComboBox<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Social Media').last);
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Save'));
       await tester.pumpAndSettle();
 
@@ -144,6 +149,29 @@ void main() {
       expect(saved.category, 'Social Media');
       expect(saved.minutes, 60); // default 1h
       expect(find.text('Social Media'), findsOneWidget);
+    });
+
+    testWidgets('adding a custom limit using Other option saves correctly',
+        (tester) async {
+      await tester.pumpWidget(_app(const CategoryLimitsSection()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Add limit'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(ComboBox<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Custom').last);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextBox).first, 'Study');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      final saved = CategoryLimits.instance.limits.single;
+      expect(saved.category, 'Study');
+      expect(saved.minutes, 60);
+      expect(find.text('Study'), findsOneWidget);
     });
 
     testWidgets('a limit without a category is rejected', (tester) async {
@@ -189,6 +217,41 @@ void main() {
       expect(SettingsManager().getSetting('dailyDigest.enabled'), isTrue);
       expect(find.byType(ComboBox<int>), findsOneWidget);
       expect(find.text('21:00'), findsOneWidget);
+    });
+  });
+
+  group('CustomCategoriesSection', () {
+    testWidgets('adding a custom category persists it and shows in list',
+        (tester) async {
+      await tester.pumpWidget(_app(const CustomCategoriesSection()));
+      await tester.pumpAndSettle();
+      expect(find.text('Add category'), findsOneWidget);
+
+      await tester.tap(find.text('Add category'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextBox).first, 'Finance');
+      await tester.tap(find.text('Save'));
+      await tester.pumpAndSettle();
+
+      expect(AppCategories.userCustomCategories, contains('Finance'));
+      expect(find.text('Finance'), findsOneWidget);
+
+      // Verify it is also immediately in getAllCategories
+      expect(AppCategories.getAllCategories(), contains('Finance'));
+    });
+
+    testWidgets('deleting a custom category removes it', (tester) async {
+      AppCategories.addCustomCategory('Temporary');
+      await tester.pumpWidget(_app(const CustomCategoriesSection()));
+      await tester.pumpAndSettle();
+      expect(find.text('Temporary'), findsOneWidget);
+
+      await tester.tap(find.byIcon(FluentIcons.delete));
+      await tester.pumpAndSettle();
+
+      expect(AppCategories.userCustomCategories, isNot(contains('Temporary')));
+      expect(find.text('Temporary'), findsNothing);
     });
   });
 }

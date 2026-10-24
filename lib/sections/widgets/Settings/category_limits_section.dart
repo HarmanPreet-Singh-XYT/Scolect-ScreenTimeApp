@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/duration_fields.dart';
+import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/categories_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/sections/widgets/Settings/reusables.dart';
@@ -123,25 +124,50 @@ class _LimitDialog extends StatefulWidget {
 }
 
 class _LimitDialogState extends State<_LimitDialog> {
-  late final TextEditingController _category =
-      TextEditingController(text: widget.existing?.category ?? '');
+  static const String _otherValue = '__other__';
+
+  late final List<String> _categories;
+  String? _selectedCategory;
+  late final TextEditingController _customCategoryController;
   late int _hours = (widget.existing?.minutes ?? 60) ~/ 60;
   late int _minutes = (widget.existing?.minutes ?? 60) % 60;
   String? _error;
 
-  static List<String> get _suggestions => [
-        for (final c in AppCategories.categories)
-          if (c.name != 'All') c.name
-      ];
+  @override
+  void initState() {
+    super.initState();
+    final customFromApps = AppDataStore().allCustomCategories;
+    final customFromLimits =
+        CategoryLimits.instance.limits.map((l) => l.category);
+    _categories = AppCategories.getAllCategories(
+      additionalCategories: [...customFromApps, ...customFromLimits],
+      currentCategory: widget.existing?.category,
+    );
+
+    final existing = widget.existing?.category.trim();
+    if (existing == null || existing.isEmpty) {
+      _selectedCategory = null;
+      _customCategoryController = TextEditingController();
+    } else if (_categories.any((c) => c.toLowerCase() == existing.toLowerCase())) {
+      _selectedCategory = _categories
+          .firstWhere((c) => c.toLowerCase() == existing.toLowerCase());
+      _customCategoryController = TextEditingController();
+    } else {
+      _selectedCategory = _otherValue;
+      _customCategoryController = TextEditingController(text: existing);
+    }
+  }
 
   @override
   void dispose() {
-    _category.dispose();
+    _customCategoryController.dispose();
     super.dispose();
   }
 
   void _submit(AppLocalizations l10n) {
-    final category = _category.text.trim();
+    final category = (_selectedCategory == _otherValue)
+        ? _customCategoryController.text.trim()
+        : (_selectedCategory ?? '').trim();
     final minutes = _hours * 60 + _minutes;
     final error = category.isEmpty
         ? l10n.clErrorCategory
@@ -150,6 +176,7 @@ class _LimitDialogState extends State<_LimitDialog> {
       setState(() => _error = error);
       return;
     }
+    AppCategories.addCustomCategory(category);
     Navigator.of(context).pop(CategoryLimit(
       id: widget.existing?.id ?? DateTime.now().microsecondsSinceEpoch.toString(),
       category: category,
@@ -170,18 +197,37 @@ class _LimitDialogState extends State<_LimitDialog> {
         children: [
           InfoLabel(
             label: l10n.crCategoryLabel,
-            child: AutoSuggestBox<String>(
-              controller: _category,
-              placeholder: l10n.crCategoryHint,
+            child: ComboBox<String>(
+              value: _selectedCategory,
+              isExpanded: true,
+              placeholder: Text(l10n.crCategoryHint),
               items: [
-                for (final n in _suggestions)
-                  AutoSuggestBoxItem<String>(value: n, label: n),
+                for (final n in _categories)
+                  ComboBoxItem<String>(value: n, child: Text(n)),
+                ComboBoxItem<String>(
+                  value: _otherValue,
+                  child: Text(l10n.customCategory),
+                ),
               ],
-              onChanged: (_, __) {
-                if (_error != null) setState(() => _error = null);
+              onChanged: (v) {
+                setState(() {
+                  _selectedCategory = v;
+                  if (_error != null) _error = null;
+                });
               },
             ),
           ),
+          if (_selectedCategory == _otherValue) ...[
+            const SizedBox(height: 8),
+            TextBox(
+              controller: _customCategoryController,
+              placeholder: l10n.customCategoryPlaceholder,
+              autofocus: true,
+              onChanged: (_) {
+                if (_error != null) setState(() => _error = null);
+              },
+            ),
+          ],
           const SizedBox(height: 12),
           InfoLabel(
             label: l10n.clLimitLabel,

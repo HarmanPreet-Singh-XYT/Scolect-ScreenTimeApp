@@ -142,8 +142,11 @@ void main() {
     await tester.tap(find.text('Add rule'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextBox).first, 'figma');
+    await tester.tap(find.byType(ComboBox<String>));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Custom').last);
+    await tester.pumpAndSettle();
     await tester.enterText(find.byType(TextBox).last, 'Design');
-    await tester.pump();
     await tester.pumpAndSettle();
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();

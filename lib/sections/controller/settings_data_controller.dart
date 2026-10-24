@@ -130,7 +130,7 @@ class SettingsManager {
   static final bool _isMacOS = PlatformUtils.isMacOS;
 
   Map<String, String> versionInfo = {
-    "version": "2.3.1",
+    "version": "2.4.0",
     "type": "Stable Build",
   };
 
@@ -149,6 +149,7 @@ class SettingsManager {
         "categoryRules": <Map<String, dynamic>>[],
         "trackWindowTitles": false,
         "categoryLimits": <Map<String, dynamic>>[],
+        "customCategories": <String>[],
         "dailyDigest": {"enabled": false, "hour": 21, "lastSent": ""},
         "deviceSync": {"enabled": false, "folder": "", "deviceId": "", "deviceName": ""},
         "crashReportingEnabled": true,

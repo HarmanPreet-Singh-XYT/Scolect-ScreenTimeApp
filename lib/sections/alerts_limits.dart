@@ -13,6 +13,9 @@ import 'widgets/AlertsLimits/applicationlimit.dart';
 import 'widgets/AlertsLimits/blocking_behavior_card.dart';
 import 'widgets/AlertsLimits/notification_card.dart';
 import 'widgets/AlertsLimits/overalllimit.dart';
+import 'widgets/Settings/category_limits_section.dart';
+import 'widgets/Settings/category_rules_section.dart';
+import 'widgets/Settings/custom_categories_section.dart';
 import 'widgets/AlertsLimits/quick_stats.dart';
 import 'controller/services/private_mode_service.dart';
 import '../web/web_private_mode_service.dart'
@@ -418,7 +421,22 @@ class _ContentLayout extends StatelessWidget {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(flex: 3, child: appLimitsCard),
+          Expanded(
+            flex: 3,
+            child: Column(
+              children: [
+                appLimitsCard,
+                if (!kIsWeb) ...[
+                  _gap16,
+                  const CategoryLimitsSection(),
+                  _gap16,
+                  const CategoryRulesSection(),
+                  _gap16,
+                  const CustomCategoriesSection(),
+                ],
+              ],
+            ),
+          ),
           _gap20w,
           SizedBox(
             width: 320,
@@ -456,6 +474,14 @@ class _ContentLayout extends StatelessWidget {
         blockingCard,
         _gap16,
         appLimitsCard,
+        if (!kIsWeb) ...[
+          _gap16,
+          const CategoryLimitsSection(),
+          _gap16,
+          const CategoryRulesSection(),
+          _gap16,
+          const CustomCategoriesSection(),
+        ],
       ],
     );
   }

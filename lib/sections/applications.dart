@@ -877,9 +877,9 @@ class _CategoryDropdown extends StatelessWidget {
             onPressed: () => onChanged('All'),
           ),
           const MenuFlyoutSeparator(),
-          ...AppCategories.categories.map((category) => MenuFlyoutItem(
-                text: Text(category.name),
-                onPressed: () => onChanged(category.name),
+          ...AppCategories.getAllCategories().map((category) => MenuFlyoutItem(
+                text: Text(category),
+                onPressed: () => onChanged(category),
               )),
         ],
       ),
@@ -1646,11 +1646,22 @@ class _EditAppDialogState extends State<_EditAppDialog> {
     _limitStatus = app.limitStatus;
     _limitHours = app.dailyLimit.inHours;
     _limitMinutes = app.dailyLimit.inMinutes.remainder(60);
-    _isCustomCategory =
-        !AppCategories.categories.any((c) => c.name == _selectedCategory);
-    _customCategoryController = TextEditingController(
-      text: _isCustomCategory ? _selectedCategory : '',
+    final allKnown = AppCategories.getAllCategories();
+    final match = allKnown.firstWhere(
+      (c) => c.toLowerCase() == _selectedCategory.toLowerCase(),
+      orElse: () => '',
     );
+    if (match.isNotEmpty) {
+      _selectedCategory = match;
+      _isCustomCategory = false;
+      _customCategoryController = TextEditingController();
+    } else {
+      _isCustomCategory = _selectedCategory.isNotEmpty &&
+          _selectedCategory.toLowerCase() != 'uncategorized';
+      _customCategoryController = TextEditingController(
+        text: _isCustomCategory ? _selectedCategory : '',
+      );
+    }
     _siteNameController = TextEditingController(text: app.siteName);
   }
 
@@ -1730,6 +1741,14 @@ class _EditAppDialogState extends State<_EditAppDialog> {
         limitStatus: _limitStatus,
         isPrivate: _isPrivate,
       );
+    }
+
+    final categoryToSave = finalCategory.trim();
+    if (categoryToSave.isNotEmpty &&
+        categoryToSave.toLowerCase() != 'uncategorized' &&
+        categoryToSave.toLowerCase() != l10n.uncategorized.toLowerCase() &&
+        categoryToSave.toLowerCase() != 'all') {
+      AppCategories.addCustomCategory(categoryToSave);
     }
 
     await widget.refreshData();
@@ -1941,15 +1960,18 @@ class _EditAppDialogState extends State<_EditAppDialog> {
   }
 
   Widget _buildCategorySection(AppLocalizations l10n) {
+    final availableCategories = AppCategories.getAllCategories(
+      currentCategory: _isCustomCategory ? null : _selectedCategory,
+    );
     return Column(
       children: [
         ComboBox<String>(
           value: _isCustomCategory ? l10n.customCategory : _selectedCategory,
           isExpanded: true,
           items: [
-            ...AppCategories.categories.map((category) => ComboBoxItem<String>(
-                  value: category.name,
-                  child: Text(category.name),
+            ...availableCategories.map((category) => ComboBoxItem<String>(
+                  value: category,
+                  child: Text(category),
                 )),
             ComboBoxItem<String>(
               value: l10n.customCategory,
@@ -1973,6 +1995,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
                   child: TextBox(
                     controller: _customCategoryController,
                     placeholder: l10n.customCategoryPlaceholder,
+                    autofocus: true,
                     onChanged: (value) =>
                         setState(() => _selectedCategory = value),
                   ),
