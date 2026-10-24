@@ -8483,6 +8483,288 @@ abstract class AppLocalizations {
   /// **'Showing the first {shown} of {total}'**
   String insShowingFirst(int shown, int total);
 
+  /// No description provided for @insHighlightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get insHighlightsTitle;
+
+  /// No description provided for @insHlWeekUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen time is up {pct}% on last week'**
+  String insHlWeekUp(int pct);
+
+  /// No description provided for @insHlWeekDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen time is down {pct}% on last week'**
+  String insHlWeekDown(int pct);
+
+  /// No description provided for @insHlDriver.
+  ///
+  /// In en, this message translates to:
+  /// **'{app} drove most of the change ({delta})'**
+  String insHlDriver(String app, String delta);
+
+  /// No description provided for @insHlStreakGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day in a row under your daily limit} other{{count} days in a row under your daily limit}}'**
+  String insHlStreakGoal(int count);
+
+  /// No description provided for @insHlStreakActive.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 day in a row with activity} other{{count} days in a row with activity}}'**
+  String insHlStreakActive(int count);
+
+  /// No description provided for @insHlPeak.
+  ///
+  /// In en, this message translates to:
+  /// **'You are most active around {hour}'**
+  String insHlPeak(String hour);
+
+  /// No description provided for @insHlWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'{weekday} is your busiest day'**
+  String insHlWeekday(String weekday);
+
+  /// No description provided for @insHlFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% of your time this week was in productive apps'**
+  String insHlFocus(int pct);
+
+  /// No description provided for @insHlLate.
+  ///
+  /// In en, this message translates to:
+  /// **'You spent {time} late at night this week'**
+  String insHlLate(String time);
+
+  /// No description provided for @insPatternTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'When you are most active'**
+  String get insPatternTitle;
+
+  /// No description provided for @insPeakHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak hour'**
+  String get insPeakHour;
+
+  /// No description provided for @insBusiestWeekday.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest weekday'**
+  String get insBusiestWeekday;
+
+  /// No description provided for @insAvgPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg {time} per day'**
+  String insAvgPerDay(String time);
+
+  /// No description provided for @insRecordsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaks and records'**
+  String get insRecordsTitle;
+
+  /// No description provided for @insCurrentStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Current streak'**
+  String get insCurrentStreak;
+
+  /// No description provided for @insLongestStreak.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest streak'**
+  String get insLongestStreak;
+
+  /// No description provided for @insBusiestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest day'**
+  String get insBusiestDay;
+
+  /// No description provided for @insLightestDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Lightest day'**
+  String get insLightestDay;
+
+  /// No description provided for @insBusiestWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Busiest week'**
+  String get insBusiestWeek;
+
+  /// No description provided for @insStreakGoalNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Counting days under your {time} daily limit.'**
+  String insStreakGoalNote(String time);
+
+  /// No description provided for @insStreakActiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Counting days with any activity. Turn on an overall limit in Alerts and Limits to count days under a goal.'**
+  String get insStreakActiveNote;
+
+  /// No description provided for @insGoalProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Under your limit {hit} of {total} days in the last week'**
+  String insGoalProgress(int hit, int total);
+
+  /// No description provided for @insFocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Focus vs everything else'**
+  String get insFocusTitle;
+
+  /// No description provided for @insProductive.
+  ///
+  /// In en, this message translates to:
+  /// **'Productive'**
+  String get insProductive;
+
+  /// No description provided for @insOtherApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Everything else'**
+  String get insOtherApps;
+
+  /// No description provided for @insFocusShare.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% productive'**
+  String insFocusShare(int pct);
+
+  /// No description provided for @insHabitsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage habits'**
+  String get insHabitsTitle;
+
+  /// No description provided for @insAvgSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg time per open'**
+  String get insAvgSession;
+
+  /// No description provided for @insOpensPerHour.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens per active hour'**
+  String get insOpensPerHour;
+
+  /// No description provided for @insLongestBlock.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest stretch'**
+  String get insLongestBlock;
+
+  /// No description provided for @insLongestBlockValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} in {app}'**
+  String insLongestBlockValue(String time, String app);
+
+  /// No description provided for @insLateNight.
+  ///
+  /// In en, this message translates to:
+  /// **'Late night (11 pm to 5 am)'**
+  String get insLateNight;
+
+  /// No description provided for @insVsLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'vs last week'**
+  String get insVsLastWeek;
+
+  /// No description provided for @insAppTrendsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Top apps, last 4 weeks'**
+  String get insAppTrendsTitle;
+
+  /// No description provided for @insWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}w ago'**
+  String insWeeksAgo(int count);
+
+  /// No description provided for @insTrackedVsLoggedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tracked vs logged'**
+  String get insTrackedVsLoggedTitle;
+
+  /// No description provided for @insTracked.
+  ///
+  /// In en, this message translates to:
+  /// **'App time'**
+  String get insTracked;
+
+  /// No description provided for @insLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged by hand'**
+  String get insLogged;
+
+  /// No description provided for @insNothingLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing logged in the last 7 days.'**
+  String get insNothingLogged;
+
+  /// No description provided for @insDevicesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'By device'**
+  String get insDevicesTitle;
+
+  /// No description provided for @insTopWindowsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Most-used windows this week'**
+  String get insTopWindowsTitle;
+
+  /// No description provided for @insFirstApp.
+  ///
+  /// In en, this message translates to:
+  /// **'First app of the day'**
+  String get insFirstApp;
+
+  /// No description provided for @insLastApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Last app of the day'**
+  String get insLastApp;
+
+  /// No description provided for @insNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get insNow;
+
+  /// No description provided for @insStreakAtRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'You are at your longest streak'**
+  String get insStreakAtRecord;
+
+  /// No description provided for @insStreakToRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 more day to beat your record} other{{count} more days to beat your record}}'**
+  String insStreakToRecord(int count);
+
   /// No description provided for @insTimelineTitle.
   ///
   /// In en, this message translates to:

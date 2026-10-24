@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:screentime/app_design.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/widgets/duration_fields.dart';
 import 'package:screentime/utils/daily_digest.dart';
@@ -144,7 +145,7 @@ class _TimeLogCardState extends State<TimeLogCard> {
               gradient: LinearGradient(
                 colors: [
                   theme.accentColor.withValues(alpha: isDark ? 0.22 : 0.12),
-                  isDark ? const Color(0xFF161F2E) : Colors.white,
+                  isDark ? theme.micaBackgroundColor : Colors.white,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -167,12 +168,12 @@ class _TimeLogCardState extends State<TimeLogCard> {
                 Container(
                   width: 10,
                   height: 10,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFEF4444),
+                  decoration: BoxDecoration(
+                    color: AppDesign.of(context).errorColor,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x66EF4444),
+                        color: AppDesign.of(context).errorColor.withValues(alpha: 0.4),
                         blurRadius: 8,
                         spreadRadius: 2,
                       ),
@@ -210,7 +211,7 @@ class _TimeLogCardState extends State<TimeLogCard> {
                 FilledButton(
                   onPressed: _log.stop,
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(const Color(0xFF10B981)),
+                    backgroundColor: WidgetStateProperty.all(AppDesign.of(context).successColor),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

@@ -253,8 +253,8 @@ class _NotificationSectionState extends State<NotificationSection>
               : 0.0,
         );
 
+        // No outer margin: the page already spaces sections with _kSectionSpacing.
         return Container(
-          margin: const EdgeInsets.only(bottom: 16),
           decoration: BoxDecoration(
             color: highlightColor,
             borderRadius: _kBorderRadius8,

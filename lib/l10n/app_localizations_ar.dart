@@ -4722,51 +4722,51 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String insLastWeekValue(String time) {
-    return 'Last: $time';
+    return 'السابق: $time';
   }
 
   @override
-  String get insConsistency => 'Consistency';
+  String get insConsistency => 'الاستمرارية';
 
   @override
   String insDaysCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '1 day',
+      other: '$count أيام',
+      one: 'يوم واحد',
     );
     return '$_temp0';
   }
 
   @override
   String insAvgPerActiveDay(String time) {
-    return 'Avg $time / active day';
+    return 'المعدل $time / يوم نشط';
   }
 
   @override
-  String get insSelectedDay => 'Selected day';
+  String get insSelectedDay => 'اليوم المحدد';
 
   @override
   String insAppsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps',
-      one: '1 app',
+      other: '$count تطبيقات',
+      one: 'تطبيق واحد',
     );
     return '$_temp0';
   }
 
   @override
-  String get insIdle => 'Idle';
+  String get insIdle => 'خامل';
 
   @override
-  String get insLive => 'LIVE';
+  String get insLive => 'مباشر';
 
   @override
   String insTodayValue(String time) {
-    return 'Today: $time';
+    return 'اليوم: $time';
   }
 
   @override
@@ -4774,8 +4774,8 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days active days',
-      one: '1 active day',
+      other: '$days أيام نشطة',
+      one: 'يوم نشط واحد',
     );
     return '$_temp0 · $time';
   }
@@ -4790,15 +4790,207 @@ class AppLocalizationsAr extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count matching windows',
-      one: '1 matching window',
+      other: '$count نوافذ مطابقة',
+      one: 'نافذة مطابقة واحدة',
     );
     return '$_temp0';
   }
 
   @override
   String insShowingFirst(int shown, int total) {
-    return 'Showing the first $shown of $total';
+    return 'عرض أول $shown من أصل $total';
+  }
+
+  @override
+  String get insHighlightsTitle => 'أبرز الإحصاءات';
+
+  @override
+  String insHlWeekUp(int pct) {
+    return 'زاد وقت الشاشة بنسبة $pct% مقارنة بالأسبوع الماضي';
+  }
+
+  @override
+  String insHlWeekDown(int pct) {
+    return 'انخفض وقت الشاشة بنسبة $pct% مقارنة بالأسبوع الماضي';
+  }
+
+  @override
+  String insHlDriver(String app, String delta) {
+    return 'تسبب $app في الجزء الأكبر من التغيير ($delta)';
+  }
+
+  @override
+  String insHlStreakGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أيام متتالية تحت حدك اليومي',
+      one: 'يوم واحد متتالٍ تحت حدك اليومي',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlStreakActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count أيام متتالية مع نشاط',
+      one: 'يوم واحد متتالٍ مع نشاط',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlPeak(String hour) {
+    return 'تكون أكثر نشاطًا حوالي الساعة $hour';
+  }
+
+  @override
+  String insHlWeekday(String weekday) {
+    return 'يوم $weekday هو أكثر أيامك انشغالاً';
+  }
+
+  @override
+  String insHlFocus(int pct) {
+    return 'قضيت $pct% من وقتك هذا الأسبوع في تطبيقات إنتاجية';
+  }
+
+  @override
+  String insHlLate(String time) {
+    return 'قضيت $time في وقت متأخر من الليل هذا الأسبوع';
+  }
+
+  @override
+  String get insPatternTitle => 'أوقات ذروة النشاط';
+
+  @override
+  String get insPeakHour => 'ساعة الذروة';
+
+  @override
+  String get insBusiestWeekday => 'أكثر أيام الأسبوع انشغالاً';
+
+  @override
+  String insAvgPerDay(String time) {
+    return 'المعدل $time يوميًا';
+  }
+
+  @override
+  String get insRecordsTitle => 'التتابعات والأرقام القياسية';
+
+  @override
+  String get insCurrentStreak => 'التتابع الحالي';
+
+  @override
+  String get insLongestStreak => 'أطول تتابع';
+
+  @override
+  String get insBusiestDay => 'اليوم الأكثر نشاطًا';
+
+  @override
+  String get insLightestDay => 'اليوم الأقل نشاطًا';
+
+  @override
+  String get insBusiestWeek => 'الأسبوع الأكثر نشاطًا';
+
+  @override
+  String insStreakGoalNote(String time) {
+    return 'حساب الأيام التي تقل عن حدك اليومي البالغ $time.';
+  }
+
+  @override
+  String get insStreakActiveNote =>
+      'حساب الأيام مع أي نشاط. فعّل حدًا عامًا في التنبيهات والحدود لتتبع الأيام وفقًا لهدف.';
+
+  @override
+  String insGoalProgress(int hit, int total) {
+    return 'تحت حدك في $hit من أصل $total أيام في الأسبوع الماضي';
+  }
+
+  @override
+  String get insFocusTitle => 'التركيز مقابل باقي التطبيقات';
+
+  @override
+  String get insProductive => 'إنتاجي';
+
+  @override
+  String get insOtherApps => 'كل ما تبقى';
+
+  @override
+  String insFocusShare(int pct) {
+    return '$pct% إنتاجي';
+  }
+
+  @override
+  String get insHabitsTitle => 'عادات الاستخدام';
+
+  @override
+  String get insAvgSession => 'متوسط الوقت لكل فتح';
+
+  @override
+  String get insOpensPerHour => 'مرات الفتح لكل ساعة نشطة';
+
+  @override
+  String get insLongestBlock => 'أطول فترة متواصلة';
+
+  @override
+  String insLongestBlockValue(String time, String app) {
+    return '$time في $app';
+  }
+
+  @override
+  String get insLateNight => 'وقت متأخر من الليل (11 م إلى 5 ص)';
+
+  @override
+  String get insVsLastWeek => 'مقارنة بالأسبوع الماضي';
+
+  @override
+  String get insAppTrendsTitle => 'أبرز التطبيقات خلال آخر 4 أسابيع';
+
+  @override
+  String insWeeksAgo(int count) {
+    return 'منذ $count أسبوع';
+  }
+
+  @override
+  String get insTrackedVsLoggedTitle => 'المتتبع مقابل المسجل يدويًا';
+
+  @override
+  String get insTracked => 'وقت التطبيقات';
+
+  @override
+  String get insLogged => 'مسجل يدويًا';
+
+  @override
+  String get insNothingLogged => 'لم يتم تسجيل أي شيء خلال آخر 7 أيام.';
+
+  @override
+  String get insDevicesTitle => 'حسب الجهاز';
+
+  @override
+  String get insTopWindowsTitle => 'النوافذ الأكثر استخدامًا هذا الأسبوع';
+
+  @override
+  String get insFirstApp => 'أول تطبيق في اليوم';
+
+  @override
+  String get insLastApp => 'آخر تطبيق في اليوم';
+
+  @override
+  String get insNow => 'الآن';
+
+  @override
+  String get insStreakAtRecord => 'أنت في أطول سلسلة متتالية لك';
+
+  @override
+  String insStreakToRecord(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'بقي $count أيام لتحطيم رقمك القياسي',
+      one: 'بقي يوم واحد لتحطيم رقمك القياسي',
+    );
+    return '$_temp0';
   }
 
   @override

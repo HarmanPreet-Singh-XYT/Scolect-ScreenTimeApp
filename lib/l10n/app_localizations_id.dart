@@ -4726,51 +4726,51 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String insLastWeekValue(String time) {
-    return 'Last: $time';
+    return 'Lalu: $time';
   }
 
   @override
-  String get insConsistency => 'Consistency';
+  String get insConsistency => 'Konsistensi';
 
   @override
   String insDaysCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '1 day',
+      other: '$count hari',
+      one: '1 hari',
     );
     return '$_temp0';
   }
 
   @override
   String insAvgPerActiveDay(String time) {
-    return 'Avg $time / active day';
+    return 'Rata-rata $time / hari aktif';
   }
 
   @override
-  String get insSelectedDay => 'Selected day';
+  String get insSelectedDay => 'Hari terpilih';
 
   @override
   String insAppsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps',
-      one: '1 app',
+      other: '$count aplikasi',
+      one: '1 aplikasi',
     );
     return '$_temp0';
   }
 
   @override
-  String get insIdle => 'Idle';
+  String get insIdle => 'Diam';
 
   @override
-  String get insLive => 'LIVE';
+  String get insLive => 'LANGSUNG';
 
   @override
   String insTodayValue(String time) {
-    return 'Today: $time';
+    return 'Hari ini: $time';
   }
 
   @override
@@ -4778,8 +4778,8 @@ class AppLocalizationsId extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days active days',
-      one: '1 active day',
+      other: '$days hari aktif',
+      one: '1 hari aktif',
     );
     return '$_temp0 · $time';
   }
@@ -4794,15 +4794,208 @@ class AppLocalizationsId extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count matching windows',
-      one: '1 matching window',
+      other: '$count jendela cocok',
+      one: '1 jendela cocok',
     );
     return '$_temp0';
   }
 
   @override
   String insShowingFirst(int shown, int total) {
-    return 'Showing the first $shown of $total';
+    return 'Menampilkan $shown pertama dari $total';
+  }
+
+  @override
+  String get insHighlightsTitle => 'Sorotan';
+
+  @override
+  String insHlWeekUp(int pct) {
+    return 'Waktu layar naik $pct% dibanding minggu lalu';
+  }
+
+  @override
+  String insHlWeekDown(int pct) {
+    return 'Waktu layar turun $pct% dibanding minggu lalu';
+  }
+
+  @override
+  String insHlDriver(String app, String delta) {
+    return '$app menjadi penyebab utama perubahan ($delta)';
+  }
+
+  @override
+  String insHlStreakGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hari berturut-turut di bawah batas harian',
+      one: '1 hari berturut-turut di bawah batas harian',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlStreakActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hari berturut-turut dengan aktivitas',
+      one: '1 hari berturut-turut dengan aktivitas',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlPeak(String hour) {
+    return 'Anda paling aktif sekitar jam $hour';
+  }
+
+  @override
+  String insHlWeekday(String weekday) {
+    return '$weekday adalah hari tersibuk Anda';
+  }
+
+  @override
+  String insHlFocus(int pct) {
+    return '$pct% waktu Anda minggu ini dihabiskan pada aplikasi produktif';
+  }
+
+  @override
+  String insHlLate(String time) {
+    return 'Anda menghabiskan $time larut malam minggu ini';
+  }
+
+  @override
+  String get insPatternTitle => 'Waktu paling aktif';
+
+  @override
+  String get insPeakHour => 'Jam puncak';
+
+  @override
+  String get insBusiestWeekday => 'Hari kerja tersibuk';
+
+  @override
+  String insAvgPerDay(String time) {
+    return 'Rata-rata $time per hari';
+  }
+
+  @override
+  String get insRecordsTitle => 'Rangkaian dan rekor';
+
+  @override
+  String get insCurrentStreak => 'Rangkaian saat ini';
+
+  @override
+  String get insLongestStreak => 'Rangkaian terpanjang';
+
+  @override
+  String get insBusiestDay => 'Hari tersibuk';
+
+  @override
+  String get insLightestDay => 'Hari paling ringan';
+
+  @override
+  String get insBusiestWeek => 'Minggu tersibuk';
+
+  @override
+  String insStreakGoalNote(String time) {
+    return 'Menghitung hari di bawah batas harian $time Anda.';
+  }
+
+  @override
+  String get insStreakActiveNote =>
+      'Menghitung hari dengan aktivitas apa pun. Aktifkan batas keseluruhan di Peringatan & Batas untuk menghitung hari berdasarkan target.';
+
+  @override
+  String insGoalProgress(int hit, int total) {
+    return 'Di bawah batas Anda $hit dari $total hari pada minggu terakhir';
+  }
+
+  @override
+  String get insFocusTitle => 'Fokus vs lainnya';
+
+  @override
+  String get insProductive => 'Produktif';
+
+  @override
+  String get insOtherApps => 'Semua lainnya';
+
+  @override
+  String insFocusShare(int pct) {
+    return '$pct% produktif';
+  }
+
+  @override
+  String get insHabitsTitle => 'Kebiasaan penggunaan';
+
+  @override
+  String get insAvgSession => 'Waktu rata-rata per buka';
+
+  @override
+  String get insOpensPerHour => 'Buka per jam aktif';
+
+  @override
+  String get insLongestBlock => 'Sesi terpanjang';
+
+  @override
+  String insLongestBlockValue(String time, String app) {
+    return '$time di $app';
+  }
+
+  @override
+  String get insLateNight => 'Larut malam (23.00 hingga 05.00)';
+
+  @override
+  String get insVsLastWeek => 'vs minggu lalu';
+
+  @override
+  String get insAppTrendsTitle => 'Aplikasi teratas, 4 minggu terakhir';
+
+  @override
+  String insWeeksAgo(int count) {
+    return '${count}m lalu';
+  }
+
+  @override
+  String get insTrackedVsLoggedTitle => 'Dilacak vs dicatat';
+
+  @override
+  String get insTracked => 'Waktu aplikasi';
+
+  @override
+  String get insLogged => 'Dicatat manual';
+
+  @override
+  String get insNothingLogged =>
+      'Tidak ada yang dicatat dalam 7 hari terakhir.';
+
+  @override
+  String get insDevicesTitle => 'Berdasarkan perangkat';
+
+  @override
+  String get insTopWindowsTitle => 'Jendela paling sering digunakan minggu ini';
+
+  @override
+  String get insFirstApp => 'Aplikasi pertama hari ini';
+
+  @override
+  String get insLastApp => 'Aplikasi terakhir hari ini';
+
+  @override
+  String get insNow => 'Sekarang';
+
+  @override
+  String get insStreakAtRecord => 'Anda berada di rangkaian terpanjang Anda';
+
+  @override
+  String insStreakToRecord(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count hari lagi untuk memecahkan rekor Anda',
+      one: '1 hari lagi untuk memecahkan rekor Anda',
+    );
+    return '$_temp0';
   }
 
   @override

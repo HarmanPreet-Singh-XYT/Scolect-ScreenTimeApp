@@ -4608,51 +4608,51 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String insLastWeekValue(String time) {
-    return 'Last: $time';
+    return '先週: $time';
   }
 
   @override
-  String get insConsistency => 'Consistency';
+  String get insConsistency => '継続性';
 
   @override
   String insDaysCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '1 day',
+      other: '$count日',
+      one: '1日',
     );
     return '$_temp0';
   }
 
   @override
   String insAvgPerActiveDay(String time) {
-    return 'Avg $time / active day';
+    return '活動日平均 $time';
   }
 
   @override
-  String get insSelectedDay => 'Selected day';
+  String get insSelectedDay => '選択した日';
 
   @override
   String insAppsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps',
-      one: '1 app',
+      other: '$countアプリ',
+      one: '1アプリ',
     );
     return '$_temp0';
   }
 
   @override
-  String get insIdle => 'Idle';
+  String get insIdle => 'アイドル';
 
   @override
-  String get insLive => 'LIVE';
+  String get insLive => 'ライブ';
 
   @override
   String insTodayValue(String time) {
-    return 'Today: $time';
+    return '今日: $time';
   }
 
   @override
@@ -4660,8 +4660,8 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days active days',
-      one: '1 active day',
+      other: '$days活動日',
+      one: '1活動日',
     );
     return '$_temp0 · $time';
   }
@@ -4676,15 +4676,207 @@ class AppLocalizationsJa extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count matching windows',
-      one: '1 matching window',
+      other: '$count件の一致するウィンドウ',
+      one: '1件の一致するウィンドウ',
     );
     return '$_temp0';
   }
 
   @override
   String insShowingFirst(int shown, int total) {
-    return 'Showing the first $shown of $total';
+    return '$total件中最初の$shown件を表示中';
+  }
+
+  @override
+  String get insHighlightsTitle => 'ハイライト';
+
+  @override
+  String insHlWeekUp(int pct) {
+    return 'スクリーンタイムは先週比で$pct%増加しました';
+  }
+
+  @override
+  String insHlWeekDown(int pct) {
+    return 'スクリーンタイムは先週比で$pct%減少しました';
+  }
+
+  @override
+  String insHlDriver(String app, String delta) {
+    return '$appが主な変化の要因です ($delta)';
+  }
+
+  @override
+  String insHlStreakGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count日連続で1日の目標制限時間以内',
+      one: '1日連続で1日の目標制限時間以内',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlStreakActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count日連続でアクティビティあり',
+      one: '1日連続でアクティビティあり',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlPeak(String hour) {
+    return '$hour頃が最もアクティブです';
+  }
+
+  @override
+  String insHlWeekday(String weekday) {
+    return '$weekdayが最も忙しい曜日です';
+  }
+
+  @override
+  String insHlFocus(int pct) {
+    return '今週の時間の$pct%が生産的なアプリで使用されました';
+  }
+
+  @override
+  String insHlLate(String time) {
+    return '今週は深夜に$time使用しました';
+  }
+
+  @override
+  String get insPatternTitle => '活動パターン';
+
+  @override
+  String get insPeakHour => 'ピーク時間帯';
+
+  @override
+  String get insBusiestWeekday => '最も忙しい曜日';
+
+  @override
+  String insAvgPerDay(String time) {
+    return '1日平均 $time';
+  }
+
+  @override
+  String get insRecordsTitle => '連続記録とベスト記録';
+
+  @override
+  String get insCurrentStreak => '現在の連続日数';
+
+  @override
+  String get insLongestStreak => '最長連続記録';
+
+  @override
+  String get insBusiestDay => '最も忙しかった日';
+
+  @override
+  String get insLightestDay => '最も少なかった日';
+
+  @override
+  String get insBusiestWeek => '最も忙しかった週';
+
+  @override
+  String insStreakGoalNote(String time) {
+    return '1日の上限$time未満の日をカウントしています。';
+  }
+
+  @override
+  String get insStreakActiveNote =>
+      '何らかの利用があった日をカウントしています。「通知と制限」で全体の上限を設定すると目標カウントが有効になります。';
+
+  @override
+  String insGoalProgress(int hit, int total) {
+    return '先週は$total日中$hit日上限以内でした';
+  }
+
+  @override
+  String get insFocusTitle => '集中 vs その他';
+
+  @override
+  String get insProductive => '生産的';
+
+  @override
+  String get insOtherApps => 'その他すべて';
+
+  @override
+  String insFocusShare(int pct) {
+    return '$pct% 生産的';
+  }
+
+  @override
+  String get insHabitsTitle => '使用習慣';
+
+  @override
+  String get insAvgSession => '起動ごとの平均時間';
+
+  @override
+  String get insOpensPerHour => 'アクティブ1時間あたりの起動回数';
+
+  @override
+  String get insLongestBlock => '最長連続使用';
+
+  @override
+  String insLongestBlockValue(String time, String app) {
+    return '$appで$time';
+  }
+
+  @override
+  String get insLateNight => '深夜時間帯 (23時〜5時)';
+
+  @override
+  String get insVsLastWeek => '先週比';
+
+  @override
+  String get insAppTrendsTitle => '主なアプリ（過去4週間）';
+
+  @override
+  String insWeeksAgo(int count) {
+    return '$count週間前';
+  }
+
+  @override
+  String get insTrackedVsLoggedTitle => '自動記録 vs 手動記録';
+
+  @override
+  String get insTracked => 'アプリ利用時間';
+
+  @override
+  String get insLogged => '手動ログ';
+
+  @override
+  String get insNothingLogged => '過去7日間の手動ログはありません。';
+
+  @override
+  String get insDevicesTitle => 'デバイス別';
+
+  @override
+  String get insTopWindowsTitle => '今週最も使用されたウィンドウ';
+
+  @override
+  String get insFirstApp => 'その日の最初のアプリ';
+
+  @override
+  String get insLastApp => 'その日の最後のアプリ';
+
+  @override
+  String get insNow => '現在';
+
+  @override
+  String get insStreakAtRecord => '最長記録に到達しています';
+
+  @override
+  String insStreakToRecord(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '新記録達成まであと$count日',
+      one: '新記録達成まであと1日',
+    );
+    return '$_temp0';
   }
 
   @override

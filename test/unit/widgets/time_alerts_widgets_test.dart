@@ -7,6 +7,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/sections/widgets/Reports/insights/time_log_card.dart';
@@ -15,7 +17,12 @@ import 'package:screentime/utils/category_limits.dart';
 import 'package:screentime/utils/manual_log.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Widget _app(Widget child) => FluentApp(
+Widget _app(Widget child) => ChangeNotifierProvider(
+      create: (_) => ThemeCustomizationProvider(),
+      child: _themedApp(child),
+    );
+
+Widget _themedApp(Widget child) => FluentApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

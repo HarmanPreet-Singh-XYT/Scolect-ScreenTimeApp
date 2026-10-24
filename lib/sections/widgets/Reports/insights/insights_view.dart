@@ -2,15 +2,21 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:screentime/app_design.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/data_controllers/applications_data_controller.dart'
     show DurationFormatter;
 import 'package:screentime/sections/controller/data_controllers/insights_data.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/sections/widgets/Reports/insights/pill_toggle.dart';
 import 'package:screentime/sections/widgets/Reports/insights/time_log_card.dart';
 import 'package:screentime/utils/date_formats.dart';
 import 'package:screentime/utils/device_sync.dart';
 import 'package:screentime/utils/manual_log.dart';
+
+part 'insights_extras.dart';
 
 const int kHeatmapWeeks = 26;
 
@@ -31,6 +37,11 @@ class _InsightsViewState extends State<InsightsView> {
   late DateTime _day = _data.today;
   late WeekComparison _week;
   Map<DateTime, Duration> _daily = const {};
+  HistoryInsights _history = HistoryInsights.fromDaily(const {});
+  LongestBlock? _longest;
+  DayBookends? _bookends;
+  List<TitleHit> _topTitles = const [];
+  List<DeviceShare> _devices = const [];
   late DayTimeline _timeline;
   final TextEditingController _query = TextEditingController();
   List<TitleHit> _hits = const [];
@@ -52,6 +63,33 @@ class _InsightsViewState extends State<InsightsView> {
     unawaited(_initialLoad());
   }
 
+  /// The overall daily limit from Alerts and Limits, if the user turned it on.
+  /// Keys mirror `_Keys` in alerts_limits.dart.
+  Duration? _overallGoal() {
+    try {
+      final settings = SettingsManager();
+      if (settings.getSetting('limitsAlerts.overallLimit.enabled') != true) {
+        return null;
+      }
+      final h = (settings.getSetting('limitsAlerts.overallLimit.hours') as num?) ?? 0;
+      final m = (settings.getSetting('limitsAlerts.overallLimit.minutes') as num?) ?? 0;
+      final goal = Duration(minutes: (h * 60 + m).round());
+      return goal > Duration.zero ? goal : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Everything that comes from the long scan plus the small follow-up reads.
+  void _loadHistory() {
+    _history = _data.history(kHeatmapWeeks * 7, goal: _overallGoal());
+    _daily = _history.daily;
+    _longest = _data.longestBlock();
+    _topTitles = _data.topTitles();
+    _devices = _data.hasPeers ? _data.deviceSplit() : const [];
+    _bookends = _data.dayBookends(_day);
+  }
+
   Future<void> _initialLoad() async {
     await Future<void>.delayed(Duration.zero); // let the first frame paint
     if (!mounted) return;
@@ -66,9 +104,8 @@ class _InsightsViewState extends State<InsightsView> {
     });
     await Future<void>.delayed(Duration.zero); // paint before the heavy scan
     if (!mounted) return;
-    final daily = _data.dailyTotals(kHeatmapWeeks * 7);
     setState(() {
-      _daily = daily;
+      _loadHistory();
       _dailyReady = true;
     });
   }
@@ -97,8 +134,8 @@ class _InsightsViewState extends State<InsightsView> {
     setState(() {
       _dailyReady = true;
       _week = _data.compareWeeks();
-      _daily = _data.dailyTotals(kHeatmapWeeks * 7);
       _timeline = _data.dayTimeline(_day);
+      _loadHistory();
     });
   }
 
@@ -114,6 +151,7 @@ class _InsightsViewState extends State<InsightsView> {
     setState(() {
       _day = clamped;
       _timeline = _data.dayTimeline(clamped);
+      _bookends = _data.dayBookends(clamped);
     });
   }
 
@@ -123,9 +161,6 @@ class _InsightsViewState extends State<InsightsView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final theme = FluentTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     if (!_ready) {
       return const Padding(
         padding: EdgeInsets.symmetric(vertical: 96),
@@ -137,6 +172,43 @@ class _InsightsViewState extends State<InsightsView> {
       builder: (context, constraints) {
         final isWide = constraints.maxWidth >= 1050;
 
+        // Two cards side by side when wide, stacked otherwise. A null side
+        // lets the other take the full row. Includes the trailing gap.
+        Widget pair(Widget? first, Widget? second) {
+          final a = first ?? second;
+          final b = first == null ? null : second;
+          if (a == null) return const SizedBox.shrink();
+          if (b == null) {
+            return Padding(padding: const EdgeInsets.only(bottom: 16), child: a);
+          }
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: isWide
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: a),
+                      const SizedBox(width: 16),
+                      Expanded(child: b),
+                    ],
+                  )
+                : Column(children: [a, const SizedBox(height: 16), b]),
+          );
+        }
+
+        final today = _data.today;
+        final lastWeekDays = [
+          for (var i = 6; i >= 0; i--)
+            _daily[today.subtract(Duration(days: i))] ?? Duration.zero,
+        ];
+        final weekStart = today.subtract(const Duration(days: 6));
+        final weekEntries = ManualLog.instance.entries
+            .where((e) => !e.start.isBefore(weekStart))
+            .toList();
+        final highlights = _dailyReady
+            ? _buildHighlights(context, l10n, _week, _history)
+            : const <_Highlight>[];
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -144,32 +216,21 @@ class _InsightsViewState extends State<InsightsView> {
             if (_data.hasPeers) ...[
               Align(
                 alignment: AlignmentDirectional.centerStart,
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? const Color(0xFF131B28)
-                        : const Color(0xFFE2E8F0),
-                    borderRadius: BorderRadius.circular(9),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildPillToggle(
-                        selected: !_data.allDevices,
-                        icon: FluentIcons.devices2,
-                        label: l10n.insThisDevice,
-                        onTap: () => _setAllDevices(false),
-                      ),
-                      const SizedBox(width: 2),
-                      _buildPillToggle(
-                        selected: _data.allDevices,
-                        icon: FluentIcons.cloud,
-                        label: l10n.insAllDevices,
-                        onTap: () => _setAllDevices(true),
-                      ),
-                    ],
-                  ),
+                child: PillToggle(
+                  options: [
+                    PillOption(
+                      selected: !_data.allDevices,
+                      icon: FluentIcons.devices2,
+                      label: l10n.insThisDevice,
+                      onTap: () => _setAllDevices(false),
+                    ),
+                    PillOption(
+                      selected: _data.allDevices,
+                      icon: FluentIcons.cloud,
+                      label: l10n.insAllDevices,
+                      onTap: () => _setAllDevices(true),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
@@ -185,11 +246,22 @@ class _InsightsViewState extends State<InsightsView> {
             ),
             const SizedBox(height: 16),
 
+            // Plain-language summary built from the numbers below
+            if (_dailyReady && highlights.isNotEmpty) ...[
+              _Card(
+                title: l10n.insHighlightsTitle,
+                icon: FluentIcons.lightbulb,
+                accentColor: _warning(context),
+                child: _HighlightsBody(items: highlights),
+              ),
+              const SizedBox(height: 16),
+            ],
+
             // 26-Week Activity Heatmap (Full Width)
             _Card(
               title: l10n.insHeatmapTitle,
               icon: FluentIcons.calendar,
-              accentColor: const Color(0xFF10B981),
+              accentColor: _success(context),
               trailing: _dailyReady ? _buildHeatmapSummaryBadge(context) : null,
               child: _dailyReady
                   ? ActivityHeatmap(
@@ -204,101 +276,125 @@ class _InsightsViewState extends State<InsightsView> {
             ),
             const SizedBox(height: 16),
 
-            // Two-column or stacked layout for Trends & Timeline
-            if (isWide)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _Card(
-                      title: l10n.insTrendsTitle,
-                      icon: FluentIcons.trending12,
-                      accentColor: const Color(0xFF6366F1),
-                      child: _TrendsBody(week: _week),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _Card(
-                      title: l10n.insTimelineTitle,
-                      icon: FluentIcons.timeline_delivery,
-                      accentColor: const Color(0xFFF59E0B),
-                      child: _TimelineBody(
-                        timeline: _timeline,
-                        canGoNext: _day.isBefore(_data.today),
-                        onPrev: () =>
-                            _selectDay(_day.subtract(const Duration(days: 1))),
-                        onNext: () =>
-                            _selectDay(_day.add(const Duration(days: 1))),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            else ...[
+            pair(
               _Card(
                 title: l10n.insTrendsTitle,
                 icon: FluentIcons.trending12,
-                accentColor: const Color(0xFF6366F1),
+                accentColor: _primary(context),
                 child: _TrendsBody(week: _week),
               ),
-              const SizedBox(height: 16),
               _Card(
                 title: l10n.insTimelineTitle,
                 icon: FluentIcons.timeline_delivery,
-                accentColor: const Color(0xFFF59E0B),
+                accentColor: _warning(context),
                 child: _TimelineBody(
                   timeline: _timeline,
+                  bookends: _bookends,
                   canGoNext: _day.isBefore(_data.today),
-                  onPrev: () =>
-                      _selectDay(_day.subtract(const Duration(days: 1))),
+                  onPrev: () => _selectDay(_day.subtract(const Duration(days: 1))),
                   onNext: () => _selectDay(_day.add(const Duration(days: 1))),
                 ),
               ),
-            ],
-            const SizedBox(height: 16),
+            ),
 
-            // Two-column or stacked layout for Time Log & Search
-            if (isWide)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _Card(
-                      title: l10n.tlTitle,
-                      icon: FluentIcons.stopwatch,
-                      accentColor: const Color(0xFF06B6D4),
-                      child: const TimeLogCard(),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _Card(
-                      title: l10n.insSearchTitle,
-                      icon: FluentIcons.search,
-                      accentColor: const Color(0xFF8B5CF6),
-                      child: _SearchBody(
-                        controller: _query,
-                        hits: _hits,
-                        hasTitles: _hasTitles,
-                        onChanged: _search,
+            if (_dailyReady) ...[
+              // When you are most active (weekday x hour)
+              if (_history.hasHourly) ...[
+                _Card(
+                  title: l10n.insPatternTitle,
+                  icon: FluentIcons.clock,
+                  accentColor: _secondary(context),
+                  child: _PatternBody(history: _history),
+                ),
+                const SizedBox(height: 16),
+              ],
+
+              pair(
+                _Card(
+                  title: l10n.insRecordsTitle,
+                  icon: FluentIcons.trophy,
+                  accentColor: _warning(context),
+                  child: _RecordsBody(history: _history, lastWeekDays: lastWeekDays),
+                ),
+                _history.hasFocusData
+                    ? _Card(
+                        title: l10n.insFocusTitle,
+                        icon: FluentIcons.skype_circle_check,
+                        accentColor: _success(context),
+                        child: _FocusBody(history: _history),
+                      )
+                    : null,
+              ),
+
+              pair(
+                _history.hasHabitsData || _longest != null
+                    ? _Card(
+                        title: l10n.insHabitsTitle,
+                        icon: FluentIcons.repeat_all,
+                        accentColor: _primary(context),
+                        child: _HabitsBody(history: _history, longest: _longest),
+                      )
+                    : null,
+                _history.trends.isEmpty
+                    ? null
+                    : _Card(
+                        title: l10n.insAppTrendsTitle,
+                        icon: FluentIcons.bar_chart_vertical,
+                        accentColor: _secondary(context),
+                        child: _AppTrendsBody(trends: _history.trends),
                       ),
-                    ),
+              ),
+
+              pair(
+                _Card(
+                  title: l10n.insTrackedVsLoggedTitle,
+                  icon: FluentIcons.stopwatch,
+                  accentColor: _primary(context),
+                  child: _TrackedVsLoggedBody(
+                    tracked: lastWeekDays.fold(Duration.zero, (a, d) => a + d),
+                    entries: weekEntries,
                   ),
-                ],
-              )
-            else ...[
+                ),
+                _devices.length > 1
+                    ? _Card(
+                        title: l10n.insDevicesTitle,
+                        icon: FluentIcons.devices2,
+                        accentColor: _primary(context),
+                        child: _DevicesBody(shares: _devices),
+                      )
+                    : (_topTitles.isEmpty
+                        ? null
+                        : _Card(
+                            title: l10n.insTopWindowsTitle,
+                            icon: FluentIcons.tab_center,
+                            accentColor: _secondary(context),
+                            child: _TopWindowsBody(hits: _topTitles),
+                          )),
+              ),
+
+              if (_devices.length > 1 && _topTitles.isNotEmpty) ...[
+                _Card(
+                  title: l10n.insTopWindowsTitle,
+                  icon: FluentIcons.tab_center,
+                  accentColor: _secondary(context),
+                  child: _TopWindowsBody(hits: _topTitles),
+                ),
+                const SizedBox(height: 16),
+              ],
+            ],
+
+            // Manual time log + window title search
+            pair(
               _Card(
                 title: l10n.tlTitle,
                 icon: FluentIcons.stopwatch,
-                accentColor: const Color(0xFF06B6D4),
+                accentColor: _primary(context),
                 child: const TimeLogCard(),
               ),
-              const SizedBox(height: 16),
               _Card(
                 title: l10n.insSearchTitle,
                 icon: FluentIcons.search,
-                accentColor: const Color(0xFF8B5CF6),
+                accentColor: _secondary(context),
                 child: _SearchBody(
                   controller: _query,
                   hits: _hits,
@@ -306,70 +402,10 @@ class _InsightsViewState extends State<InsightsView> {
                   onChanged: _search,
                 ),
               ),
-            ],
+            ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildPillToggle({
-    required bool selected,
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    final theme = FluentTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: selected
-                ? (isDark ? const Color(0xFF243044) : Colors.white)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(7),
-            boxShadow: selected
-                ? [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.08),
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 13,
-                color: selected
-                    ? (isDark ? Colors.white : theme.accentColor.normal)
-                    : theme.typography.caption?.color?.withValues(alpha: 0.7),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  color: selected
-                      ? (isDark ? Colors.white : const Color(0xFF0F172A))
-                      : theme.typography.caption?.color?.withValues(alpha: 0.7),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
@@ -383,23 +419,23 @@ class _InsightsViewState extends State<InsightsView> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: const Color(0xFF10B981).withValues(alpha: 0.12),
+        color: _success(context).withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(FluentIcons.check_mark, size: 10, color: Color(0xFF10B981)),
+          Icon(FluentIcons.check_mark, size: 10, color: _success(context)),
           const SizedBox(width: 6),
           Text(
             AppLocalizations.of(context)!.insActiveDaysSummary(
               activeDays,
               totalDuration.toHourMinuteFormat(),
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF10B981),
+              color: _success(context),
             ),
           ),
         ],
@@ -446,7 +482,7 @@ class _CardState extends State<_Card> {
         curve: Curves.easeOutCubic,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF141C2B) : Colors.white,
+          color: _surface(theme),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: _isHovered
@@ -565,7 +601,7 @@ class _HeroHighlights extends StatelessWidget {
               badgeText: week.hasData ? _signed(week.delta) : null,
               isPositiveDelta: !week.delta.isNegative,
               icon: FluentIcons.calendar_week,
-              accentColor: const Color(0xFF6366F1),
+              accentColor: _primary(context),
             ),
 
             // Card 2: 26-Week Consistency
@@ -580,7 +616,7 @@ class _HeroHighlights extends StatelessWidget {
                   : null,
               isPositiveDelta: true,
               icon: FluentIcons.flame_solid,
-              accentColor: const Color(0xFF10B981),
+              accentColor: _success(context),
             ),
 
             // Card 3: Selected Day
@@ -594,7 +630,7 @@ class _HeroHighlights extends StatelessWidget {
                   ? l10n.insAppsCount(timeline.topApps.length)
                   : null,
               icon: FluentIcons.timeline_delivery,
-              accentColor: const Color(0xFFF59E0B),
+              accentColor: _warning(context),
             ),
 
             // Card 4: Manual Time Log status
@@ -612,7 +648,7 @@ class _HeroHighlights extends StatelessWidget {
               isPositiveDelta: running != null,
               isLive: running != null,
               icon: FluentIcons.stopwatch,
-              accentColor: const Color(0xFF06B6D4),
+              accentColor: _primary(context),
             ),
         ];
 
@@ -673,7 +709,7 @@ class _StatTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF141C2B) : Colors.white,
+        color: _surface(theme),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: theme.resources.cardStrokeColorDefault,
@@ -748,10 +784,10 @@ class _StatTile extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: isLive
-                        ? const Color(0xFFEF4444).withValues(alpha: 0.15)
+                        ? _danger(context).withValues(alpha: 0.15)
                         : (isPositiveDelta
-                            ? const Color(0xFF10B981).withValues(alpha: 0.12)
-                            : const Color(0xFFF59E0B).withValues(alpha: 0.12)),
+                            ? _success(context).withValues(alpha: 0.12)
+                            : _warning(context).withValues(alpha: 0.12)),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Row(
@@ -761,8 +797,8 @@ class _StatTile extends StatelessWidget {
                         Container(
                           width: 5,
                           height: 5,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFEF4444),
+                          decoration: BoxDecoration(
+                            color: _danger(context),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -774,10 +810,10 @@ class _StatTile extends StatelessWidget {
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
                           color: isLive
-                              ? const Color(0xFFEF4444)
+                              ? _danger(context)
                               : (isPositiveDelta
-                                  ? const Color(0xFF10B981)
-                                  : const Color(0xFFF59E0B)),
+                                  ? _success(context)
+                                  : _warning(context)),
                         ),
                       ),
                     ],
@@ -793,9 +829,17 @@ class _StatTile extends StatelessWidget {
 
 // ─── Trends ────────────────────────────────────────────────────────────────
 
-const Color _kUp = Color(0xFF10B981);
-const Color _kDown = Color(0xFFF59E0B);
-const Color _kTrendAccent = Color(0xFF6366F1);
+/// Card surface, matching the other Reports cards: mica in dark mode, white in
+/// light mode.
+Color _surface(FluentThemeData theme) =>
+    theme.brightness == Brightness.dark ? theme.micaBackgroundColor : Colors.white;
+
+// Semantic colors come from the user's theme so custom themes carry through.
+Color _primary(BuildContext c) => AppDesign.of(c).primaryAccent;
+Color _secondary(BuildContext c) => AppDesign.of(c).secondaryAccent;
+Color _success(BuildContext c) => AppDesign.of(c).successColor;
+Color _warning(BuildContext c) => AppDesign.of(c).warningColor;
+Color _danger(BuildContext c) => AppDesign.of(c).errorColor;
 
 class _TrendsBody extends StatelessWidget {
   final WeekComparison week;
@@ -803,7 +847,7 @@ class _TrendsBody extends StatelessWidget {
 
   static Color _deltaColor(BuildContext context, Duration d) => d == Duration.zero
       ? (FluentTheme.of(context).typography.caption?.color ?? Colors.grey)
-      : (d.isNegative ? _kDown : _kUp);
+      : (d.isNegative ? _warning(context) : _success(context));
 
   /// "▲ +1h 20m · 12%" style chip; percent is omitted without a baseline.
   static Widget _deltaChip(BuildContext context, Duration cur, Duration prev,
@@ -983,7 +1027,7 @@ class _TrendsBody extends StatelessWidget {
                       widthFactor: (c.current.inSeconds / catMax).clamp(0.0, 1.0),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: _kTrendAccent,
+                          color: _primary(context),
                           borderRadius: BorderRadius.circular(3),
                         ),
                       ),
@@ -1057,7 +1101,7 @@ class _TrendsBody extends StatelessWidget {
             _deltaChip(context, week.current, week.previous, large: true),
           ],
         ),
-        weekRow(l10n.insThisWeek, week.current, _kTrendAccent, strong: true),
+        weekRow(l10n.insThisWeek, week.current, _primary(context), strong: true),
         weekRow(l10n.insLastWeek, week.previous, ghost),
 
         if (week.categories.isNotEmpty) ...[
@@ -1319,10 +1363,14 @@ class _ActivityHeatmapState extends State<ActivityHeatmap> {
         const SizedBox(height: 14),
 
         // Heatmap Legend & Selected Date Tag
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12,
+          runSpacing: 8,
           children: [
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   l10n.insLess,
@@ -1393,11 +1441,13 @@ const List<Color> _palette = [
 
 class _TimelineBody extends StatelessWidget {
   final DayTimeline timeline;
+  final DayBookends? bookends;
   final bool canGoNext;
   final VoidCallback onPrev;
   final VoidCallback onNext;
   const _TimelineBody({
     required this.timeline,
+    this.bookends,
     required this.canGoNext,
     required this.onPrev,
     required this.onNext,
@@ -1612,21 +1662,26 @@ class _TimelineBody extends StatelessWidget {
             ],
           ),
 
+          if (bookends != null) ...[
+            const SizedBox(height: 14),
+            _BookendsRow(bookends: bookends!),
+          ],
+
           if (timeline.unplacedSeconds >= 60)
             Padding(
               padding: const EdgeInsets.only(top: 12),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF59E0B).withValues(alpha: 0.1),
+                  color: _warning(context).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
-                  border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.3)),
+                  border: Border.all(color: _warning(context).withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   l10n.insTimelineUnplaced(
                       Duration(seconds: timeline.unplacedSeconds).toHourMinuteFormat()),
                   style: theme.typography.caption?.copyWith(
-                    color: const Color(0xFFF59E0B),
+                    color: _warning(context),
                     fontSize: 11,
                   ),
                 ),

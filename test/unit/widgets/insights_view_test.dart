@@ -8,13 +8,39 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/data_controllers/insights_data.dart';
 import 'package:screentime/sections/widgets/Reports/insights/insights_view.dart';
+import 'package:screentime/sections/widgets/Settings/theme_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final _today = DateTime(2026, 3, 18);
+
+HistoryInsights _richHistory(Map<DateTime, Duration> daily) {
+  final grid = List.generate(7, (d) => List.generate(24, (h) => (h >= 9 && h <= 17) ? (d < 5 ? 3000 : 600) : (h >= 23 ? 400 : 0)));
+  return HistoryInsights(
+    daily: daily,
+    weekdayHour: grid,
+    weekdayCount: List.filled(7, 26),
+    goal: const Duration(hours: 4),
+    currentStreak: 4,
+    longestStreak: 9,
+    busiestDay: MapEntry(_today.subtract(const Duration(days: 12)), const Duration(hours: 9, minutes: 5)),
+    lightestDay: MapEntry(_today.subtract(const Duration(days: 3)), const Duration(minutes: 20)),
+    busiestWeek: MapEntry(_today.subtract(const Duration(days: 40)), const Duration(hours: 41)),
+    productive: const WeekPair(20000, 15000),
+    other: const WeekPair(9000, 12000),
+    lateNight: const WeekPair(3000, 1000),
+    opens: const WeekPair(120, 150),
+    activeSeconds: const WeekPair(30000, 28000),
+    trends: const [
+      AppTrend('Code', [3600, 7200, 5400, 9000]),
+      AppTrend('A very long application name that should be clipped nicely', [100, 200, 300, 400]),
+    ],
+  );
+}
 
 class _FakeInsights extends InsightsData {
   _FakeInsights({this.titles = true, this.empty = false, this.peers = false})
@@ -37,6 +63,26 @@ class _FakeInsights extends InsightsData {
     totalsRequestedWithAllDevices.add(allDevices);
     return _totals(days);
   }
+
+  bool rich = false;
+
+  @override
+  HistoryInsights history(int days, {Duration? goal}) => rich
+      ? _richHistory(dailyTotals(days))
+      : HistoryInsights.fromDaily(dailyTotals(days));
+
+  @override
+  LongestBlock? longestBlock({int days = 7}) =>
+      rich ? LongestBlock(5400, 'Code', _today) : null;
+
+  @override
+  DayBookends? dayBookends(DateTime day) => rich
+      ? DayBookends('Mail', DateTime(2026, 3, 18, 8, 5), 'Code', DateTime(2026, 3, 18, 22, 40))
+      : null;
+
+  @override
+  List<TitleHit> topTitles({int days = 7, int limit = 5}) =>
+      rich ? [TitleHit('', 'Code', 'Scolect - main.dart', 3600, _today)] : const [];
 
   Map<DateTime, Duration> _totals(int days) => {
         for (var i = 0; i < days; i++)
@@ -79,7 +125,12 @@ class _FakeInsights extends InsightsData {
   }
 }
 
-Widget _app(Widget child) => FluentApp(
+Widget _app(Widget child) => ChangeNotifierProvider(
+      create: (_) => ThemeCustomizationProvider(),
+      child: _themedApp(child),
+    );
+
+Widget _themedApp(Widget child) => FluentApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -132,6 +183,28 @@ void main() {
     expect(find.text('Search window titles'), findsOneWidget);
     expect(find.text('+3h'), findsWidgets);
   });
+
+  for (final width in [1400.0, 700.0, 420.0]) {
+    testWidgets('long-range cards lay out without overflow at ${width.toInt()}px',
+        (tester) async {
+      tester.view.physicalSize = Size(width, 6000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(_app(InsightsView(data: _FakeInsights()..rich = true)));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Highlights'), findsOneWidget);
+      expect(find.text('When you are most active'), findsOneWidget);
+      expect(find.text('Streaks and records'), findsOneWidget);
+      expect(find.text('Focus vs everything else'), findsOneWidget);
+      expect(find.text('Usage habits'), findsOneWidget);
+      expect(find.text('Top apps, last 4 weeks'), findsOneWidget);
+      expect(find.text('First app of the day'), findsOneWidget);
+      expect(find.text('Most-used windows this week'), findsOneWidget);
+    });
+  }
 
   testWidgets('shows empty states when there is no data', (tester) async {
     tester.view.physicalSize = const Size(1400, 4000);

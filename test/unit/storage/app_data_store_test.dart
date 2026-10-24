@@ -698,6 +698,45 @@ void main() {
       expect(data.searchTitles('doc', days: 60).length, 1);
       expect(data.searchTitles(''), isEmpty);
     }, skip: !_desktop);
+
+    test('history finds streaks, records, peak hour and the focus split',
+        () async {
+      // Active today, yesterday and 2 days ago; a gap; then 5 and 6 days ago.
+      final data = await open(metadata: {
+        'a': meta('A', 'Development'),
+      }, usage: {
+        for (final n in [0, 1, 2, 5, 6])
+          _key('a', _daysAgo(n)): rec(_daysAgo(n), 60 + n, hourly: {14: (60 + n) * 60}),
+      });
+
+      final h = data.history(30);
+      expect(h.currentStreak, 3);
+      expect(h.longestStreak, 3);
+      expect(h.busiestDay!.key, _daysAgo(6));
+      expect(h.lightestDay!.key, _daysAgo(0));
+      expect(h.peakHour, 14);
+      expect(h.hasHourly, isTrue);
+      // `meta` marks apps productive, so all of it lands in the productive side.
+      expect(h.productive.current, greaterThan(0));
+      expect(h.other.current, 0);
+      expect(h.opens.current, 5);
+      expect(h.trends.single.name, 'A');
+    }, skip: !_desktop);
+
+    test('a streak under a daily goal breaks on a day over it', () async {
+      final data = await open(metadata: {
+        'a': meta('A', 'Development'),
+      }, usage: {
+        _key('a', _daysAgo(0)): rec(_daysAgo(0), 60),
+        _key('a', _daysAgo(1)): rec(_daysAgo(1), 300), // over the goal
+        _key('a', _daysAgo(2)): rec(_daysAgo(2), 60),
+      });
+
+      final h = data.history(14, goal: const Duration(hours: 2));
+      expect(h.currentStreak, 1);
+      expect(h.longestStreak, 1);
+      expect(data.history(14).currentStreak, 3);
+    }, skip: !_desktop);
   });
 
   group('category limits and digest against real data', () {

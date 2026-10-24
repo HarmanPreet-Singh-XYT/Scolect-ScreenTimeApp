@@ -4857,6 +4857,198 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get insHighlightsTitle => 'Highlights';
+
+  @override
+  String insHlWeekUp(int pct) {
+    return 'Screen time is up $pct% on last week';
+  }
+
+  @override
+  String insHlWeekDown(int pct) {
+    return 'Screen time is down $pct% on last week';
+  }
+
+  @override
+  String insHlDriver(String app, String delta) {
+    return '$app drove most of the change ($delta)';
+  }
+
+  @override
+  String insHlStreakGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days in a row under your daily limit',
+      one: '1 day in a row under your daily limit',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlStreakActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days in a row with activity',
+      one: '1 day in a row with activity',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlPeak(String hour) {
+    return 'You are most active around $hour';
+  }
+
+  @override
+  String insHlWeekday(String weekday) {
+    return '$weekday is your busiest day';
+  }
+
+  @override
+  String insHlFocus(int pct) {
+    return '$pct% of your time this week was in productive apps';
+  }
+
+  @override
+  String insHlLate(String time) {
+    return 'You spent $time late at night this week';
+  }
+
+  @override
+  String get insPatternTitle => 'When you are most active';
+
+  @override
+  String get insPeakHour => 'Peak hour';
+
+  @override
+  String get insBusiestWeekday => 'Busiest weekday';
+
+  @override
+  String insAvgPerDay(String time) {
+    return 'Avg $time per day';
+  }
+
+  @override
+  String get insRecordsTitle => 'Streaks and records';
+
+  @override
+  String get insCurrentStreak => 'Current streak';
+
+  @override
+  String get insLongestStreak => 'Longest streak';
+
+  @override
+  String get insBusiestDay => 'Busiest day';
+
+  @override
+  String get insLightestDay => 'Lightest day';
+
+  @override
+  String get insBusiestWeek => 'Busiest week';
+
+  @override
+  String insStreakGoalNote(String time) {
+    return 'Counting days under your $time daily limit.';
+  }
+
+  @override
+  String get insStreakActiveNote =>
+      'Counting days with any activity. Turn on an overall limit in Alerts and Limits to count days under a goal.';
+
+  @override
+  String insGoalProgress(int hit, int total) {
+    return 'Under your limit $hit of $total days in the last week';
+  }
+
+  @override
+  String get insFocusTitle => 'Focus vs everything else';
+
+  @override
+  String get insProductive => 'Productive';
+
+  @override
+  String get insOtherApps => 'Everything else';
+
+  @override
+  String insFocusShare(int pct) {
+    return '$pct% productive';
+  }
+
+  @override
+  String get insHabitsTitle => 'Usage habits';
+
+  @override
+  String get insAvgSession => 'Avg time per open';
+
+  @override
+  String get insOpensPerHour => 'Opens per active hour';
+
+  @override
+  String get insLongestBlock => 'Longest stretch';
+
+  @override
+  String insLongestBlockValue(String time, String app) {
+    return '$time in $app';
+  }
+
+  @override
+  String get insLateNight => 'Late night (11 pm to 5 am)';
+
+  @override
+  String get insVsLastWeek => 'vs last week';
+
+  @override
+  String get insAppTrendsTitle => 'Top apps, last 4 weeks';
+
+  @override
+  String insWeeksAgo(int count) {
+    return '${count}w ago';
+  }
+
+  @override
+  String get insTrackedVsLoggedTitle => 'Tracked vs logged';
+
+  @override
+  String get insTracked => 'App time';
+
+  @override
+  String get insLogged => 'Logged by hand';
+
+  @override
+  String get insNothingLogged => 'Nothing logged in the last 7 days.';
+
+  @override
+  String get insDevicesTitle => 'By device';
+
+  @override
+  String get insTopWindowsTitle => 'Most-used windows this week';
+
+  @override
+  String get insFirstApp => 'First app of the day';
+
+  @override
+  String get insLastApp => 'Last app of the day';
+
+  @override
+  String get insNow => 'Now';
+
+  @override
+  String get insStreakAtRecord => 'You are at your longest streak';
+
+  @override
+  String insStreakToRecord(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count more days to beat your record',
+      one: '1 more day to beat your record',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get insTimelineTitle => 'Day timeline';
 
   @override

@@ -3073,6 +3073,174 @@
       }
     }
   },
+  "insHighlightsTitle": "Highlights",
+  "insHlWeekUp": "Screen time is up {pct}% on last week",
+  "@insHlWeekUp": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "insHlWeekDown": "Screen time is down {pct}% on last week",
+  "@insHlWeekDown": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "insHlDriver": "{app} drove most of the change ({delta})",
+  "@insHlDriver": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "insHlStreakGoal": "{count, plural, =1{1 day in a row under your daily limit} other{{count} days in a row under your daily limit}}",
+  "@insHlStreakGoal": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insHlStreakActive": "{count, plural, =1{1 day in a row with activity} other{{count} days in a row with activity}}",
+  "@insHlStreakActive": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insHlPeak": "You are most active around {hour}",
+  "@insHlPeak": {
+    "placeholders": {
+      "hour": {
+        "type": "String"
+      }
+    }
+  },
+  "insHlWeekday": "{weekday} is your busiest day",
+  "@insHlWeekday": {
+    "placeholders": {
+      "weekday": {
+        "type": "String"
+      }
+    }
+  },
+  "insHlFocus": "{pct}% of your time this week was in productive apps",
+  "@insHlFocus": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "insHlLate": "You spent {time} late at night this week",
+  "@insHlLate": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insPatternTitle": "When you are most active",
+  "insPeakHour": "Peak hour",
+  "insBusiestWeekday": "Busiest weekday",
+  "insAvgPerDay": "Avg {time} per day",
+  "@insAvgPerDay": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insRecordsTitle": "Streaks and records",
+  "insCurrentStreak": "Current streak",
+  "insLongestStreak": "Longest streak",
+  "insBusiestDay": "Busiest day",
+  "insLightestDay": "Lightest day",
+  "insBusiestWeek": "Busiest week",
+  "insStreakGoalNote": "Counting days under your {time} daily limit.",
+  "@insStreakGoalNote": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "insStreakActiveNote": "Counting days with any activity. Turn on an overall limit in Alerts and Limits to count days under a goal.",
+  "insGoalProgress": "Under your limit {hit} of {total} days in the last week",
+  "@insGoalProgress": {
+    "placeholders": {
+      "hit": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "insFocusTitle": "Focus vs everything else",
+  "insProductive": "Productive",
+  "insOtherApps": "Everything else",
+  "insFocusShare": "{pct}% productive",
+  "@insFocusShare": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "insHabitsTitle": "Usage habits",
+  "insAvgSession": "Avg time per open",
+  "insOpensPerHour": "Opens per active hour",
+  "insLongestBlock": "Longest stretch",
+  "insLongestBlockValue": "{time} in {app}",
+  "@insLongestBlockValue": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "insLateNight": "Late night (11 pm to 5 am)",
+  "insVsLastWeek": "vs last week",
+  "insAppTrendsTitle": "Top apps, last 4 weeks",
+  "insWeeksAgo": "{count}w ago",
+  "@insWeeksAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "insTrackedVsLoggedTitle": "Tracked vs logged",
+  "insTracked": "App time",
+  "insLogged": "Logged by hand",
+  "insNothingLogged": "Nothing logged in the last 7 days.",
+  "insDevicesTitle": "By device",
+  "insTopWindowsTitle": "Most-used windows this week",
+  "insFirstApp": "First app of the day",
+  "insLastApp": "Last app of the day",
+  "insNow": "Now",
+  "insStreakAtRecord": "You are at your longest streak",
+  "insStreakToRecord": "{count, plural, =1{1 more day to beat your record} other{{count} more days to beat your record}}",
+  "@insStreakToRecord": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "insTimelineTitle": "Day timeline",
   "insTimelineOther": "Other apps",
   "insTimelineEmpty": "No activity recorded for this day.",

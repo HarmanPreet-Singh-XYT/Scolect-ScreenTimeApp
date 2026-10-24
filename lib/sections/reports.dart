@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/widgets/Reports/insights/insights_view.dart';
+import 'package:screentime/sections/widgets/Reports/insights/pill_toggle.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/main.dart';
 import 'package:screentime/sections/graphs/reports_line_chart.dart';
@@ -420,90 +421,21 @@ class _ReportsState extends State<Reports> {
 
   Widget _buildViewToggle() {
     final l10n = AppLocalizations.of(context)!;
-    final theme = FluentTheme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    Widget pill({
-      required bool selected,
-      required IconData icon,
-      required String label,
-      required VoidCallback onTap,
-    }) {
-      return MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutCubic,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: selected
-                  ? (isDark ? const Color(0xFF243044) : Colors.white)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: selected
-                  ? [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.08),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: 13,
-                  color: selected
-                      ? (isDark ? Colors.white : theme.accentColor.normal)
-                      : theme.typography.caption?.color?.withValues(alpha: 0.7),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                    color: selected
-                        ? (isDark ? Colors.white : const Color(0xFF0F172A))
-                        : theme.typography.caption?.color?.withValues(alpha: 0.7),
-                  ),
-                ),
-              ],
-            ),
-          ),
+    return PillToggle(
+      options: [
+        PillOption(
+          selected: !_showInsights,
+          icon: FluentIcons.chart,
+          label: l10n.navReports,
+          onTap: () => setState(() => _showInsights = false),
         ),
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF131B28) : const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          pill(
-            selected: !_showInsights,
-            icon: FluentIcons.chart,
-            label: l10n.navReports,
-            onTap: () => setState(() => _showInsights = false),
-          ),
-          const SizedBox(width: 2),
-          pill(
-            selected: _showInsights,
-            icon: FluentIcons.insights,
-            label: l10n.insTitle,
-            onTap: () => setState(() => _showInsights = true),
-          ),
-        ],
-      ),
+        PillOption(
+          selected: _showInsights,
+          icon: FluentIcons.insights,
+          label: l10n.insTitle,
+          onTap: () => setState(() => _showInsights = true),
+        ),
+      ],
     );
   }
 

@@ -4552,51 +4552,51 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String insLastWeekValue(String time) {
-    return 'Last: $time';
+    return '上周：$time';
   }
 
   @override
-  String get insConsistency => 'Consistency';
+  String get insConsistency => '持续性';
 
   @override
   String insDaysCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count days',
-      one: '1 day',
+      other: '$count天',
+      one: '1天',
     );
     return '$_temp0';
   }
 
   @override
   String insAvgPerActiveDay(String time) {
-    return 'Avg $time / active day';
+    return '活跃日均 $time';
   }
 
   @override
-  String get insSelectedDay => 'Selected day';
+  String get insSelectedDay => '所选日期';
 
   @override
   String insAppsCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count apps',
-      one: '1 app',
+      other: '$count个应用',
+      one: '1个应用',
     );
     return '$_temp0';
   }
 
   @override
-  String get insIdle => 'Idle';
+  String get insIdle => '空闲';
 
   @override
-  String get insLive => 'LIVE';
+  String get insLive => '实时';
 
   @override
   String insTodayValue(String time) {
-    return 'Today: $time';
+    return '今天：$time';
   }
 
   @override
@@ -4604,8 +4604,8 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       days,
       locale: localeName,
-      other: '$days active days',
-      one: '1 active day',
+      other: '$days个活跃日',
+      one: '1个活跃日',
     );
     return '$_temp0 · $time';
   }
@@ -4620,15 +4620,206 @@ class AppLocalizationsZh extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '$count matching windows',
-      one: '1 matching window',
+      other: '$count个匹配窗口',
+      one: '1个匹配窗口',
     );
     return '$_temp0';
   }
 
   @override
   String insShowingFirst(int shown, int total) {
-    return 'Showing the first $shown of $total';
+    return '显示前 $shown 项（共 $total 项）';
+  }
+
+  @override
+  String get insHighlightsTitle => '亮点概览';
+
+  @override
+  String insHlWeekUp(int pct) {
+    return '屏幕使用时间比上周增加 $pct%';
+  }
+
+  @override
+  String insHlWeekDown(int pct) {
+    return '屏幕使用时间比上周减少 $pct%';
+  }
+
+  @override
+  String insHlDriver(String app, String delta) {
+    return '$app 是主要变化来源（$delta）';
+  }
+
+  @override
+  String insHlStreakGoal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '连续 $count 天未超过每日限额',
+      one: '连续 1 天未超过每日限额',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlStreakActive(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '连续 $count 天有活动记录',
+      one: '连续 1 天有活动记录',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String insHlPeak(String hour) {
+    return '你在 $hour 左右最为活跃';
+  }
+
+  @override
+  String insHlWeekday(String weekday) {
+    return '$weekday 是你最忙碌的一天';
+  }
+
+  @override
+  String insHlFocus(int pct) {
+    return '本周 $pct% 的时间用于高效应用';
+  }
+
+  @override
+  String insHlLate(String time) {
+    return '本周深夜时间共计 $time';
+  }
+
+  @override
+  String get insPatternTitle => '活跃时段分布';
+
+  @override
+  String get insPeakHour => '高峰时段';
+
+  @override
+  String get insBusiestWeekday => '最忙碌工作日';
+
+  @override
+  String insAvgPerDay(String time) {
+    return '日均 $time';
+  }
+
+  @override
+  String get insRecordsTitle => '连续与纪录';
+
+  @override
+  String get insCurrentStreak => '当前连续天数';
+
+  @override
+  String get insLongestStreak => '最长连续天数';
+
+  @override
+  String get insBusiestDay => '最忙碌日';
+
+  @override
+  String get insLightestDay => '最轻松日';
+
+  @override
+  String get insBusiestWeek => '最忙碌周';
+
+  @override
+  String insStreakGoalNote(String time) {
+    return '计算低于每日 $time 限额的天数。';
+  }
+
+  @override
+  String get insStreakActiveNote => '计算有任何活动的天数。在“提醒与限制”中启用整体限额以按目标统计。';
+
+  @override
+  String insGoalProgress(int hit, int total) {
+    return '上周有 $hit/$total 天未超过限额';
+  }
+
+  @override
+  String get insFocusTitle => '专注与其他';
+
+  @override
+  String get insProductive => '高效';
+
+  @override
+  String get insOtherApps => '其他全部';
+
+  @override
+  String insFocusShare(int pct) {
+    return '高效占比 $pct%';
+  }
+
+  @override
+  String get insHabitsTitle => '使用习惯';
+
+  @override
+  String get insAvgSession => '每次打开平均时长';
+
+  @override
+  String get insOpensPerHour => '每活跃小时打开次数';
+
+  @override
+  String get insLongestBlock => '最长连续使用';
+
+  @override
+  String insLongestBlockValue(String time, String app) {
+    return '$app 中使用 $time';
+  }
+
+  @override
+  String get insLateNight => '深夜时段（晚上 11 点至凌晨 5 点）';
+
+  @override
+  String get insVsLastWeek => '对比上周';
+
+  @override
+  String get insAppTrendsTitle => '常用应用（过去 4 周）';
+
+  @override
+  String insWeeksAgo(int count) {
+    return '$count 周前';
+  }
+
+  @override
+  String get insTrackedVsLoggedTitle => '自动跟踪与手动记录';
+
+  @override
+  String get insTracked => '应用时长';
+
+  @override
+  String get insLogged => '手动记录';
+
+  @override
+  String get insNothingLogged => '过去 7 天内无手动记录。';
+
+  @override
+  String get insDevicesTitle => '按设备';
+
+  @override
+  String get insTopWindowsTitle => '本周使用最多的窗口';
+
+  @override
+  String get insFirstApp => '当天首个应用';
+
+  @override
+  String get insLastApp => '当天最后应用';
+
+  @override
+  String get insNow => '现在';
+
+  @override
+  String get insStreakAtRecord => '已达到最长连续纪录';
+
+  @override
+  String insStreakToRecord(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '再保持 $count 天即可打破纪录',
+      one: '再保持 1 天即可打破纪录',
+    );
+    return '$_temp0';
   }
 
   @override
