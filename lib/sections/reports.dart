@@ -392,7 +392,7 @@ class _ReportsState extends State<Reports> {
   }
 
   Widget _buildBody() {
-    if (_showInsights && !kIsWeb) return const InsightsView();
+    if (_showInsights) return const InsightsView();
     if (_isLoading) return const _LoadingIndicator();
     if (_error != null) {
       return _ErrorDisplay(
@@ -441,7 +441,7 @@ class _ReportsState extends State<Reports> {
 
   Widget _buildHeader() {
     final l10n = AppLocalizations.of(context)!;
-    final isInsights = _showInsights && !kIsWeb;
+    final isInsights = _showInsights;
 
     Widget buildTitle(BuildContext context) => Text(
           isInsights ? l10n.insTitle : _l10n.usageAnalytics,
@@ -452,7 +452,7 @@ class _ReportsState extends State<Reports> {
           overflow: TextOverflow.ellipsis,
         );
 
-    final viewToggle = !kIsWeb ? _buildViewToggle() : null;
+    final viewToggle = _buildViewToggle();
 
     if (isInsights) {
       return LayoutBuilder(
@@ -461,7 +461,7 @@ class _ReportsState extends State<Reports> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(child: buildTitle(context)),
-              if (viewToggle != null) viewToggle,
+              viewToggle,
             ],
           );
         },
@@ -515,7 +515,7 @@ class _ReportsState extends State<Reports> {
                 runSpacing: 8,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  if (viewToggle != null) viewToggle,
+                  viewToggle,
                   if (exportButton != null) exportButton,
                 ],
               ),
@@ -529,10 +529,8 @@ class _ReportsState extends State<Reports> {
             Flexible(child: buildTitle(context)),
             Row(
               children: [
-                if (viewToggle != null) ...[
-                  viewToggle,
-                  const SizedBox(width: 12),
-                ],
+                viewToggle,
+                const SizedBox(width: 12),
                 if (exportButton != null)
                   Padding(
                     padding: const EdgeInsets.only(right: 12),

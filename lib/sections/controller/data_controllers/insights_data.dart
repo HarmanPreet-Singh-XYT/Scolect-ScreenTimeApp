@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/utils/device_snapshot.dart';
 import 'package:screentime/utils/private_mode_access.dart';
@@ -8,7 +9,7 @@ import 'package:screentime/utils/private_mode_access.dart';
 typedef InsightsFilter = bool Function(String appId, AppMetadata? meta);
 
 bool defaultInsightsFilter(String appId, AppMetadata? meta) {
-  if (appId.startsWith('web:')) return false; // websites have their own views
+  if (!kIsWeb && appId.startsWith('web:')) return false; // websites have their own views on desktop
   final isPrivate = meta?.isPrivate ?? false;
   if (shouldShowPrivateOnly()) return isPrivate;
   return !isPrivate || shouldIncludePrivateInTotals();

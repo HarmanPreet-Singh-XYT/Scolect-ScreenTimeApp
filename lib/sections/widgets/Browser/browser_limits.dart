@@ -1,7 +1,15 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/l10n/app_localizations.dart';
+import 'package:screentime/sections/controller/data_controllers/alerts_limits_data_controller.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
+import 'package:screentime/sections/controller/settings_data_controller.dart';
+import 'package:screentime/sections/widgets/AlertsLimits/overalllimit.dart';
+import 'package:screentime/sections/widgets/Settings/category_limits_section.dart';
+import 'package:screentime/sections/widgets/Settings/category_rules_section.dart';
+import 'package:screentime/sections/widgets/Settings/custom_categories_section.dart';
+import 'package:screentime/web/extension_settings.dart'
+    if (dart.library.io) 'package:screentime/web/extension_settings_stub.dart';
 import 'browser_shared.dart';
 import 'browser_websites.dart' show showBrowserLimitPicker, formatBrowserLimit;
 
@@ -21,6 +29,12 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   bool _isLoading = true;
   String _search = '';
 
+  // Overall limit state
+  bool _overallLimitEnabled = false;
+  double _overallLimitHours = 2.0;
+  double _overallLimitMinutes = 0.0;
+  Duration _overallUsage = Duration.zero;
+
   @override
   void initState() {
     super.initState();
@@ -37,14 +51,68 @@ class _BrowserLimitsState extends State<BrowserLimits> {
   Future<void> _loadData() async {
     try {
       final sites = await _provider.fetchAllWebsites(includeHistorical: true);
+      final settings = SettingsManager();
+      final summary = await _provider.fetchTodaySummary();
       if (!mounted) return;
       setState(() {
         _sites = sites;
+        _overallLimitEnabled =
+            settings.getSetting('limitsAlerts.overallLimit.enabled') ?? false;
+        _overallLimitHours =
+            settings.getSetting('limitsAlerts.overallLimit.hours')?.toDouble() ?? 2.0;
+        _overallLimitMinutes =
+            settings.getSetting('limitsAlerts.overallLimit.minutes')?.toDouble() ?? 0.0;
+        _overallUsage = summary.totalTime;
         _isLoading = false;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() => _isLoading = false);
+    }
+  }
+
+  void _onOverallEnabledChanged(bool value) {
+    setState(() => _overallLimitEnabled = value);
+    SettingsManager().updateSetting('limitsAlerts.overallLimit.enabled', value);
+    if (value) {
+      _syncOverallLimit();
+    } else {
+      ScreenTimeDataController().updateOverallLimit(Duration.zero, false);
+      if (kIsWeb) {
+        ExtensionSettings().setOverallLimit(seconds: 0, enabled: false);
+      }
+    }
+  }
+
+  void _onOverallHoursChanged(double value) {
+    setState(() => _overallLimitHours = value);
+    _syncOverallLimit();
+  }
+
+  void _onOverallMinutesChanged(double value) {
+    setState(() => _overallLimitMinutes = value);
+    _syncOverallLimit();
+  }
+
+  void _syncOverallLimit() {
+    final roundedMinutes = _overallLimitMinutes.round() ~/ 5 * 5;
+    final duration = Duration(
+      hours: _overallLimitHours.round(),
+      minutes: roundedMinutes,
+    );
+
+    SettingsManager().updateSetting(
+        'limitsAlerts.overallLimit.hours', _overallLimitHours.round());
+    SettingsManager().updateSetting(
+        'limitsAlerts.overallLimit.minutes', roundedMinutes);
+    ScreenTimeDataController()
+        .updateOverallLimit(duration, _overallLimitEnabled);
+
+    if (kIsWeb) {
+      ExtensionSettings().setOverallLimit(
+        seconds: duration.inSeconds,
+        enabled: _overallLimitEnabled,
+      );
     }
   }
 
@@ -196,6 +264,32 @@ class _BrowserLimitsState extends State<BrowserLimits> {
               );
             },
           ),
+
+          const SizedBox(height: 20),
+
+          // ── Overall Screen Time Limit ─────────────────────────────────
+          OverallLimitCard(
+            enabled: _overallLimitEnabled,
+            hours: _overallLimitHours,
+            minutes: _overallLimitMinutes,
+            totalScreenTime: _overallUsage,
+            onEnabledChanged: _onOverallEnabledChanged,
+            onHoursChanged: _onOverallHoursChanged,
+            onMinutesChanged: _onOverallMinutesChanged,
+          ),
+
+          const SizedBox(height: 20),
+
+          // ── Category Limits, Rules & Custom Categories ────────────────
+          const CategoryLimitsSection(),
+
+          const SizedBox(height: 16),
+
+          const CategoryRulesSection(),
+
+          const SizedBox(height: 16),
+
+          const CustomCategoriesSection(),
 
           const SizedBox(height: 20),
 

@@ -423,23 +423,11 @@ class _ContentLayout extends StatelessWidget {
         children: [
           Expanded(
             flex: 3,
-            child: Column(
-              children: [
-                appLimitsCard,
-                if (!kIsWeb) ...[
-                  _gap16,
-                  const CategoryLimitsSection(),
-                  _gap16,
-                  const CategoryRulesSection(),
-                  _gap16,
-                  const CustomCategoriesSection(),
-                ],
-              ],
-            ),
+            child: appLimitsCard,
           ),
           _gap20w,
           SizedBox(
-            width: 320,
+            width: 360,
             child: Column(
               children: [
                 notificationCard,
@@ -447,6 +435,12 @@ class _ContentLayout extends StatelessWidget {
                 blockingCard,
                 _gap16,
                 overallCard,
+                _gap16,
+                const CategoryLimitsSection(),
+                _gap16,
+                const CategoryRulesSection(),
+                _gap16,
+                const CustomCategoriesSection(),
               ],
             ),
           ),
@@ -460,21 +454,37 @@ class _ContentLayout extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: notificationCard),
+              Expanded(
+                child: Column(
+                  children: [
+                    notificationCard,
+                    _gap16,
+                    blockingCard,
+                  ],
+                ),
+              ),
               _gap16w,
-              Expanded(child: overallCard),
+              Expanded(
+                child: Column(
+                  children: [
+                    overallCard,
+                    _gap16,
+                    const CategoryLimitsSection(),
+                    _gap16,
+                    const CategoryRulesSection(),
+                    _gap16,
+                    const CustomCategoriesSection(),
+                  ],
+                ),
+              ),
             ],
           )
         else ...[
           notificationCard,
           _gap16,
+          blockingCard,
+          _gap16,
           overallCard,
-        ],
-        _gap16,
-        blockingCard,
-        _gap16,
-        appLimitsCard,
-        if (!kIsWeb) ...[
           _gap16,
           const CategoryLimitsSection(),
           _gap16,
@@ -482,6 +492,8 @@ class _ContentLayout extends StatelessWidget {
           _gap16,
           const CustomCategoriesSection(),
         ],
+        _gap16,
+        appLimitsCard,
       ],
     );
   }

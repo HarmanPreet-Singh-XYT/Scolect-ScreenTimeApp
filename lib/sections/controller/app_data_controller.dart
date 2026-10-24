@@ -3170,7 +3170,7 @@ class AppDataStore extends ChangeNotifier {
     final List<String> keysToFetch = [];
     final List<DateTime> dates = [];
     
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < 182; i++) {
       final d = now.subtract(Duration(days: i));
       final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
       keysToFetch.add('scolect_day_$dateKey');
