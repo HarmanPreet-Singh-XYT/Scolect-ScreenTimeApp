@@ -66,7 +66,11 @@ Future<void> _sendFromNative(String method, Map<String, dynamic> args) async {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUp(_startRecording);
+  setUp(() async {
+    _startRecording();
+    await localNotifier.setup(appName: 'Scolect');
+    _calls.clear();
+  });
   tearDown(_stopRecording);
 
   // ── LocalNotificationAction ──────────────────────────────────────────────────
