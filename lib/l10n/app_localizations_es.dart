@@ -25,6 +25,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sidebarSubtitle => 'Código Abierto';
 
   @override
+  String get startupDataStoreWarningTitle =>
+      'Your usage data could not be loaded';
+
+  @override
+  String startupDataStoreWarningBody(String path) {
+    return 'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to $path.';
+  }
+
+  @override
   String get trayShowWindow => 'Mostrar Ventana';
 
   @override

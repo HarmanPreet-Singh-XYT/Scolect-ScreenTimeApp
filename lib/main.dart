@@ -147,8 +147,40 @@ final NavigationState navigationState = NavigationState();
 void main(List<String> args) async {
   if (kIsWeb) {
     await _appMainWeb();
-  } else {
-    _appMain(args);
+    return;
+  }
+  // Desktop: log uncaught errors to a file so field reports are diagnosable.
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    _logStartupError('FlutterError', details.exception, details.stack);
+  };
+  runZonedGuarded(() => _appMain(args), (e, st) {
+    _logStartupError('Uncaught', e, st);
+  });
+}
+
+/// Error log written by [_logStartupError].
+String get _startupLogPath =>
+    '${Directory.systemTemp.path}${Platform.pathSeparator}scolect_error.log';
+
+/// Appends to `scolect_error.log` in the temp directory. Never throws.
+void _logStartupError(String where, Object error, StackTrace? stack) {
+  debugPrint('❌ $where: $error\n$stack');
+  try {
+    File(_startupLogPath).writeAsStringSync(
+      '${DateTime.now().toIso8601String()} [$where] $error\n$stack\n\n',
+      mode: FileMode.append,
+      flush: true,
+    );
+  } catch (_) {}
+}
+
+/// Runs a startup step that must never prevent the window from appearing.
+Future<void> _guardedStep(String name, Future<void> Function() step) async {
+  try {
+    await step();
+  } catch (e, st) {
+    _logStartupError('Startup step "$name"', e, st);
   }
 }
 
@@ -292,25 +324,15 @@ Future<void> _appMain(List<String> args) async {
   final bool wasSystemLaunchedWindows = args.contains('--auto-launched');
   bool wasSystemLaunchedMacOS = false;
 
-  bool existingInstanceFound = false;
-  try {
-    final socket = await Socket.connect(
-      InternetAddress.loopbackIPv4,
-      45999,
-      timeout: const Duration(milliseconds: 500),
-    );
-    socket.write('SHOW');
-    await socket.flush();
-    await socket.close();
-    debugPrint('✅ Sent SHOW to existing instance, exiting');
-    existingInstanceFound = true;
-  } catch (e) {
-    debugPrint('✅ No existing instance found, starting as primary');
-  }
+  // Only exit if the listener on the IPC port is actually Scolect (it acks);
+  // an unrelated program on that port must not stop the app from starting.
+  final bool existingInstanceFound =
+      await SingleInstanceIPC.notifyExistingInstance();
+  if (existingInstanceFound) debugPrint('✅ Sent SHOW to existing instance, exiting');
   if (existingInstanceFound) exit(0);
 
   await SingleInstanceIPC.startServer();
-  await SettingsManager().init();
+  await _guardedStep('settings', () => SettingsManager().init());
 
   if (Platform.isMacOS) {
     final bool shouldLaunchAtStartup =
@@ -328,17 +350,21 @@ Future<void> _appMain(List<String> args) async {
     final int browserServerPort = await SettingsManager()
             .getSetting("browserServerPort") ??
         BrowserExtensionServer.defaultPort;
-    await BrowserExtensionServer.startServer(port: browserServerPort);
+    await _guardedStep('browserServer',
+        () => BrowserExtensionServer.startServer(port: browserServerPort));
   }
 
   final bool isMinimizeAtLaunch =
       await SettingsManager().getSetting("launchAsMinimized") ?? false;
-  await NotificationController().initialize();
-  await windowManager.ensureInitialized();
+  await _guardedStep('notifications', () => NotificationController().initialize());
+  await _guardedStep('windowManager', () => windowManager.ensureInitialized());
   // Taskbar thumbnail X, Alt+F4 and the system menu send WM_CLOSE, bypassing
   // the in-app close button. Intercept it so those hide to the tray too —
   // tracking only works while the process keeps running.
-  if (Platform.isWindows) await windowManager.setPreventClose(true);
+  if (Platform.isWindows) {
+    await _guardedStep(
+        'preventClose', () => windowManager.setPreventClose(true));
+  }
 
   final String savedTheme =
       SettingsManager().getSetting("theme.selected") ?? "System";
@@ -366,15 +392,18 @@ Future<void> _appMain(List<String> args) async {
   }
 
   final tracker = BackgroundAppTracker();
-  await tracker.initializeTracking(locale: savedLocale);
+  await _guardedStep(
+      'tracking', () => tracker.initializeTracking(locale: savedLocale));
 
   if (autoUpdates) {
     final version = SettingsManager().versionInfo['version'] ?? '0.0.0';
     unawaited(UpdateService().initialize(version));
 
     final feedURL = Platform.isMacOS ? _macFeedURL : _winFeedURL;
-    await autoUpdater.setFeedURL(feedURL);
-    await autoUpdater.setScheduledCheckInterval(0);
+    await _guardedStep('autoUpdater', () async {
+      await autoUpdater.setFeedURL(feedURL);
+      await autoUpdater.setScheduledCheckInterval(0);
+    });
     debugPrint('✅ auto_updater initialized: $feedURL');
   } else {
     debugPrint('ℹ️  Store build — update logic disabled');
@@ -915,6 +944,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           isSidebarExpanded: _isSidebarExpanded,
           customTheme: customTheme,
         ),
+        const _DataStoreWarningBanner(),
         Expanded(
           child: Row(
             children: [
@@ -957,6 +987,52 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ),
       ],
+    );
+  }
+}
+
+// ============================================================================
+// DATA STORE WARNING BANNER
+// ============================================================================
+
+/// Shown when the local database failed to open, so the user isn't left with
+/// an empty UI and no explanation. Checked after a short delay because the
+/// store initialises asynchronously after the first frame.
+class _DataStoreWarningBanner extends StatefulWidget {
+  const _DataStoreWarningBanner();
+
+  @override
+  State<_DataStoreWarningBanner> createState() =>
+      _DataStoreWarningBannerState();
+}
+
+class _DataStoreWarningBannerState extends State<_DataStoreWarningBanner> {
+  bool _checked = false;
+  bool _dismissed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) setState(() => _checked = true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final store = AppDataStore();
+    if (!_checked || _dismissed || store.isInitialized) {
+      return const SizedBox.shrink();
+    }
+    final l10n = AppLocalizations.of(context)!;
+    return Padding(
+      padding: const EdgeInsets.all(AppDesign.spacingSm),
+      child: InfoBar(
+        title: Text(l10n.startupDataStoreWarningTitle),
+        content: Text(l10n.startupDataStoreWarningBody(_startupLogPath)),
+        severity: InfoBarSeverity.warning,
+        onClose: () => setState(() => _dismissed = true),
+      ),
     );
   }
 }

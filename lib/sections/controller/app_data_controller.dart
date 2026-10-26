@@ -564,7 +564,11 @@ class AppDataStore extends ChangeNotifier {
                   // On Windows, we move only the specific box files if they exist in root
                   final boxNames = [_usageBoxName, _focusBoxName, _metadataBoxName, _webUsageBoxName, _webMetadataBoxName, _browserSourcesBoxName];
                   bool migratedAny = false;
+                  // Track moves so a mid-way failure can be rolled back instead
+                  // of leaving boxes split between two folders.
+                  final moved = <List<String>>[];
 
+                  try {
                   await newDir.create(recursive: true);
 
                   for (final name in boxNames) {
@@ -576,8 +580,17 @@ class AppDataStore extends ChangeNotifier {
                           migratedAny = true;
                         }
                         await file.rename('${newDir.path}/$name$ext');
+                        moved.add(['${newDir.path}/$name$ext', file.path]);
                       }
                     }
+                  }
+                  } catch (_) {
+                    for (final m in moved.reversed) {
+                      try {
+                        await File(m[0]).rename(m[1]);
+                      } catch (_) {}
+                    }
+                    rethrow;
                   }
                   if (migratedAny) debugPrint('✅ Windows Migration complete');
                   hivePath = newHivePath;
@@ -595,10 +608,11 @@ class AppDataStore extends ChangeNotifier {
             hivePath = newHivePath;
           }
 
-          // On macOS, Documents folder requires user consent (TCC). If the
-          // directory can't be opened for read+write (as Hive does), fall back
-          // to Application Support which is always accessible.
-          if (Platform.isMacOS) {
+          // On macOS, Documents folder requires user consent (TCC); on Windows it
+          // can be blocked by Controlled Folder Access or locked by OneDrive. If
+          // the directory can't be opened for read+write (as Hive does), fall
+          // back to the app support directory which is always accessible.
+          if (Platform.isMacOS || Platform.isWindows) {
             bool documentsAccessible = false;
             try {
               final dir = Directory(hivePath);
@@ -653,9 +667,9 @@ class AppDataStore extends ChangeNotifier {
         // happens, reinitialize Hive to Application Support and retry all boxes
         // from the new path.
         _usageBox = await _openBoxWithRetry<AppUsageRecord>(_usageBoxName);
-        if (_usageBox == null && !kIsWeb && Platform.isMacOS && supportDirPath != null) {
+        if (_usageBox == null && !kIsWeb && (Platform.isMacOS || Platform.isWindows) && supportDirPath != null) {
           final fallbackPath = '$supportDirPath/Scolect';
-          debugPrint('⚠️ Box open failed on macOS, falling back to Application Support: $fallbackPath');
+          debugPrint('⚠️ Box open failed, falling back to Application Support: $fallbackPath');
           await Hive.close();
           await Directory(fallbackPath).create(recursive: true);
           Hive.init(fallbackPath);

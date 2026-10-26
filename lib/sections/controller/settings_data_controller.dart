@@ -331,9 +331,16 @@ class SettingsManager {
     final String? storedSettings = _prefs.getString(_storageKey);
     if (storedSettings == null) return;
 
-    final Map<String, dynamic> loaded = jsonDecode(storedSettings);
-    _mergeSettings(settings, loaded);
-    _validateSettings();
+    try {
+      final Map<String, dynamic> loaded = jsonDecode(storedSettings);
+      _mergeSettings(settings, loaded);
+      _validateSettings();
+    } catch (e) {
+      // Corrupt/truncated blob: fall back to defaults rather than blocking
+      // app startup on every launch.
+      debugPrint('⚠️ Stored settings unreadable ($e), using defaults');
+      settings = _buildDefaultSettings();
+    }
   }
 
   void _validateSettings() {

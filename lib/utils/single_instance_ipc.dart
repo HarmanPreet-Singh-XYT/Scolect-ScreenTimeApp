@@ -7,6 +7,33 @@ import 'macos_window.dart';
 class SingleInstanceIPC {
   static const int _port = 45999;
   static ServerSocket? _server;
+  static const String _ack = 'SCOLECT_OK';
+
+  /// Asks an already-running instance to show itself. Returns true only if
+  /// the listener on the port answered with our ack — a silent or foreign
+  /// listener returns false so the caller keeps starting up.
+  static Future<bool> notifyExistingInstance() async {
+    Socket? socket;
+    try {
+      socket = await Socket.connect(
+        InternetAddress.loopbackIPv4,
+        _port,
+        timeout: const Duration(milliseconds: 500),
+      );
+      socket.write('SHOW');
+      await socket.flush();
+      // The server keeps the connection open, so read just the first chunk.
+      final reply =
+          await socket.first.timeout(const Duration(seconds: 1));
+      return String.fromCharCodes(reply).contains(_ack);
+    } catch (e) {
+      return false;
+    } finally {
+      try {
+        socket?.destroy();
+      } catch (_) {}
+    }
+  }
 
   /// Call ONLY in the primary instance
   static Future<void> startServer() async {
@@ -23,9 +50,15 @@ class SingleInstanceIPC {
         client.listen((data) {
           final msg = String.fromCharCodes(data).trim();
           debugPrint('📨 IPC received: $msg');
+          // Ack so a secondary instance can tell we're really Scolect and
+          // not some unrelated program that happens to own this port.
+          try {
+            client.write(_ack);
+            client.flush().catchError((_) {});
+          } catch (_) {}
           _handleCommand(msg);
-        });
-      });
+        }, onError: (_) {});
+      }, onError: (_) {});
     } catch (e) {
       debugPrint('⚠️ IPC Server bind failed: $e');
     }

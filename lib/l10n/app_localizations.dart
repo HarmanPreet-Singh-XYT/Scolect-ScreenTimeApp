@@ -147,6 +147,18 @@ abstract class AppLocalizations {
   /// **'Open Source'**
   String get sidebarSubtitle;
 
+  /// Warning title shown when the local database failed to open at startup
+  ///
+  /// In en, this message translates to:
+  /// **'Your usage data could not be loaded'**
+  String get startupDataStoreWarningTitle;
+
+  /// Warning body shown when the local database failed to open; path is the error log file
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to {path}.'**
+  String startupDataStoreWarningBody(String path);
+
   /// Tray menu item to show the main window
   ///
   /// In en, this message translates to:

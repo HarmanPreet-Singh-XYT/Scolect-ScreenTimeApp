@@ -82,10 +82,16 @@ class NotificationController with ChangeNotifier {
   // --------------------------------------------------------------------------
 
   Future<void> initialize() async {
-    await localNotifier.setup(
-      appName: 'Scolect',
-      shortcutPolicy: ShortcutPolicy.requireCreate,
-    );
+    try {
+      await localNotifier.setup(
+        appName: 'Scolect',
+        shortcutPolicy: ShortcutPolicy.requireCreate,
+      );
+    } catch (e) {
+      // e.g. Start Menu shortcut can't be created on a locked-down profile.
+      // Notifications are optional; never block app startup on them.
+      debugPrint('⚠️ Notification setup failed: $e');
+    }
 
     _ensureSettingsSection();
     _loadSettings();
