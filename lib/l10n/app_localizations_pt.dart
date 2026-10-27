@@ -26,11 +26,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get startupDataStoreWarningTitle =>
-      'Your usage data could not be loaded';
+      'Não foi possível carregar seus dados de uso';
 
   @override
   String startupDataStoreWarningBody(String path) {
-    return 'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to $path.';
+    return 'O Scolect não conseguiu abrir seu armazenamento de dados, portanto o tempo de tela não está sendo gravado. Os detalhes foram salvos em $path.';
   }
 
   @override

@@ -20,6 +20,19 @@
   "@sidebarSubtitle": {
     "description": "Подзаголовок, отображаемый на боковой панели"
   },
+  "startupDataStoreWarningTitle": "Не удалось загрузить данные об использовании",
+  "@startupDataStoreWarningTitle": {
+    "description": "Заголовок предупреждения, отображаемый при сбое открытия локальной базы данных при запуске"
+  },
+  "startupDataStoreWarningBody": "Scolect не удалось открыть хранилище данных, поэтому экранное время не записывается. Подробности сохранены в {path}.",
+  "@startupDataStoreWarningBody": {
+    "description": "Текст предупреждения, отображаемый при сбое открытия локальной базы данных; path — файл журнала ошибок",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "trayShowWindow": "Показать окно",
   "@trayShowWindow": {
     "description": "Пункт меню трея для отображения главного окна"

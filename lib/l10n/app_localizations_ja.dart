@@ -24,12 +24,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sidebarSubtitle => 'オープンソース';
 
   @override
-  String get startupDataStoreWarningTitle =>
-      'Your usage data could not be loaded';
+  String get startupDataStoreWarningTitle => '使用状況データを読み込めませんでした';
 
   @override
   String startupDataStoreWarningBody(String path) {
-    return 'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to $path.';
+    return 'Scolect がデータストレージを開けなかったため、スクリーンタイムが記録されていません。詳細は $path に保存されました。';
   }
 
   @override

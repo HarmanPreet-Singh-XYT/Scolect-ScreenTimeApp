@@ -20,6 +20,19 @@
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
+  "startupDataStoreWarningTitle": "आपका उपयोग डेटा लोड नहीं किया जा सका",
+  "@startupDataStoreWarningTitle": {
+    "description": "Warning title shown when the local database failed to open at startup"
+  },
+  "startupDataStoreWarningBody": "Scolect अपना डेटा स्टोरेज नहीं खोल सका, इसलिए स्क्रीन टाइम रिकॉर्ड नहीं किया जा रहा है। विवरण {path} में सहेजे गए।",
+  "@startupDataStoreWarningBody": {
+    "description": "Warning body shown when the local database failed to open; path is the error log file",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "trayShowWindow": "विंडो दिखाएं",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"

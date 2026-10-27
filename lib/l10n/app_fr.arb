@@ -20,6 +20,19 @@
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
+  "startupDataStoreWarningTitle": "Vos données d'utilisation n'ont pas pu être chargées",
+  "@startupDataStoreWarningTitle": {
+    "description": "Warning title shown when the local database failed to open at startup"
+  },
+  "startupDataStoreWarningBody": "Scolect n'a pas pu ouvrir son stockage de données, le temps d'écran n'est donc pas enregistré. Les détails ont été enregistrés dans {path}.",
+  "@startupDataStoreWarningBody": {
+    "description": "Warning body shown when the local database failed to open; path is the error log file",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "trayShowWindow": "Afficher la Fenêtre",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"

@@ -20,6 +20,19 @@
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
+  "startupDataStoreWarningTitle": "无法加载您的使用数据",
+  "@startupDataStoreWarningTitle": {
+    "description": "Warning title shown when the local database failed to open at startup"
+  },
+  "startupDataStoreWarningBody": "Scolect 无法打开其数据存储，因此未在记录屏幕时间。详情已保存至 {path}。",
+  "@startupDataStoreWarningBody": {
+    "description": "Warning body shown when the local database failed to open; path is the error log file",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "trayShowWindow": "显示窗口",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"

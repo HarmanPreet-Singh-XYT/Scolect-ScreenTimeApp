@@ -20,6 +20,19 @@
   "@sidebarSubtitle": {
     "description": "Subtitle shown in the sidebar"
   },
+  "startupDataStoreWarningTitle": "Data penggunaan Anda tidak dapat dimuat",
+  "@startupDataStoreWarningTitle": {
+    "description": "Warning title shown when the local database failed to open at startup"
+  },
+  "startupDataStoreWarningBody": "Scolect tidak dapat membuka penyimpanan datanya, sehingga waktu layar tidak sedang direkam. Detail telah disimpan ke {path}.",
+  "@startupDataStoreWarningBody": {
+    "description": "Warning body shown when the local database failed to open; path is the error log file",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
   "trayShowWindow": "Tampilkan Jendela",
   "@trayShowWindow": {
     "description": "Tray menu item to show the main window"

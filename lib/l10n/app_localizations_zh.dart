@@ -24,12 +24,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sidebarSubtitle => '开源软件';
 
   @override
-  String get startupDataStoreWarningTitle =>
-      'Your usage data could not be loaded';
+  String get startupDataStoreWarningTitle => '无法加载您的使用数据';
 
   @override
   String startupDataStoreWarningBody(String path) {
-    return 'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to $path.';
+    return 'Scolect 无法打开其数据存储，因此未在记录屏幕时间。详情已保存至 $path。';
   }
 
   @override

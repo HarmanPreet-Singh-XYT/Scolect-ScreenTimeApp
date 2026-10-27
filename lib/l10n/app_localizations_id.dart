@@ -26,11 +26,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get startupDataStoreWarningTitle =>
-      'Your usage data could not be loaded';
+      'Data penggunaan Anda tidak dapat dimuat';
 
   @override
   String startupDataStoreWarningBody(String path) {
-    return 'Scolect could not open its data storage, so screen time is not being recorded. Details were saved to $path.';
+    return 'Scolect tidak dapat membuka penyimpanan datanya, sehingga waktu layar tidak sedang direkam. Detail telah disimpan ke $path.';
   }
 
   @override
