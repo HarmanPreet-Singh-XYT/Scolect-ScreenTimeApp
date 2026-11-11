@@ -257,7 +257,7 @@ function handleDesktopMessage(event) {
         }
         try {
           chrome.action.setBadgeText({ text: '👋' });
-          chrome.action.setBadgeBackgroundColor({ color: '#6366F1' });
+          chrome.action.setBadgeBackgroundColor({ color: '#4F7CFF' });
           setTimeout(() => {
             chrome.action.setBadgeText({ text: '' });
           }, 5000);

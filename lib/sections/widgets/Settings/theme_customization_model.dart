@@ -206,9 +206,37 @@ class CustomThemeData {
 class ThemePresets {
   ThemePresets._(); // prevent instantiation
 
-  static const CustomThemeData defaultTheme = CustomThemeData(
+  /// Brand theme derived from the app logo (1E293B / F5F7FF / 4F7CFF).
+  static const CustomThemeData scolect = CustomThemeData(
+    id: 'scolect',
+    name: 'Scolect',
+    primaryAccent: Color(0xFF4F7CFF),
+    secondaryAccent: Color(0xFF3B66E6),
+    successColor: Color(0xFF10B981),
+    warningColor: Color(0xFFF59E0B),
+    errorColor: Color(0xFFEF4444),
+    lightBackground: Color(0xFFF5F7FF),
+    lightSurface: Color(0xFFFFFFFF),
+    lightSurfaceSecondary: Color(0xFFE8EDFF),
+    lightBorder: Color(0xFFD3DBF5),
+    lightTextPrimary: Color(0xFF1E293B),
+    lightTextSecondary: Color(0xFF475569),
+    darkBackground: Color(0xFF0A0F1B),
+    darkSurface: Color(0xFF141C2B),
+    darkSurfaceSecondary: Color(0xFF0E1522),
+    darkBorder: Color(0xFF243044),
+    darkTextPrimary: Color(0xFFF5F7FF),
+    darkTextSecondary: Color(0xFF94A3B8),
+  );
+
+  /// Theme used when nothing is saved (new installs, resets).
+  static const CustomThemeData defaultTheme = scolect;
+
+  /// The previous default (indigo/violet). Id stays 'default' so existing
+  /// users who saved it keep the look they had.
+  static const CustomThemeData indigo = CustomThemeData(
     id: 'default',
-    name: 'Default',
+    name: 'Indigo',
     primaryAccent: Color(0xFF6366F1),
     secondaryAccent: Color(0xFF8B5CF6),
     successColor: Color(0xFF10B981),
@@ -362,7 +390,8 @@ class ThemePresets {
 
   /// All built-in presets in display order.
   static const List<CustomThemeData> allPresets = [
-    defaultTheme,
+    scolect,
+    indigo,
     oceanBlue,
     forestGreen,
     sunsetOrange,
