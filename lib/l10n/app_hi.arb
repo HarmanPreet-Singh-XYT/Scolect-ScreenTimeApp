@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "सभी वेबसाइटें",
   "browserAllWebsitesSubtitle": "दैनिक सीमा सेट या बदलने के लिए किसी साइट पर टैप करें",
   "browserAllSitesHaveLimits": "सभी साइटों की सीमाएँ हैं",
+  "browserShowMoreSites": "{count} और दिखाएं ({remaining} शेष)",
   "browserNoWebsitesTrackedTitle": "अभी तक कोई वेबसाइट ट्रैक नहीं हुई",
   "browserNoWebsitesTrackedWebSubtitle": "अपनी साइटें यहाँ देखने के लिए वेब ब्राउज़ करें",
   "browserNoWebsitesTrackedDesktopSubtitle": "शुरू करने के लिए एक्सटेंशन इंस्टॉल करें और ब्राउज़ करें",

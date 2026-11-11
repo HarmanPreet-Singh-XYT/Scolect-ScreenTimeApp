@@ -3672,7 +3672,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String browserShowMoreSites(int count, int remaining) {
-    return 'Show $count more ($remaining remaining)';
+    return 'Mostrar $count más ($remaining restantes)';
   }
 
   @override

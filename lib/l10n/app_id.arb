@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "Semua Situs Web",
   "browserAllWebsitesSubtitle": "Ketuk situs untuk menetapkan atau mengubah batas hariannya",
   "browserAllSitesHaveLimits": "Semua situs memiliki batas",
+  "browserShowMoreSites": "Tampilkan {count} lagi (sisa {remaining})",
   "browserNoWebsitesTrackedTitle": "Belum ada situs web yang dilacak",
   "browserNoWebsitesTrackedWebSubtitle": "Jelajahi web untuk melihat situs Anda di sini",
   "browserNoWebsitesTrackedDesktopSubtitle": "Instal ekstensi dan jelajahi untuk memulai",

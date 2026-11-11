@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "تمام ویب سائٹس",
   "browserAllWebsitesSubtitle": "روزانہ کی حد مقرر یا تبدیل کرنے کے لیے کسی سائٹ پر تھپتھپائیں",
   "browserAllSitesHaveLimits": "تمام سائٹس کی حدود ہیں",
+  "browserShowMoreSites": "مزید {count} دکھائیں ({remaining} باقی)",
   "browserNoWebsitesTrackedTitle": "ابھی تک کوئی ویب سائٹ ٹریک نہیں ہوئی",
   "browserNoWebsitesTrackedWebSubtitle": "اپنی سائٹس یہاں دیکھنے کے لیے ویب براؤز کریں",
   "browserNoWebsitesTrackedDesktopSubtitle": "شروع کرنے کے لیے ایکسٹینشن انسٹال کریں اور براؤز کریں",

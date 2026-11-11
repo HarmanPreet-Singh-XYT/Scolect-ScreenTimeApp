@@ -3651,7 +3651,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String browserShowMoreSites(int count, int remaining) {
-    return 'Show $count more ($remaining remaining)';
+    return 'Mostrar mais $count ($remaining restantes)';
   }
 
   @override

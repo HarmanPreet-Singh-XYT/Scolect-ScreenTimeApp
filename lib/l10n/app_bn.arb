@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "সব ওয়েবসাইট",
   "browserAllWebsitesSubtitle": "দৈনিক সীমা নির্ধারণ বা পরিবর্তন করতে একটি সাইটে ট্যাপ করুন",
   "browserAllSitesHaveLimits": "সব সাইটে সীমা আছে",
+  "browserShowMoreSites": "আরও {count}টি দেখান (বাকি {remaining}টি)",
   "browserNoWebsitesTrackedTitle": "এখনও কোনো ওয়েবসাইট ট্র্যাক হয়নি",
   "browserNoWebsitesTrackedWebSubtitle": "এখানে আপনার সাইট দেখতে ওয়েব ব্রাউজ করুন",
   "browserNoWebsitesTrackedDesktopSubtitle": "শুরু করতে এক্সটেনশন ইনস্টল করুন এবং ব্রাউজ করুন",

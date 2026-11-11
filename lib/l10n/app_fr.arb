@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "Tous les sites web",
   "browserAllWebsitesSubtitle": "Appuyez sur un site pour définir ou modifier sa limite quotidienne",
   "browserAllSitesHaveLimits": "Tous les sites ont des limites",
+  "browserShowMoreSites": "Afficher {count} de plus ({remaining} restants)",
   "browserNoWebsitesTrackedTitle": "Aucun site web suivi pour l'instant",
   "browserNoWebsitesTrackedWebSubtitle": "Naviguez sur le web pour voir vos sites ici",
   "browserNoWebsitesTrackedDesktopSubtitle": "Installez l'extension et naviguez pour commencer",

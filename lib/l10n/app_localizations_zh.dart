@@ -3469,7 +3469,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String browserShowMoreSites(int count, int remaining) {
-    return 'Show $count more ($remaining remaining)';
+    return '再显示 $count 个（剩余 $remaining 个）';
   }
 
   @override

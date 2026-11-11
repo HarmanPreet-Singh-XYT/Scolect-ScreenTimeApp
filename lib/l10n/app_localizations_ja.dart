@@ -3502,7 +3502,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String browserShowMoreSites(int count, int remaining) {
-    return 'Show $count more ($remaining remaining)';
+    return 'さらに$count件を表示（残り$remaining件）';
   }
 
   @override

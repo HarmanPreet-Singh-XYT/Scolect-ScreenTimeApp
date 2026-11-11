@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "全部网站",
   "browserAllWebsitesSubtitle": "点击网站以设置或更改每日限制",
   "browserAllSitesHaveLimits": "所有网站均已设置限制",
+  "browserShowMoreSites": "再显示 {count} 个（剩余 {remaining} 个）",
   "browserNoWebsitesTrackedTitle": "暂无已追踪网站",
   "browserNoWebsitesTrackedWebSubtitle": "浏览网页即可在此查看您的网站",
   "browserNoWebsitesTrackedDesktopSubtitle": "安装扩展并开始浏览以入门",

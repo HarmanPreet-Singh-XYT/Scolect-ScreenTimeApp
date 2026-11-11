@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "すべてのウェブサイト",
   "browserAllWebsitesSubtitle": "サイトをタップして1日の制限を設定または変更する",
   "browserAllSitesHaveLimits": "すべてのサイトに制限があります",
+  "browserShowMoreSites": "さらに{count}件を表示（残り{remaining}件）",
   "browserNoWebsitesTrackedTitle": "まだウェブサイトが追跡されていません",
   "browserNoWebsitesTrackedWebSubtitle": "ウェブを閲覧してサイトをここに表示する",
   "browserNoWebsitesTrackedDesktopSubtitle": "拡張機能をインストールしてブラウジングを開始しましょう",

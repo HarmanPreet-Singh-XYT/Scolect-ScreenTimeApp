@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "Все сайты",
   "browserAllWebsitesSubtitle": "Нажмите на сайт, чтобы установить или изменить дневной лимит",
   "browserAllSitesHaveLimits": "Все сайты имеют лимиты",
+  "browserShowMoreSites": "Показать ещё {count} (осталось {remaining})",
   "browserNoWebsitesTrackedTitle": "Сайтов пока не отслеживается",
   "browserNoWebsitesTrackedWebSubtitle": "Откройте браузер, чтобы увидеть свои сайты здесь",
   "browserNoWebsitesTrackedDesktopSubtitle": "Установите расширение и начните browsing для старта",

@@ -2022,6 +2022,7 @@
   "browserAllWebsites": "جميع المواقع",
   "browserAllWebsitesSubtitle": "اضغط على موقع لتعيين حده اليومي أو تغييره",
   "browserAllSitesHaveLimits": "جميع المواقع لديها حدود",
+  "browserShowMoreSites": "عرض {count} أخرى ({remaining} متبقية)",
   "browserNoWebsitesTrackedTitle": "لا توجد مواقع مُتتبَّعة بعد",
   "browserNoWebsitesTrackedWebSubtitle": "تصفح الويب لرؤية مواقعك هنا",
   "browserNoWebsitesTrackedDesktopSubtitle": "ثبّت الامتداد وابدأ التصفح للبدء",
