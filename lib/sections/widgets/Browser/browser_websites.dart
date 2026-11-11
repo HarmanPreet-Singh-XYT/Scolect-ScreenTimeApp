@@ -183,10 +183,7 @@ class _BrowserWebsitesState extends State<BrowserWebsites> {
   }
 
   void _showSiteDetail(BuildContext context, WebsiteBasicDetail site) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => _WebsiteDetailDialog(site: site),
-    );
+    showBrowserWebsiteDetail(context, site);
   }
 
   void _onSort(String column) {
@@ -935,13 +932,6 @@ class _WebsiteRowState extends State<_WebsiteRow> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: Row(
                 children: [
-                  // Domain Avatar
-                  BrowserDomainAvatar(
-                    domain: site.domain,
-                    siteName: site.siteName,
-                    size: 30,
-                  ),
-                  const SizedBox(width: 12),
 
                   // Domain / display name
                   Expanded(
@@ -1335,12 +1325,6 @@ class _WebsiteCardState extends State<_WebsiteCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                BrowserDomainAvatar(
-                  domain: site.domain,
-                  siteName: site.siteName,
-                  size: 32,
-                ),
-                const SizedBox(width: 10),
                 Expanded(
                   child: _editing
                       ? SizedBox(
@@ -1642,15 +1626,25 @@ class _ToggleRow extends StatelessWidget {
 
 // ─── Website detail dialog ────────────────────────────────────────────────────
 
-class _WebsiteDetailDialog extends StatefulWidget {
-  final WebsiteBasicDetail site;
-  const _WebsiteDetailDialog({required this.site});
-
-  @override
-  State<_WebsiteDetailDialog> createState() => _WebsiteDetailDialogState();
+/// Opens the per-site detail dialog (shared by the Websites and Overview tabs).
+Future<void> showBrowserWebsiteDetail(
+    BuildContext context, WebsiteBasicDetail site) {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (ctx) => BrowserWebsiteDetailDialog(site: site),
+  );
 }
 
-class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
+class BrowserWebsiteDetailDialog extends StatefulWidget {
+  final WebsiteBasicDetail site;
+  const BrowserWebsiteDetailDialog({super.key, required this.site});
+
+  @override
+  State<BrowserWebsiteDetailDialog> createState() => BrowserWebsiteDetailDialogState();
+}
+
+class BrowserWebsiteDetailDialogState extends State<BrowserWebsiteDetailDialog> {
   final _provider = BrowserDataProvider();
   List<({String date, Duration timeSpent, int visits})>? _history;
   late WebsiteBasicDetail _site;
@@ -1743,12 +1737,6 @@ class _WebsiteDetailDialogState extends State<_WebsiteDetailDialog> {
       constraints: const BoxConstraints(maxWidth: 580),
       title: Row(
         children: [
-          BrowserDomainAvatar(
-            domain: site.domain,
-            siteName: site.displayName,
-            size: 40,
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

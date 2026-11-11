@@ -350,12 +350,6 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                             ),
                                             child: Row(
                                               children: [
-                                                BrowserDomainAvatar(
-                                                  domain: s.domain,
-                                                  siteName: s.siteName,
-                                                  size: 18,
-                                                ),
-                                                const SizedBox(width: 6),
                                                 Expanded(
                                                   child: Text(
                                                     s.displayName,
@@ -411,12 +405,6 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          BrowserDomainAvatar(
-                                                            domain: s.domain,
-                                                            siteName: s.siteName,
-                                                            size: 26,
-                                                          ),
-                                                          const SizedBox(width: 10),
                                                           Expanded(
                                                             child: Text(
                                                               s.displayName,
@@ -458,12 +446,6 @@ class _BrowserCategoriesState extends State<BrowserCategories> {
 
                                                 return Row(
                                                   children: [
-                                                    BrowserDomainAvatar(
-                                                      domain: s.domain,
-                                                      siteName: s.siteName,
-                                                      size: 26,
-                                                    ),
-                                                    const SizedBox(width: 10),
                                                     Expanded(
                                                       flex: 2,
                                                       child: Column(

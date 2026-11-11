@@ -35,6 +35,6 @@ class WebBrowserDataProvider extends ChangeNotifier {
       fetchSiteHistory(String domain, {int days = 7}) async => [];
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
-          {int days = 7}) async =>
+          {int days = 7, DateTime? endDate}) async =>
       [];
 }

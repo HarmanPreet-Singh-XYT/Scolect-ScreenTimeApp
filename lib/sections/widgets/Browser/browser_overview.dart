@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
+import 'browser_websites.dart' show showBrowserWebsiteDetail;
 
 class BrowserOverview extends StatefulWidget {
   final ValueChanged<BrowserTab> onTabChange;
@@ -51,7 +52,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
   }
 
   Future<void> _launchUrl(String domain) async {
-    final uri = Uri.parse(domain.startsWith('http') ? domain : 'https://$domain');
+    final uri =
+        Uri.parse(domain.startsWith('http') ? domain : 'https://$domain');
     try {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } catch (_) {}
@@ -69,20 +71,26 @@ class _BrowserOverviewState extends State<BrowserOverview> {
 
     final summary = _summary!;
     final totalSecs = summary.totalTime.inSeconds;
-    final maxSecs = _topSites.isNotEmpty ? _topSites.first.timeSpent.inSeconds : 1;
+    final maxSecs =
+        _topSites.isNotEmpty ? _topSites.first.timeSpent.inSeconds : 1;
 
     // Productivity metrics
     final productiveSecs = _allSites
         .where((s) => s.isProductive)
         .fold<int>(0, (sum, s) => sum + s.timeSpent.inSeconds);
-    final productivePct = totalSecs > 0 ? (productiveSecs / totalSecs * 100).round() : 0;
+    final productivePct =
+        totalSecs > 0 ? (productiveSecs / totalSecs * 100).round() : 0;
 
     // Limits metrics
-    final sitesWithLimits = _allSites.where((s) => s.dailyLimit > Duration.zero).toList();
-    final exceededLimits = sitesWithLimits.where((s) => s.timeSpent >= s.dailyLimit).length;
+    final sitesWithLimits =
+        _allSites.where((s) => s.dailyLimit > Duration.zero).toList();
+    final exceededLimits =
+        sitesWithLimits.where((s) => s.timeSpent >= s.dailyLimit).length;
 
     // Top productive site
-    final topProductiveSite = _allSites.where((s) => s.isProductive && s.timeSpent > Duration.zero).firstOrNull;
+    final topProductiveSite = _allSites
+        .where((s) => s.isProductive && s.timeSpent > Duration.zero)
+        .firstOrNull;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -194,7 +202,9 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                                   letterSpacing: -0.5,
                                   color: productivePct >= 60
                                       ? kBrowserGreen
-                                      : (productivePct >= 40 ? kBrowserAmber : kBrowserRed),
+                                      : (productivePct >= 40
+                                          ? kBrowserAmber
+                                          : kBrowserRed),
                                 ),
                               ),
                               Text(
@@ -212,13 +222,19 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                           percentage: productivePct.toDouble(),
                           color: productivePct >= 60
                               ? kBrowserGreen
-                              : (productivePct >= 40 ? kBrowserAmber : kBrowserRed),
+                              : (productivePct >= 40
+                                  ? kBrowserAmber
+                                  : kBrowserRed),
                           size: 48,
                           strokeWidth: 4.5,
                           centerChild: Icon(
-                            productivePct >= 60 ? FluentIcons.check_mark : FluentIcons.timer,
+                            productivePct >= 60
+                                ? FluentIcons.check_mark
+                                : FluentIcons.timer,
                             size: 14,
-                            color: productivePct >= 60 ? kBrowserGreen : kBrowserAmber,
+                            color: productivePct >= 60
+                                ? kBrowserGreen
+                                : kBrowserAmber,
                           ),
                         ),
                       ],
@@ -260,17 +276,11 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                         ),
                         Row(
                           children: [
-                            if (topProductiveSite != null) ...[
-                              BrowserDomainAvatar(
-                                domain: topProductiveSite.domain,
-                                siteName: topProductiveSite.siteName,
-                                size: 24,
-                              ),
-                              const SizedBox(width: 8),
-                            ],
+                            if (topProductiveSite != null) ...[],
                             Expanded(
                               child: Text(
-                                topProductiveSite?.displayName ?? l10n.browserNoDataYet,
+                                topProductiveSite?.displayName ??
+                                    l10n.browserNoDataYet,
                                 style: theme.typography.bodyStrong?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14,
@@ -319,7 +329,9 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                             const SizedBox(width: 4),
                             BrowserGradientIconBox(
                               icon: FluentIcons.time_picker,
-                              color: exceededLimits > 0 ? kBrowserRed : kBrowserAmber,
+                              color: exceededLimits > 0
+                                  ? kBrowserRed
+                                  : kBrowserAmber,
                               size: 16,
                               boxSize: 32,
                             ),
@@ -330,21 +342,25 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                               ? l10n.browserNoLimitsTitle
                               : (exceededLimits > 0
                                   ? l10n.browserLimitsExceeded(exceededLimits)
-                                  : l10n.browserLimitsActiveCount(sitesWithLimits.length)),
+                                  : l10n.browserLimitsActiveCount(
+                                      sitesWithLimits.length)),
                           style: theme.typography.subtitle?.copyWith(
                             fontWeight: FontWeight.w800,
                             fontSize: 18,
                             letterSpacing: -0.3,
                             color: exceededLimits > 0
                                 ? kBrowserRed
-                                : (sitesWithLimits.isEmpty ? captionColor : kBrowserAmber),
+                                : (sitesWithLimits.isEmpty
+                                    ? captionColor
+                                    : kBrowserAmber),
                           ),
                         ),
                         Text(
                           sitesWithLimits.isEmpty
                               ? l10n.browserNoLimitsSubtitle
                               : (exceededLimits > 0
-                                  ? l10n.browserActiveLimitsHealthWarning(exceededLimits)
+                                  ? l10n.browserActiveLimitsHealthWarning(
+                                      exceededLimits)
                                   : l10n.browserActiveLimitsHealthSafe),
                           style: TextStyle(
                             fontSize: 11,
@@ -412,7 +428,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                                 ? site.timeSpent.inSeconds / maxSecs
                                 : 0.0;
                             final sharePct = totalSecs > 0
-                                ? (site.timeSpent.inSeconds / totalSecs * 100).toStringAsFixed(0)
+                                ? (site.timeSpent.inSeconds / totalSecs * 100)
+                                    .toStringAsFixed(0)
                                 : '0';
 
                             return _TopSiteTile(
@@ -422,6 +439,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                               showDivider: i < _topSites.length - 1,
                               accentColor: theme.accentColor,
                               onLaunch: () => _launchUrl(site.domain),
+                              onTap: () =>
+                                  showBrowserWebsiteDetail(context, site),
                             );
                           }).toList(),
                         ),
@@ -462,7 +481,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                     )
                   else
                     BrowserCard(
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -473,7 +493,8 @@ class _BrowserOverviewState extends State<BrowserOverview> {
                               height: 10,
                               child: Row(
                                 children: _categories.map((c) {
-                                  final meta = CategoryMeta.fromName(c.category);
+                                  final meta =
+                                      CategoryMeta.fromName(c.category);
                                   final flex = (c.percentage * 10).round();
                                   if (flex == 0) return const SizedBox.shrink();
                                   return Flexible(
@@ -538,6 +559,7 @@ class _TopSiteTile extends StatefulWidget {
   final bool showDivider;
   final Color accentColor;
   final VoidCallback onLaunch;
+  final VoidCallback onTap;
 
   const _TopSiteTile({
     required this.site,
@@ -546,6 +568,7 @@ class _TopSiteTile extends StatefulWidget {
     required this.showDivider,
     required this.accentColor,
     required this.onLaunch,
+    required this.onTap,
   });
 
   @override
@@ -563,146 +586,153 @@ class _TopSiteTileState extends State<_TopSiteTile> {
     final catMeta = CategoryMeta.fromName(widget.site.category);
 
     return MouseRegion(
+      cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: Container(
-        color: _hovered
-            ? theme.inactiveBackgroundColor.withValues(alpha: 0.35)
-            : Colors.transparent,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final isCompact = constraints.maxWidth < 450;
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: widget.onTap,
+        child: Container(
+          color: _hovered
+              ? theme.inactiveBackgroundColor.withValues(alpha: 0.35)
+              : Colors.transparent,
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isCompact = constraints.maxWidth < 450;
 
-                  return Row(
-                    children: [
-                      // Domain Avatar
-                      BrowserDomainAvatar(
-                        domain: widget.site.domain,
-                        siteName: widget.site.siteName,
-                        size: 32,
-                      ),
-                      const SizedBox(width: 12),
-
-                      // Domain Name & Category Pill & Progress Bar
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    widget.site.displayName,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                if (!isCompact) ...[
-                                  const SizedBox(width: 8),
+                    return Row(
+                      children: [
+                        // Domain Name & Category Pill & Progress Bar
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
                                   Flexible(
-                                    child: Container(
-                                      constraints: const BoxConstraints(maxWidth: 130),
-                                      child: BrowserStatChip(
-                                        label: widget.site.category,
-                                        color: catMeta.color,
-                                        icon: catMeta.icon,
+                                    child: Text(
+                                      widget.site.displayName,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
                                       ),
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  if (widget.site.isProductive) ...[
-                                    const SizedBox(width: 6),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: kBrowserGreen.withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: const Text(
-                                        'Productive',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w600,
-                                          color: kBrowserGreen,
+                                  if (!isCompact) ...[
+                                    const SizedBox(width: 8),
+                                    Flexible(
+                                      child: Container(
+                                        constraints:
+                                            const BoxConstraints(maxWidth: 130),
+                                        child: BrowserStatChip(
+                                          label: widget.site.category,
+                                          color: catMeta.color,
+                                          icon: catMeta.icon,
                                         ),
                                       ),
                                     ),
+                                    if (widget.site.isProductive) ...[
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: kBrowserGreen.withValues(
+                                              alpha: 0.12),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: const Text(
+                                          'Productive',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600,
+                                            color: kBrowserGreen,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ],
-                              ],
+                              ),
+                              const SizedBox(height: 6),
+                              BrowserProgressBar(
+                                fraction: widget.barFraction,
+                                color: widget.site.isProductive
+                                    ? kBrowserGreen
+                                    : widget.accentColor,
+                                height: 4,
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 14),
+
+                        // Time spent & visits
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              widget.site.formattedTimeSpent,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                                color: widget.accentColor,
+                              ),
                             ),
-                            const SizedBox(height: 6),
-                            BrowserProgressBar(
-                              fraction: widget.barFraction,
-                              color: widget.site.isProductive ? kBrowserGreen : widget.accentColor,
-                              height: 4,
+                            const SizedBox(height: 2),
+                            Text(
+                              isCompact
+                                  ? '${widget.sharePercentage}% web'
+                                  : '${widget.sharePercentage}% of web · ${l10n.browserVisitCount(widget.site.visits)}',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: captionColor?.withValues(alpha: 0.6),
+                              ),
                             ),
                           ],
                         ),
-                      ),
 
-                      const SizedBox(width: 14),
+                        const SizedBox(width: 8),
 
-                      // Time spent & visits
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            widget.site.formattedTimeSpent,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700,
-                              color: widget.accentColor,
+                        // Launch icon button
+                        Tooltip(
+                          message: 'Open in Browser',
+                          child: IconButton(
+                            icon: Icon(
+                              FluentIcons.open_in_new_window,
+                              size: 13,
+                              color: _hovered
+                                  ? theme.accentColor
+                                  : captionColor?.withValues(alpha: 0.4),
                             ),
+                            onPressed: widget.onLaunch,
                           ),
-                          const SizedBox(height: 2),
-                          Text(
-                            isCompact
-                                ? '${widget.sharePercentage}% web'
-                                : '${widget.sharePercentage}% of web · ${l10n.browserVisitCount(widget.site.visits)}',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: captionColor?.withValues(alpha: 0.6),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(width: 8),
-
-                      // Launch icon button
-                      Tooltip(
-                        message: 'Open in Browser',
-                        child: IconButton(
-                          icon: Icon(
-                            FluentIcons.open_in_new_window,
-                            size: 13,
-                            color: _hovered ? theme.accentColor : captionColor?.withValues(alpha: 0.4),
-                          ),
-                          onPressed: widget.onLaunch,
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ),
-            if (widget.showDivider)
-              Divider(
-                style: DividerThemeData(
-                  decoration: BoxDecoration(
-                    color: theme.inactiveBackgroundColor.withValues(alpha: 0.4),
-                  ),
+                      ],
+                    );
+                  },
                 ),
               ),
-          ],
+              if (widget.showDivider)
+                Divider(
+                  style: DividerThemeData(
+                    decoration: BoxDecoration(
+                      color:
+                          theme.inactiveBackgroundColor.withValues(alpha: 0.4),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -766,7 +796,8 @@ class _CategoryTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
-                            color: theme.typography.body?.color?.withValues(alpha: 0.85),
+                            color: theme.typography.body?.color
+                                ?.withValues(alpha: 0.85),
                           ),
                         ),
                       ],

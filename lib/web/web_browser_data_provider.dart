@@ -410,8 +410,8 @@ class WebBrowserDataProvider extends ChangeNotifier {
   // ── Historical data (last N days) ─────────────────────────────────────────
 
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
-      {int days = 7}) async {
-    final now = DateTime.now();
+      {int days = 7, DateTime? endDate}) async {
+    final now = endDate ?? DateTime.now();
     final dateEntries =
         <({DateTime date, String dateKey, String storageKey})>[];
     for (int i = 0; i < days; i++) {

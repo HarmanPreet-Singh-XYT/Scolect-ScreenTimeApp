@@ -2291,6 +2291,13 @@
   "browserAllWebsites": "All Websites",
   "browserAllWebsitesSubtitle": "Tap a site to set or change its daily limit",
   "browserAllSitesHaveLimits": "All sites have limits",
+  "browserShowMoreSites": "Show {count} more ({remaining} remaining)",
+  "@browserShowMoreSites": {
+    "placeholders": {
+      "count": {"type": "int"},
+      "remaining": {"type": "int"}
+    }
+  },
   "browserNoWebsitesTrackedTitle": "No websites tracked yet",
   "browserNoWebsitesTrackedWebSubtitle": "Browse the web to see your sites here",
   "browserNoWebsitesTrackedDesktopSubtitle": "Install the extension and browse to get started",

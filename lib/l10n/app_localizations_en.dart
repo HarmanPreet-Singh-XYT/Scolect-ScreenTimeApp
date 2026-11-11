@@ -3614,6 +3614,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get browserAllSitesHaveLimits => 'All sites have limits';
 
   @override
+  String browserShowMoreSites(int count, int remaining) {
+    return 'Show $count more ($remaining remaining)';
+  }
+
+  @override
   String get browserNoWebsitesTrackedTitle => 'No websites tracked yet';
 
   @override

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' show Colors;
 import 'package:screentime/l10n/app_localizations.dart';
 import 'package:screentime/sections/controller/data_controllers/browser_data_controller.dart';
 import 'browser_shared.dart';
+import 'browser_websites.dart' show showBrowserWebsiteDetail;
 
 class BrowserHistory extends StatefulWidget {
   const BrowserHistory({super.key});
@@ -22,6 +23,18 @@ class _BrowserHistoryState extends State<BrowserHistory> {
   int _selectedIndex = -1;
   int _days = 7;
 
+  // Custom range / single day (inclusive). Null → use the preset [_days].
+  DateTime? _customStart;
+  DateTime? _customEnd;
+
+  static const int _maxCustomDays = 366;
+
+  bool get _isCustom => _customStart != null && _customEnd != null;
+
+  /// Number of days currently shown, whichever mode is active.
+  int get _rangeDays =>
+      _isCustom ? _customEnd!.difference(_customStart!).inDays + 1 : _days;
+
   @override
   void initState() {
     super.initState();
@@ -37,7 +50,10 @@ class _BrowserHistoryState extends State<BrowserHistory> {
 
   Future<void> _load() async {
     setState(() => _isLoading = true);
-    final data = await _provider.fetchHistory(days: _days);
+    final data = await _provider.fetchHistory(
+      days: _rangeDays,
+      endDate: _isCustom ? _customEnd : null,
+    );
     if (!mounted) return;
 
     final reversed = data.reversed.toList();
@@ -69,6 +85,133 @@ class _BrowserHistoryState extends State<BrowserHistory> {
       if (!mounted) return;
       setState(() => _loadingDaySites = false);
     }
+  }
+
+  String _dateKey(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
+
+  Future<void> _pickCustomRange() async {
+    final l10n = AppLocalizations.of(context)!;
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    DateTime start =
+        _customStart ?? todayDate.subtract(const Duration(days: 6));
+    DateTime end = _customEnd ?? todayDate;
+    bool isRange = _isCustom ? _customStart != _customEnd : true;
+    String? error;
+
+    final applied = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => ContentDialog(
+          title: Text(l10n.customDialogTitle),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    ToggleSwitch(
+                      checked: isRange,
+                      onChanged: (v) => setDialogState(() => isRange = v),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(isRange ? l10n.dateRange : l10n.specificDate),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (isRange) ...[
+                  Row(
+                    children: [
+                      Text(l10n.startDate),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: DatePicker(
+                          selected: start,
+                          onChanged: (d) => setDialogState(() {
+                            start = d;
+                            error = null;
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Text(l10n.endDate),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: DatePicker(
+                          selected: end,
+                          onChanged: (d) => setDialogState(() {
+                            end = d;
+                            error = null;
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                ] else
+                  Row(
+                    children: [
+                      Text(l10n.date),
+                      const SizedBox(width: 24),
+                      Expanded(
+                        child: DatePicker(
+                          selected: end,
+                          onChanged: (d) => setDialogState(() {
+                            end = d;
+                            error = null;
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (error != null) ...[
+                  const SizedBox(height: 12),
+                  Text(error!, style: TextStyle(color: Colors.red)),
+                ],
+              ],
+            ),
+          ),
+          actions: [
+            Button(
+              child: Text(l10n.cancel),
+              onPressed: () => Navigator.pop(ctx, false),
+            ),
+            FilledButton(
+              child: Text(l10n.apply),
+              onPressed: () {
+                if (!isRange) start = end;
+                if (start.isAfter(end)) {
+                  setDialogState(() => error = l10n.startDateBeforeEndDate);
+                  return;
+                }
+                if (end.difference(start).inDays + 1 > _maxCustomDays) {
+                  setDialogState(() => error =
+                      'Please choose a range of up to $_maxCustomDays days.');
+                  return;
+                }
+                if (end.isAfter(todayDate)) {
+                  setDialogState(() => error = l10n.invalidDateRange);
+                  return;
+                }
+                Navigator.pop(ctx, true);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (applied != true || !mounted) return;
+    _customStart = DateTime(start.year, start.month, start.day);
+    _customEnd = DateTime(end.year, end.month, end.day);
+    _load();
   }
 
   // ── Stats ──────────────────────────────────────────────────────────────────
@@ -168,9 +311,10 @@ class _BrowserHistoryState extends State<BrowserHistory> {
 
     final hasData = _history.any((d) => d.totalTime > Duration.zero);
     final peak = _peakDay;
-    final selectedDay = (_selectedIndex >= 0 && _selectedIndex < _history.length)
-        ? _history[_selectedIndex]
-        : null;
+    final selectedDay =
+        (_selectedIndex >= 0 && _selectedIndex < _history.length)
+            ? _history[_selectedIndex]
+            : null;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -184,7 +328,9 @@ class _BrowserHistoryState extends State<BrowserHistory> {
               final headerTitle = BrowserSectionHeader(
                 icon: FluentIcons.history,
                 title: l10n.browserHistoryTitle,
-                subtitle: 'Historical web activity across the last $_days days',
+                subtitle: _isCustom
+                    ? 'Historical web activity from ${_shortLabel(_dateKey(_customStart!))} to ${_shortLabel(_dateKey(_customEnd!))}'
+                    : 'Historical web activity across the last $_days days',
                 color: theme.accentColor,
               );
 
@@ -192,11 +338,15 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _RangePicker(
-                    selected: _days,
+                    selected: _isCustom ? null : _days,
+                    customLabel: l10n.custom,
                     onChanged: (v) {
                       _days = v;
+                      _customStart = null;
+                      _customEnd = null;
                       _load();
                     },
+                    onCustom: _pickCustomRange,
                     accent: accent,
                   ),
                   const SizedBox(width: 8),
@@ -235,7 +385,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
               final width = summaryConstraints.maxWidth;
 
               final card1 = BrowserCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     BrowserGradientIconBox(
@@ -251,7 +402,7 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            '${l10n.browserPeriodTotal} (${_days}d)',
+                            '${l10n.browserPeriodTotal} (${_rangeDays}d)',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -273,7 +424,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
               );
 
               final card2 = BrowserCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     BrowserGradientIconBox(
@@ -311,7 +463,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
               );
 
               final card3 = BrowserCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     BrowserGradientIconBox(
@@ -352,7 +505,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
               );
 
               final card4 = BrowserCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Row(
                   children: [
                     BrowserGradientIconBox(
@@ -376,7 +530,7 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                             ),
                           ),
                           Text(
-                            '$_activeDays / $_days ${l10n.browserDays}',
+                            '$_activeDays / $_rangeDays ${l10n.browserDays}',
                             style: theme.typography.bodyStrong?.copyWith(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
@@ -491,7 +645,7 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                           onSelect: (i) {
                             if (i >= 0 && i < _history.length) {
                               setState(() => _selectedIndex = i);
-                          _loadDaySites(_history[i].date);
+                              _loadDaySites(_history[i].date);
                             }
                           },
                           accent: accent,
@@ -515,16 +669,11 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                 children: [
                   LayoutBuilder(
                     builder: (context, inspectorHeaderConstraints) {
-                      final isNarrow = inspectorHeaderConstraints.maxWidth < 480;
+                      final isNarrow =
+                          inspectorHeaderConstraints.maxWidth < 480;
 
                       final avatarAndText = Row(
                         children: [
-                          BrowserDomainAvatar(
-                            domain: selectedDay.date,
-                            siteName: _dayOfWeek(selectedDay.date),
-                            size: 32,
-                          ),
-                          const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -540,7 +689,8 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                                   '${selectedDay.siteCount} websites visited · ${selectedDay.totalTime.toHourMinuteFormat()} active time',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: captionColor?.withValues(alpha: 0.65),
+                                    color:
+                                        captionColor?.withValues(alpha: 0.65),
                                   ),
                                 ),
                               ],
@@ -551,8 +701,10 @@ class _BrowserHistoryState extends State<BrowserHistory> {
 
                       final statChip = BrowserStatChip(
                         label: selectedDay.totalTime > _avgPerDay
-                            ? l10n.browserVsAverage('+${((selectedDay.totalTime.inSeconds - _avgPerDay.inSeconds) / (_avgPerDay.inSeconds > 0 ? _avgPerDay.inSeconds : 1) * 100).round()}')
-                            : l10n.browserVsAverage('${((selectedDay.totalTime.inSeconds - _avgPerDay.inSeconds) / (_avgPerDay.inSeconds > 0 ? _avgPerDay.inSeconds : 1) * 100).round()}'),
+                            ? l10n.browserVsAverage(
+                                '+${((selectedDay.totalTime.inSeconds - _avgPerDay.inSeconds) / (_avgPerDay.inSeconds > 0 ? _avgPerDay.inSeconds : 1) * 100).round()}')
+                            : l10n.browserVsAverage(
+                                '${((selectedDay.totalTime.inSeconds - _avgPerDay.inSeconds) / (_avgPerDay.inSeconds > 0 ? _avgPerDay.inSeconds : 1) * 100).round()}'),
                         color: selectedDay.totalTime > _avgPerDay
                             ? kBrowserAmber
                             : kBrowserGreen,
@@ -605,126 +757,129 @@ class _BrowserHistoryState extends State<BrowserHistory> {
                         final catMeta = CategoryMeta.fromName(site.category);
                         final dayTotalSecs = selectedDay.totalTime.inSeconds;
                         final share = dayTotalSecs > 0
-                            ? (site.timeSpent.inSeconds / dayTotalSecs).clamp(0.0, 1.0)
+                            ? (site.timeSpent.inSeconds / dayTotalSecs)
+                                .clamp(0.0, 1.0)
                             : 0.0;
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 8),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? Colors.white.withValues(alpha: 0.03)
-                                  : theme.inactiveBackgroundColor.withValues(alpha: 0.25),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: LayoutBuilder(
-                              builder: (context, itemConstraints) {
-                                final isItemNarrow = itemConstraints.maxWidth < 450;
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () =>
+                                  showBrowserWebsiteDetail(context, site),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? Colors.white.withValues(alpha: 0.03)
+                                      : theme.inactiveBackgroundColor
+                                          .withValues(alpha: 0.25),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, itemConstraints) {
+                                    final isItemNarrow =
+                                        itemConstraints.maxWidth < 450;
 
-                                if (isItemNarrow) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                                    if (isItemNarrow) {
+                                      return Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          BrowserDomainAvatar(
-                                            domain: site.domain,
-                                            siteName: site.siteName,
-                                            size: 24,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              site.displayName,
-                                              style: const TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.w600,
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  site.displayName,
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                              Text(
+                                                site.formattedTimeSpent,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: theme.accentColor,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            site.formattedTimeSpent,
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w700,
-                                              color: theme.accentColor,
-                                            ),
+                                          const SizedBox(height: 6),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: BrowserProgressBar(
+                                                  fraction: share,
+                                                  color: catMeta.color,
+                                                  height: 3,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              BrowserStatChip(
+                                                label: site.category,
+                                                color: catMeta.color,
+                                                icon: catMeta.icon,
+                                              ),
+                                            ],
                                           ),
                                         ],
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: BrowserProgressBar(
-                                              fraction: share,
-                                              color: catMeta.color,
-                                              height: 3,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 10),
-                                          BrowserStatChip(
-                                            label: site.category,
-                                            color: catMeta.color,
-                                            icon: catMeta.icon,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                }
+                                      );
+                                    }
 
-                                return Row(
-                                  children: [
-                                    BrowserDomainAvatar(
-                                      domain: site.domain,
-                                      siteName: site.siteName,
-                                      size: 26,
-                                    ),
-                                    const SizedBox(width: 10),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            site.displayName,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                site.displayName,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              const SizedBox(height: 3),
+                                              BrowserProgressBar(
+                                                fraction: share,
+                                                color: catMeta.color,
+                                                height: 3,
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(height: 3),
-                                          BrowserProgressBar(
-                                            fraction: share,
-                                            color: catMeta.color,
-                                            height: 3,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        BrowserStatChip(
+                                          label: site.category,
+                                          color: catMeta.color,
+                                          icon: catMeta.icon,
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Text(
+                                          site.formattedTimeSpent,
+                                          style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                            color: theme.accentColor,
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    BrowserStatChip(
-                                      label: site.category,
-                                      color: catMeta.color,
-                                      icon: catMeta.icon,
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      site.formattedTimeSpent,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
-                                        color: theme.accentColor,
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                           ),
                         );
@@ -837,7 +992,8 @@ class _BarChart extends StatelessWidget {
                           dayOfWeek(day.date),
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w600,
                             color: isSelected
                                 ? accent
                                 : captionColor?.withValues(alpha: 0.6),
@@ -847,7 +1003,8 @@ class _BarChart extends StatelessWidget {
                           shortLabel(day.date),
                           style: TextStyle(
                             fontSize: 10,
-                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.w400,
                             color: isSelected
                                 ? accent
                                 : captionColor?.withValues(alpha: 0.4),
@@ -903,7 +1060,8 @@ class _BarChart extends StatelessWidget {
             barRods: [
               BarChartRodData(
                 toY: day.totalTime.inSeconds.toDouble(),
-                width: history.length <= 7 ? 34 : (history.length <= 14 ? 20 : 12),
+                width:
+                    history.length <= 7 ? 34 : (history.length <= 14 ? 20 : 12),
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(6)),
                 gradient: LinearGradient(
@@ -935,13 +1093,18 @@ class _BarChart extends StatelessWidget {
 // ─── Range picker ─────────────────────────────────────────────────────────────
 
 class _RangePicker extends StatelessWidget {
-  final int selected;
+  /// Selected preset in days, or null when a custom range is active.
+  final int? selected;
+  final String customLabel;
   final ValueChanged<int> onChanged;
+  final VoidCallback onCustom;
   final Color accent;
 
   const _RangePicker({
     required this.selected,
+    required this.customLabel,
     required this.onChanged,
+    required this.onCustom,
     required this.accent,
   });
 
@@ -949,22 +1112,26 @@ class _RangePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final options = [7, 14, 30];
-    final labels = ['7d', '14d', '30d'];
+    // 0 is the "custom" slot.
+    final options = [7, 14, 30, 0];
+    final labels = ['7d', '14d', '30d', customLabel];
 
     return BrowserCard(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(options.length, (i) {
-          final sel = options[i] == selected;
+          final isCustomOption = options[i] == 0;
+          final sel =
+              isCustomOption ? selected == null : options[i] == selected;
           return GestureDetector(
-            onTap: () => onChanged(options[i]),
+            onTap: () => isCustomOption ? onCustom() : onChanged(options[i]),
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: AnimatedContainer(
                 duration: kBrowserHoverDuration,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                 decoration: BoxDecoration(
                   color: sel
                       ? (isDark
@@ -980,7 +1147,8 @@ class _RangePicker extends StatelessWidget {
                     fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
                     color: sel
                         ? accent
-                        : theme.typography.caption?.color?.withValues(alpha: 0.6),
+                        : theme.typography.caption?.color
+                            ?.withValues(alpha: 0.6),
                   ),
                 ),
               ),

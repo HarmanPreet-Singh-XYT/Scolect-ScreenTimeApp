@@ -342,12 +342,13 @@ class BrowserDataProvider extends ChangeNotifier {
 
   // ─── History (last N days) ────────────────────────────────────────────────
 
+  /// [days] entries counting back from [endDate] (default: today).
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
-      {int days = 7}) async {
+      {int days = 7, DateTime? endDate}) async {
     await _ensureInitialized();
 
     final result = <({String date, Duration totalTime, int siteCount})>[];
-    final now = DateTime.now();
+    final now = endDate ?? DateTime.now();
 
     for (int i = 0; i < days; i++) {
       final date = now.subtract(Duration(days: i));
@@ -491,8 +492,8 @@ class _WebDelegatingProvider extends BrowserDataProvider {
 
   @override
   Future<List<({String date, Duration totalTime, int siteCount})>> fetchHistory(
-          {int days = 7}) =>
-      _web.fetchHistory(days: days);
+          {int days = 7, DateTime? endDate}) =>
+      _web.fetchHistory(days: days, endDate: endDate);
 
   @override
   Future<bool> updateWebsiteMetadata(

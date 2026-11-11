@@ -3501,6 +3501,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get browserAllSitesHaveLimits => 'すべてのサイトに制限があります';
 
   @override
+  String browserShowMoreSites(int count, int remaining) {
+    return 'Show $count more ($remaining remaining)';
+  }
+
+  @override
   String get browserNoWebsitesTrackedTitle => 'まだウェブサイトが追跡されていません';
 
   @override

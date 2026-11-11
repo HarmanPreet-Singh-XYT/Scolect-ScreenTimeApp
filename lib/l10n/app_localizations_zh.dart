@@ -3468,6 +3468,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get browserAllSitesHaveLimits => '所有网站均已设置限制';
 
   @override
+  String browserShowMoreSites(int count, int remaining) {
+    return 'Show $count more ($remaining remaining)';
+  }
+
+  @override
   String get browserNoWebsitesTrackedTitle => '暂无已追踪网站';
 
   @override

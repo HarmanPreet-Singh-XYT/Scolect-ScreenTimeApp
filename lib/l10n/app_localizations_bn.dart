@@ -3586,6 +3586,11 @@ class AppLocalizationsBn extends AppLocalizations {
   String get browserAllSitesHaveLimits => 'সব সাইটে সীমা আছে';
 
   @override
+  String browserShowMoreSites(int count, int remaining) {
+    return 'Show $count more ($remaining remaining)';
+  }
+
+  @override
   String get browserNoWebsitesTrackedTitle =>
       'এখনও কোনো ওয়েবসাইট ট্র্যাক হয়নি';
 

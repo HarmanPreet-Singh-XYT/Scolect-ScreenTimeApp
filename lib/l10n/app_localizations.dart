@@ -6425,6 +6425,12 @@ abstract class AppLocalizations {
   /// **'All sites have limits'**
   String get browserAllSitesHaveLimits;
 
+  /// No description provided for @browserShowMoreSites.
+  ///
+  /// In en, this message translates to:
+  /// **'Show {count} more ({remaining} remaining)'**
+  String browserShowMoreSites(int count, int remaining);
+
   /// No description provided for @browserNoWebsitesTrackedTitle.
   ///
   /// In en, this message translates to:
