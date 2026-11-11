@@ -54,3 +54,4 @@ local.md
 # Sparkle private keys
 *.key
 sparkle_priv.key
+.commandcode

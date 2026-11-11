@@ -6,7 +6,7 @@
 
 [![Microsoft Store](https://img.shields.io/badge/Microsoft%20Store-Download-blue?logo=microsoft)](https://apps.microsoft.com/detail/9phbzxnpvhsq?hl=en-US&gl=CA)
 [![Chrome Web Store](https://img.shields.io/badge/Chrome%20Web%20Store-Download-4285F4?logo=googlechrome)](https://chromewebstore.google.com/detail/scolect-%E2%80%93-screen-time-web/bhmdflomhhikleikahmfmjbpfmfglbff)
-[![License](https://img.shields.io/badge/license-GNU%20LGPL-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL%20v3-blue.svg)](LICENSE)
 [![Flutter](https://img.shields.io/badge/Flutter-3.38+-02569B?logo=flutter)](https://flutter.dev)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Chrome-lightgrey)]()
 [![GitHub stars](https://img.shields.io/github/stars/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp?style=social)](https://github.com/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp)
@@ -463,7 +463,7 @@ See [Issues](https://github.com/HarmanPreet-Singh-XYT/Scolect-ScreenTimeApp/issu
 
 ## 📄 License
 
-This project is licensed under the GNU LESSER GENERAL PUBLIC LICENSE - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE, version 3 (AGPL-3.0) - see the [LICENSE](LICENSE) file for details.
 
 ---
 
