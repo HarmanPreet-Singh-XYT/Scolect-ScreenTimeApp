@@ -417,8 +417,31 @@ Future<void> _appMain(List<String> args) async {
 
   doWhenWindowReady(() async {
     final win = appWindow;
-    const initialSize = Size(1280, 800);
-    win.minSize = const Size(900, 600);
+    // Fit the window to the screen: on small/high-DPI displays (e.g. a 1080p
+    // laptop at 150% scaling is only ~1280x720 logical) a fixed 1280x800 window
+    // is taller than the work area and gets cut off.
+    var initialSize = const Size(1280, 800);
+    var minSize = const Size(900, 600);
+    final display = PlatformDispatcher.instance.displays.isNotEmpty
+        ? PlatformDispatcher.instance.displays.first
+        : null;
+    if (display != null && display.devicePixelRatio > 0) {
+      final screen = display.size / display.devicePixelRatio;
+      if (screen.width > 0 && screen.height > 0) {
+        // Leave room for the taskbar/dock and window chrome.
+        final maxW = screen.width - 40;
+        final maxH = screen.height - 90;
+        initialSize = Size(
+          initialSize.width.clamp(0.0, maxW).toDouble(),
+          initialSize.height.clamp(0.0, maxH).toDouble(),
+        );
+        minSize = Size(
+          minSize.width.clamp(0.0, initialSize.width).toDouble(),
+          minSize.height.clamp(0.0, initialSize.height).toDouble(),
+        );
+      }
+    }
+    win.minSize = minSize;
     win.size = initialSize;
     win.alignment = Alignment.center;
     win.title = 'Scolect - Track Screen Time & App Usage';
