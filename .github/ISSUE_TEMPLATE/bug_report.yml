@@ -1,0 +1,60 @@
+name: Bug report
+description: Something isn't working in the desktop app or browser extension
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please search existing issues first.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Which product?
+      options:
+        - Desktop app (Windows)
+        - Desktop app (macOS)
+        - Browser extension
+        - Desktop app + browser extension together
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: App / extension version
+      description: Shown at the bottom of the sidebar (e.g. v2.4.0).
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS and version
+      description: e.g. Windows 11 23H2, macOS 15.1. Include your display scaling if the bug is visual.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      description: Only for extension issues.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected to happen instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to ...
+        2. Click ...
+        3. See the problem
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, crash output or screenshots
+      description: Paste any error text, or drag in screenshots. Please remove anything private such as site names you don't want shared.
