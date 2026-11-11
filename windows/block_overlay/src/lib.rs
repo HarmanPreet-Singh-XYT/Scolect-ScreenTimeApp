@@ -248,6 +248,11 @@ pub extern "C" fn block_overlay_show(
 /// Dismiss the overlay.
 #[no_mangle]
 pub extern "C" fn block_overlay_dismiss() {
+    // Nothing to dismiss if the Win32 thread was never started; don't spawn
+    // one (and init GDI+) just to tear down on shutdown.
+    if global().lock().unwrap().thread_id == 0 {
+        return;
+    }
     {
         let mut g = global().lock().unwrap();
         g.pending_command = Some(Command::Dismiss);

@@ -91,6 +91,13 @@ FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
 FlutterWindow::~FlutterWindow() {
+  // Tear down while this object is still fully alive. If the message loop
+  // exits without WM_DESTROY having run (e.g. PostQuitMessage from
+  // SystemNavigator.pop / exit), the HWND is still valid here, and letting the
+  // flutter_controller_ member destruct implicitly would leave it non-null but
+  // half-destroyed while Windows keeps delivering messages to MessageHandler.
+  Destroy();
+
   if (power_notification_handle_) {
     UnregisterPowerSettingNotification(power_notification_handle_);
     power_notification_handle_ = nullptr;
@@ -277,6 +284,17 @@ bool FlutterWindow::OnCreate() {
 }
 
 void FlutterWindow::OnDestroy() {
+  // The suspend/resume callback holds `this` and runs on a system thread, so
+  // stop it before anything it touches goes away.
+  if (power_notification_handle_) {
+    UnregisterPowerSettingNotification(power_notification_handle_);
+    power_notification_handle_ = nullptr;
+  }
+  if (suspend_resume_handle_) {
+    PowerUnregisterSuspendResumeNotification(suspend_resume_handle_);
+    suspend_resume_handle_ = nullptr;
+  }
+
   // Unregister WTS while HWND is still valid
   UnregisterWTSNotification(GetHandle());
 
@@ -287,15 +305,23 @@ void FlutterWindow::OnDestroy() {
 
   overlay_channel_.reset();
   restart_channel_.reset();
-  flutter_controller_.reset();
-
-  if (block_overlay_dll_) {
-    FreeLibrary(block_overlay_dll_);
-    block_overlay_dll_ = nullptr;
-    g_show_fn    = nullptr;
-    g_dismiss_fn = nullptr;
-    g_grace_fn   = nullptr;
+  // Move the controller out BEFORE destroying it, so flutter_controller_ is
+  // already null if destruction pumps messages back into MessageHandler
+  // (the engine's view teardown does). Otherwise HandleTopLevelWindowProc is
+  // called on a controller whose view is gone -> ACCESS_VIOLATION in
+  // FlutterWindowsView::GetEngine.
+  {
+    std::unique_ptr<flutter::FlutterViewController> controller =
+        std::move(flutter_controller_);
+    controller.reset();
   }
+
+  // Deliberately NOT calling FreeLibrary(block_overlay_dll_): the DLL owns a
+  // live Win32 message-loop thread (and its wndproc), and unmapping the module
+  // under it crashes the process on exit. The OS reclaims it at process exit.
+  g_show_fn    = nullptr;
+  g_dismiss_fn = nullptr;
+  g_grace_fn   = nullptr;
 
   Win32Window::OnDestroy();
 }
@@ -330,6 +356,14 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd,
   }
 
   switch (message) {
+    case WM_QUERYENDSESSION:
+      return TRUE;
+    case WM_ENDSESSION:
+      // Shutdown/restart/logoff (incl. MSIX update restarts). WM_CLOSE is
+      // intercepted by preventClose to hide to tray, so without this the app
+      // never exits and the OS reports a hang.
+      if (wparam) PostQuitMessage(0);
+      return 0;
     case WM_FONTCHANGE:
       if (flutter_controller_) {
         flutter_controller_->engine()->ReloadSystemFonts();
