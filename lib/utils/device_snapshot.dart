@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:convert';
 
 import 'package:screentime/sections/controller/app_data_controller.dart';
@@ -65,7 +66,7 @@ class DeviceSnapshot {
     int days = windowDays,
   }) {
     final today = DateTime(now.year, now.month, now.day);
-    final start = today.subtract(Duration(days: days - 1));
+    final start = today.addDays(-(days - 1));
     final byDay = <String, Map<String, _Acc>>{};
 
     store.getAllAppUsageForRange(start, today).forEach((appId, records) {

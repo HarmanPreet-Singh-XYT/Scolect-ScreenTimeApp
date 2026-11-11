@@ -9,6 +9,7 @@
 //
 // Per-domain metadata (category, tracking, limits) is stored in ExtensionSettings.
 
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart';
 import '../sections/controller/data_controllers/browser_data_controller.dart';
 import '../sections/controller/categories_controller.dart';
@@ -340,7 +341,7 @@ class WebBrowserDataProvider extends ChangeNotifier {
     final dateEntries =
         <({DateTime date, String dateKey, String storageKey})>[];
     for (int i = days - 1; i >= 0; i--) {
-      final date = now.subtract(Duration(days: i));
+      final date = now.addDays(-i);
       final y = date.year;
       final m = date.month.toString().padLeft(2, '0');
       final d = date.day.toString().padLeft(2, '0');
@@ -415,7 +416,7 @@ class WebBrowserDataProvider extends ChangeNotifier {
     final dateEntries =
         <({DateTime date, String dateKey, String storageKey})>[];
     for (int i = 0; i < days; i++) {
-      final date = now.subtract(Duration(days: i));
+      final date = now.addDays(-i);
       final y = date.year;
       final m = date.month.toString().padLeft(2, '0');
       final d = date.day.toString().padLeft(2, '0');

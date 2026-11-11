@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
 import '../browser_source_filter.dart';
@@ -326,7 +327,7 @@ class BrowserDataProvider extends ChangeNotifier {
     final now = DateTime.now();
 
     for (int i = days - 1; i >= 0; i--) {
-      final date = now.subtract(Duration(days: i));
+      final date = now.addDays(-i);
       final startOfDay = DateTime(date.year, date.month, date.day);
       final dateKey =
           '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
@@ -351,7 +352,7 @@ class BrowserDataProvider extends ChangeNotifier {
     final now = endDate ?? DateTime.now();
 
     for (int i = 0; i < days; i++) {
-      final date = now.subtract(Duration(days: i));
+      final date = now.addDays(-i);
       final startOfDay = DateTime(date.year, date.month, date.day);
       final dateKey =
           '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';

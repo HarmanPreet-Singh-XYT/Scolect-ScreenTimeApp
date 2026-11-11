@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/material.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
@@ -236,7 +237,7 @@ class FocusAnalyticsService {
       while (!current.isAfter(end)) {
         final String dateKey = _formatDate(current);
         result[dateKey] = 0;
-        current = current.add(const Duration(days: 1));
+        current = current.addDays(1);
       }
 
       // Single pass through sessions
@@ -278,7 +279,7 @@ class FocusAnalyticsService {
       while (!current.isAfter(end)) {
         final String dateKey = _formatDate(current);
         result[dateKey] = 0;
-        current = current.add(const Duration(days: 1));
+        current = current.addDays(1);
       }
 
       for (final session in sessions) {
@@ -491,7 +492,7 @@ class FocusAnalyticsService {
 
     final int weekday = now.weekday;
     final DateTime startOfWeek = DateTime(now.year, now.month, now.day)
-        .subtract(Duration(days: weekday - 1));
+        .addDays(-(weekday - 1));
     final DateTime endOfWeek = DateTime(
       startOfWeek.year,
       startOfWeek.month,
@@ -622,7 +623,7 @@ class FocusAnalyticsService {
       while (!currentStart.isAfter(endDate)) {
         final DateTime nextMonth =
             DateTime(currentStart.year, currentStart.month + 1, 1);
-        final DateTime currentEnd = nextMonth.subtract(const Duration(days: 1));
+        final DateTime currentEnd = nextMonth.addDays(-1);
         final DateTime adjustedEnd =
             currentEnd.isAfter(endDate) ? endDate : currentEnd;
 

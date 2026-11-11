@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/utils/device_snapshot.dart';
@@ -249,6 +250,8 @@ class InsightsData {
 
   DateTime get today => _day(_now());
 
+  static DateTime _addDays(DateTime d, int n) => d.addDays(n);
+
   Iterable<MapEntry<String, List<AppUsageRecord>>> _records(
       DateTime start, DateTime end) {
     return store.getAllAppUsageForRange(start, end).entries.where(
@@ -288,9 +291,9 @@ class InsightsData {
   /// Days with no data are present with [Duration.zero].
   Map<DateTime, Duration> dailyTotals(int days) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     final totals = <DateTime, Duration>{
-      for (var i = 0; i < days; i++) start.add(Duration(days: i)): Duration.zero,
+      for (var i = 0; i < days; i++) _addDays(start, i): Duration.zero,
     };
     for (final r in _rows(start, end)) {
       if (totals.containsKey(r.day)) {
@@ -303,9 +306,9 @@ class InsightsData {
   /// The last 7 days against the 7 days before them.
   WeekComparison compareWeeks({int moversLimit = 5}) {
     final end = today;
-    final curStart = end.subtract(const Duration(days: 6));
-    final prevStart = end.subtract(const Duration(days: 13));
-    final prevEnd = end.subtract(const Duration(days: 7));
+    final curStart = _addDays(end, -6);
+    final prevStart = _addDays(end, -13);
+    final prevEnd = _addDays(end, -7);
 
     var cur = Duration.zero;
     var prev = Duration.zero;
@@ -390,7 +393,7 @@ class InsightsData {
     final q = query.trim().toLowerCase();
     if (q.isEmpty) return const [];
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     final hits = <String, ({int seconds, DateTime last})>{};
     final names = <String, String>{};
 
@@ -425,9 +428,9 @@ class InsightsData {
   /// streak is simply consecutive days with any activity.
   HistoryInsights history(int days, {Duration? goal}) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     final totals = <DateTime, int>{
-      for (var i = 0; i < days; i++) start.add(Duration(days: i)): 0,
+      for (var i = 0; i < days; i++) _addDays(start, i): 0,
     };
     final grid = List.generate(7, (_) => List.filled(24, 0));
     final weekdayCount = List.filled(7, 0);
@@ -500,7 +503,7 @@ class InsightsData {
       if (weekTotals[b] <= 0) continue;
       if (busiestWeek == null || weekTotals[b] > busiestWeek.value.inSeconds) {
         busiestWeek = MapEntry(
-          end.subtract(Duration(days: b * 7 + 6)),
+          _addDays(end, -(b * 7 + 6)),
           Duration(seconds: weekTotals[b]),
         );
       }
@@ -534,7 +537,7 @@ class InsightsData {
   /// retained sessions plus the archive's longest, so it survives the cap.
   LongestBlock? longestBlock({int days = 7}) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     LongestBlock? best;
     for (final entry in _records(start, end)) {
       for (final r in entry.value) {
@@ -577,7 +580,7 @@ class InsightsData {
   /// Most-used window titles over the last [days] days, merged across apps.
   List<TitleHit> topTitles({int days = 7, int limit = 5}) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     final hits = <String, ({String app, int seconds, DateTime last})>{};
     for (final entry in _records(start, end)) {
       for (final r in entry.value) {
@@ -604,7 +607,7 @@ class InsightsData {
   /// Time per device over the last [days] days: this one plus each peer.
   List<DeviceShare> deviceSplit({int days = 7, String thisDeviceName = ''}) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     var local = 0;
     for (final entry in _records(start, end)) {
       for (final r in entry.value) {
@@ -629,7 +632,7 @@ class InsightsData {
   /// Whether any title has been recorded in the last [days] days.
   bool hasAnyTitles({int days = 30}) {
     final end = today;
-    final start = end.subtract(Duration(days: days - 1));
+    final start = _addDays(end, -(days - 1));
     for (final entry in _records(start, end)) {
       if (entry.value.any((r) => r.titleSeconds.isNotEmpty)) return true;
     }

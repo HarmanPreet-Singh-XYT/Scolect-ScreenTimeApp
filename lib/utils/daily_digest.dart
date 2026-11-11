@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 
 class DigestApp {
@@ -79,7 +80,7 @@ class DailyDigest {
 
     final perApp = <String, Duration>{};
     final today = total(day, perApp);
-    final yesterday = total(day.subtract(const Duration(days: 1)));
+    final yesterday = total(day.addDays(-1));
     final top = perApp.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     return DailyDigest(
       day,

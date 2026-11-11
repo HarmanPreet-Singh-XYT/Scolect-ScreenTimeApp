@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:convert';
 import 'package:screentime/utils/platform_utils.dart';
 import 'dart:math' show max;
@@ -472,7 +473,7 @@ class SettingsManager {
     if (resetHour == 0) return DateTime(date.year, date.month, date.day);
 
     if (date.hour < resetHour) {
-      final prev = date.subtract(const Duration(days: 1));
+      final prev = date.addDays(-1);
       return DateTime(prev.year, prev.month, prev.day);
     }
     return DateTime(date.year, date.month, date.day);

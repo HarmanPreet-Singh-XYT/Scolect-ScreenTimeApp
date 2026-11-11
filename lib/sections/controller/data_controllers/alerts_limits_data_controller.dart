@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
@@ -471,12 +472,12 @@ class ScreenTimeDataController extends ChangeNotifier {
 
   UsageTrend _calculateUsageTrend(String appId) {
     final today = SettingsManager().getLogicalDate(DateTime.now());
-    final weekAgo = today.subtract(const Duration(days: 7));
+    final weekAgo = today.addDays(-7);
 
     final weekUsage = _dataStore.getAppUsageRange(
       appId,
       weekAgo,
-      today.subtract(const Duration(days: 1)),
+      today.addDays(-1),
     );
 
     if (weekUsage.length < 3) return UsageTrend.noData;

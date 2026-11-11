@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import '../app_data_controller.dart';
 import '../settings_data_controller.dart';
 import '../categories_controller.dart';
@@ -31,7 +32,7 @@ class DailyOverviewData {
     await _ensureInitialized();
 
     final DateTime today = SettingsManager().getLogicalDate(DateTime.now());
-    final DateTime weekAgo = today.subtract(const Duration(days: 7));
+    final DateTime weekAgo = today.addDays(-7);
 
     // Pre-fetch shared values once
     final Duration rawTodayScreenTime = _dataStore.getTotalScreenTime(today);

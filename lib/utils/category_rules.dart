@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
@@ -160,7 +161,7 @@ class CategoryRules extends ChangeNotifier {
   /// Time per category state over the last [days] days, native apps only.
   static UncategorizedSummary summarize(AppDataStore store, {int days = 7}) {
     final end = DateTime.now();
-    final start = end.subtract(Duration(days: days));
+    final start = end.addDays(-days);
     final usage = store.getAllAppUsageForRange(start, end);
     var total = Duration.zero;
     var none = Duration.zero;

@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:flutter/foundation.dart';
 import '../../app_data_controller.dart';
 import 'insight_models.dart';
@@ -92,7 +93,7 @@ class PersonalizationEngine {
       if (!_store.isInitialized) return [];
 
       final today = DateTime.now();
-      final start = today.subtract(Duration(days: lookbackDays));
+      final start = today.addDays(-lookbackDays);
 
       final allUsage = _store.getAllAppUsageForRange(start, today);
       final focusSessions = _store.getFocusSessionsRange(start, today);
@@ -124,7 +125,7 @@ class PersonalizationEngine {
       }
 
       final today = DateTime.now();
-      final start = today.subtract(Duration(days: lookbackDays));
+      final start = today.addDays(-lookbackDays);
       final focusSessions = _store.getFocusSessionsRange(start, today);
 
       // Collect per-day productivity scores and screen times
@@ -133,7 +134,7 @@ class PersonalizationEngine {
       int daysWithData = 0;
 
       for (int i = 0; i < lookbackDays; i++) {
-        final date = today.subtract(Duration(days: i));
+        final date = today.addDays(-i);
         final total = _store.getTotalScreenTime(date);
         if (total.inMinutes < 5) continue;
 
@@ -147,7 +148,7 @@ class PersonalizationEngine {
       if (daysWithData < 3) return null;
 
       // Persist first tracking date
-      final firstDate = today.subtract(Duration(days: lookbackDays - 1));
+      final firstDate = today.addDays(-(lookbackDays - 1));
       await _persist.setFirstDateIfAbsent(firstDate);
 
       // Chronotype: bucket focus sessions by hour
@@ -203,7 +204,7 @@ class PersonalizationEngine {
         if (meta == null || meta.isProductive) continue;
         int totalOpens = 0;
         for (int i = 0; i < lookbackDays; i++) {
-          final date = today.subtract(Duration(days: i));
+          final date = today.addDays(-i);
           final record = _store.getAppUsage(appName, date);
           if (record != null) totalOpens += record.openCount;
         }
@@ -298,7 +299,7 @@ class PersonalizationEngine {
       if (!_store.isInitialized) return null;
 
       final today = DateTime.now();
-      final weekStart = today.subtract(Duration(days: today.weekday - 1));
+      final weekStart = today.addDays(-(today.weekday - 1));
       final thisWeekTotal = _store.getTotalScreenTimeRange(weekStart, today);
 
       if (thisWeekTotal.inMinutes < 5) return null;
@@ -309,7 +310,7 @@ class PersonalizationEngine {
 
       // Week 1 total for comparison
       final week1Start = firstDate;
-      final week1End = firstDate.add(const Duration(days: 6));
+      final week1End = firstDate.addDays(6);
       final week1Total = _store.getTotalScreenTimeRange(week1Start, week1End);
 
       final h = thisWeekTotal.inHours;

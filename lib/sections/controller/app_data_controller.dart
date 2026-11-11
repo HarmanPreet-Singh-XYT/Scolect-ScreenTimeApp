@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:io';
 import 'dart:ui';
 
@@ -740,9 +741,9 @@ class AppDataStore extends ChangeNotifier {
 
     try {
       final usageCutoff =
-          DateTime.now().subtract(Duration(days: _usageCacheDays));
+          DateTime.now().addDays(-_usageCacheDays);
       final focusCutoff =
-          DateTime.now().subtract(Duration(days: _focusCacheDays));
+          DateTime.now().addDays(-_focusCacheDays);
 
       int loadedUsage = 0;
       int skippedUsage = 0;
@@ -1626,9 +1627,9 @@ class AppDataStore extends ChangeNotifier {
   /// process lifetime. Must be called with [_runtimeCacheLock] held.
   void _pruneRuntimeCache() {
     final usageCutoff =
-        DateTime.now().subtract(const Duration(days: _usageCacheDays));
+        DateTime.now().addDays(-_usageCacheDays);
     final focusCutoff =
-        DateTime.now().subtract(const Duration(days: _focusCacheDays));
+        DateTime.now().addDays(-_focusCacheDays);
     final usageCutoffKey = _formatDateKey(usageCutoff);
     final focusCutoffKey = _formatDateKey(focusCutoff);
 
@@ -2216,7 +2217,7 @@ class AppDataStore extends ChangeNotifier {
         if (record != null) {
           result.add(record);
         }
-        currentDate = currentDate.add(const Duration(days: 1));
+        currentDate = currentDate.addDays(1);
       }
 
       return result;
@@ -2280,7 +2281,7 @@ class AppDataStore extends ChangeNotifier {
             }
           }
 
-          current = current.add(const Duration(days: 1));
+          current = current.addDays(1);
         }
       }
 
@@ -2344,7 +2345,7 @@ class AppDataStore extends ChangeNotifier {
             }
           }
 
-          current = current.add(const Duration(days: 1));
+          current = current.addDays(1);
         }
       }
 
@@ -2443,7 +2444,7 @@ class AppDataStore extends ChangeNotifier {
 
       while (!currentDate.isAfter(endOfRange)) {
         result.addAll(getFocusSessions(currentDate));
-        currentDate = currentDate.add(const Duration(days: 1));
+        currentDate = currentDate.addDays(1);
       }
 
       return result;
@@ -2553,7 +2554,7 @@ class AppDataStore extends ChangeNotifier {
         if (!_usageCacheByDate.containsKey(dateKey)) {
           total += getTotalScreenTime(current);
         }
-        current = current.add(Duration(days: 1));
+        current = current.addDays(1);
       }
 
       return total;
@@ -2754,7 +2755,7 @@ class AppDataStore extends ChangeNotifier {
                 (aggregated[entry.key] ?? Duration.zero) + entry.value;
           }
         }
-        current = current.add(Duration(days: 1));
+        current = current.addDays(1);
       }
 
       return aggregated;
@@ -2831,7 +2832,7 @@ class AppDataStore extends ChangeNotifier {
           daysWithData++;
         }
 
-        current = current.add(const Duration(days: 1));
+        current = current.addDays(1);
       }
 
       if (daysWithData == 0) {
@@ -2851,9 +2852,9 @@ class AppDataStore extends ChangeNotifier {
 
     try {
       final DateTime currentWeekEnd =
-          currentWeekStart.add(const Duration(days: 6));
+          currentWeekStart.addDays(6);
       final DateTime previousWeekEnd =
-          previousWeekStart.add(const Duration(days: 6));
+          previousWeekStart.addDays(6);
 
       final Duration currentWeekFocus =
           getFocusSessionsRange(currentWeekStart, currentWeekEnd)
@@ -3185,7 +3186,7 @@ class AppDataStore extends ChangeNotifier {
     final List<DateTime> dates = [];
     
     for (int i = 0; i < 182; i++) {
-      final d = now.subtract(Duration(days: i));
+      final d = now.addDays(-i);
       final dateKey = '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
       keysToFetch.add('scolect_day_$dateKey');
       dates.add(DateTime(d.year, d.month, d.day));

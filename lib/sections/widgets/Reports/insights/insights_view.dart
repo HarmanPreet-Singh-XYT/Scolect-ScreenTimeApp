@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -199,9 +200,9 @@ class _InsightsViewState extends State<InsightsView> {
         final today = _data.today;
         final lastWeekDays = [
           for (var i = 6; i >= 0; i--)
-            _daily[today.subtract(Duration(days: i))] ?? Duration.zero,
+            _daily[today.addDays(-i)] ?? Duration.zero,
         ];
-        final weekStart = today.subtract(const Duration(days: 6));
+        final weekStart = today.addDays(-6);
         final weekEntries = ManualLog.instance.entries
             .where((e) => !e.start.isBefore(weekStart))
             .toList();
@@ -291,8 +292,8 @@ class _InsightsViewState extends State<InsightsView> {
                   timeline: _timeline,
                   bookends: _bookends,
                   canGoNext: _day.isBefore(_data.today),
-                  onPrev: () => _selectDay(_day.subtract(const Duration(days: 1))),
-                  onNext: () => _selectDay(_day.add(const Duration(days: 1))),
+                  onPrev: () => _selectDay(_day.addDays(-1)),
+                  onNext: () => _selectDay(_day.addDays(1)),
                 ),
               ),
             ),
@@ -1174,15 +1175,15 @@ class _ActivityHeatmapState extends State<ActivityHeatmap> {
         .fold<Duration>(Duration.zero, (m, d) => d > m ? d : m);
 
     // Monday of the week containing `last`, then back 25 weeks.
-    final lastMonday = last.subtract(Duration(days: last.weekday - 1));
+    final lastMonday = last.addDays(-(last.weekday - 1));
     final firstMonday =
-        lastMonday.subtract(const Duration(days: 7 * (kHeatmapWeeks - 1)));
+        lastMonday.addDays(-(7 * (kHeatmapWeeks - 1)));
 
     // Precalculate month label headers above columns
     final monthLabels = <int, String>{};
     int? lastMonth;
     for (var w = 0; w < kHeatmapWeeks; w++) {
-      final mondayDate = firstMonday.add(Duration(days: w * 7));
+      final mondayDate = firstMonday.addDays(w * 7);
       if (mondayDate.month != lastMonth) {
         lastMonth = mondayDate.month;
         monthLabels[w] = AppDateFormat.month(mondayDate);
@@ -1264,7 +1265,7 @@ class _ActivityHeatmapState extends State<ActivityHeatmap> {
           child: Align(
             alignment: AlignmentDirectional.centerStart,
             child: Text(
-              AppDateFormat.weekdayShort(monday.add(Duration(days: offset))),
+              AppDateFormat.weekdayShort(monday.addDays(offset)),
               style: TextStyle(
                 fontSize: 10,
                 color: theme.typography.caption?.color?.withValues(alpha: 0.6),
@@ -1340,7 +1341,7 @@ class _ActivityHeatmapState extends State<ActivityHeatmap> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: _gap),
                                     child: cell(
-                                      firstMonday.add(Duration(days: w * 7 + d)),
+                                      firstMonday.addDays(w * 7 + d),
                                       size,
                                     ),
                                   ),

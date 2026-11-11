@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fluent_ui/fluent_ui.dart' hide Colors;
 import 'package:flutter/material.dart' show Colors;
@@ -95,7 +96,7 @@ class _BrowserHistoryState extends State<BrowserHistory> {
     final today = DateTime.now();
     final todayDate = DateTime(today.year, today.month, today.day);
     DateTime start =
-        _customStart ?? todayDate.subtract(const Duration(days: 6));
+        _customStart ?? todayDate.addDays(-6);
     DateTime end = _customEnd ?? todayDate;
     bool isRange = _isCustom ? _customStart != _customEnd : true;
     String? error;

@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:screentime/sections/controller/app_data_controller.dart';
 import 'package:screentime/sections/controller/settings_data_controller.dart';
 import 'package:screentime/sections/controller/categories_controller.dart';
@@ -148,8 +149,8 @@ class UsageAnalyticsController extends ChangeNotifier {
     _AnalyticsDateRange range;
     if (compareWithPrevious) {
       final dayCount = normalizedEnd.difference(normalizedStart).inDays + 1;
-      final prevEnd = normalizedStart.subtract(const Duration(days: 1));
-      final prevStart = prevEnd.subtract(Duration(days: dayCount - 1));
+      final prevEnd = normalizedStart.addDays(-1);
+      final prevStart = prevEnd.addDays(-(dayCount - 1));
       range = _AnalyticsDateRange(
         startDate: normalizedStart,
         endDate: normalizedEnd,
@@ -189,9 +190,9 @@ class UsageAnalyticsController extends ChangeNotifier {
 
   Future<AnalyticsSummary> getLastSevenDaysAnalytics() async {
     final today = _today();
-    final startDate = today.subtract(const Duration(days: 6));
-    final prevStart = startDate.subtract(const Duration(days: 7));
-    final prevEnd = startDate.subtract(const Duration(days: 1));
+    final startDate = today.addDays(-6);
+    final prevStart = startDate.addDays(-7);
+    final prevEnd = startDate.addDays(-1);
 
     return _executeAnalytics(
       _AnalyticsDateRange(
@@ -209,7 +210,7 @@ class UsageAnalyticsController extends ChangeNotifier {
     final startDate = DateTime(today.year, today.month - 1, today.day);
     final prevStart =
         DateTime(startDate.year, startDate.month - 1, startDate.day);
-    final prevEnd = startDate.subtract(const Duration(days: 1));
+    final prevEnd = startDate.addDays(-1);
 
     return _executeAnalytics(
       _AnalyticsDateRange(
@@ -227,7 +228,7 @@ class UsageAnalyticsController extends ChangeNotifier {
     final startDate = DateTime(today.year, today.month - 3, today.day);
     final prevStart =
         DateTime(startDate.year, startDate.month - 3, startDate.day);
-    final prevEnd = startDate.subtract(const Duration(days: 1));
+    final prevEnd = startDate.addDays(-1);
 
     return _executeAnalytics(
       _AnalyticsDateRange(
@@ -244,12 +245,12 @@ class UsageAnalyticsController extends ChangeNotifier {
     await _ensureInitialized();
 
     final today = _today();
-    DateTime earliestDate = today.subtract(const Duration(days: 365));
+    DateTime earliestDate = today.addDays(-365);
 
     // Find earliest recorded data
     for (final appName in _dataStore.allAppNames) {
       for (int i = 365; i >= 0; i--) {
-        final checkDate = today.subtract(Duration(days: i));
+        final checkDate = today.addDays(-i);
         if (_dataStore.getAppUsage(appName, checkDate) != null) {
           if (checkDate.isBefore(earliestDate)) {
             earliestDate = checkDate;
@@ -367,7 +368,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       dailyScreenTimeData
           .add(DailyScreenTime(date: currentDate, screenTime: dayScreenTime));
 
-      currentDate = currentDate.add(const Duration(days: 1));
+      currentDate = currentDate.addDays(1);
     }
 
     final totalScreenTime = appTotalUsage.values
@@ -462,7 +463,7 @@ class UsageAnalyticsController extends ChangeNotifier {
     DateTime d = start;
     while (!d.isAfter(end)) {
       total += _dataStore.getProductiveTime(d);
-      d = d.add(const Duration(days: 1));
+      d = d.addDays(1);
     }
     return total;
   }
@@ -478,7 +479,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       totalScreenTime += _dataStore.getTotalScreenTime(currentDate);
       productiveTime += _dataStore.getProductiveTime(currentDate);
       focusSessionsCount += _dataStore.getFocusSessionsCount(currentDate);
-      currentDate = currentDate.add(const Duration(days: 1));
+      currentDate = currentDate.addDays(1);
     }
 
     return _ComparisonData(
@@ -552,7 +553,7 @@ class UsageAnalyticsController extends ChangeNotifier {
       totalScreenTime += Duration(seconds: dayScopedSeconds);
       dailyScreenTimeData.add(DailyScreenTime(
           date: currentDate, screenTime: Duration(seconds: dayScopedSeconds)));
-      currentDate = currentDate.add(const Duration(days: 1));
+      currentDate = currentDate.addDays(1);
     }
 
     String mostUsedApp = 'None';
@@ -698,7 +699,7 @@ class FocusModeAnalytics {
   Map<String, dynamic> getLastSevenDaysData({DateTime? endDate}) {
     final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
-      startDate: now.subtract(const Duration(days: 6)),
+      startDate: now.addDays(-6),
       endDate: now,
     );
   }
@@ -706,7 +707,7 @@ class FocusModeAnalytics {
   Map<String, dynamic> getLastMonthData({DateTime? endDate}) {
     final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
-      startDate: now.subtract(const Duration(days: 29)),
+      startDate: now.addDays(-29),
       endDate: now,
     );
   }
@@ -714,7 +715,7 @@ class FocusModeAnalytics {
   Map<String, dynamic> getLastThreeMonthsData({DateTime? endDate}) {
     final now = endDate ?? SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
-      startDate: now.subtract(const Duration(days: 89)),
+      startDate: now.addDays(-89),
       endDate: now,
     );
   }
@@ -722,7 +723,7 @@ class FocusModeAnalytics {
   Map<String, dynamic> getLifetimeData() {
     final now = SettingsManager().getLogicalDate(DateTime.now());
     return _getPeriodData(
-      startDate: now.subtract(const Duration(days: 365)),
+      startDate: now.addDays(-365),
       endDate: now,
     );
   }
@@ -809,7 +810,7 @@ class FocusModeAnalytics {
 
       if (count != null && count > 0) {
         streak++;
-        currentDate = currentDate.subtract(const Duration(days: 1));
+        currentDate = currentDate.addDays(-1);
       } else {
         break;
       }

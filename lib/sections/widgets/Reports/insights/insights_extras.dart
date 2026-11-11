@@ -505,7 +505,7 @@ class _RecordsBody extends StatelessWidget {
                 label: l10n.insBusiestWeek,
                 value: w.value.toHourMinuteFormat(),
                 note:
-                    '${AppDateFormat.dayMonth(w.key)} – ${AppDateFormat.dayMonth(w.key.add(const Duration(days: 6)))}',
+                    '${AppDateFormat.dayMonth(w.key)} – ${AppDateFormat.dayMonth(w.key.addDays(6))}',
               ),
           ],
         ),

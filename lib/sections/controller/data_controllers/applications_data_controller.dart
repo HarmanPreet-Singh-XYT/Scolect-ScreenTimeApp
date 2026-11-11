@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:math';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:screentime/web/web_browser_data_provider.dart'
@@ -213,7 +214,7 @@ class ApplicationsDataProvider {
     DateTime current = range.startDate;
     while (!current.isAfter(range.endDate)) {
       yield current;
-      current = current.add(const Duration(days: 1));
+      current = current.addDays(1);
     }
   }
 
@@ -372,12 +373,12 @@ class ApplicationsDataProvider {
         return DateRange(startDate: today, endDate: today);
       case TimeRange.week:
         return DateRange(
-          startDate: today.subtract(const Duration(days: 6)),
+          startDate: today.addDays(-6),
           endDate: today,
         );
       case TimeRange.month:
         return DateRange(
-          startDate: today.subtract(const Duration(days: 29)),
+          startDate: today.addDays(-29),
           endDate: today,
         );
     }
@@ -411,14 +412,14 @@ class ApplicationsDataProvider {
       final totalWeeks = (dateRange.dayCount - 1) ~/ 7 + 1;
       for (int w = 0; w < totalWeeks; w++) {
         Duration weekTotal = Duration.zero;
-        final weekStart = dateRange.startDate.add(Duration(days: w * 7));
+        final weekStart = dateRange.startDate.addDays(w * 7);
         final weekEnd =
-            _minDate(weekStart.add(const Duration(days: 6)), dateRange.endDate);
+            _minDate(weekStart.addDays(6), dateRange.endDate);
 
         DateTime d = weekStart;
         while (!d.isAfter(weekEnd)) {
           weekTotal += records[d]?.timeSpent ?? Duration.zero;
-          d = d.add(const Duration(days: 1));
+          d = d.addDays(1);
         }
 
         if (weekTotal > Duration.zero) {
@@ -595,8 +596,8 @@ class ApplicationsDataProvider {
     // Previous period
     final previousRange = DateRange(
       startDate:
-          dateRange.startDate.subtract(Duration(days: dateRange.dayCount)),
-      endDate: dateRange.startDate.subtract(const Duration(days: 1)),
+          dateRange.startDate.addDays(-dateRange.dayCount),
+      endDate: dateRange.startDate.addDays(-1),
     );
     final previousPeriodUsage = _sumUsageInRange(appName, previousRange);
 

@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
@@ -122,11 +123,11 @@ class _FocusModeState extends State<FocusMode>
     try {
       final now = DateTime.now();
       final start = DateTime(now.year, now.month, now.day)
-          .subtract(const Duration(days: 30));
+          .addDays(-30);
 
       // Scope the history chart to the current week only
       final weekStart = DateTime(now.year, now.month, now.day)
-          .subtract(Duration(days: now.weekday - 1));
+          .addDays(-(now.weekday - 1));
       final weekEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
       final dist =

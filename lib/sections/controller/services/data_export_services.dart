@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:screentime/utils/platform_utils.dart';
@@ -253,7 +254,7 @@ class DataExportService {
     for (final appName in _dataStore.allAppNames) {
       // Get usage for last 365 days (or all available)
       final now = DateTime.now();
-      final startDate = now.subtract(const Duration(days: 365));
+      final startDate = now.addDays(-365);
 
       final usageRecords = _dataStore.getAppUsageRange(appName, startDate, now);
 
@@ -294,7 +295,7 @@ class DataExportService {
 
     // Get sessions for last 365 days
     final now = DateTime.now();
-    final startDate = now.subtract(const Duration(days: 365));
+    final startDate = now.addDays(-365);
 
     final sessions = _dataStore.getFocusSessionsRange(startDate, now);
 

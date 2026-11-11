@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:screentime/sections/widgets/Settings/category_rules_section.dart';
 import 'package:screentime/app_design.dart';
@@ -1625,7 +1626,7 @@ class _EditAppDialogState extends State<_EditAppDialog> {
     if (kIsWeb) return const {};
     final end = DateTime.now();
     final records = AppDataStore()
-        .getAppUsageRange(widget.app.appId, end.subtract(const Duration(days: 7)), end);
+        .getAppUsageRange(widget.app.appId, end.addDays(-7), end);
     final totals = <String, int>{};
     for (final r in records) {
       r.titleSeconds.forEach((t, s) => totals[t] = (totals[t] ?? 0) + s);

@@ -1,3 +1,4 @@
+import 'package:screentime/utils/date_extensions.dart';
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
@@ -77,7 +78,7 @@ class _TimeLogCardState extends State<TimeLogCard> {
     final running = _log.running;
     final now = DateTime.now();
     final today = _log.forDay(now);
-    final week = _log.totalsByLabel(now.subtract(const Duration(days: 6)), now);
+    final week = _log.totalsByLabel(now.addDays(-6), now);
     final weekRows = week.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     final maxWeekSecs = weekRows.isEmpty
         ? 1
