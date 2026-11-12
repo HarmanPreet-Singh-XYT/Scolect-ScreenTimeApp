@@ -218,7 +218,9 @@ Win32Window::MessageHandler(HWND hwnd,
       return 0;
   }
 
-  return DefWindowProc(window_handle_, message, wparam, lparam);
+  // Use the hwnd we were given: window_handle_ is already null by the time
+  // WM_NCDESTROY arrives, which would skip default non-client cleanup.
+  return DefWindowProc(hwnd, message, wparam, lparam);
 }
 
 void Win32Window::Destroy() {

@@ -3,8 +3,10 @@
 #include <windows.h>
 #include <shellapi.h>
 #include <powrprof.h>
+#include <atomic>
 #include <optional>
 #include <string>
+#include <thread>
 #include "flutter/generated_plugin_registrant.h"
 
 #pragma comment(lib, "powrprof.lib")
@@ -35,9 +37,10 @@ typedef void (*PFN_block_overlay_start_grace)(int seconds);
 // ─── Globals shared between the Flutter window and the Rust callback ──────────
 namespace {
 
-// The main window HWND — set in OnCreate, used by the Rust callback to post
-// WM_OVERLAY_ACTION back to the main thread.
-HWND g_main_hwnd = nullptr;
+// The main window HWND — set in OnCreate, used by the Rust callback and the
+// power-notification callback (both on foreign threads) to post messages back
+// to the main thread. Atomic because OnDestroy clears it concurrently.
+std::atomic<HWND> g_main_hwnd{nullptr};
 
 // Overlay channel pointer — set in OnCreate, used in MessageHandler.
 // Raw pointer is safe because FlutterWindow outlives the message loop.
@@ -53,11 +56,15 @@ PFN_block_overlay_start_grace g_grace_fn  = nullptr;
 // Posts WM_OVERLAY_ACTION to the main window so that the method channel
 // InvokeMethod call happens on the correct thread.
 void CALLBACK OverlayCallback(const char* action) {
-  if (!g_main_hwnd || !action) return;
+  HWND hwnd = g_main_hwnd.load();
+  if (!hwnd || !action) return;
   // Duplicate the string onto the heap; MessageHandler frees it.
   char* copy = _strdup(action);
-  PostMessage(g_main_hwnd, WM_OVERLAY_ACTION, 0,
-              reinterpret_cast<LPARAM>(copy));
+  if (!copy) return;
+  if (!PostMessage(hwnd, WM_OVERLAY_ACTION, 0,
+                   reinterpret_cast<LPARAM>(copy))) {
+    free(copy);  // window gone / queue full: nobody will ever receive it
+  }
 }
 
 // ─── WTS helpers ──────────────────────────────────────────────────────────────
@@ -159,7 +166,25 @@ bool FlutterWindow::OnCreate() {
   // -------------------------
   // Load the Rust DLL dynamically so the app still starts if the DLL is absent
   // (e.g. during a non-Windows build or before the Rust crate has been built).
-  block_overlay_dll_ = LoadLibraryA("block_overlay.dll");
+  // Load by full path from the exe's directory: a bare name goes through the
+  // normal search order (current directory, PATH), which can pick up a stale
+  // or planted DLL.
+  {
+    std::wstring dll_path(32768, L'\0');
+    DWORD len = GetModuleFileNameW(nullptr, dll_path.data(),
+                                   static_cast<DWORD>(dll_path.size()));
+    if (len > 0 && len < dll_path.size()) {
+      dll_path.resize(len);
+      size_t slash = dll_path.find_last_of(L"\\/");
+      if (slash != std::wstring::npos) {
+        dll_path.resize(slash + 1);
+        dll_path += L"block_overlay.dll";
+        block_overlay_dll_ = LoadLibraryExW(
+            dll_path.c_str(), nullptr,
+            LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+      }
+    }
+  }
   if (block_overlay_dll_) {
     g_show_fn = reinterpret_cast<PFN_block_overlay_show>(
         GetProcAddress(block_overlay_dll_, "block_overlay_show"));
@@ -260,9 +285,9 @@ bool FlutterWindow::OnCreate() {
   // -------------------------
   DEVICE_NOTIFY_SUBSCRIBE_PARAMETERS params = {};
   params.Context = this;
-  params.Callback = [](PVOID context, ULONG type, PVOID /*setting*/) -> ULONG {
-    FlutterWindow* self = static_cast<FlutterWindow*>(context);
-    HWND hwnd = self->GetHandle();
+  params.Callback = [](PVOID /*context*/, ULONG type, PVOID /*setting*/) -> ULONG {
+    // Runs on a system thread: use the atomic handle, never touch `this`.
+    HWND hwnd = g_main_hwnd.load();
     if (!hwnd) return ERROR_SUCCESS;
     switch (type) {
       case PBT_APMSUSPEND:
@@ -295,8 +320,12 @@ void FlutterWindow::OnDestroy() {
     suspend_resume_handle_ = nullptr;
   }
 
-  // Unregister WTS while HWND is still valid
-  UnregisterWTSNotification(GetHandle());
+  // Unregister WTS while HWND is still valid. On the WM_DESTROY path the base
+  // class has already nulled its handle (the window itself is still alive), so
+  // fall back to the handle we published for the other threads.
+  HWND wts_hwnd = GetHandle();
+  if (!wts_hwnd) wts_hwnd = g_main_hwnd.load();
+  if (wts_hwnd) UnregisterWTSNotification(wts_hwnd);
 
   // Dismiss any live overlay before tearing down the channel.
   if (g_dismiss_fn) g_dismiss_fn();
@@ -379,37 +408,64 @@ LRESULT FlutterWindow::MessageHandler(HWND hwnd,
 // =========================
 
 void RestartApplication() {
-  wchar_t exePath[MAX_PATH] = {};
-  if (GetModuleFileNameW(nullptr, exePath, MAX_PATH) == 0) {
-    ExitProcess(0);
+  std::wstring exe_path(32768, L'\0');
+  DWORD n = GetModuleFileNameW(nullptr, exe_path.data(),
+                               static_cast<DWORD>(exe_path.size()));
+  if (n == 0 || n >= exe_path.size()) {
+    return;  // Can't locate ourselves: keep running rather than vanish.
+  }
+  exe_path.resize(n);
+
+  // The new instance waits for this process to exit (see main.cpp) before it
+  // does its single-instance check, so it can't mistake us for a live
+  // instance and bail out, leaving the user with no app at all.
+  std::wstring params =
+      L"--wait-for-pid=" + std::to_wstring(GetCurrentProcessId());
+  int argc = 0;
+  if (LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc)) {
+    for (int i = 1; i < argc; i++) {
+      if (wcsncmp(argv[i], L"--wait-for-pid=", 15) == 0) continue;
+      params += L" \"";
+      params += argv[i];
+      params += L"\"";
+    }
+    LocalFree(argv);
   }
 
-  // First try ShellExecuteW, which correctly handles packaged MSIX applications
-  // (via AppX activation / shell execution alias) as well as unpackaged binaries.
-  HINSTANCE hInst = ShellExecuteW(nullptr, L"open", exePath, nullptr, nullptr, SW_SHOWNORMAL);
-  if (reinterpret_cast<INT_PTR>(hInst) > 32) {
-    ExitProcess(0);
+  bool launched = false;
+
+  // ShellExecuteW correctly handles packaged MSIX applications (AppX
+  // activation / shell execution alias) as well as unpackaged binaries.
+  HINSTANCE hInst = ShellExecuteW(nullptr, L"open", exe_path.c_str(),
+                                  params.c_str(), nullptr, SW_SHOWNORMAL);
+  launched = reinterpret_cast<INT_PTR>(hInst) > 32;
+
+  if (!launched) {
+    std::wstring cmd = L"\"" + exe_path + L"\" " + params;
+    STARTUPINFOW si{};
+    si.cb = sizeof(si);
+    PROCESS_INFORMATION pi{};
+    if (CreateProcessW(exe_path.c_str(), cmd.data(), nullptr, nullptr, FALSE,
+                       0, nullptr, nullptr, &si, &pi)) {
+      CloseHandle(pi.hProcess);
+      CloseHandle(pi.hThread);
+      launched = true;
+    }
   }
 
-  // Fallback to CreateProcessW if ShellExecute was not handled
-  STARTUPINFOW si{};
-  si.cb = sizeof(si);
-  PROCESS_INFORMATION pi{};
-
-  if (CreateProcessW(
-          exePath,
-          nullptr,
-          nullptr,
-          nullptr,
-          FALSE,
-          0,
-          nullptr,
-          nullptr,
-          &si,
-          &pi)) {
-    CloseHandle(pi.hProcess);
-    CloseHandle(pi.hThread);
+  if (!launched) {
+    return;  // Restart failed; stay alive instead of quitting for nothing.
   }
 
-  ExitProcess(0);
+  // Quit through the normal path so the window/engine tear down and Dart gets
+  // to flush storage; ExitProcess here would cut all of that off (and can hang
+  // under the loader lock with the overlay/GDI+/Dart threads still running).
+  PostQuitMessage(0);
+
+  // Safety net: if shutdown wedges, the waiting new instance must not hang
+  // forever — hard-kill ourselves after a grace period.
+  std::thread([]() {
+    Sleep(8000);
+    TerminateProcess(GetCurrentProcess(), 0);
+  }).detach();
 }

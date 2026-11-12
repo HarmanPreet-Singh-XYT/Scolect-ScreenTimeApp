@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io' show pid;
 import 'package:ffi/ffi.dart';
 import 'package:flutter/foundation.dart';
 
@@ -587,6 +588,7 @@ class ForegroundWindowPlugin {
   /// Minimizes all visible top-level windows owned by [pid].
   /// Runs in a compute isolate; uses static FFI bindings loaded fresh there.
   static void _minimizeProcessWindows(int pid) {
+    if (_isProtectedPid(pid)) return;
     // We need our own DLL reference inside the isolate.
     final user32 = DynamicLibrary.open('user32.dll');
 
@@ -634,8 +636,31 @@ class ForegroundWindowPlugin {
     }
   }
 
+  /// Processes that must never be minimized or terminated by app blocking:
+  /// ourselves, System/Idle, the shell, and the UWP frame host (it owns the
+  /// windows of *every* UWP app, so killing it closes them all). Also true
+  /// when the image can't be identified — a PID we can't inspect isn't worth
+  /// the risk of hitting the wrong process.
+  static bool _isProtectedPid(int targetPid) {
+    if (targetPid <= 4 || targetPid == pid) return true;
+    final path = _queryProcessPath(targetPid);
+    if (path.isEmpty) return true;
+    final name = path.split(RegExp(r'[\\/]')).last.toLowerCase();
+    return const {
+      'explorer.exe',
+      'applicationframehost.exe',
+      'csrss.exe',
+      'winlogon.exe',
+      'dwm.exe',
+      'services.exe',
+      'lsass.exe',
+      'svchost.exe',
+    }.contains(name);
+  }
+
   /// Opens [pid] and calls TerminateProcess on it.
   static void _killProcess(int pid) {
+    if (_isProtectedPid(pid)) return;
     final kernel32 = DynamicLibrary.open('kernel32.dll');
 
     final openProcess = kernel32.lookupFunction<

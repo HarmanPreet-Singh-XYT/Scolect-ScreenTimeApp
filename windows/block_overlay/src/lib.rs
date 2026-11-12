@@ -21,15 +21,21 @@
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
-use std::sync::{Mutex, Once, OnceLock};
+use std::collections::VecDeque;
+use std::panic::{self, AssertUnwindSafe};
+use std::sync::{mpsc, Mutex, MutexGuard, Once, OnceLock};
 use std::thread;
+use std::time::Duration;
 
 use windows::core::{PCSTR, PCWSTR};
-use windows::Win32::Foundation::{COLORREF, HINSTANCE, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM};
+use windows::Win32::Foundation::{
+    CloseHandle, COLORREF, HINSTANCE, HWND, LPARAM, LRESULT, POINT, RECT, WPARAM,
+};
 use windows::Win32::Graphics::Dwm::{DwmEnableBlurBehindWindow, DWM_BB_ENABLE, DWM_BLURBEHIND};
 use windows::Win32::Graphics::Gdi::{
     BeginPaint, BitBlt, CreateCompatibleBitmap, CreateCompatibleDC, DeleteDC, DeleteObject,
-    EndPaint, SelectObject, HBITMAP, HDC, HRGN, PAINTSTRUCT, SRCCOPY,
+    EndPaint, GetMonitorInfoA, MonitorFromWindow, SelectObject, HBITMAP, HDC, HRGN, MONITORINFO,
+    MONITOR_DEFAULTTONEAREST, MONITOR_DEFAULTTOPRIMARY, PAINTSTRUCT, SRCCOPY,
 };
 use windows::Win32::Graphics::GdiPlus::{
     GdipAddPathArcI, GdipClosePathFigure, GdipCreateFont, GdipCreateFontFamilyFromName,
@@ -45,26 +51,34 @@ use windows::Win32::Graphics::GdiPlus::{
     TextRenderingHintAntiAliasGridFit, UnitPixel,
 };
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
+use windows::Win32::System::SystemInformation::GetTickCount64;
+use windows::Win32::System::Threading::{
+    GetCurrentProcessId, OpenProcess, QueryFullProcessImageNameA, PROCESS_NAME_WIN32,
+    PROCESS_QUERY_LIMITED_INFORMATION,
+};
 use windows::Win32::System::Registry::{
     RegOpenKeyExA, RegQueryValueExA, HKEY_CURRENT_USER, KEY_READ, REG_VALUE_TYPE,
 };
 use windows::Win32::UI::HiDpi::GetDpiForWindow;
 use windows::Win32::UI::WindowsAndMessaging::{
     CreateWindowExA, DefWindowProcA, DestroyWindow, DispatchMessageA, EnumWindows,
-    GetClientRect, GetForegroundWindow, GetMessageA, GetSystemMetrics, GetWindowRect,
-    GetWindowThreadProcessId, LoadCursorW, PostThreadMessageA, RegisterClassExA,
-    SetLayeredWindowAttributes, SetTimer, SetWindowPos, ShowWindow, TranslateMessage,
-    CS_HREDRAW, CS_VREDRAW, GWLP_USERDATA, HWND_TOPMOST, IDC_ARROW, LWA_ALPHA, MSG,
-    SM_CXSCREEN, SM_CYSCREEN, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE, WM_APP, WM_DESTROY,
-    WM_LBUTTONDOWN, WM_PAINT, WM_TIMER, WNDCLASSEXA, WS_EX_LAYERED, WS_EX_NOACTIVATE,
-    WS_EX_TOPMOST, WS_POPUP, SW_HIDE, SW_SHOWNOACTIVATE, SetWindowLongPtrA, GetWindowLongPtrA,
+    GetClientRect, GetForegroundWindow, GetMessageA, GetSystemMetrics, GetWindow, GetWindowRect,
+    GetWindowThreadProcessId, IsIconic, IsWindow, IsWindowVisible, LoadCursorW, PeekMessageA,
+    PostThreadMessageA, RegisterClassExA, SetLayeredWindowAttributes, SetTimer, SetWindowPos,
+    ShowWindow, ShowWindowAsync, TranslateMessage, CS_HREDRAW, CS_VREDRAW, GWL_EXSTYLE,
+    GWLP_USERDATA, GW_OWNER, HWND_TOPMOST, IDC_ARROW, LWA_ALPHA, MSG, PM_NOREMOVE, SM_CXSCREEN,
+    SM_CYSCREEN, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE, WM_APP, WM_DESTROY, WM_LBUTTONDOWN,
+    WM_PAINT, WM_TIMER, WM_USER, WNDCLASSEXA, WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW,
+    WS_EX_TOPMOST, WS_POPUP, SW_HIDE, SW_SHOWNA, SW_SHOWNOACTIVATE, SetWindowLongPtrA,
+    GetWindowLongPtrA,
 };
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const WM_CMD_SHOW: u32 = WM_APP + 2;
-const WM_CMD_DISMISS: u32 = WM_APP + 3;
-const WM_CMD_GRACE: u32 = WM_APP + 4;
+/// Single wake-up message: commands live in `GlobalState::queue`, so the
+/// message itself carries no payload and N queued commands can never be
+/// mistaken for each other.
+const WM_CMD_WAKE: u32 = WM_APP + 2;
 
 const TIMER_REPOSITION: usize = 1;
 const TIMER_GRACE: usize = 2;
@@ -167,8 +181,12 @@ struct GlobalState {
     hwnd: HWND,
     // Callback function pointer
     callback: Option<extern "C" fn(*const c_char)>,
-    // Pending command (replaced atomically by the C-API thread)
-    pending_command: Option<Command>,
+    // Commands from the C-API threads, drained in order by the Win32 thread.
+    queue: VecDeque<Command>,
+    // Top-level windows of the blocked app that a hard block hid with SW_HIDE.
+    // Stored as raw handle values (HWND isn't Send) so any thread — notably the
+    // Flutter thread on shutdown — can restore them without the overlay thread.
+    hidden: Vec<isize>,
 }
 
 unsafe impl Send for GlobalState {}
@@ -182,9 +200,16 @@ fn global() -> &'static Mutex<GlobalState> {
             thread_id: 0,
             hwnd: HWND(std::ptr::null_mut()),
             callback: None,
-            pending_command: None,
+            queue: VecDeque::new(),
+            hidden: Vec::new(),
         })
     })
+}
+
+/// Locks the global state, recovering from poisoning. A panic must never turn
+/// every later FFI call into another panic (which aborts the host process).
+fn global_lock() -> MutexGuard<'static, GlobalState> {
+    global().lock().unwrap_or_else(|e| e.into_inner())
 }
 
 // ─── Per-window state (stored in GWLP_USERDATA) ───────────────────────────────
@@ -203,9 +228,16 @@ struct WindowState {
     grace_used: bool, // greyed-out once clicked
     // HWND of the blocked app (found by PID)
     blocked_hwnd: HWND,
+    // Hard block: hiding the app makes Windows activate some other window.
+    // Until `settle_until` (GetTickCount64), foreground changes are absorbed
+    // into `fg_baseline` instead of being treated as the user leaving.
+    settle_until: u64,
+    fg_baseline: isize,
 }
 
 // ─── C-ABI exports ─────────────────────────────────────────────────────────────
+// Every export is wrapped in catch_unwind: unwinding out of an extern "C"
+// frame aborts the host process, so a panic here must never escape.
 
 /// Show the overlay. `hard_block = true` → full-screen TOPMOST.
 /// `callback` fires from the Win32 thread with one of: "minimize", "quit",
@@ -219,86 +251,95 @@ pub extern "C" fn block_overlay_show(
     hard_block: bool,
     callback: extern "C" fn(*const c_char),
 ) {
-    let name = if app_name.is_null() {
-        String::from("Unknown")
-    } else {
-        unsafe { CStr::from_ptr(app_name) }
-            .to_string_lossy()
-            .into_owned()
-    };
+    let _ = panic::catch_unwind(AssertUnwindSafe(|| {
+        let name = if app_name.is_null() {
+            String::from("Unknown")
+        } else {
+            unsafe { CStr::from_ptr(app_name) }
+                .to_string_lossy()
+                .into_owned()
+        };
 
-    let args = ShowArgs {
-        pid,
-        app_name: name,
-        used_seconds,
-        limit_seconds,
-        hard_block,
-    };
+        let args = ShowArgs {
+            pid,
+            app_name: name,
+            used_seconds,
+            limit_seconds,
+            hard_block,
+        };
 
-    {
-        let mut g = global().lock().unwrap();
-        g.callback = Some(callback);
-        g.pending_command = Some(Command::Show(args));
-    }
-
-    ensure_thread_running();
-    post_to_thread(WM_CMD_SHOW);
+        global_lock().callback = Some(callback);
+        send_command(Command::Show(args));
+    }));
 }
 
 /// Dismiss the overlay.
 #[no_mangle]
 pub extern "C" fn block_overlay_dismiss() {
-    // Nothing to dismiss if the Win32 thread was never started; don't spawn
-    // one (and init GDI+) just to tear down on shutdown.
-    if global().lock().unwrap().thread_id == 0 {
-        return;
-    }
-    {
-        let mut g = global().lock().unwrap();
-        g.pending_command = Some(Command::Dismiss);
-    }
-    ensure_thread_running();
-    post_to_thread(WM_CMD_DISMISS);
+    let _ = panic::catch_unwind(AssertUnwindSafe(|| {
+        // Restore hidden app windows right here, on the caller's thread. On app
+        // shutdown the overlay thread may never get to process the queued
+        // Dismiss before the process exits, which would leave the user's app
+        // invisible. ShowWindowAsync never blocks on a hung target.
+        restore_hidden_windows();
+
+        // Nothing to dismiss if the Win32 thread was never started; don't spawn
+        // one (and init GDI+) just to tear down on shutdown.
+        if global_lock().thread_id == 0 {
+            return;
+        }
+        send_command(Command::Dismiss);
+    }));
 }
 
 /// Start/update the grace countdown badge (seconds).
 #[no_mangle]
 pub extern "C" fn block_overlay_start_grace(seconds: i32) {
-    {
-        let mut g = global().lock().unwrap();
-        g.pending_command = Some(Command::Grace(seconds));
-    }
-    ensure_thread_running();
-    post_to_thread(WM_CMD_GRACE);
+    let _ = panic::catch_unwind(AssertUnwindSafe(|| {
+        send_command(Command::Grace(seconds));
+    }));
 }
 
 // ─── Thread management ────────────────────────────────────────────────────────
 
-fn ensure_thread_running() {
-    let tid = global().lock().unwrap().thread_id;
-    if tid == 0 {
-        // Spawn the Win32 message-loop thread once.
-        thread::Builder::new()
-            .name("block_overlay_win32".into())
-            .spawn(win32_thread)
-            .expect("Failed to spawn overlay thread");
-        // Give it a moment to register its thread ID.
-        // (The thread sets thread_id before pumping messages.)
-        std::thread::sleep(std::time::Duration::from_millis(20));
+static SPAWN_LOCK: Mutex<()> = Mutex::new(());
+
+/// Starts the Win32 thread if needed and returns once its message queue
+/// exists, so a following PostThreadMessage can't be dropped.
+fn ensure_thread_running() -> bool {
+    // Held across the check *and* the spawn so two callers can't both start a
+    // thread (which would leave two message loops and an undestroyable HWND).
+    let _spawn_guard = SPAWN_LOCK.lock().unwrap_or_else(|e| e.into_inner());
+    if global_lock().thread_id != 0 {
+        return true;
     }
+
+    let (ready_tx, ready_rx) = mpsc::channel::<()>();
+    let spawned = thread::Builder::new()
+        .name("block_overlay_win32".into())
+        .spawn(move || win32_thread(ready_tx));
+    if spawned.is_err() {
+        return false;
+    }
+    ready_rx.recv_timeout(Duration::from_secs(2)).is_ok()
 }
 
-fn post_to_thread(msg: u32) {
-    let tid = global().lock().unwrap().thread_id;
+/// Queues a command for the Win32 thread and wakes it.
+fn send_command(cmd: Command) {
+    global_lock().queue.push_back(cmd);
+    if !ensure_thread_running() {
+        return;
+    }
+    let tid = global_lock().thread_id;
     if tid != 0 {
         unsafe {
-            let _ = PostThreadMessageA(tid, msg, WPARAM(0), LPARAM(0));
+            let _ = PostThreadMessageA(tid, WM_CMD_WAKE, WPARAM(0), LPARAM(0));
         }
     }
 }
 
 fn fire_callback(action: &str) {
-    let cb = global().lock().unwrap().callback;
+    let cb = global_lock().callback;
     if let Some(cb) = cb {
         let cs = CString::new(action).unwrap_or_default();
         cb(cs.as_ptr());
@@ -307,11 +348,17 @@ fn fire_callback(action: &str) {
 
 // ─── Win32 thread ─────────────────────────────────────────────────────────────
 
-fn win32_thread() {
+fn win32_thread(ready: mpsc::Sender<()>) {
     unsafe {
-        // Register our thread ID so C-API callers can PostThreadMessage.
+        // Force creation of this thread's message queue *before* publishing the
+        // thread ID: PostThreadMessage fails for a thread without a queue.
+        // Anything posted during the slow init below is then simply queued.
+        let mut probe = MSG::default();
+        let _ = PeekMessageA(&mut probe, None, WM_USER, WM_USER, PM_NOREMOVE);
+
         let tid = windows::Win32::System::Threading::GetCurrentThreadId();
-        global().lock().unwrap().thread_id = tid;
+        global_lock().thread_id = tid;
+        let _ = ready.send(());
 
         ensure_gdiplus();
 
@@ -331,6 +378,9 @@ fn win32_thread() {
         // Ignore error if already registered (happens if DLL is re-used).
         let _ = RegisterClassExA(&wc);
 
+        // Commands may have been queued while we were initialising.
+        let _ = panic::catch_unwind(|| drain_commands());
+
         // Pump messages until WM_QUIT.
         let mut msg = MSG::default();
         loop {
@@ -340,11 +390,8 @@ fn win32_thread() {
             }
             // Handle thread messages (no HWND).
             if msg.hwnd.0.is_null() {
-                match msg.message {
-                    WM_CMD_SHOW => handle_cmd_show(),
-                    WM_CMD_DISMISS => handle_cmd_dismiss(),
-                    WM_CMD_GRACE => handle_cmd_grace(),
-                    _ => {}
+                if msg.message == WM_CMD_WAKE {
+                    let _ = panic::catch_unwind(|| drain_commands());
                 }
                 continue;
             }
@@ -352,46 +399,63 @@ fn win32_thread() {
             DispatchMessageA(&msg);
         }
 
-        // Thread exiting — clear our thread ID.
-        global().lock().unwrap().thread_id = 0;
+        // Thread exiting — don't leave windows hidden or a stale HWND behind.
+        let _ = panic::catch_unwind(|| destroy_overlay_window());
+        global_lock().thread_id = 0;
     }
 }
 
 // ─── Command handlers (run on Win32 thread) ───────────────────────────────────
 
-unsafe fn handle_cmd_show() {
-    // Consume pending command.
-    let args = {
-        let mut g = global().lock().unwrap();
-        match g.pending_command.take() {
-            Some(Command::Show(a)) => a,
-            _ => return,
+/// Processes every queued command in the order it was sent.
+unsafe fn drain_commands() {
+    loop {
+        let cmd = global_lock().queue.pop_front();
+        match cmd {
+            Some(Command::Show(args)) => handle_cmd_show(args),
+            Some(Command::Dismiss) => destroy_overlay_window(),
+            Some(Command::Grace(seconds)) => handle_cmd_grace(seconds),
+            None => break,
         }
-    };
+    }
+}
 
-    // Dismiss any existing overlay first.
+/// Monitor work area (left, top, width, height) for `hwnd`, or the primary
+/// monitor when `hwnd` is null / the query fails.
+unsafe fn monitor_rect_for(hwnd: HWND) -> (i32, i32, i32, i32) {
+    let flag = if hwnd.0.is_null() {
+        MONITOR_DEFAULTTOPRIMARY
+    } else {
+        MONITOR_DEFAULTTONEAREST
+    };
+    let mon = MonitorFromWindow(hwnd, flag);
+    let mut info = MONITORINFO {
+        cbSize: std::mem::size_of::<MONITORINFO>() as u32,
+        ..Default::default()
+    };
+    if !mon.is_invalid() && GetMonitorInfoA(mon, &mut info).as_bool() {
+        let r = info.rcMonitor;
+        return (r.left, r.top, r.right - r.left, r.bottom - r.top);
+    }
+    (0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN))
+}
+
+unsafe fn handle_cmd_show(args: ShowArgs) {
+    // Dismiss any existing overlay first (this also restores its hidden app).
     destroy_overlay_window();
 
     let dark = is_dark_mode();
     let blocked_hwnd = find_hwnd_for_pid(args.pid).unwrap_or(HWND(std::ptr::null_mut()));
 
     // Determine window rect.
-    let (wx, wy, ww, wh) = if args.hard_block {
-        // Full primary monitor.
-        let sw = GetSystemMetrics(SM_CXSCREEN);
-        let sh = GetSystemMetrics(SM_CYSCREEN);
-        (0i32, 0i32, sw, sh)
+    let (wx, wy, ww, wh) = if args.hard_block || blocked_hwnd.0.is_null() {
+        // Full monitor the blocked window lives on (primary if unknown).
+        monitor_rect_for(blocked_hwnd)
     } else {
         // Cover the blocked app's window.
-        if blocked_hwnd.0.is_null() {
-            let sw = GetSystemMetrics(SM_CXSCREEN);
-            let sh = GetSystemMetrics(SM_CYSCREEN);
-            (0i32, 0i32, sw, sh)
-        } else {
-            let mut r = RECT::default();
-            let _ = GetWindowRect(blocked_hwnd, &mut r);
-            (r.left, r.top, r.right - r.left, r.bottom - r.top)
-        }
+        let mut r = RECT::default();
+        let _ = GetWindowRect(blocked_hwnd, &mut r);
+        (r.left, r.top, r.right - r.left, r.bottom - r.top)
     };
 
     let hinstance = GetModuleHandleA(None).unwrap_or_default();
@@ -447,15 +511,17 @@ unsafe fn handle_cmd_show() {
         grace_seconds_left: 0,
         grace_used: false,
         blocked_hwnd,
+        settle_until: 0,
+        fg_baseline: 0,
     });
     let ws_ptr = Box::into_raw(ws);
     SetWindowLongPtrA(hwnd, GWLP_USERDATA, ws_ptr as isize);
 
     // Store HWND globally.
-    global().lock().unwrap().hwnd = hwnd;
+    global_lock().hwnd = hwnd;
 
     // Show without activating.
-    ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+    let _ = ShowWindow(hwnd, SW_SHOWNOACTIVATE);
 
     // Bring to absolute top.
     let _ = SetWindowPos(
@@ -477,24 +543,8 @@ unsafe fn handle_cmd_show() {
     }
 }
 
-unsafe fn handle_cmd_dismiss() {
-    {
-        let mut g = global().lock().unwrap();
-        g.pending_command = None;
-    }
-    destroy_overlay_window();
-}
-
-unsafe fn handle_cmd_grace() {
-    let seconds = {
-        let mut g = global().lock().unwrap();
-        match g.pending_command.take() {
-            Some(Command::Grace(s)) => s,
-            _ => return,
-        }
-    };
-
-    let hwnd = global().lock().unwrap().hwnd;
+unsafe fn handle_cmd_grace(seconds: i32) {
+    let hwnd = global_lock().hwnd;
     if hwnd.0.is_null() {
         return;
     }
@@ -516,7 +566,7 @@ unsafe fn handle_cmd_grace() {
 
 unsafe fn destroy_overlay_window() {
     let hwnd = {
-        let mut g = global().lock().unwrap();
+        let mut g = global_lock();
         let h = g.hwnd;
         g.hwnd = HWND(std::ptr::null_mut());
         h
@@ -529,6 +579,105 @@ unsafe fn destroy_overlay_window() {
             drop(Box::from_raw(ws_ptr));
         }
         let _ = DestroyWindow(hwnd);
+    }
+    // Every teardown path (click, auto-dismiss, grace expiry, replaced by a new
+    // show) funnels through here, so the app we hid is always given back.
+    restore_hidden_windows();
+}
+
+// ─── Hide / restore the blocked app (hard block) ──────────────────────────────
+
+/// Processes whose windows must never be hidden: the shell, the UWP frame host
+/// (hosts *every* UWP app's windows), core session processes, and ourselves.
+/// Also true when we can't inspect the process at all — hiding what we can't
+/// identify isn't worth the risk, the topmost overlay still blocks input.
+fn is_protected_process(pid: u32) -> bool {
+    if pid <= 4 || pid == unsafe { GetCurrentProcessId() } {
+        return true;
+    }
+    unsafe {
+        let Ok(h) = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid) else {
+            return true;
+        };
+        let mut buf = [0u8; 1024];
+        let mut len = buf.len() as u32;
+        let ok = QueryFullProcessImageNameA(
+            h,
+            PROCESS_NAME_WIN32,
+            windows::core::PSTR(buf.as_mut_ptr()),
+            &mut len,
+        )
+        .is_ok();
+        let _ = CloseHandle(h);
+        if !ok {
+            return true;
+        }
+        let path = String::from_utf8_lossy(&buf[..len as usize]).to_ascii_lowercase();
+        let name = path.rsplit(['\\', '/']).next().unwrap_or("");
+        matches!(
+            name,
+            "explorer.exe"
+                | "applicationframehost.exe"
+                | "csrss.exe"
+                | "winlogon.exe"
+                | "dwm.exe"
+                | "services.exe"
+                | "lsass.exe"
+                | "svchost.exe"
+                | "shellexperiencehost.exe"
+                | "searchhost.exe"
+                | "startmenuexperiencehost.exe"
+        )
+    }
+}
+
+struct HideCtx {
+    pid: u32,
+    hidden: Vec<isize>,
+}
+
+unsafe extern "system" fn enum_windows_hide(hwnd: HWND, lparam: LPARAM) -> windows::core::BOOL {
+    let ctx = &mut *(lparam.0 as *mut HideCtx);
+    let mut win_pid: u32 = 0;
+    GetWindowThreadProcessId(hwnd, Some(&mut win_pid));
+    // Only visible, un-owned top-level windows: owned popups go with their owner,
+    // and touching never-visible helper windows would "restore" them as junk.
+    if win_pid == ctx.pid && IsWindowVisible(hwnd).as_bool() && !has_owner(hwnd) {
+        // Async: a hung target must not be able to block the overlay thread.
+        let _ = ShowWindowAsync(hwnd, SW_HIDE);
+        ctx.hidden.push(hwnd.0 as isize);
+    }
+    true.into()
+}
+
+fn hide_process_windows(pid: u32) {
+    let mut ctx = HideCtx { pid, hidden: Vec::new() };
+    unsafe {
+        let _ = EnumWindows(Some(enum_windows_hide), LPARAM(&mut ctx as *mut _ as isize));
+    }
+    global_lock().hidden.extend(ctx.hidden);
+}
+
+/// Gives back every window `hide_process_windows` hid. Safe from any thread.
+fn restore_hidden_windows() {
+    let list = std::mem::take(&mut global_lock().hidden);
+    for raw in list {
+        let hwnd = HWND(raw as *mut _);
+        unsafe {
+            if IsWindow(Some(hwnd)).as_bool() {
+                // SW_SHOWNA keeps a window that was minimized before the hide
+                // minimized, unlike SW_SHOWNOACTIVATE which would restore it.
+                let _ = ShowWindowAsync(hwnd, SW_SHOWNA);
+            }
+        }
+    }
+}
+
+fn has_owner(hwnd: HWND) -> bool {
+    unsafe {
+        GetWindow(hwnd, GW_OWNER)
+            .map(|h| !h.0.is_null())
+            .unwrap_or(false)
     }
 }
 
@@ -544,9 +693,14 @@ unsafe extern "system" fn enum_windows_find_pid(hwnd: HWND, lparam: LPARAM) -> w
     let mut win_pid: u32 = 0;
     GetWindowThreadProcessId(hwnd, Some(&mut win_pid));
     if win_pid == ctx.pid {
-        // Only pick a visible window with a non-empty title.
-        let visible = windows::Win32::UI::WindowsAndMessaging::IsWindowVisible(hwnd);
-        if visible.as_bool() {
+        // Only pick a real main window: visible, un-owned, not a tool window
+        // (tooltips, floating palettes) and not zero-sized.
+        let ex = GetWindowLongPtrA(hwnd, GWL_EXSTYLE);
+        let is_tool = ex & (WS_EX_TOOLWINDOW.0 as isize) != 0;
+        let mut r = RECT::default();
+        let _ = GetWindowRect(hwnd, &mut r);
+        let has_area = r.right > r.left && r.bottom > r.top;
+        if IsWindowVisible(hwnd).as_bool() && !has_owner(hwnd) && !is_tool && has_area {
             ctx.result = hwnd;
             return false.into(); // stop enumeration
         }
@@ -580,7 +734,9 @@ unsafe extern "system" fn wndproc(
     wparam: WPARAM,
     lparam: LPARAM,
 ) -> LRESULT {
-    match msg {
+    // A panic must not unwind through the Windows frames above us (that aborts
+    // the whole process); fall back to default handling instead.
+    panic::catch_unwind(AssertUnwindSafe(|| match msg {
         WM_PAINT => {
             on_paint(hwnd);
             LRESULT(0)
@@ -600,7 +756,8 @@ unsafe extern "system" fn wndproc(
             LRESULT(0)
         }
         _ => DefWindowProcA(hwnd, msg, wparam, lparam),
-    }
+    }))
+    .unwrap_or_else(|_| DefWindowProcA(hwnd, msg, wparam, lparam))
 }
 
 // ─── GDI+ drawing helpers ───────────────────────────────────────────────────────
@@ -1053,15 +1210,13 @@ unsafe fn on_click(hwnd: HWND, lparam: LPARAM) {
         // not stay open with a countdown badge on top of the app (which
         // previously left the app fully blocked for the entire grace period,
         // defeating the point of granting it). Restore visibility for hard
-        // block (its windows were SW_HIDE'd by TIMER_HIDE_APP) before tearing
-        // the overlay down.
-        show_hide_process_windows(ws.args.pid, true);
+        // block (its windows were SW_HIDE'd by TIMER_HIDE_APP) — teardown below
+        // restores them.
         destroy_overlay_window();
     } else if point_in_rect(pt, ws.btn_unblock) {
         fire_callback("unblock");
-        // Same as grace: restore hard-block-hidden windows since the app is
-        // no longer blocked for the rest of the day.
-        show_hide_process_windows(ws.args.pid, true);
+        // Same as grace: teardown restores hard-block-hidden windows since the
+        // app is no longer blocked for the rest of the day.
         destroy_overlay_window();
     }
 }
@@ -1079,13 +1234,24 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
             if ws_ptr.is_null() {
                 return;
             }
-            let ws = &*ws_ptr;
+            let ws = &mut *ws_ptr;
 
             if ws.args.hard_block {
                 // Hard block: if a non-overlay, non-Scolect app comes to the
                 // foreground, dismiss the overlay.
                 let fg = GetForegroundWindow();
                 if fg == hwnd || fg.0.is_null() {
+                    return;
+                }
+                // Hiding the blocked app makes Windows activate whatever is
+                // next in z-order. Absorb that (and any shuffling right after)
+                // as the baseline; only a change *away from* it means the user
+                // really switched apps.
+                if GetTickCount64() < ws.settle_until || ws.fg_baseline == 0 {
+                    ws.fg_baseline = fg.0 as isize;
+                    return;
+                }
+                if fg.0 as isize == ws.fg_baseline {
                     return;
                 }
                 let mut fg_pid: u32 = 0;
@@ -1100,6 +1266,17 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
             } else {
                 // Soft block: track blocked app window position and visibility.
                 if ws.blocked_hwnd.0.is_null() {
+                    return;
+                }
+                // The blocked window may have been closed since we found it
+                // (and the handle could even be recycled) — nothing left to cover.
+                if !IsWindow(Some(ws.blocked_hwnd)).as_bool() {
+                    fire_callback("dismiss");
+                    destroy_overlay_window();
+                    return;
+                }
+                if IsIconic(ws.blocked_hwnd).as_bool() {
+                    let _ = ShowWindow(hwnd, SW_HIDE);
                     return;
                 }
 
@@ -1120,10 +1297,10 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
                         r.bottom - r.top,
                         SWP_NOACTIVATE,
                     );
-                    ShowWindow(hwnd, SW_SHOWNOACTIVATE);
+                    let _ = ShowWindow(hwnd, SW_SHOWNOACTIVATE);
                 } else if fg != hwnd {
                     // Another app is foreground and it's not our overlay — hide scrim.
-                    ShowWindow(hwnd, SW_HIDE);
+                    let _ = ShowWindow(hwnd, SW_HIDE);
                 }
             }
         }
@@ -1155,43 +1332,18 @@ unsafe fn on_timer(hwnd: HWND, timer_id: usize) {
             if ws_ptr.is_null() {
                 return;
             }
-            let ws = &*ws_ptr;
-            show_hide_process_windows(ws.args.pid, false);
+            let ws = &mut *ws_ptr;
+            // Never hide shell / UWP-host / system processes; the topmost overlay
+            // still blocks input for those.
+            if !is_protected_process(ws.args.pid) {
+                hide_process_windows(ws.args.pid);
+            }
+            ws.settle_until = GetTickCount64() + 1500;
+            ws.fg_baseline = 0;
             // Start polling for foreground changes (100ms) to detect when another
             // app sneaks through, at which point we dismiss the hard block.
             let _ = SetTimer(Some(hwnd), TIMER_REPOSITION, 100, None);
         }
         _ => {}
-    }
-}
-
-// ─── Process window helpers ───────────────────────────────────────────────────
-
-struct ShowHideCtx {
-    pid: u32,
-    show: bool,
-}
-
-unsafe extern "system" fn enum_windows_show_hide(hwnd: HWND, lparam: LPARAM) -> windows::core::BOOL {
-    let ctx = &*(lparam.0 as *const ShowHideCtx);
-    let mut win_pid: u32 = 0;
-    GetWindowThreadProcessId(hwnd, Some(&mut win_pid));
-    if win_pid == ctx.pid {
-        if ctx.show {
-            ShowWindow(hwnd, SW_SHOWNOACTIVATE);
-        } else {
-            ShowWindow(hwnd, SW_HIDE);
-        }
-    }
-    true.into()
-}
-
-fn show_hide_process_windows(pid: u32, show: bool) {
-    let ctx = ShowHideCtx { pid, show };
-    unsafe {
-        let _ = EnumWindows(
-            Some(enum_windows_show_hide),
-            LPARAM(&ctx as *const _ as isize),
-        );
     }
 }

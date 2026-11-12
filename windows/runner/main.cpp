@@ -4,6 +4,8 @@ auto bdw = bitsdojo_window_configure(BDW_CUSTOM_FRAME | BDW_HIDE_ON_STARTUP);
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
 
+#include <cstdlib>
+
 #include "flutter_window.h"
 #include "utils.h"
 
@@ -24,22 +26,51 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   std::vector<std::string> command_line_arguments =
       GetCommandLineArguments();
 
+  // Restart handshake (see RestartApplication): wait for the previous
+  // instance to be fully gone before doing anything that could collide with
+  // it, and don't leak the flag to the Dart entrypoint.
+  const std::string kWaitFlag = "--wait-for-pid=";
+  for (auto it = command_line_arguments.begin();
+       it != command_line_arguments.end();) {
+    if (it->rfind(kWaitFlag, 0) == 0) {
+      DWORD old_pid = static_cast<DWORD>(strtoul(it->c_str() + kWaitFlag.size(), nullptr, 10));
+      if (old_pid != 0) {
+        if (HANDLE old = ::OpenProcess(SYNCHRONIZE, FALSE, old_pid)) {
+          ::WaitForSingleObject(old, 15000);
+          ::CloseHandle(old);
+        }
+      }
+      it = command_line_arguments.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
   project.set_dart_entrypoint_arguments(std::move(command_line_arguments));
 
-  FlutterWindow window(project);
-  Win32Window::Point origin(10, 10);
-  Win32Window::Size size(1280, 720);
-  if (!window.Create(L"screentime", origin, size)) {
-    return EXIT_FAILURE;
-  }
-  window.SetQuitOnClose(true);
+  int exit_code = EXIT_SUCCESS;
+  {
+    // Scoped so the window (and the engine inside it) is destroyed BEFORE
+    // CoUninitialize; plugins may still be using COM during teardown.
+    FlutterWindow window(project);
+    Win32Window::Point origin(10, 10);
+    Win32Window::Size size(1280, 720);
+    if (!window.Create(L"screentime", origin, size)) {
+      exit_code = EXIT_FAILURE;
+    } else {
+      window.SetQuitOnClose(true);
 
-  ::MSG msg;
-  while (::GetMessage(&msg, nullptr, 0, 0)) {
-    ::TranslateMessage(&msg);
-    ::DispatchMessage(&msg);
+      ::MSG msg;
+      BOOL got;
+      // GetMessage returns -1 on error; `while (GetMessage(...))` would spin.
+      while ((got = ::GetMessage(&msg, nullptr, 0, 0)) != 0) {
+        if (got == -1) break;
+        ::TranslateMessage(&msg);
+        ::DispatchMessage(&msg);
+      }
+    }
   }
 
   ::CoUninitialize();
-  return EXIT_SUCCESS;
+  return exit_code;
 }
