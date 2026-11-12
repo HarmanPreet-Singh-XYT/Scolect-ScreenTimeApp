@@ -4447,6 +4447,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutUpdateScheduled => 'Update check scheduled';
 
   @override
+  String get updatePromptTitle => 'Update available';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version is ready to install.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'What\'s new';
+
+  @override
+  String get updatePromptUpdateNow => 'Update now';
+
+  @override
+  String get updatePromptLater => 'Later';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'Don\'t show again until the next update';
+
+  @override
   String get aboutOpenSettingsFailed => 'Failed to open System Settings';
 
   @override

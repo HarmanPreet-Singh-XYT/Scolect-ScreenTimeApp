@@ -53,6 +53,7 @@ class UpdateService extends ChangeNotifier {
 
   static const String _lastCheckKey = 'last_update_check';
   static const String _cachedUpdateKey = 'cached_update_info';
+  static const String _dismissedTagKey = 'dismissed_update_tag';
   static const Duration _checkInterval = Duration(hours: 6);
 
   UpdateStatus _status = UpdateStatus.idle;
@@ -65,6 +66,21 @@ class UpdateService extends ChangeNotifier {
   UpdateInfo? get availableUpdate => _availableUpdate;
   String? get errorMessage => _errorMessage;
   bool get hasUpdate => _status == UpdateStatus.updateAvailable;
+
+  /// True when the launch prompt should be shown: an update is available and
+  /// the user hasn't ticked "don't show again" for this specific version.
+  Future<bool> shouldPromptForUpdate() async {
+    final update = _availableUpdate;
+    if (!hasUpdate || update == null) return false;
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_dismissedTagKey) != update.tagName;
+  }
+
+  /// Suppresses the launch prompt until a newer version than [tagName] ships.
+  Future<void> dismissPromptFor(String tagName) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_dismissedTagKey, tagName);
+  }
 
   /// Call once at startup from main.dart (only when autoUpdates = true)
   Future<void> initialize(String currentVersion) async {
@@ -143,11 +159,17 @@ class UpdateService extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final cached = prefs.getString(_cachedUpdateKey);
       if (cached != null) {
-        _availableUpdate = UpdateInfo.fromJson(
+        final info = UpdateInfo.fromJson(
           json.decode(cached) as Map<String, dynamic>,
         );
-        _status = UpdateStatus.updateAvailable;
-        notifyListeners();
+        // The cached update may already be installed (app just updated).
+        if (_isNewerVersion(info.tagName, _currentVersion)) {
+          _availableUpdate = info;
+          _status = UpdateStatus.updateAvailable;
+          notifyListeners();
+        } else {
+          await prefs.remove(_cachedUpdateKey);
+        }
       }
     } catch (_) {}
   }

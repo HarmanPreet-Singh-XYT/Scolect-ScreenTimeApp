@@ -4489,6 +4489,27 @@ class AppLocalizationsPt extends AppLocalizations {
   String get aboutUpdateScheduled => 'Verificação de atualizações agendada';
 
   @override
+  String get updatePromptTitle => 'Atualização disponível';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'O Scolect $version está pronto para instalar.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'Novidades';
+
+  @override
+  String get updatePromptUpdateNow => 'Atualizar agora';
+
+  @override
+  String get updatePromptLater => 'Mais tarde';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'Não mostrar novamente até a próxima atualização';
+
+  @override
   String get aboutOpenSettingsFailed =>
       'Falha ao abrir as Definições do sistema';
 

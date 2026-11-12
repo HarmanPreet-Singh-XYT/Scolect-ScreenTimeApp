@@ -16,18 +16,37 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
   // ✅ Store the result at launch (must capture immediately)
   private var wasLaunchedAsLoginItem: Bool = false
   
-  // Tracking only works while the process runs, so Cmd+Q and Dock > Quit hide
-  // the app (like the window close button) instead of terminating it. Real
-  // exits — tray Exit, restart, Sparkle relaunch, shutdown/logout — set or
-  // satisfy this and terminate normally.
+  // Tracking only works while the process runs, so the user's own quit
+  // gestures (Cmd+Q / Quit menu item, Dock > Quit) hide the app instead of
+  // terminating it. Every other terminate — Sparkle installing an update,
+  // tray Exit, restart, shutdown/logout — must go through, otherwise the
+  // updater waits forever for the app to exit and the update never installs.
   var allowTermination = false
 
   override func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
-    if allowTermination || isSystemInitiatedQuit() {
+    if allowTermination || isSystemInitiatedQuit() || !isDockQuit() {
       return .terminateNow
     }
     hideWindow()
     return .terminateCancel
+  }
+
+  /// Cmd+Q goes through the Quit menu item, which is rerouted here so a plain
+  /// `terminate:` (e.g. from Sparkle) is never mistaken for a user quit.
+  @objc private func userQuit(_ sender: Any?) {
+    hideWindow()
+  }
+
+  private func rerouteQuitMenuItem() {
+    guard let item = NSApp.mainMenu?.items.first?.submenu?.items
+      .first(where: { $0.keyEquivalent == "q" }) else { return }
+    item.target = self
+    item.action = #selector(userQuit(_:))
+  }
+
+  /// Dock > Quit arrives as a quit Apple event with no shutdown/logout reason.
+  private func isDockQuit() -> Bool {
+    NSAppleEventManager.shared().currentAppleEvent?.eventID == kAEQuitApplication
   }
 
   /// Shutdown, restart and logout arrive as a quit Apple event carrying a
@@ -59,6 +78,7 @@ class AppDelegate: FlutterAppDelegate, NSWindowDelegate {
       object: nil, queue: .main
     ) { [weak self] _ in self?.allowTermination = true }
 
+    rerouteQuitMenuItem()
     setupMethodChannel()
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       self.setupWindowDelegate()

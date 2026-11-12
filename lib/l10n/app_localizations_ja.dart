@@ -4283,6 +4283,26 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutUpdateScheduled => 'アップデートの確認がスケジュールされました';
 
   @override
+  String get updatePromptTitle => 'アップデートがあります';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version をインストールできます。';
+  }
+
+  @override
+  String get updatePromptWhatsNew => '新機能';
+
+  @override
+  String get updatePromptUpdateNow => '今すぐアップデート';
+
+  @override
+  String get updatePromptLater => '後で';
+
+  @override
+  String get updatePromptDontShowAgain => '次のアップデートまで表示しない';
+
+  @override
   String get aboutOpenSettingsFailed => 'システム設定を開けませんでした';
 
   @override

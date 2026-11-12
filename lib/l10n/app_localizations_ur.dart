@@ -4401,6 +4401,26 @@ class AppLocalizationsUr extends AppLocalizations {
   String get aboutUpdateScheduled => 'اپ ڈیٹ چیک شیڈول ہو گئی';
 
   @override
+  String get updatePromptTitle => 'اپ ڈیٹ دستیاب ہے';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version انسٹال کے لیے تیار ہے۔';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'نیا کیا ہے';
+
+  @override
+  String get updatePromptUpdateNow => 'ابھی اپ ڈیٹ کریں';
+
+  @override
+  String get updatePromptLater => 'بعد میں';
+
+  @override
+  String get updatePromptDontShowAgain => 'اگلی اپ ڈیٹ تک دوبارہ نہ دکھائیں';
+
+  @override
   String get aboutOpenSettingsFailed => 'سسٹم کی ترتیبات کھولنے میں ناکام';
 
   @override

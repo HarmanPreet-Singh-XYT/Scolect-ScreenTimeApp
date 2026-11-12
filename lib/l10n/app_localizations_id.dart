@@ -4395,6 +4395,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutUpdateScheduled => 'Pemeriksaan pembaruan dijadwalkan';
 
   @override
+  String get updatePromptTitle => 'Pembaruan tersedia';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version siap dipasang.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'Yang baru';
+
+  @override
+  String get updatePromptUpdateNow => 'Perbarui sekarang';
+
+  @override
+  String get updatePromptLater => 'Nanti';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'Jangan tampilkan lagi sampai pembaruan berikutnya';
+
+  @override
   String get aboutOpenSettingsFailed => 'Gagal membuka Pengaturan Sistem';
 
   @override

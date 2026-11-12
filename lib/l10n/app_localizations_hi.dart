@@ -4409,6 +4409,26 @@ class AppLocalizationsHi extends AppLocalizations {
   String get aboutUpdateScheduled => 'अपडेट जाँच निर्धारित है';
 
   @override
+  String get updatePromptTitle => 'अपडेट उपलब्ध है';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version इंस्टॉल के लिए तैयार है।';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'नया क्या है';
+
+  @override
+  String get updatePromptUpdateNow => 'अभी अपडेट करें';
+
+  @override
+  String get updatePromptLater => 'बाद में';
+
+  @override
+  String get updatePromptDontShowAgain => 'अगले अपडेट तक दोबारा न दिखाएँ';
+
+  @override
   String get aboutOpenSettingsFailed => 'सिस्टम सेटिंग्स खोलने में विफल';
 
   @override

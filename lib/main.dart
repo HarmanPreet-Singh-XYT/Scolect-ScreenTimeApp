@@ -43,6 +43,7 @@ import 'package:screentime/utils/nested_scroll_behavior.dart';
 import 'package:screentime/sections/widgets/FocusMode/audio.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:screentime/sections/widgets/Overview/update_prompt_dialog.dart';
 
 // ============================================================================
 // ⚙️  BUILD FLAG
@@ -328,7 +329,8 @@ Future<void> _appMain(List<String> args) async {
   // an unrelated program on that port must not stop the app from starting.
   final bool existingInstanceFound =
       await SingleInstanceIPC.notifyExistingInstance();
-  if (existingInstanceFound) debugPrint('✅ Sent SHOW to existing instance, exiting');
+  if (existingInstanceFound)
+    debugPrint('✅ Sent SHOW to existing instance, exiting');
   if (existingInstanceFound) exit(0);
 
   await SingleInstanceIPC.startServer();
@@ -347,16 +349,17 @@ Future<void> _appMain(List<String> args) async {
   final bool isBrowserExtensionEnabled =
       await SettingsManager().getSetting("browserExtensionEnabled") ?? false;
   if (isBrowserExtensionEnabled) {
-    final int browserServerPort = await SettingsManager()
-            .getSetting("browserServerPort") ??
-        BrowserExtensionServer.defaultPort;
+    final int browserServerPort =
+        await SettingsManager().getSetting("browserServerPort") ??
+            BrowserExtensionServer.defaultPort;
     await _guardedStep('browserServer',
         () => BrowserExtensionServer.startServer(port: browserServerPort));
   }
 
   final bool isMinimizeAtLaunch =
       await SettingsManager().getSetting("launchAsMinimized") ?? false;
-  await _guardedStep('notifications', () => NotificationController().initialize());
+  await _guardedStep(
+      'notifications', () => NotificationController().initialize());
   await _guardedStep('windowManager', () => windowManager.ensureInitialized());
   // Taskbar thumbnail X, Alt+F4 and the system menu send WM_CLOSE, bypassing
   // the in-app close button. Intercept it so those hide to the tray too —
@@ -928,10 +931,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       curve: Curves.easeInOutCubic,
     );
     _sidebarAnimController.value = 1.0;
+
+    if (autoUpdates) {
+      UpdateService().addListener(_maybePromptForUpdate);
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _maybePromptForUpdate());
+    }
+  }
+
+  // The check may finish after the first frame, so this runs on every update
+  // status change; the dialog itself only shows once per launch.
+  void _maybePromptForUpdate() {
+    if (!mounted || !UpdateService().hasUpdate) return;
+    UpdatePromptDialog.showIfNeeded(context);
   }
 
   @override
   void dispose() {
+    if (autoUpdates) UpdateService().removeListener(_maybePromptForUpdate);
     _sidebarAnimController.dispose();
     super.dispose();
   }

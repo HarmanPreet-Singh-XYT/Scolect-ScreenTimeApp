@@ -4394,6 +4394,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutUpdateScheduled => 'تمت جدولة فحص التحديثات';
 
   @override
+  String get updatePromptTitle => 'تحديث متاح';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version جاهز للتثبيت.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'ما الجديد';
+
+  @override
+  String get updatePromptUpdateNow => 'التحديث الآن';
+
+  @override
+  String get updatePromptLater => 'لاحقًا';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'عدم الإظهار مرة أخرى حتى التحديث التالي';
+
+  @override
   String get aboutOpenSettingsFailed => 'فشل في فتح إعدادات النظام';
 
   @override

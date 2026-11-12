@@ -4500,6 +4500,27 @@ class AppLocalizationsRu extends AppLocalizations {
   String get aboutUpdateScheduled => 'Проверка обновлений запланирована';
 
   @override
+  String get updatePromptTitle => 'Доступно обновление';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version готов к установке.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'Что нового';
+
+  @override
+  String get updatePromptUpdateNow => 'Обновить сейчас';
+
+  @override
+  String get updatePromptLater => 'Позже';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'Не показывать до следующего обновления';
+
+  @override
   String get aboutOpenSettingsFailed =>
       'Не удалось открыть системные настройки';
 

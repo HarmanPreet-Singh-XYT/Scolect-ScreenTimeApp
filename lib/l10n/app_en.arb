@@ -2856,6 +2856,17 @@
   "aboutUpdateFailed": "Could not check for updates",
   "aboutUpdateRetryPrompt": "Tap \"Check Updates\" to retry",
   "aboutUpdateScheduled": "Update check scheduled",
+  "updatePromptTitle": "Update available",
+  "updatePromptVersion": "Scolect {version} is ready to install.",
+  "@updatePromptVersion": {
+    "placeholders": {
+      "version": {"type": "String"}
+    }
+  },
+  "updatePromptWhatsNew": "What's new",
+  "updatePromptUpdateNow": "Update now",
+  "updatePromptLater": "Later",
+  "updatePromptDontShowAgain": "Don't show again until the next update",
   "aboutOpenSettingsFailed": "Failed to open System Settings",
   "onboardingWelcomeTitle": "Welcome to Scolect",
   "onboardingWelcomeDesc": "Take control of your time. Scolect runs silently in the background — tracking every app, every session, every minute.",

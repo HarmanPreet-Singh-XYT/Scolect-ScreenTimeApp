@@ -4536,6 +4536,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get aboutUpdateScheduled => 'Vérification des mises à jour planifiée';
 
   @override
+  String get updatePromptTitle => 'Mise à jour disponible';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version est prêt à être installé.';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'Nouveautés';
+
+  @override
+  String get updatePromptUpdateNow => 'Mettre à jour maintenant';
+
+  @override
+  String get updatePromptLater => 'Plus tard';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'Ne plus afficher avant la prochaine mise à jour';
+
+  @override
   String get aboutOpenSettingsFailed =>
       'Échec de l\'ouverture des Paramètres système';
 

@@ -4403,6 +4403,27 @@ class AppLocalizationsBn extends AppLocalizations {
   String get aboutUpdateScheduled => 'আপডেট পরীক্ষা নির্ধারিত হয়েছে';
 
   @override
+  String get updatePromptTitle => 'আপডেট উপলব্ধ';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version ইনস্টল করার জন্য প্রস্তুত।';
+  }
+
+  @override
+  String get updatePromptWhatsNew => 'নতুন কী আছে';
+
+  @override
+  String get updatePromptUpdateNow => 'এখনই আপডেট করুন';
+
+  @override
+  String get updatePromptLater => 'পরে';
+
+  @override
+  String get updatePromptDontShowAgain =>
+      'পরবর্তী আপডেট পর্যন্ত আবার দেখাবেন না';
+
+  @override
   String get aboutOpenSettingsFailed => 'সিস্টেম সেটিংস খুলতে ব্যর্থ হয়েছে';
 
   @override

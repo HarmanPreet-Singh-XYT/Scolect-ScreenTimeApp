@@ -4232,6 +4232,26 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutUpdateScheduled => '已计划更新检查';
 
   @override
+  String get updatePromptTitle => '有可用更新';
+
+  @override
+  String updatePromptVersion(String version) {
+    return 'Scolect $version 已可安装。';
+  }
+
+  @override
+  String get updatePromptWhatsNew => '更新内容';
+
+  @override
+  String get updatePromptUpdateNow => '立即更新';
+
+  @override
+  String get updatePromptLater => '稍后';
+
+  @override
+  String get updatePromptDontShowAgain => '在下次更新前不再显示';
+
+  @override
   String get aboutOpenSettingsFailed => '打开系统设置失败';
 
   @override

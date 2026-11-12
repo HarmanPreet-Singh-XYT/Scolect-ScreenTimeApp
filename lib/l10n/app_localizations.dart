@@ -7841,6 +7841,42 @@ abstract class AppLocalizations {
   /// **'Update check scheduled'**
   String get aboutUpdateScheduled;
 
+  /// No description provided for @updatePromptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get updatePromptTitle;
+
+  /// No description provided for @updatePromptVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Scolect {version} is ready to install.'**
+  String updatePromptVersion(String version);
+
+  /// No description provided for @updatePromptWhatsNew.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get updatePromptWhatsNew;
+
+  /// No description provided for @updatePromptUpdateNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Update now'**
+  String get updatePromptUpdateNow;
+
+  /// No description provided for @updatePromptLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get updatePromptLater;
+
+  /// No description provided for @updatePromptDontShowAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t show again until the next update'**
+  String get updatePromptDontShowAgain;
+
   /// No description provided for @aboutOpenSettingsFailed.
   ///
   /// In en, this message translates to:
