@@ -567,6 +567,11 @@ FluentThemeData buildDarkTheme(CustomThemeData themeData) {
     cardColor: themeData.darkSurface,
     micaBackgroundColor: themeData.darkSurfaceSecondary,
     inactiveBackgroundColor: themeData.darkBorder,
+    // Fluent's default dark card stroke is black @10%, invisible on dark
+    // surfaces. Match the Settings card border so all cards read the same.
+    resources: ResourceDictionary.dark(
+      cardStrokeColorDefault: themeData.darkBorder.withValues(alpha: 0.6),
+    ),
     typography: Typography.raw(
       caption: TextStyle(
           fontSize: 12,

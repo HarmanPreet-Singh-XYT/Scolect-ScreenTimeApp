@@ -284,29 +284,57 @@ class _BrowserLimitsState extends State<BrowserLimits> {
 
           const SizedBox(height: 20),
 
-          // ── Overall Screen Time Limit ─────────────────────────────────
-          OverallLimitCard(
-            enabled: _overallLimitEnabled,
-            hours: _overallLimitHours,
-            minutes: _overallLimitMinutes,
-            totalScreenTime: _overallUsage,
-            onEnabledChanged: _onOverallEnabledChanged,
-            onHoursChanged: _onOverallHoursChanged,
-            onMinutesChanged: _onOverallMinutesChanged,
+          // ── Overall Limit, Category Limits, Rules & Custom Categories ─
+          // Two columns when there is room (stacked cards of different
+          // heights waste a lot of space full-width); single column otherwise.
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final overall = OverallLimitCard(
+                enabled: _overallLimitEnabled,
+                hours: _overallLimitHours,
+                minutes: _overallLimitMinutes,
+                totalScreenTime: _overallUsage,
+                onEnabledChanged: _onOverallEnabledChanged,
+                onHoursChanged: _onOverallHoursChanged,
+                onMinutesChanged: _onOverallMinutesChanged,
+              );
+              const categoryLimits = CategoryLimitsSection();
+              const categoryRules = CategoryRulesSection();
+              const customCategories = CustomCategoriesSection();
+              const gap = SizedBox(height: 16);
+
+              if (constraints.maxWidth < 720) {
+                return Column(
+                  children: [
+                    categoryLimits,
+                    gap,
+                    categoryRules,
+                    gap,
+                    overall,
+                    gap,
+                    customCategories,
+                  ],
+                );
+              }
+
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [categoryRules, gap, overall],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      children: [categoryLimits, gap, customCategories],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-
-          const SizedBox(height: 20),
-
-          // ── Category Limits, Rules & Custom Categories ────────────────
-          const CategoryLimitsSection(),
-
-          const SizedBox(height: 16),
-
-          const CategoryRulesSection(),
-
-          const SizedBox(height: 16),
-
-          const CustomCategoriesSection(),
 
           const SizedBox(height: 20),
 
