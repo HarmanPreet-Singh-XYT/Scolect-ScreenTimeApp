@@ -18,7 +18,7 @@ dependencies:
   crypto: ^3.0.7
 
   # UI and Theming
-  fluent_ui: ^4.16.1
+  fluent_ui: ">=4.16.1 <4.17.0" # 4.17 ScaffoldPage paints mica, not scaffoldBackgroundColor
   adaptive_theme: ^3.8.0
   flutter_svg: ^2.3.0
 
