@@ -398,22 +398,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.3"
-  jni:
-    dependency: transitive
-    description:
-      name: jni
-      sha256: "2e91e6087291affd10b31b6c872f3e3ac7dc5d93b51b5ba485d930c8f08bde6c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
-  jni_util:
-    dependency: transitive
-    description:
-      name: jni_util
-      sha256: "1ba86da04a5f2bf18fde2edb235587e70c5b0fc5bd4ba955f46b00942c3fc35f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   json_annotation:
     dependency: transitive
     description:
@@ -816,13 +800,13 @@ packages:
     source: hosted
     version: "2.5.6"
   shared_preferences_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: shared_preferences_android
-      sha256: "137dedccacb394b8f470d6c9b435ffc3d33faaa6ce2949c4f54a61007d64396d"
+      sha256: "1e12aafe408aa50da80edfd679a2a6bf63ba7ab37c7fa98286da459a757b3399"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.5"
+    version: "2.4.28"
   shared_preferences_foundation:
     dependency: transitive
     description:

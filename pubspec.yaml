@@ -90,6 +90,7 @@ dev_dependencies:
 
 dependency_overrides:
   path_provider_android: 2.2.22
+  shared_preferences_android: 2.4.28 # 2.5+ pulls in jni, which fails to link on Windows ARM64 (needs JDK jvm.lib)
 
 flutter:
   generate: true

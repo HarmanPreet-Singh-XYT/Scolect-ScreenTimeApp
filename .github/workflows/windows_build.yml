@@ -56,13 +56,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          flutter-version: '3.47.0'
-          architecture: arm64
-          cache: true
+      # flutter-action can't do this: Flutter's Windows release manifest has no
+      # arm64 entries, so install from git, which bootstraps the arm64 Dart SDK.
+      - name: Set up Flutter (git, ARM64 host)
+        shell: pwsh
+        run: |
+          git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.47.0 "$env:RUNNER_TEMP\flutter"
+          "$env:RUNNER_TEMP\flutter\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
 
       - name: Enable Windows Desktop Support
         run: flutter config --enable-windows-desktop
