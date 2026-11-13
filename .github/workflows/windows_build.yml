@@ -47,3 +47,50 @@ jobs:
           name: scolect-windows-msix
           path: build/windows/x64/runner/Release/*.msix
           if-no-files-found: error
+
+  build-windows-arm64:
+    name: Build Windows ARM64 MSIX
+    runs-on: windows-11-arm
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: '3.47.0'
+          architecture: arm64
+          cache: true
+
+      - name: Enable Windows Desktop Support
+        run: flutter config --enable-windows-desktop
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-pc-windows-msvc
+
+      - name: Cache Rust build (block_overlay)
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: windows/block_overlay
+
+      # Flutter builds for the host architecture; runner/CMakeLists.txt picks
+      # the matching aarch64 Rust target for block_overlay.dll.
+      - name: Build Windows (Release ARM64)
+        run: flutter build windows --release
+
+      - name: Create MSIX Package
+        run: dart run msix:create --architecture arm64
+
+      - name: Upload MSIX Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scolect-windows-arm64-msix
+          path: build/windows/arm64/runner/Release/*.msix
+          if-no-files-found: error
