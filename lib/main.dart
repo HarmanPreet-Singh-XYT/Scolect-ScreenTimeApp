@@ -329,9 +329,10 @@ Future<void> _appMain(List<String> args) async {
   // an unrelated program on that port must not stop the app from starting.
   final bool existingInstanceFound =
       await SingleInstanceIPC.notifyExistingInstance();
-  if (existingInstanceFound)
+  if (existingInstanceFound) {
     debugPrint('✅ Sent SHOW to existing instance, exiting');
-  if (existingInstanceFound) exit(0);
+    exit(0);
+  }
 
   await SingleInstanceIPC.startServer();
   await _guardedStep('settings', () => SettingsManager().init());

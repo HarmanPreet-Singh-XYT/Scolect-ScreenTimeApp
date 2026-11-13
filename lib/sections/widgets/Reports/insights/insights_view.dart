@@ -428,15 +428,19 @@ class _InsightsViewState extends State<InsightsView> {
         children: [
           Icon(FluentIcons.check_mark, size: 10, color: _success(context)),
           const SizedBox(width: 6),
-          Text(
-            AppLocalizations.of(context)!.insActiveDaysSummary(
-              activeDays,
-              totalDuration.toHourMinuteFormat(),
-            ),
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: _success(context),
+          Flexible(
+            child: Text(
+              AppLocalizations.of(context)!.insActiveDaysSummary(
+                activeDays,
+                totalDuration.toHourMinuteFormat(),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: _success(context),
+              ),
             ),
           ),
         ],
@@ -533,7 +537,7 @@ class _CardState extends State<_Card> {
                     ],
                   ),
                 ),
-                if (widget.trailing != null) widget.trailing!,
+                if (widget.trailing != null) Flexible(child: widget.trailing!),
               ],
             ),
             const SizedBox(height: 18),
